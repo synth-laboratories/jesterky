@@ -1,0 +1,15 @@
+{
+  "name": "quality_min",
+  "entrypoint": ["scan"],
+  "nodes": {
+    "scan": {
+      "kind": "actor",
+      "actor": "quality_scanner",
+      "inputs": {
+        "target": "\"alpha\"",
+        "rubric": "\"minimal quality pass\""
+      },
+      "outputs": {}
+    }
+  }
+}
