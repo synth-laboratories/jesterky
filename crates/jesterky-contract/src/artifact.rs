@@ -14,7 +14,7 @@ use crate::event::{Addr, Event};
 use serde::{Deserialize, Serialize};
 
 /// A stable reference to an artifact held in the host `ArtifactStore`.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct ArtifactRef {
     /// e.g. `blob/ab12cd`. Opaque to the core; meaningful to the store.
     pub key: String,
@@ -24,7 +24,7 @@ pub struct ArtifactRef {
 
 /// Either an inline small value or a reference to an offloaded one. The runner
 /// applies the inline/offload split at a size cap.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", untagged)]
 pub enum Artifact {
     Inline(serde_json::Value),
@@ -32,7 +32,7 @@ pub enum Artifact {
 }
 
 /// One node's contribution to the process tree.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct ProcessNode {
     pub addr: Addr,
     /// e.g. "map:audit_jobs", "actor:quality_auditor".
@@ -55,7 +55,7 @@ pub struct ProcessNode {
 /// stream serve both [`crate`]-level actor replay AND resource (env) replay:
 /// the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches
 /// `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "call")]
 pub enum CallKind {
     Actor { actor: String },
@@ -66,7 +66,7 @@ pub enum CallKind {
 /// What an actor/resource returned, recorded so replay can re-drive without the
 /// live model/env (ADR #7). Keyed by [`Addr`] via the `addr` field (kept in a
 /// `Vec` rather than a map so the manifest serializes to plain JSON).
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct RecordedOutput {
     pub addr: Addr,
     pub call: CallKind,
@@ -79,7 +79,7 @@ pub struct RecordedOutput {
 /// A per-session state snapshot (DungeonGrid takes one per turn). `state` may be
 /// offloaded to the checkpoint store when large. A `resume_session` node
 /// rehydrates from the latest checkpoint for its session.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Checkpoint {
     pub session: String,
     pub addr: Addr,
@@ -88,7 +88,7 @@ pub struct Checkpoint {
 
 /// A mailbox message (multi-agent coordination). Orchestration-level, not IO —
 /// the core routes it between sessions (see the mailbox module).
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Message {
     pub topic: String,
     pub sender: String,
@@ -99,7 +99,7 @@ pub struct Message {
 /// The full record of a run: enough to replay it and to hand an optimizer a
 /// structured process object. Produced by the runner; consumed by the CLI/Stack
 /// visualizer, the replay engine, and the optimizers.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct RunManifest {
     pub run_id: String,
     pub workflow_name: String,
@@ -120,7 +120,7 @@ pub struct RunManifest {
     pub status: RunStatus,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RunStatus {
     Completed,

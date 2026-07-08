@@ -1,0 +1,637 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RunManifest",
+  "description": "The full record of a run: enough to replay it and to hand an optimizer a structured process object. Produced by the runner; consumed by the CLI/Stack visualizer, the replay engine, and the optimizers.",
+  "type": "object",
+  "required": [
+    "args",
+    "events",
+    "recorded",
+    "run_id",
+    "spec_hash",
+    "status",
+    "workflow_name"
+  ],
+  "properties": {
+    "args": true,
+    "checkpoints": {
+      "description": "Session state snapshots taken during the run.",
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Checkpoint"
+      }
+    },
+    "events": {
+      "description": "The event stream, in emission order. Sort by `event.addr` for the canonical order (replay compares against that).",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Event"
+      }
+    },
+    "recorded": {
+      "description": "Recorded impure outputs, one per actor/resource invocation.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RecordedOutput"
+      }
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "spec_hash": {
+      "description": "The canonical graph hash this run was produced from (ADR #5). A replay asserts it re-drives the SAME topology.",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/definitions/RunStatus"
+    },
+    "trace": {
+      "description": "The process tree for optimizer consumption.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ProcessNode"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "workflow_name": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "Addr": {
+      "description": "The structural address of an event — its identity and its sort key.\n\nField order matters: `derive(Ord)` compares in declaration order, so the effective ordering is `(node_path, iteration, local_seq)` within a run (`run_id` is constant across a run's events). NEVER add an emission counter.",
+      "type": "object",
+      "required": [
+        "iteration",
+        "local_seq",
+        "node_path",
+        "run_id"
+      ],
+      "properties": {
+        "iteration": {
+          "description": "Loop/`while` iteration at this node (0 for non-looping nodes).",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "local_seq": {
+          "description": "Monotonic sequence WITHIN a single `(node_path, iteration)`, allocated locally by the runner. Two parallel siblings never share a `local_seq` because they have distinct `node_path`s.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "node_path": {
+          "description": "Where in the execution tree this event was produced.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/NodePath"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Artifact": {
+      "description": "Either an inline small value or a reference to an offloaded one. The runner applies the inline/offload split at a size cap.",
+      "anyOf": [
+        true,
+        {
+          "$ref": "#/definitions/ArtifactRef"
+        }
+      ]
+    },
+    "ArtifactRef": {
+      "description": "A stable reference to an artifact held in the host `ArtifactStore`.",
+      "type": "object",
+      "required": [
+        "content_type",
+        "key",
+        "size_bytes"
+      ],
+      "properties": {
+        "content_type": {
+          "type": "string"
+        },
+        "key": {
+          "description": "e.g. `blob/ab12cd`. Opaque to the core; meaningful to the store.",
+          "type": "string"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "CallKind": {
+      "description": "Which impure call produced a [`RecordedOutput`]. Lets a single recorded stream serve both [`crate`]-level actor replay AND resource (env) replay: the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "actor",
+            "call"
+          ],
+          "properties": {
+            "actor": {
+              "type": "string"
+            },
+            "call": {
+              "type": "string",
+              "enum": [
+                "actor"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "call",
+            "session"
+          ],
+          "properties": {
+            "call": {
+              "type": "string",
+              "enum": [
+                "resource_observe"
+              ]
+            },
+            "session": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "call",
+            "session"
+          ],
+          "properties": {
+            "call": {
+              "type": "string",
+              "enum": [
+                "resource_step"
+              ]
+            },
+            "session": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Checkpoint": {
+      "description": "A per-session state snapshot (DungeonGrid takes one per turn). `state` may be offloaded to the checkpoint store when large. A `resume_session` node rehydrates from the latest checkpoint for its session.",
+      "type": "object",
+      "required": [
+        "addr",
+        "session",
+        "state"
+      ],
+      "properties": {
+        "addr": {
+          "$ref": "#/definitions/Addr"
+        },
+        "session": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/Artifact"
+        }
+      }
+    },
+    "Event": {
+      "description": "One event in the stream. `wall_ms` is metadata ONLY — never part of ordering or identity (that is [`Addr`]'s job).",
+      "type": "object",
+      "required": [
+        "addr",
+        "kind",
+        "payload",
+        "wall_ms"
+      ],
+      "properties": {
+        "addr": {
+          "$ref": "#/definitions/Addr"
+        },
+        "kind": {
+          "$ref": "#/definitions/EventKind"
+        },
+        "payload": true,
+        "wall_ms": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "EventKind": {
+      "description": "The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "node_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "node_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_failed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_completed"
+              ]
+            }
+          }
+        },
+        {
+          "description": "An actor/resource call was recorded (see replay manifest).",
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "actor_invoked"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "resource_invoked"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "session_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "session_resumed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "checkpoint_created"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "semaphore_acquired"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "semaphore_released"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "message_published"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "message_available"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "artifact_emitted"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_failed"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "NodePath": {
+      "description": "Fully-qualified position of a node in a run's dynamic execution tree. Ordering is lexicographic over segments (derived), which is exactly the structural order we want.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PathSeg"
+      }
+    },
+    "PathSeg": {
+      "description": "One segment of a node path. A path alternates named nodes and numeric indices, e.g. `audit_jobs` → `[3]` for the 4th map item. Kept typed (not a string) so that `Index(2) < Index(10)` orders numerically, not lexically.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "node"
+          ],
+          "properties": {
+            "node": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "index"
+          ],
+          "properties": {
+            "index": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ProcessNode": {
+      "description": "One node's contribution to the process tree.",
+      "type": "object",
+      "required": [
+        "addr",
+        "artifacts",
+        "children",
+        "inputs",
+        "label",
+        "outputs"
+      ],
+      "properties": {
+        "addr": {
+          "$ref": "#/definitions/Addr"
+        },
+        "artifacts": {
+          "description": "Large outputs offloaded to the store.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArtifactRef"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProcessNode"
+          }
+        },
+        "inputs": {
+          "description": "Typed inputs the node received (post-binding-resolution)."
+        },
+        "label": {
+          "description": "e.g. \"map:audit_jobs\", \"actor:quality_auditor\".",
+          "type": "string"
+        },
+        "outputs": {
+          "description": "Typed outputs the node produced."
+        },
+        "score": {
+          "description": "Optimizer slot: an outcome score, if the actor supplied one. Grades OUTCOMES only.",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "signal": {
+          "description": "Optimizer slot: a wall-safe verifier signal, if any."
+        }
+      }
+    },
+    "RecordedOutput": {
+      "description": "What an actor/resource returned, recorded so replay can re-drive without the live model/env (ADR #7). Keyed by [`Addr`] via the `addr` field (kept in a `Vec` rather than a map so the manifest serializes to plain JSON).",
+      "type": "object",
+      "required": [
+        "addr",
+        "artifacts",
+        "call",
+        "outputs"
+      ],
+      "properties": {
+        "addr": {
+          "$ref": "#/definitions/Addr"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArtifactRef"
+          }
+        },
+        "call": {
+          "$ref": "#/definitions/CallKind"
+        },
+        "outputs": true,
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "signal": true
+      }
+    },
+    "RunStatus": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "failed"
+      ]
+    }
+  }
+}

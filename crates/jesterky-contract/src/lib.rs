@@ -21,11 +21,23 @@ pub mod topology;
 pub const CONTRACT_VERSION: &str = "0.0.0-dev";
 
 pub use artifact::{
-    Artifact, ArtifactRef, CallKind, Checkpoint, Message, ProcessNode, RecordedOutput,
-    RunManifest, RunStatus,
+    Artifact, ArtifactRef, CallKind, Checkpoint, Message, ProcessNode, RecordedOutput, RunManifest,
+    RunStatus,
 };
 pub use event::{Addr, Event, EventKind, NodePath, PathSeg};
 pub use topology::{
     Bindings, ContractError, Diagnostic, Limit, Node, NodeId, NodeKind, Ref, RunPlan, Severity,
     Verbosity, WorkflowSpec,
 };
+
+/// Emit the JSON Schema for workflow topology documents.
+pub fn workflow_schema_json() -> String {
+    serde_json::to_string_pretty(&schemars::schema_for!(WorkflowSpec))
+        .expect("WorkflowSpec schema serializes")
+}
+
+/// Emit the JSON Schema for replay manifests.
+pub fn manifest_schema_json() -> String {
+    serde_json::to_string_pretty(&schemars::schema_for!(RunManifest))
+        .expect("RunManifest schema serializes")
+}

@@ -15,14 +15,14 @@ pub type NodeId = String;
 /// A reference into run state, resolved by the ledger at execution time.
 /// Kept a newtype over String in the skeleton; M0 replaces the inner form with
 /// a parsed `{ source, path }` so resolution is total and checkable.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Ref(pub String);
 
 /// `in`/`out` bindings: local name inside the node ⇄ a ledger [`Ref`].
 pub type Bindings = BTreeMap<String, Ref>;
 
 /// The closed set of node kinds. Adding a kind is a contract change (ADR #4).
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum NodeKind {
     /// Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on
@@ -82,14 +82,14 @@ fn one() -> f64 {
 
 /// A named concurrency budget. Enforced by the runner; `permits` bounds how many
 /// holders may hold it at once.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Limit {
     pub name: String,
     pub permits: u32,
 }
 
 /// A node = its kind plus its I/O wiring.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Node {
     #[serde(flatten)]
     pub kind: NodeKind,
@@ -103,7 +103,7 @@ pub struct Node {
 
 /// A whole workflow. `entrypoint` is the ordered list of top-level nodes to run
 /// (matches mloky's model). `nodes` is the id → node map.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct WorkflowSpec {
     pub name: String,
     pub entrypoint: Vec<NodeId>,
@@ -115,7 +115,7 @@ pub struct WorkflowSpec {
 
 /// Run-level configuration: concurrency budgets and event verbosity. A run may
 /// override these via args.runplan (merged by the runner).
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct RunPlan {
     /// Named limits → permits. A `map`/`session_group` `limit` names one of these.
     #[serde(default)]
@@ -139,7 +139,9 @@ impl Default for RunPlan {
 }
 
 /// Per-run event verbosity (adapted from `rlm_event_streaming_plan.md`, §11).
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, Default, schemars::JsonSchema, Serialize, Deserialize,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum Verbosity {
     Minimal,
@@ -149,7 +151,7 @@ pub enum Verbosity {
 }
 
 /// Severity of a validation [`Diagnostic`].
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Severity {
     Info,
@@ -159,7 +161,7 @@ pub enum Severity {
 
 /// A typed validation result with a location (ported shape from
 /// `graph_ir.rs::Diagnostic`, §11) — never a bare string.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Diagnostic {
     pub severity: Severity,
     /// JSON-ish path to the offending element, e.g. `nodes.audit_jobs.over`.

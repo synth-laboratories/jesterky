@@ -1,0 +1,374 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WorkflowSpec",
+  "description": "A whole workflow. `entrypoint` is the ordered list of top-level nodes to run (matches mloky's model). `nodes` is the id → node map.",
+  "type": "object",
+  "required": [
+    "entrypoint",
+    "name",
+    "nodes"
+  ],
+  "properties": {
+    "entrypoint": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "name": {
+      "type": "string"
+    },
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Node"
+      }
+    },
+    "runplan": {
+      "description": "Execution budgets/defaults for this workflow.",
+      "default": {
+        "limits": {},
+        "map_concurrency": null,
+        "verbosity": "standard"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RunPlan"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "Limit": {
+      "description": "A named concurrency budget. Enforced by the runner; `permits` bounds how many holders may hold it at once.",
+      "type": "object",
+      "required": [
+        "name",
+        "permits"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "permits": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Node": {
+      "description": "A node = its kind plus its I/O wiring.",
+      "type": "object",
+      "oneOf": [
+        {
+          "description": "Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on replay — NOT recorded (ADR #7). Resolved from the program registry.",
+          "type": "object",
+          "required": [
+            "kind",
+            "op"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "program"
+              ]
+            },
+            "op": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "Pure aggregation over a collection (a program that folds `results`).",
+          "type": "object",
+          "required": [
+            "kind",
+            "op"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "reduce"
+              ]
+            },
+            "op": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "A host actor call (a model, a subprocess). Impure → recorded for replay.",
+          "type": "object",
+          "required": [
+            "actor",
+            "kind"
+          ],
+          "properties": {
+            "actor": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "actor"
+              ]
+            }
+          }
+        },
+        {
+          "description": "Fan `body` over `over`, binding each element as `item_as`. `concurrency` opts into parallel execution (ADR #5); `None`/`1` = serial. `min_success` is the reduce-gate (fraction of items that must succeed).",
+          "type": "object",
+          "required": [
+            "body",
+            "item_as",
+            "kind",
+            "over"
+          ],
+          "properties": {
+            "body": {
+              "$ref": "#/definitions/Node"
+            },
+            "concurrency": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "item_as": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map"
+              ]
+            },
+            "min_success": {
+              "default": 1.0,
+              "type": "number",
+              "format": "double"
+            },
+            "over": {
+              "$ref": "#/definitions/Ref"
+            }
+          }
+        },
+        {
+          "description": "Serial iteration with side effects visible across items.",
+          "type": "object",
+          "required": [
+            "body",
+            "item_as",
+            "kind",
+            "over"
+          ],
+          "properties": {
+            "body": {
+              "$ref": "#/definitions/Node"
+            },
+            "item_as": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "for_each"
+              ]
+            },
+            "over": {
+              "$ref": "#/definitions/Ref"
+            }
+          }
+        },
+        {
+          "description": "Loop `body` while `cond` resolves truthy, bounded by `max_iters`. Each pass increments the `Addr::iteration` at this node.",
+          "type": "object",
+          "required": [
+            "body",
+            "cond",
+            "kind",
+            "max_iters"
+          ],
+          "properties": {
+            "body": {
+              "$ref": "#/definitions/Node"
+            },
+            "cond": {
+              "$ref": "#/definitions/Ref"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "while"
+              ]
+            },
+            "max_iters": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            }
+          }
+        },
+        {
+          "description": "Take `then` if `cond` is truthy, else `otherwise`.",
+          "type": "object",
+          "required": [
+            "cond",
+            "kind",
+            "then"
+          ],
+          "properties": {
+            "cond": {
+              "$ref": "#/definitions/Ref"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "branch"
+              ]
+            },
+            "otherwise": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "then": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "Spawn one session per element of `sessions`, each running `body` against the named `actor`. `limit` (permits) serializes shared-resource access — this is the \"poll under a center logic\" pattern (DungeonGrid): set `permits = 1` on the env resource so sessions take turns.",
+          "type": "object",
+          "required": [
+            "actor",
+            "body",
+            "kind",
+            "sessions"
+          ],
+          "properties": {
+            "actor": {
+              "type": "string"
+            },
+            "body": {
+              "$ref": "#/definitions/Node"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "session_group"
+              ]
+            },
+            "limit": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Limit"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sessions": {
+              "$ref": "#/definitions/Ref"
+            }
+          }
+        },
+        {
+          "description": "Resume a previously-checkpointed session and run `body`.",
+          "type": "object",
+          "required": [
+            "body",
+            "kind",
+            "session"
+          ],
+          "properties": {
+            "body": {
+              "$ref": "#/definitions/Node"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "resume_session"
+              ]
+            },
+            "session": {
+              "$ref": "#/definitions/Ref"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "inputs": {
+          "description": "Inputs the node reads, resolved from the ledger before it runs.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Ref"
+          }
+        },
+        "outputs": {
+          "description": "Outputs the node writes back into the ledger when it completes.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Ref"
+          }
+        }
+      }
+    },
+    "Ref": {
+      "description": "A reference into run state, resolved by the ledger at execution time. Kept a newtype over String in the skeleton; M0 replaces the inner form with a parsed `{ source, path }` so resolution is total and checkable.",
+      "type": "string"
+    },
+    "RunPlan": {
+      "description": "Run-level configuration: concurrency budgets and event verbosity. A run may override these via args.runplan (merged by the runner).",
+      "type": "object",
+      "properties": {
+        "limits": {
+          "description": "Named limits → permits. A `map`/`session_group` `limit` names one of these.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          }
+        },
+        "map_concurrency": {
+          "description": "Default parallel width for `map` nodes lacking their own `concurrency`. `None`/`1` = serial (ADR #5).",
+          "default": null,
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "verbosity": {
+          "default": "standard",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Verbosity"
+            }
+          ]
+        }
+      }
+    },
+    "Verbosity": {
+      "description": "Per-run event verbosity (adapted from `rlm_event_streaming_plan.md`, §11).",
+      "type": "string",
+      "enum": [
+        "minimal",
+        "standard",
+        "verbose"
+      ]
+    }
+  }
+}

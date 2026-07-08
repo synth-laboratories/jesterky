@@ -12,7 +12,9 @@ use serde::{Deserialize, Serialize};
 /// One segment of a node path. A path alternates named nodes and numeric indices,
 /// e.g. `audit_jobs` → `[3]` for the 4th map item. Kept typed (not a string) so
 /// that `Index(2) < Index(10)` orders numerically, not lexically.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, schemars::JsonSchema, Serialize, Deserialize,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum PathSeg {
     Node(String),
@@ -22,7 +24,19 @@ pub enum PathSeg {
 /// Fully-qualified position of a node in a run's dynamic execution tree.
 /// Ordering is lexicographic over segments (derived), which is exactly the
 /// structural order we want.
-#[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone,
+    Debug,
+    Default,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    schemars::JsonSchema,
+    Serialize,
+    Deserialize,
+)]
 pub struct NodePath(pub Vec<PathSeg>);
 
 impl NodePath {
@@ -48,7 +62,9 @@ impl NodePath {
 /// Field order matters: `derive(Ord)` compares in declaration order, so the
 /// effective ordering is `(node_path, iteration, local_seq)` within a run
 /// (`run_id` is constant across a run's events). NEVER add an emission counter.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, schemars::JsonSchema, Serialize, Deserialize,
+)]
 pub struct Addr {
     pub run_id: String,
     /// Where in the execution tree this event was produced.
@@ -64,7 +80,7 @@ pub struct Addr {
 /// The closed set of event families. Payload detail rides in [`Event::payload`]
 /// as a typed value; this enum is the stable vocabulary consumers switch on.
 /// (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "kind")]
 pub enum EventKind {
     WorkflowStarted,
@@ -94,7 +110,7 @@ pub enum EventKind {
 
 /// One event in the stream. `wall_ms` is metadata ONLY — never part of ordering
 /// or identity (that is [`Addr`]'s job).
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Event {
     pub addr: Addr,
     pub kind: EventKind,

@@ -8,6 +8,7 @@ description = "The pinned jesterky workflow contract: topology, event, artifact,
 # derive and emit `jesterky.schema.json` (the interop artifact) + pyo3 Python
 # types from the same crate. Left off here to keep the skeleton dep-light.
 [dependencies]
+schemars = "0.8"
 serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = "0.10"
