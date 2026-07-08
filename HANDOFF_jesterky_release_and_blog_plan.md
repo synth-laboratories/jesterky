@@ -19,6 +19,13 @@ state, open workstreams, gates, and how the public story ships.
 | **Terminal viz** | Post-hoc panel landed (`visualize`); live `--follow` open | PR2 in terminal viz handoff |
 | **Public story** | Not drafted | `feature_release` blog + changelog + cookbook + proof |
 
+**Execution log (this push):**
+- **2026-07-08 · WS0 done** — landed the per-actor output-schema WIP + codex
+  `--ephemeral`/`--output-schema`/stdin-null hardening + strict no-tool scanner
+  prompts (`95dad43`); tree clean, `cargo test --workspace` green (2 live-codex
+  ignored). main at `57fd273`. Cadence: codex `gpt-5.5` xhigh=draft / medium=grind,
+  one reviewed cycle = one commit, revert-on-break. Order: WS0→(WS1∥WS2∥WS4)→WS3→WS5→WS6.
+
 **Blog pattern (operator preference):** ship as a **feature release** — lead with
 what shipped and how it works; **mention applications at the end** (Stack,
 hosted optimizers, research engineering, agent infra). Not a launch post unless
