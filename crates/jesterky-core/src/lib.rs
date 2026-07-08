@@ -5,9 +5,9 @@
 //! seam in [`traits`].
 //!
 //! Read order for the implementing engineer: `traits` (the seam) → `runner`
-//! (the joints; note `emit` and the `execute_map` docstring) → `ledger`. The
-//! `todo!()`s are the 80%; the signatures and the manifest/event shapes are the
-//! locked 20%.
+//! (the joints; note `emit` and the `execute_map` docstring) → `ledger`. All node
+//! kinds, the async limit-semaphore, sessions, and the trace tree are
+//! implemented; the seam traits are where a real host (Stack, Cloud) plugs in.
 
 pub mod ledger;
 pub mod limits;
@@ -16,7 +16,7 @@ pub mod runner;
 pub mod session;
 pub mod traits;
 
-pub use limits::{LimitError, LimitGuard, LimitSet, LimitState};
+pub use limits::{LimitError, LimitGuard, LimitSet};
 pub use mailbox::Mailbox;
 pub use runner::{CoreError, ProgramFn, ProgramRegistry, Runner};
 pub use session::Session;

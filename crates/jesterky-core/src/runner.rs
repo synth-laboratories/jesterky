@@ -1,11 +1,12 @@
 //! The runner — walks a [`WorkflowSpec`], drives nodes, emits the event stream,
 //! and produces a [`RunManifest`]. This is the heart of the core.
 //!
-//! What is LOCKED here (the joints): the seam wiring, the per-node logical-clock
-//! allocation in [`Runner::emit`] (ADR #5), the pure-vs-recorded split (programs
-//! re-run, actors/resources recorded — ADR #7), and the manifest shape. What is
-//! SKELETAL: the per-kind execution bodies and the parallel map dispatch, left as
-//! documented `todo!()` for the implementing engineer.
+//! The joints (LOCKED): the seam wiring, the per-node logical-clock allocation in
+//! [`Runner::emit`] (ADR #5), the pure-vs-recorded split (programs re-run,
+//! actors/resources recorded — ADR #7), and the manifest shape. Every node kind
+//! is implemented — program/reduce/actor, parallel map, for_each, while, branch,
+//! session_group (limit-serialized "poll under a center logic"), and
+//! resume_session — plus the ProcessNode trace tree in [`Runner::build_trace`].
 
 use crate::ledger::Ledger;
 use crate::limits::LimitSet;
@@ -15,8 +16,8 @@ use crate::traits::{
 };
 use async_recursion::async_recursion;
 use jesterky_contract::{
-    Addr, Bindings, CallKind, Checkpoint, Event, EventKind, Node, NodeKind, NodePath,
-    RecordedOutput, RunManifest, RunStatus, WorkflowSpec,
+    Addr, Bindings, CallKind, Checkpoint, Event, EventKind, Node, NodeKind, NodePath, PathSeg,
+    ProcessNode, RecordedOutput, RunManifest, RunStatus, WorkflowSpec,
 };
 use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
@@ -73,10 +74,15 @@ struct RunCtx {
     events: Mutex<Vec<Event>>,
     recorded: Mutex<Vec<RecordedOutput>>,
     checkpoints: Mutex<Vec<Checkpoint>>,
-    /// Named concurrency budgets / the central-serialization semaphores.
-    limits: LimitSet,
+    /// Named concurrency budgets / the central-serialization semaphores. `Arc`
+    /// so a `LimitGuard` can outlive the acquiring call and release on drop.
+    limits: Arc<LimitSet>,
     map_concurrency: Option<u32>,
-    /// Inter-session message-passing.
+    /// Inter-session message-passing. Built and ready; no node kind publishes to
+    /// it yet (a `session_group` body coordinates via the env resource + limit
+    /// today). Wired here so the coordination seam is one field, not a refactor,
+    /// when message-passing lands.
+    #[allow(dead_code)]
     mailbox: Mailbox,
 }
 
@@ -97,7 +103,7 @@ impl RunCtx {
             events: Mutex::new(Vec::new()),
             recorded: Mutex::new(Vec::new()),
             checkpoints: Mutex::new(Vec::new()),
-            limits: LimitSet::from_permits(&spec.runplan.limits),
+            limits: Arc::new(LimitSet::from_permits(&spec.runplan.limits)),
             map_concurrency: spec.runplan.map_concurrency,
             mailbox: Mailbox::new(),
         }
@@ -335,14 +341,131 @@ impl Runner {
                     None => serde_json::Value::Null,
                 }
             }
-            NodeKind::SessionGroup { .. } => {
-                // TODO: spawn one session per element, each running `body` under
-                // the `limit` (permits) that serializes shared-resource access —
-                // the "poll under a center logic" pattern. Env access goes to
-                // self.resource; observe/step results are RECORDED (ADR #7).
-                todo!("session group; limit-gated resource turns; record env calls")
+            NodeKind::SessionGroup {
+                sessions,
+                actor: _actor,
+                body,
+                limit,
+            } => {
+                // One session per element, each on its OWN ledger clone (like map
+                // items — no shared-state race) under `path.child(session_id)`.
+                // Sessions run concurrently; a `limit` (permits=1) serializes them
+                // — the "poll under a center logic" joint. Session state lives in
+                // checkpoints/env, not the shared ledger, so results are collected.
+                let items = ledger.lock().unwrap().resolve(sessions)?;
+                let items = items.as_array().cloned().ok_or_else(|| {
+                    CoreError::from(crate::ledger::LedgerError::TypeMismatch(format!(
+                        "session_group `{path:?}` sessions is not an array"
+                    )))
+                })?;
+                let base = ledger.lock().unwrap().clone();
+
+                let futures = items
+                    .iter()
+                    .enumerate()
+                    .map(|(i, item)| {
+                        let session_id = item
+                            .get("id")
+                            .and_then(serde_json::Value::as_str)
+                            .map(str::to_string)
+                            .unwrap_or_else(|| i.to_string());
+                        let session_path = path.child(session_id.clone());
+                        let session_ledger = Arc::new(Mutex::new(base.with_item(item.clone())));
+                        let limit = limit.clone();
+                        Box::pin(async move {
+                            self.emit(
+                                ctx,
+                                &session_path,
+                                0,
+                                EventKind::SessionStarted,
+                                serde_json::json!({ "session": session_id }),
+                            );
+                            // Acquire the shared limit around the body; permits=1
+                            // makes sessions take strict turns (nested acquire/
+                            // release per session, never interleaved).
+                            let guard = match &limit {
+                                Some(l) => {
+                                    let g = ctx.limits.acquire(&l.name).await?;
+                                    self.emit(
+                                        ctx,
+                                        &session_path,
+                                        0,
+                                        EventKind::SemaphoreAcquired,
+                                        serde_json::json!({ "limit": l.name }),
+                                    );
+                                    Some((l.name.clone(), g))
+                                }
+                                None => None,
+                            };
+                            let result = self
+                                .execute_node_with_ledger(
+                                    ctx,
+                                    session_path.child("body"),
+                                    body.as_ref(),
+                                    session_ledger.as_ref(),
+                                    None,
+                                    0,
+                                )
+                                .await;
+                            if let Some((name, g)) = guard {
+                                drop(g); // releases the permit + wakes a waiter
+                                self.emit(
+                                    ctx,
+                                    &session_path,
+                                    0,
+                                    EventKind::SemaphoreReleased,
+                                    serde_json::json!({ "limit": name }),
+                                );
+                            }
+                            result
+                        })
+                            as Pin<
+                                Box<dyn Future<Output = Result<serde_json::Value, CoreError>> + Send + '_>,
+                            >
+                    })
+                    .collect::<Vec<_>>();
+
+                let mut collected = Vec::with_capacity(items.len());
+                for result in join_all_ordered(futures).await {
+                    collected.push(result?);
+                }
+                serde_json::Value::Array(collected)
             }
-            NodeKind::ResumeSession { .. } => todo!("rehydrate checkpoint, run body"),
+            NodeKind::ResumeSession { session, body } => {
+                let session_value = ledger.lock().unwrap().resolve(session)?;
+                let session_id = session_value
+                    .as_str()
+                    .map(str::to_string)
+                    .unwrap_or_else(|| session_value.to_string());
+                // Rehydrate the latest checkpoint (if a store + a saved state
+                // exist). Recorded actor/env outputs make the resumed run
+                // replayable without re-executing prior turns.
+                let state = match &self.checkpoints {
+                    Some(store) => store.load(&session_id).await?.unwrap_or(serde_json::Value::Null),
+                    None => serde_json::Value::Null,
+                };
+                self.emit(
+                    ctx,
+                    &path,
+                    iteration,
+                    EventKind::SessionResumed,
+                    serde_json::json!({ "session": session_id }),
+                );
+                // Bind the rehydrated state as the `session` item source so the
+                // body reads it as `session.<field>` — same binding shape as
+                // `session_group`'s `item`.
+                let body_ledger =
+                    Arc::new(Mutex::new(ledger.lock().unwrap().with_item_as("session", state)));
+                self.execute_node_with_ledger(
+                    ctx,
+                    path.child("body"),
+                    body,
+                    body_ledger.as_ref(),
+                    None,
+                    iteration,
+                )
+                .await?
+            }
         };
         self.emit(
             ctx,
@@ -628,6 +751,11 @@ impl Runner {
     /// Assemble the run record. `trace` (the ProcessNode tree) is built from the
     /// recorded outputs + node structure.
     fn build_manifest(&self, ctx: &RunCtx, spec: &WorkflowSpec, spec_hash: String) -> RunManifest {
+        // Build the trace BEFORE the struct literal: temporaries in a struct
+        // initializer live until the whole literal completes, so a
+        // `ctx.recorded.lock()` in a field would still be held when `build_trace`
+        // re-locks `recorded` — a self-deadlock on the non-reentrant Mutex.
+        let trace = self.build_trace(ctx, spec);
         RunManifest {
             run_id: ctx.run_id.clone(),
             workflow_name: spec.name.clone(),
@@ -636,11 +764,121 @@ impl Runner {
             events: ctx.events.lock().unwrap().clone(),
             recorded: ctx.recorded.lock().unwrap().clone(),
             checkpoints: ctx.checkpoints.lock().unwrap().clone(),
-            // TODO: fold `recorded` + node structure into the ProcessNode tree
-            // (ADR #2, the optimizer-facing artifact).
-            trace: None,
+            trace,
             status: RunStatus::Completed,
         }
+    }
+
+    /// Fold `recorded` + node structure into the ProcessNode tree (ADR #2, the
+    /// optimizer-facing artifact). Interior nodes mirror the topology path
+    /// (`map:audit_jobs` → `[0]` → …); leaves are the actual actor/env calls,
+    /// carrying the outputs/score/signal/artifacts the optimizer grades. Built
+    /// from `recorded` sorted by [`Addr`] so the tree is deterministic and
+    /// replay-stable — same run, same tree.
+    fn build_trace(&self, ctx: &RunCtx, spec: &WorkflowSpec) -> Option<ProcessNode> {
+        let recorded = ctx.recorded.lock().unwrap();
+        if recorded.is_empty() {
+            return None;
+        }
+        let mut root = ProcessNode {
+            addr: Addr {
+                run_id: ctx.run_id.clone(),
+                node_path: NodePath::root(),
+                iteration: 0,
+                local_seq: 0,
+            },
+            label: format!("workflow:{}", spec.name),
+            inputs: ctx.args.clone(),
+            outputs: serde_json::Value::Null,
+            score: None,
+            signal: None,
+            artifacts: Vec::new(),
+            children: Vec::new(),
+        };
+        let mut items: Vec<&RecordedOutput> = recorded.iter().collect();
+        items.sort_by(|a, b| a.addr.cmp(&b.addr));
+        for rec in items {
+            insert_recorded(&mut root, &ctx.run_id, NodePath::root(), &rec.addr.node_path.0, rec);
+        }
+        Some(root)
+    }
+}
+
+/// Insert one recorded call into the trace tree, descending `segs` and creating
+/// interior nodes on the way. `prefix` accumulates the path so interior nodes
+/// carry a real [`Addr`]. When `segs` is empty we've reached the call's node —
+/// the call is attached as a leaf so sibling calls under one node (a while
+/// loop's turns, an env's observe+step) stay distinct.
+fn insert_recorded(
+    node: &mut ProcessNode,
+    run_id: &str,
+    prefix: NodePath,
+    segs: &[PathSeg],
+    rec: &RecordedOutput,
+) {
+    let Some((head, tail)) = segs.split_first() else {
+        node.children.push(leaf_from(rec));
+        return;
+    };
+    let mut child_prefix = prefix;
+    child_prefix.0.push(head.clone());
+    let label = seg_label(head);
+    let pos = node
+        .children
+        .iter()
+        .position(|c| c.addr.node_path == child_prefix && c.label == label);
+    let idx = match pos {
+        Some(idx) => idx,
+        None => {
+            node.children.push(ProcessNode {
+                addr: Addr {
+                    run_id: run_id.to_string(),
+                    node_path: child_prefix.clone(),
+                    iteration: 0,
+                    local_seq: 0,
+                },
+                label,
+                inputs: serde_json::Value::Null,
+                outputs: serde_json::Value::Null,
+                score: None,
+                signal: None,
+                artifacts: Vec::new(),
+                children: Vec::new(),
+            });
+            node.children.len() - 1
+        }
+    };
+    insert_recorded(&mut node.children[idx], run_id, child_prefix, tail, rec);
+}
+
+/// A leaf ProcessNode for a recorded call. Inputs live in the event stream, not
+/// in `RecordedOutput`, so the leaf's `inputs` stay null here — the label + addr
+/// join it back to the `ActorInvoked`/`ResourceInvoked` event that carries them.
+fn leaf_from(rec: &RecordedOutput) -> ProcessNode {
+    ProcessNode {
+        addr: rec.addr.clone(),
+        label: call_label(&rec.call),
+        inputs: serde_json::Value::Null,
+        outputs: rec.outputs.clone(),
+        score: rec.score,
+        signal: rec.signal.clone(),
+        artifacts: rec.artifacts.clone(),
+        children: Vec::new(),
+    }
+}
+
+fn seg_label(seg: &PathSeg) -> String {
+    match seg {
+        PathSeg::Node(name) => name.clone(),
+        PathSeg::Index(i) => format!("[{i}]"),
+    }
+}
+
+fn call_label(call: &CallKind) -> String {
+    match call {
+        CallKind::Actor { actor } => format!("actor:{actor}"),
+        CallKind::ResourceObserve { session } => format!("observe:{session}"),
+        CallKind::ResourceStep { session } => format!("step:{session}"),
     }
 }
 
@@ -732,6 +970,8 @@ pub enum CoreError {
     Ledger(#[from] crate::ledger::LedgerError),
     #[error(transparent)]
     Host(#[from] crate::traits::HostError),
+    #[error(transparent)]
+    Limit(#[from] crate::limits::LimitError),
     #[error("program not registered: {0}")]
     UnknownProgram(String),
     #[error("map min_success gate failed: required {required}, got {successes}/{total}")]
