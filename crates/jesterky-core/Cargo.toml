@@ -1,0 +1,16 @@
+[package]
+name = "jesterky-core"
+version = "0.0.0"
+edition = "2021"
+description = "The jesterky orchestration core: pure graph execution, events, replay. No IO."
+
+# ADR #6: the core takes on NO model/HTTP/subprocess/runtime deps. All IO crosses
+# the seam via the traits in `traits.rs`, implemented by the host. `async-trait`
+# and `async-recursion` are orchestration plumbing, not IO.
+[dependencies]
+jesterky-contract = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+async-trait = { workspace = true }
+async-recursion = { workspace = true }
