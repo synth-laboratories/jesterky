@@ -4,7 +4,7 @@ All notable changes to jesterky are recorded here. Versions follow the three
 independent trains (contract / runtime / CLI); this release pins them together at
 `0.1.0`.
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-07-08
 
 First public release: the jesterky workflow substrate — a Rust core that
 orchestrates fan-out/fan-in workflows with no IO, a pinned contract that is the

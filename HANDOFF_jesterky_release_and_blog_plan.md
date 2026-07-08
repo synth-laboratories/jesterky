@@ -54,6 +54,15 @@ state, open workstreams, gates, and how the public story ships.
 `github.com/jesterky` org+repo public · flipping the launch blog live. Everything
 above is driven to publish-READY; these four are the finish-line triggers.
 
+**PUBLISH STATUS (2026-07-08, Josh authorized "publish crates now"):**
+- ✅ crates.io: `jesterky-contract`, `-core`, `-actor`, `-model`, `-quality` @0.1.0 LIVE.
+- ⏳ `jesterky-cli` @0.1.0 — hit crates.io new-crate rate limit (429); auto-retry
+  scheduled for 13:47:52 GMT (background). Verify: `curl crates.io/api/v1/crates/jesterky-cli`.
+- ⛔ PyPI `jesterky` — wheel built (`python/dist/`), upload BLOCKED: Josh authorized
+  crates.io only, not PyPI. Awaiting explicit PyPI okay → `cd python && uv publish`.
+- ⛔ `github.com/jesterky` org+repo public — not done (manual).
+- ⛔ blog `status: draft` → live — not flipped (manual).
+
 **Blog pattern (operator preference):** ship as a **feature release** — lead with
 what shipped and how it works; **mention applications at the end** (Stack,
 hosted optimizers, research engineering, agent infra). Not a launch post unless
