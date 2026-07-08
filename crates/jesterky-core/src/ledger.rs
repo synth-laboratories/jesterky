@@ -14,8 +14,13 @@ use std::collections::HashMap;
 #[derive(Debug, Default, Clone)]
 pub struct Ledger {
     slots: HashMap<String, serde_json::Value>,
-    /// The current map/for_each element, bound as `item` (and `item.field`).
-    current_item: Option<serde_json::Value>,
+    /// The current map/for_each/session element, bound as `item_as` and, for
+    /// compatibility with the cycle-1 map path, also as `item`.
+    current_items: HashMap<String, serde_json::Value>,
+}
+
+pub(crate) struct ItemBindingRestore {
+    previous: Vec<(String, Option<serde_json::Value>)>,
 }
 
 impl Ledger {
@@ -27,9 +32,43 @@ impl Ledger {
     /// PARALLEL map path this is done on a per-item CLONE of the ledger so items
     /// never race on `current_item` (ADR #5) — see `runner::execute_map`.
     pub fn with_item(&self, item: serde_json::Value) -> Ledger {
+        self.with_item_as("item", item)
+    }
+
+    pub(crate) fn with_item_as(&self, name: &str, item: serde_json::Value) -> Ledger {
         let mut l = self.clone();
-        l.current_item = Some(item);
+        l.bind_item(name, item);
         l
+    }
+
+    pub(crate) fn bind_item(
+        &mut self,
+        name: &str,
+        item: serde_json::Value,
+    ) -> ItemBindingRestore {
+        let mut names = vec![name.to_string()];
+        if name != "item" {
+            names.push("item".to_string());
+        }
+
+        let mut previous = Vec::with_capacity(names.len());
+        for name in names {
+            previous.push((name.clone(), self.current_items.insert(name, item.clone())));
+        }
+        ItemBindingRestore { previous }
+    }
+
+    pub(crate) fn restore_item(&mut self, restore: ItemBindingRestore) {
+        for (name, previous) in restore.previous {
+            match previous {
+                Some(value) => {
+                    self.current_items.insert(name, value);
+                }
+                None => {
+                    self.current_items.remove(&name);
+                }
+            }
+        }
     }
 
     pub fn set(&mut self, key: &str, value: serde_json::Value) {
@@ -47,13 +86,10 @@ impl Ledger {
     /// checkable — no fallbacks (house rule).
     pub fn resolve(&self, r: &Ref) -> Result<serde_json::Value, LedgerError> {
         let raw = r.0.trim();
-        if raw == "item" || raw.starts_with("item.") {
-            let item = self
-                .current_item
-                .clone()
-                .ok_or_else(|| LedgerError::Unresolved(r.0.clone()))?;
-            let path = path_after_source(raw, "item")?;
-            return walk_path(item, &path, &r.0);
+        if let Some((source, path)) = item_source_and_path(raw) {
+            if let Some(item) = self.current_items.get(source) {
+                return walk_path(item.clone(), &path, &r.0);
+            }
         }
 
         if raw.starts_with("ledger.") {
@@ -99,23 +135,25 @@ impl Ledger {
     }
 }
 
+fn item_source_and_path(raw: &str) -> Option<(&str, Vec<String>)> {
+    let mut parts = raw.split('.');
+    let source = parts.next()?;
+    if source.is_empty() || source == "ledger" {
+        return None;
+    }
+    let path = parts.map(str::to_string).collect::<Vec<_>>();
+    if path.iter().any(String::is_empty) {
+        return None;
+    }
+    Some((source, path))
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum LedgerError {
     #[error("unresolved reference: {0}")]
     Unresolved(String),
     #[error("type mismatch resolving {0}")]
     TypeMismatch(String),
-}
-
-fn path_after_source(raw: &str, source: &str) -> Result<Vec<String>, LedgerError> {
-    if raw == source {
-        return Ok(Vec::new());
-    }
-
-    let prefix = format!("{source}.");
-    raw.strip_prefix(&prefix)
-        .ok_or_else(|| LedgerError::Unresolved(raw.to_string()))
-        .and_then(split_path)
 }
 
 fn ledger_key_and_path(raw: &str) -> Result<(&str, Vec<String>), LedgerError> {
@@ -136,17 +174,6 @@ fn ledger_key_and_path(raw: &str) -> Result<(&str, Vec<String>), LedgerError> {
         return Err(LedgerError::Unresolved(raw.to_string()));
     }
     Ok((key, path))
-}
-
-fn split_path(path: &str) -> Result<Vec<String>, LedgerError> {
-    if path.is_empty() {
-        return Err(LedgerError::Unresolved(path.to_string()));
-    }
-    let parts = path.split('.').map(str::to_string).collect::<Vec<_>>();
-    if parts.iter().any(String::is_empty) {
-        return Err(LedgerError::Unresolved(path.to_string()));
-    }
-    Ok(parts)
 }
 
 fn walk_path(
