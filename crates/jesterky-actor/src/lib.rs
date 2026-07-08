@@ -91,16 +91,11 @@ impl ReplayResource {
 
 #[async_trait]
 impl Resource for ReplayResource {
-    async fn observe(&self, session: &str) -> Result<serde_json::Value, HostError> {
-        // NOTE(impl): the runner passes the call Addr alongside the session when
-        // recording; replay keys on that. Session-only lookup here is a
-        // placeholder until the runner threads the Addr through the Resource seam.
-        let _ = session;
-        todo!("look up by the call Addr the runner supplies")
+    async fn observe(&self, addr: &Addr, _session: &str) -> Result<serde_json::Value, HostError> {
+        self.lookup(addr)
     }
-    async fn step(&self, session: &str, _action: serde_json::Value) -> Result<serde_json::Value, HostError> {
-        let _ = session;
-        todo!("look up by the call Addr the runner supplies")
+    async fn step(&self, addr: &Addr, _session: &str, _action: serde_json::Value) -> Result<serde_json::Value, HostError> {
+        self.lookup(addr)
     }
 }
 

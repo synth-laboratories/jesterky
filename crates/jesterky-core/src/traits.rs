@@ -49,10 +49,16 @@ pub trait Actor: Send + Sync {
 #[async_trait]
 pub trait Resource: Send + Sync {
     /// Poll the current observation for a session (whose turn, done, state).
-    async fn observe(&self, session: &str) -> Result<serde_json::Value, HostError>;
+    /// `addr` is the call's structural address — passed so a recording/replaying
+    /// host keys by it, symmetric with [`ActorRequest::addr`] (ADR #7).
+    async fn observe(&self, addr: &Addr, session: &str) -> Result<serde_json::Value, HostError>;
     /// Submit an action; get back reward/next-state/done.
-    async fn step(&self, session: &str, action: serde_json::Value)
-        -> Result<serde_json::Value, HostError>;
+    async fn step(
+        &self,
+        addr: &Addr,
+        session: &str,
+        action: serde_json::Value,
+    ) -> Result<serde_json::Value, HostError>;
 }
 
 /// Where the event stream goes (in-memory, file, redis). Sync + infallible by
