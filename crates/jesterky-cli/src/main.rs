@@ -1,8 +1,9 @@
 use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use jesterky_actor::{
-    viz::render_tree, FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayClock,
-    ReplayResource, SystemClock,
+    viz::{adapt_manifest, render_run_view, render_tree, RenderOpts},
+    FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayClock, ReplayResource,
+    SystemClock,
 };
 use jesterky_contract::{
     manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, Severity,
@@ -12,6 +13,7 @@ use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use jesterky_model::{CodexModel, ModelActor};
 use std::collections::HashMap;
 use std::error::Error;
+use std::io::IsTerminal;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::sync::{Arc, Mutex};
@@ -56,6 +58,19 @@ enum Command {
     },
     Validate {
         spec: PathBuf,
+    },
+    /// Render a finished run as a btop-style phase/item panel.
+    Visualize {
+        manifest: PathBuf,
+        /// Spec for the run (adds concurrency to the header).
+        #[arg(long)]
+        spec: Option<PathBuf>,
+        /// Force plain output (also auto-off when not a TTY or NO_COLOR is set).
+        #[arg(long)]
+        no_color: bool,
+        /// Panel width in columns.
+        #[arg(long, default_value_t = 76)]
+        width: usize,
     },
     Schema {
         artifact: SchemaArtifact,
@@ -113,6 +128,12 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
         }
         Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
         Command::Validate { spec } => validate_spec(&spec),
+        Command::Visualize {
+            manifest,
+            spec,
+            no_color,
+            width,
+        } => visualize(&manifest, spec.as_deref(), no_color, width),
         Command::Schema { artifact } => {
             print_schema(artifact);
             Ok(ExitCode::SUCCESS)
@@ -138,6 +159,24 @@ fn validate_spec(spec_path: &Path) -> Result<ExitCode, Box<dyn Error>> {
         }
         Err(_) => Ok(ExitCode::FAILURE),
     }
+}
+
+fn visualize(
+    manifest_path: &Path,
+    spec_path: Option<&Path>,
+    no_color: bool,
+    width: usize,
+) -> Result<ExitCode, Box<dyn Error>> {
+    let manifest: RunManifest = read_json(manifest_path)?;
+    let spec: Option<WorkflowSpec> = match spec_path {
+        Some(path) => Some(read_json(path)?),
+        None => None,
+    };
+    let view = adapt_manifest(&manifest, spec.as_ref());
+    // Color on only for an interactive TTY, unless forced off or NO_COLOR is set.
+    let color = !no_color && std::env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal();
+    print!("{}", render_run_view(&view, &RenderOpts { width, color }));
+    Ok(ExitCode::SUCCESS)
 }
 
 fn severity_label(severity: Severity) -> &'static str {
