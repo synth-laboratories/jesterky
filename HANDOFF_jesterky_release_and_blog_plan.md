@@ -37,6 +37,17 @@ state, open workstreams, gates, and how the public story ships.
   crates/jesterky-cli` yields a clean ~3 MB `jesterky` binary; `run examples/quality_min.json
   --actor fake` → completed (5 events, 1 recorded); `replay` → ok. Captured in `proof/`.
   Still owed for WS2: the mloky parity gate (needs the parity-mapping judgment + oracle).
+- **2026-07-08 · WS2 parity gate GREEN** (`8d48d02`) — `crates/jesterky-quality/tests/conformance.rs`.
+  Mapping judgment: mloky & jesterky don't share an event vocabulary (mloky domain events vs
+  Addr-keyed contract), so parity is asserted at the transferable **outcome** layer, NOT event
+  bytes — conservation (`jobs_started==jobs_completed==jobs_in_report`) + termination (completed/
+  all-ok). Oracle = a real recorded mloky run checked in as `fixtures/mloky_scan_reference.jsonl`
+  (8 jobs); test validates the oracle THEN asserts jesterky matches. `cargo test -p jesterky-quality
+  --test conformance` → 2 ok.
+- **2026-07-08 · WS5 content DRAFTED** (`1bc2f01`) — `blog/jesterky-launch.md` (feature_release,
+  feature-first, every claim → a `proof/` command, ≥1 honest limitation, `status: draft`) +
+  `CHANGELOG.md` (0.1.0 across the three trains). Verified the blog Try-it chain end-to-end
+  (run/visualize/replay on quality_scan: 52 events, 9 recorded, replay ok).
 
 **⚠ Josh-gated (irreversible / outward-facing — do NOT auto-execute):**
 `cargo publish` to crates.io · PyPI upload of the `jesterky` package · making the
