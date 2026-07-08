@@ -11,12 +11,18 @@ use std::path::PathBuf;
 use tokio::process::Command;
 
 pub struct CodexModel {
-    /// Model id passed to `codex exec -m` (e.g. `gpt-5.5`).
+    /// Model id passed to `codex exec -m`. `gpt-5.5` for the ChatGPT bundle, or a
+    /// proxy route id like `deepseek/deepseek-v4-pro-direct`.
     pub model: String,
-    /// Reasoning effort (`model_reasoning_effort`): `low|medium|high|xhigh`.
+    /// Reasoning effort (`model_reasoning_effort`): `low|medium|high|xhigh`. An
+    /// EMPTY string omits the flag — non-ChatGPT routes may not accept it.
     pub effort: String,
-    /// Working root for the agent (`--cd`). `None` = codex's default.
+    /// Working root for the agent (`--cd`). `None` = codex's default. Set this to
+    /// the repo under audit so the read-only sandbox can read its files.
     pub cwd: Option<PathBuf>,
+    /// `CODEX_HOME` for the subprocess — a sandboxed config dir holding the
+    /// proxy `config.toml` / auth. `None` = inherit the caller's `~/.codex`.
+    pub codex_home: Option<PathBuf>,
     /// The codex binary (overridable so tests can point at a fake).
     pub binary: String,
 }
@@ -27,6 +33,7 @@ impl CodexModel {
             model: model.into(),
             effort: effort.into(),
             cwd: None,
+            codex_home: None,
             binary: "codex".to_string(),
         }
     }
@@ -38,6 +45,12 @@ impl CodexModel {
 
     pub fn with_cwd(mut self, cwd: impl Into<PathBuf>) -> Self {
         self.cwd = Some(cwd.into());
+        self
+    }
+
+    /// Point the subprocess at a sandboxed `CODEX_HOME` (proxy config + auth).
+    pub fn with_codex_home(mut self, codex_home: impl Into<PathBuf>) -> Self {
+        self.codex_home = Some(codex_home.into());
         self
     }
 
@@ -53,21 +66,27 @@ impl Model for CodexModel {
     async fn complete(&self, req: &ModelRequest) -> Result<String, ModelError> {
         let prompt = build_prompt(req);
         let mut cmd = Command::new(&self.binary);
-        cmd.arg("exec")
-            .arg("-m")
-            .arg(&self.model)
-            .arg("-c")
-            .arg(format!("model_reasoning_effort=\"{}\"", self.effort))
-            .arg("--sandbox")
+        cmd.arg("exec").arg("-m").arg(&self.model);
+        // Omit the effort flag for routes that don't accept it (empty effort).
+        if !self.effort.is_empty() {
+            cmd.arg("-c")
+                .arg(format!("model_reasoning_effort=\"{}\"", self.effort));
+        }
+        cmd.arg("--sandbox")
             .arg("read-only")
             .arg("--skip-git-repo-check");
         if let Some(cwd) = &self.cwd {
             cmd.arg("--cd").arg(cwd);
         }
+        if let Some(codex_home) = &self.codex_home {
+            cmd.env("CODEX_HOME", codex_home);
+        }
         cmd.arg(&prompt);
         // No orphaned codex if this future is dropped mid-flight (M2 DoD).
         cmd.kill_on_drop(true);
-        // Intentionally do NOT set OPENAI_API_KEY — codex uses its own auth.
+        // Intentionally do NOT set OPENAI_API_KEY — codex uses its own auth
+        // (ChatGPT bundle, or the proxy config under CODEX_HOME). Other env
+        // (e.g. SYNTH_API_KEY for the proxy) is inherited from the parent.
 
         let output = cmd.output().await.map_err(|err| match err.kind() {
             std::io::ErrorKind::NotFound => {

@@ -21,9 +21,7 @@
         "inputs": {
           "job": "item"
         },
-        "outputs": {
-          "job": "ledger.scan"
-        }
+        "outputs": {}
       },
       "outputs": {
         "job": "ledger.scans"

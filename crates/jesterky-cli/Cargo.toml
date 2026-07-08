@@ -15,6 +15,7 @@ jesterky-actor = { workspace = true }
 jesterky-contract = { workspace = true }
 jesterky-core = { workspace = true }
 jesterky-model = { workspace = true }
+jesterky-quality = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

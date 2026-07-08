@@ -5,6 +5,7 @@ members = [
     "crates/jesterky-core",
     "crates/jesterky-actor",
     "crates/jesterky-model",
+    "crates/jesterky-quality",
     "crates/jesterky-cli",
 ]
 
@@ -20,3 +21,4 @@ jesterky-contract = { path = "crates/jesterky-contract" }
 jesterky-core = { path = "crates/jesterky-core" }
 jesterky-actor = { path = "crates/jesterky-actor" }
 jesterky-model = { path = "crates/jesterky-model" }
+jesterky-quality = { path = "crates/jesterky-quality" }

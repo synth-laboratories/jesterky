@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use jesterky_actor::{
-    viz::render_tree, FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayResource,
-    SystemClock,
+    viz::render_tree, FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayClock,
+    ReplayResource, SystemClock,
 };
 use jesterky_contract::{
     manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, Severity,
@@ -10,7 +10,7 @@ use jesterky_contract::{
 };
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use jesterky_model::{CodexModel, ModelActor};
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -38,6 +38,16 @@ enum Command {
         /// no network); `codex` calls the real model via `codex exec`.
         #[arg(long, value_enum, default_value_t = ActorKind::Fake)]
         actor: ActorKind,
+        /// Model id for `--actor codex` (default `gpt-5.5`; a proxy route id like
+        /// `deepseek/deepseek-v4-pro-direct` omits the reasoning-effort flag).
+        #[arg(long)]
+        model: Option<String>,
+        /// Sandboxed `CODEX_HOME` for `--actor codex` (proxy `config.toml` + auth).
+        #[arg(long)]
+        codex_home: Option<PathBuf>,
+        /// Working dir the codex sandbox may read (the repo under audit).
+        #[arg(long)]
+        cd: Option<PathBuf>,
     },
     Replay {
         manifest: PathBuf,
@@ -85,7 +95,22 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             out,
             run_id,
             actor,
-        } => run_spec(&spec, args.as_deref(), out.as_deref(), run_id.as_deref(), actor).await,
+            model,
+            codex_home,
+            cd,
+        } => {
+            run_spec(
+                &spec,
+                args.as_deref(),
+                out.as_deref(),
+                run_id.as_deref(),
+                actor,
+                model.as_deref(),
+                codex_home.as_deref(),
+                cd.as_deref(),
+            )
+            .await
+        }
         Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
         Command::Validate { spec } => validate_spec(&spec),
         Command::Schema { artifact } => {
@@ -123,20 +148,41 @@ fn severity_label(severity: Severity) -> &'static str {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn run_spec(
     spec_path: &Path,
     args_json: Option<&str>,
     out: Option<&Path>,
     run_id: Option<&str>,
     actor: ActorKind,
+    model: Option<&str>,
+    codex_home: Option<&Path>,
+    cd: Option<&Path>,
 ) -> Result<ExitCode, Box<dyn Error>> {
     let spec: WorkflowSpec = read_json(spec_path)?;
     let args = parse_args(args_json)?;
     let actor: Arc<dyn jesterky_core::Actor> = match actor {
         ActorKind::Fake => Arc::new(FakeActor),
-        // Real model call via codex (ChatGPT-bundle auth). Runs the agent's cwd
-        // in the repo so it stays sandboxed to read-only there.
-        ActorKind::Codex => Arc::new(ModelActor::new(CodexModel::gpt55())),
+        // Real model call via codex. The quality-scan roles give the
+        // scanner/report actors their system prompts; unknown actors get the
+        // generic instruction.
+        ActorKind::Codex => {
+            let model = model.unwrap_or("gpt-5.5");
+            // ChatGPT models take a reasoning effort; proxy routes generally don't.
+            let effort = if model.starts_with("gpt") { "high" } else { "" };
+            let mut codex = CodexModel::new(model, effort);
+            if let Some(home) = codex_home {
+                codex = codex.with_codex_home(home);
+            }
+            if let Some(cd) = cd {
+                codex = codex.with_cwd(cd);
+            }
+            let mut model_actor = ModelActor::new(codex);
+            for (name, prompt) in jesterky_quality::roles() {
+                model_actor = model_actor.with_role(name, prompt);
+            }
+            Arc::new(model_actor)
+        }
     };
     let runner = runner(
         actor,
@@ -183,7 +229,9 @@ async fn replay_manifest(
         )
         .into());
     }
-    let replay_clock = Arc::new(ManifestClock::from_manifest(&manifest));
+    // wall_ms is not part of replay fidelity (see fidelity_events), so a plain
+    // deterministic clock is all replay needs.
+    let replay_clock = Arc::new(ReplayClock::default());
     let checkpoints = Arc::new(ManifestCheckpointStore::from_manifest(&manifest)?);
     let runner = runner(
         Arc::new(ReplayActor::from_manifest(&manifest)),
@@ -232,37 +280,11 @@ fn runner(
     }
 }
 
+/// The programs available to CLI runs: the real quality-scan workload
+/// (`quality.expand` / `quality.aggregate`). A richer CLI would let specs bring
+/// their own; today this is the one built-in workload.
 fn demo_programs() -> ProgramRegistry {
-    let mut programs = ProgramRegistry::new();
-    programs.register(
-        "quality.expand",
-        Arc::new(|_, _| {
-            Ok(serde_json::json!({
-                "jobs": [
-                    { "id": 0, "target": "alpha" },
-                    { "id": 1, "target": "beta" },
-                    { "id": 2, "target": "gamma" }
-                ]
-            }))
-        }),
-    );
-    programs.register(
-        "quality.aggregate",
-        Arc::new(|_, inputs| {
-            let scans = inputs
-                .get("scans")
-                .and_then(serde_json::Value::as_array)
-                .cloned()
-                .unwrap_or_default();
-            Ok(serde_json::json!({
-                "summary": {
-                    "count": scans.len(),
-                    "first": scans.first().cloned()
-                }
-            }))
-        }),
-    );
-    programs
+    jesterky_quality::programs()
 }
 
 fn parse_args(args_json: Option<&str>) -> Result<serde_json::Value, serde_json::Error> {
@@ -303,17 +325,28 @@ fn spec_sidecar_path(manifest_path: &Path) -> PathBuf {
     path
 }
 
-fn sorted_events_json(events: &[Event]) -> String {
+/// Sorted, wall-clock-free projection of an event stream for replay fidelity.
+/// Fidelity is over event IDENTITY (`addr`) + kind + payload; `wall_ms` is
+/// metadata (ADR #5) that a replay need NOT reproduce. Under a parallel map with
+/// real async actors the original emission order is nondeterministic, so a
+/// recorded timestamp cannot be re-attached to the same `addr` on replay — so we
+/// zero `wall_ms` before comparing.
+fn fidelity_events(events: &[Event]) -> Vec<Event> {
     let mut events = events.to_vec();
+    for event in &mut events {
+        event.wall_ms = 0;
+    }
     events.sort_by(|a, b| a.addr.cmp(&b.addr));
-    serde_json::to_string(&events).expect("events serialize")
+    events
+}
+
+fn sorted_events_json(events: &[Event]) -> String {
+    serde_json::to_string(&fidelity_events(events)).expect("events serialize")
 }
 
 fn diff_summary(expected: &[Event], actual: &[Event]) -> String {
-    let mut expected = expected.to_vec();
-    let mut actual = actual.to_vec();
-    expected.sort_by(|a, b| a.addr.cmp(&b.addr));
-    actual.sort_by(|a, b| a.addr.cmp(&b.addr));
+    let expected = fidelity_events(expected);
+    let actual = fidelity_events(actual);
 
     let first_mismatch = expected
         .iter()
@@ -333,23 +366,6 @@ fn diff_summary(expected: &[Event], actual: &[Event]) -> String {
     }
 }
 
-struct ManifestClock {
-    wall_ms: Mutex<VecDeque<u64>>,
-}
-
-impl ManifestClock {
-    fn from_manifest(manifest: &RunManifest) -> Self {
-        Self {
-            wall_ms: Mutex::new(manifest.events.iter().map(|event| event.wall_ms).collect()),
-        }
-    }
-}
-
-impl Clock for ManifestClock {
-    fn now_ms(&self) -> u64 {
-        self.wall_ms.lock().unwrap().pop_front().unwrap_or(0)
-    }
-}
 
 #[derive(Default)]
 struct ManifestCheckpointStore {
