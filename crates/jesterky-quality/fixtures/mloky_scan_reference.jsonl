@@ -1,0 +1,204 @@
+{"t": 0.0, "kind": "run_started", "jobs": ["blogs.01", "blogs.02", "blogs.03", "blogs.04", "blogs.05", "blogs.06", "blogs.07", "blogs.08"], "model": "deepseek/deepseek-v4-pro-direct", "concurrency": 8}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.02", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_phase_started", "job": "blogs.02", "phase": "gather", "timeout_s": 120}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.06", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.04", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.03", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.05", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.08", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.01", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_started", "job": "blogs.07", "model": "deepseek/deepseek-v4-pro-direct"}
+{"t": 0.0, "kind": "agent_phase_started", "job": "blogs.06", "phase": "gather", "timeout_s": 120}
+{"t": 0.0, "kind": "agent_phase_started", "job": "blogs.04", "phase": "gather", "timeout_s": 120}
+{"t": 0.0, "kind": "agent_phase_started", "job": "blogs.03", "phase": "gather", "timeout_s": 120}
+{"t": 0.0, "kind": "agent_phase_started", "job": "blogs.05", "phase": "gather", "timeout_s": 120}
+{"t": 0.01, "kind": "agent_phase_started", "job": "blogs.08", "phase": "gather", "timeout_s": 120}
+{"t": 0.01, "kind": "agent_phase_started", "job": "blogs.01", "phase": "gather", "timeout_s": 120}
+{"t": 0.01, "kind": "agent_phase_started", "job": "blogs.07", "phase": "gather", "timeout_s": 120}
+{"t": 0.54, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.54, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.54, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.54, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.54, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.59, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.61, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 0.64, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "error", "steps": 1, "detail": "error"}
+{"t": 5.58, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 1, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.58, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.58, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 3, "detail": "writing report"}
+{"t": 5.58, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.58, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.61, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.61, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.72, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 1, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.72, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.77, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.77, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.78, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "agent_message", "steps": 4, "detail": "writing report"}
+{"t": 5.79, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 1, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.79, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.82, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.82, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.82, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.82, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.85, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 4, "detail": "writing report"}
+{"t": 5.86, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 1, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.86, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 5.88, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.88, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.91, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.91, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 5.93, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "agent_message", "steps": 4, "detail": "writing report"}
+{"t": 5.96, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 5.96, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 6.2, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 1, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.2, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.25, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 6.25, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 6.28, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "agent_message", "steps": 4, "detail": "writing report"}
+{"t": 6.33, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 6.33, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 6.62, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "agent_message", "steps": 2, "detail": "writing report"}
+{"t": 6.65, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "agent_message", "steps": 2, "detail": "writing report"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 6.68, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 6.7, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 6.7, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 6.93, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "agent_message", "steps": 2, "detail": "writing report"}
+{"t": 7.0, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 2, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 7.0, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 7.0, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 3, "detail": "head -20 /Users/joshpurtell/Documents/GitHub/frontend/content/bl"}
+{"t": 7.0, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "head -20 /Users/joshpurtell/Documents/GitHub/frontend/content/bl"}
+{"t": 7.01, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 7.01, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 7.01, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/a"}
+{"t": 7.01, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 8.75, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 8.81, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sc"}
+{"t": 8.81, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sc"}
+{"t": 9.15, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 9.17, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sy"}
+{"t": 9.17, "kind": "agent_progress", "job": "blogs.08", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sy"}
+{"t": 9.4, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 9.44, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sm"}
+{"t": 9.44, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/sm"}
+{"t": 9.47, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 9.5, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/ma"}
+{"t": 9.5, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/ma"}
+{"t": 9.54, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 9.57, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/go"}
+{"t": 9.57, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/go"}
+{"t": 9.97, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "agent_message", "steps": 7, "detail": "writing report"}
+{"t": 10.02, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "wc -l /Users/joshpurtell/Documents/GitHub/frontend/content/blog/"}
+{"t": 10.02, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "wc -l /Users/joshpurtell/Documents/GitHub/frontend/content/blog/"}
+{"t": 10.03, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "agent_message", "steps": 6, "detail": "writing report"}
+{"t": 10.07, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/ma"}
+{"t": 10.07, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/ma"}
+{"t": 10.74, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "agent_message", "steps": 4, "detail": "writing report"}
+{"t": 10.8, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 4, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 10.8, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/b"}
+{"t": 10.8, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 5, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 10.8, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 6, "detail": "cat /Users/joshpurtell/Documents/GitHub/Jstack/.jstack/quality/r"}
+{"t": 13.74, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "agent_message", "steps": 9, "detail": "writing report"}
+{"t": 13.79, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 13.79, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 10, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 14.25, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "agent_message", "steps": 7, "detail": "writing report"}
+{"t": 14.31, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 7, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/st"}
+{"t": 14.31, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/content/blog/st"}
+{"t": 43.54, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 8, "detail": "writing report"}
+{"t": 43.6, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend/src/components"}
+{"t": 43.6, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend/src/components"}
+{"t": 47.26, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 10, "detail": "writing report"}
+{"t": 47.31, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 10, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 47.31, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 11, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 49.45, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "agent_message", "steps": 11, "detail": "writing report"}
+{"t": 49.53, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 11, "detail": "rg -n '\"'!'\"\\\\[|img |Image|\\\\.png|\\\\.jpg|\\\\.svg|\\\\.gif|placehold"}
+{"t": 49.53, "kind": "agent_progress", "job": "blogs.02", "phase": "gather", "item": "command_execution", "steps": 12, "detail": "rg -n '\"'!'\"\\\\[|img |Image|\\\\.png|\\\\.jpg|\\\\.svg|\\\\.gif|placehold"}
+{"t": 51.86, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 12, "detail": "writing report"}
+{"t": 51.9, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 12, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 51.9, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 13, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 59.07, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 8, "detail": "writing report"}
+{"t": 59.13, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "ls /Users/joshpurtell/Documents/GitHub/frontend/components/blog/"}
+{"t": 59.13, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "ls /Users/joshpurtell/Documents/GitHub/frontend/components/blog/"}
+{"t": 62.74, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 10, "detail": "writing report"}
+{"t": 62.78, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 10, "detail": "ls -la /Users/joshpurtell/Documents/GitHub/frontend/components/b"}
+{"t": 62.78, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 11, "detail": "ls -la /Users/joshpurtell/Documents/GitHub/frontend/components/b"}
+{"t": 67.4, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 12, "detail": "writing report"}
+{"t": 67.46, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 12, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend/components/blo"}
+{"t": 67.46, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 13, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend/components/blo"}
+{"t": 70.78, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 14, "detail": "writing report"}
+{"t": 70.92, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 14, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend -path \"*/go-ex"}
+{"t": 73.35, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 15, "detail": "find /Users/joshpurtell/Documents/GitHub/frontend -path \"*/go-ex"}
+{"t": 74.66, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "agent_message", "steps": 8, "detail": "writing report"}
+{"t": 74.72, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 74.72, "kind": "agent_progress", "job": "blogs.04", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 76.5, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 16, "detail": "writing report"}
+{"t": 76.55, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 16, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 76.55, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 17, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 79.99, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 18, "detail": "writing report"}
+{"t": 80.05, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 18, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 80.05, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 19, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 83.37, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 20, "detail": "writing report"}
+{"t": 83.43, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 20, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 83.43, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 21, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 87.72, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 22, "detail": "writing report"}
+{"t": 87.76, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 22, "detail": "wc -l /Users/joshpurtell/Documents/GitHub/frontend/content/blog/"}
+{"t": 87.76, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 23, "detail": "wc -l /Users/joshpurtell/Documents/GitHub/frontend/content/blog/"}
+{"t": 92.14, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 24, "detail": "writing report"}
+{"t": 92.2, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 24, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 92.2, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 25, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 93.48, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "agent_message", "steps": 8, "detail": "writing report"}
+{"t": 93.53, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "rg -n \"draft\" /Users/joshpurtell/Documents/GitHub/frontend/conte"}
+{"t": 93.53, "kind": "agent_progress", "job": "blogs.03", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "rg -n \"draft\" /Users/joshpurtell/Documents/GitHub/frontend/conte"}
+{"t": 96.91, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 26, "detail": "writing report"}
+{"t": 96.96, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 26, "detail": "sed -n '80,180p' /Users/joshpurtell/Documents/GitHub/frontend/co"}
+{"t": 96.96, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 27, "detail": "sed -n '80,180p' /Users/joshpurtell/Documents/GitHub/frontend/co"}
+{"t": 99.43, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "agent_message", "steps": 28, "detail": "writing report"}
+{"t": 99.48, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 28, "detail": "sed -n '180,288p' /Users/joshpurtell/Documents/GitHub/frontend/c"}
+{"t": 99.48, "kind": "agent_progress", "job": "blogs.01", "phase": "gather", "item": "command_execution", "steps": 29, "detail": "sed -n '180,288p' /Users/joshpurtell/Documents/GitHub/frontend/c"}
+{"t": 101.74, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "agent_message", "steps": 14, "detail": "writing report"}
+{"t": 101.79, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 14, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 101.8, "kind": "agent_progress", "job": "blogs.05", "phase": "gather", "item": "command_execution", "steps": 15, "detail": "cat /Users/joshpurtell/Documents/GitHub/frontend/src/components/"}
+{"t": 102.04, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "agent_message", "steps": 8, "detail": "writing report"}
+{"t": 102.07, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 8, "detail": "grep -n \"draft\" /Users/joshpurtell/Documents/GitHub/frontend/con"}
+{"t": 102.07, "kind": "agent_progress", "job": "blogs.06", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "grep -n \"draft\" /Users/joshpurtell/Documents/GitHub/frontend/con"}
+{"t": 110.31, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "agent_message", "steps": 9, "detail": "writing report"}
+{"t": 110.33, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 9, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 110.33, "kind": "agent_progress", "job": "blogs.07", "phase": "gather", "item": "command_execution", "steps": 10, "detail": "nl -ba /Users/joshpurtell/Documents/GitHub/frontend/content/blog"}
+{"t": 120.02, "kind": "agent_forced_emit_started", "job": "blogs.02", "reason": "gather_timeout"}
+{"t": 120.03, "kind": "agent_phase_started", "job": "blogs.02", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.04", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.06", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.04", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.06", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.08", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.08", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.03", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.03", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.07", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.07", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.04, "kind": "agent_forced_emit_started", "job": "blogs.05", "reason": "gather_timeout"}
+{"t": 120.04, "kind": "agent_phase_started", "job": "blogs.05", "phase": "direct_emit", "timeout_s": 120}
+{"t": 120.05, "kind": "agent_forced_emit_started", "job": "blogs.01", "reason": "gather_timeout"}
+{"t": 120.05, "kind": "agent_phase_started", "job": "blogs.01", "phase": "direct_emit", "timeout_s": 120}
+{"t": 165.49, "kind": "agent_usage", "job": "blogs.06", "input": 14047, "cached": 0, "output": 2053, "reasoning": 0}
+{"t": 165.49, "kind": "agent_completed", "job": "blogs.06", "ok": true, "elapsed_s": 165.5, "tokens": {"input": 14047, "cached": 0, "output": 2053, "reasoning": 0}, "steps": 10, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 178.03, "kind": "agent_usage", "job": "blogs.01", "input": 24806, "cached": 0, "output": 2549, "reasoning": 0}
+{"t": 178.03, "kind": "agent_completed", "job": "blogs.01", "ok": true, "elapsed_s": 178.0, "tokens": {"input": 24806, "cached": 0, "output": 2549, "reasoning": 0}, "steps": 30, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 184.16, "kind": "agent_usage", "job": "blogs.05", "input": 15032, "cached": 0, "output": 2922, "reasoning": 0}
+{"t": 184.16, "kind": "agent_completed", "job": "blogs.05", "ok": true, "elapsed_s": 184.2, "tokens": {"input": 15032, "cached": 0, "output": 2922, "reasoning": 0}, "steps": 16, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 185.37, "kind": "agent_usage", "job": "blogs.08", "input": 13496, "cached": 0, "output": 2957, "reasoning": 0}
+{"t": 185.37, "kind": "agent_completed", "job": "blogs.08", "ok": true, "elapsed_s": 185.4, "tokens": {"input": 13496, "cached": 0, "output": 2957, "reasoning": 0}, "steps": 8, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 187.35, "kind": "agent_usage", "job": "blogs.07", "input": 16110, "cached": 0, "output": 3161, "reasoning": 0}
+{"t": 187.35, "kind": "agent_completed", "job": "blogs.07", "ok": true, "elapsed_s": 187.3, "tokens": {"input": 16110, "cached": 0, "output": 3161, "reasoning": 0}, "steps": 11, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 190.8, "kind": "agent_usage", "job": "blogs.04", "input": 27178, "cached": 0, "output": 3252, "reasoning": 0}
+{"t": 190.8, "kind": "agent_completed", "job": "blogs.04", "ok": true, "elapsed_s": 190.8, "tokens": {"input": 27178, "cached": 0, "output": 3252, "reasoning": 0}, "steps": 10, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 193.26, "kind": "agent_usage", "job": "blogs.02", "input": 14789, "cached": 0, "output": 3478, "reasoning": 0}
+{"t": 193.26, "kind": "agent_completed", "job": "blogs.02", "ok": true, "elapsed_s": 193.3, "tokens": {"input": 14789, "cached": 0, "output": 3478, "reasoning": 0}, "steps": 13, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 208.65, "kind": "agent_usage", "job": "blogs.03", "input": 13454, "cached": 0, "output": 4033, "reasoning": 0}
+{"t": 208.65, "kind": "agent_completed", "job": "blogs.03", "ok": true, "elapsed_s": 208.6, "tokens": {"input": 13454, "cached": 0, "output": 4033, "reasoning": 0}, "steps": 10, "rc": 0, "completion_phase": "direct_emit", "completion_reason": "schema_goal_satisfied"}
+{"t": 208.65, "kind": "run_completed", "status": "completed", "ok": true, "usage": {"input": 138912, "cached": 0, "output": 24405, "reasoning": 0}, "usage_by_model": {"deepseek/deepseek-v4-pro-direct": {"input": 138912, "cached": 0, "output": 24405, "reasoning": 0, "agents": 8}}, "wall_s": 208.7, "models": ["deepseek/deepseek-v4-pro-direct"], "failed_jobs": []}

@@ -42,7 +42,26 @@ cargo publish --dry-run -p jesterky-contract      # green
 cd python && uv build                             # sdist + wheel
 ```
 
-## 5 — Live model E2E (M2, requires codex + proxy)
+## 5 — mloky parity gate (M2 proof spine)
+
+```bash
+cargo test -p jesterky-quality --test conformance
+# -> mloky_reference_run_is_faithful ... ok
+# -> jesterky_scan_matches_mloky_contract ... ok
+```
+
+jesterky descends from the mloky reference runtime. They do NOT share an event
+vocabulary — mloky emits domain lifecycle events, jesterky emits the pinned
+`Addr`-keyed contract stream — so byte equality is the wrong assertion. The gate
+instead projects both runtimes onto a canonical `RunOutcome` and asserts the two
+properties any substrate must guarantee on a map→reduce run: **conservation**
+(`jobs_started == jobs_completed == jobs_in_report`, no silent drops) and
+**termination** (terminal `completed`, all jobs ok). The mloky projection is read
+from a real recorded run (`crates/jesterky-quality/fixtures/mloky_scan_reference.jsonl`,
+8 jobs); the jesterky projection from a fresh deterministic scan. Passing means
+jesterky reproduces the reference contract.
+
+## 6 — Live model E2E (M2, requires codex + proxy)
 
 See `HANDOFF_jesterky_round6_live_scan.md`. Runs the real quality scan through
 `codex exec` (DeepSeek proxy), then replays the live manifest.
