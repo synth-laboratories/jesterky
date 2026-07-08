@@ -18,7 +18,7 @@ use jesterky_contract::{
     Addr, Bindings, CallKind, Checkpoint, Event, EventKind, Node, NodeKind, NodePath,
     RecordedOutput, RunManifest, RunStatus, WorkflowSpec,
 };
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
@@ -66,6 +66,7 @@ pub struct Runner {
 struct RunCtx {
     run_id: String,
     args: serde_json::Value,
+    nodes: BTreeMap<String, Node>,
     ledger: Mutex<Ledger>,
     /// The logical clock: next `local_seq` per `(node_path, iteration)`.
     addr_seqs: Mutex<HashMap<(NodePath, u32), u32>>,
@@ -79,11 +80,18 @@ struct RunCtx {
     mailbox: Mailbox,
 }
 
+#[derive(Clone, Copy)]
+struct MapDispatch {
+    width: usize,
+    iteration: u32,
+}
+
 impl RunCtx {
     fn new(run_id: String, args: serde_json::Value, spec: &WorkflowSpec) -> Self {
         Self {
             run_id,
             args,
+            nodes: spec.nodes.clone(),
             ledger: Mutex::new(Ledger::new()),
             addr_seqs: Mutex::new(HashMap::new()),
             events: Mutex::new(Vec::new()),
@@ -126,7 +134,7 @@ impl Runner {
             EventKind::WorkflowCompleted,
             serde_json::Value::Null,
         );
-        Ok(self.into_manifest(&ctx, spec, spec_hash))
+        Ok(self.build_manifest(&ctx, spec, spec_hash))
     }
 
     /// Allocate an [`Addr`] and emit an event. THIS is the logical-clock joint
@@ -191,7 +199,7 @@ impl Runner {
         path: NodePath,
         node: &Node,
     ) -> Result<(), CoreError> {
-        self.execute_node_with_ledger(ctx, path, node, &ctx.ledger, None)
+        self.execute_node_with_ledger(ctx, path, node, &ctx.ledger, None, 0)
             .await
             .map(|_| ())
     }
@@ -204,11 +212,12 @@ impl Runner {
         node: &Node,
         ledger: &Mutex<Ledger>,
         input_override: Option<serde_json::Value>,
+        iteration: u32,
     ) -> Result<serde_json::Value, CoreError> {
         self.emit(
             ctx,
             &path,
-            0,
+            iteration,
             EventKind::NodeStarted,
             serde_json::Value::Null,
         );
@@ -238,7 +247,7 @@ impl Runner {
                     Some(inputs) => inputs,
                     None => ledger.lock().unwrap().resolve_bindings(&node.inputs)?,
                 };
-                let addr = self.peek_next_addr(ctx, &path, 0);
+                let addr = self.peek_next_addr(ctx, &path, iteration);
                 let actor_result = self
                     .actor
                     .drive(ActorRequest {
@@ -264,21 +273,68 @@ impl Runner {
                 let emitted_addr = self.emit(
                     ctx,
                     &path,
-                    0,
+                    iteration,
                     EventKind::ActorInvoked,
                     serde_json::json!({ "actor": actor }),
                 );
                 debug_assert_eq!(emitted_addr, addr);
                 actor_result.outputs
             }
-            NodeKind::Map { .. } => self.execute_map(ctx, path.clone(), node, ledger).await?,
-            NodeKind::ForEach { .. } => todo!("serial iteration with visible side effects"),
-            NodeKind::While { .. } => {
-                // TODO: loop body while `cond` truthy, bumping the Addr.iteration
-                // each pass (that is what keeps loop events distinct/orderable).
-                todo!("while-loop, iteration-stamped events")
+            NodeKind::Map { .. } => {
+                self.execute_map(ctx, path.clone(), node, ledger, iteration)
+                    .await?
             }
-            NodeKind::Branch { .. } => todo!("resolve cond → run then/otherwise"),
+            NodeKind::ForEach { .. } => {
+                self.execute_for_each(ctx, path.clone(), node, ledger, iteration)
+                    .await?
+            }
+            NodeKind::While {
+                cond,
+                body,
+                max_iters,
+            } => {
+                let mut last = serde_json::Value::Null;
+                for pass in 0..*max_iters {
+                    let cond_value = ledger.lock().unwrap().resolve(cond)?;
+                    if !is_truthy(&cond_value) {
+                        break;
+                    }
+                    last = self
+                        .execute_node_with_ledger(ctx, path.child("body"), body, ledger, None, pass)
+                        .await?;
+                }
+                last
+            }
+            NodeKind::Branch {
+                cond,
+                then,
+                otherwise,
+            } => {
+                let cond_value = ledger.lock().unwrap().resolve(cond)?;
+                let target = if is_truthy(&cond_value) {
+                    Some(then)
+                } else {
+                    otherwise.as_ref()
+                };
+                match target {
+                    Some(target_id) => {
+                        let target_node = ctx
+                            .nodes
+                            .get(target_id)
+                            .ok_or_else(|| CoreError::UnknownNode(target_id.clone()))?;
+                        self.execute_node_with_ledger(
+                            ctx,
+                            path.child(target_id.clone()),
+                            target_node,
+                            ledger,
+                            None,
+                            iteration,
+                        )
+                        .await?
+                    }
+                    None => serde_json::Value::Null,
+                }
+            }
             NodeKind::SessionGroup { .. } => {
                 // TODO: spawn one session per element, each running `body` under
                 // the `limit` (permits) that serializes shared-resource access —
@@ -291,7 +347,7 @@ impl Runner {
         self.emit(
             ctx,
             &path,
-            0,
+            iteration,
             EventKind::NodeCompleted,
             serde_json::Value::Null,
         );
@@ -314,6 +370,7 @@ impl Runner {
         path: NodePath,
         node: &Node,
         ledger: &Mutex<Ledger>,
+        iteration: u32,
     ) -> Result<serde_json::Value, CoreError> {
         let NodeKind::Map {
             over,
@@ -336,11 +393,18 @@ impl Runner {
         let total = items.len();
         let width = (*concurrency).or(ctx.map_concurrency).unwrap_or(1).max(1) as usize;
         let results = if width <= 1 {
-            self.execute_map_serial(ctx, &path, body, ledger, &items)
+            self.execute_map_serial(ctx, &path, body, ledger, &items, iteration)
                 .await
         } else {
-            self.execute_map_parallel(ctx, &path, body, ledger, &items, width)
-                .await
+            self.execute_map_parallel(
+                ctx,
+                &path,
+                body,
+                ledger,
+                &items,
+                MapDispatch { width, iteration },
+            )
+            .await
         }?;
 
         let successes = results.iter().filter(|r| r.is_ok()).count();
@@ -365,7 +429,7 @@ impl Runner {
         self.emit(
             ctx,
             &path,
-            0,
+            iteration,
             EventKind::MapCompleted,
             serde_json::json!({
                 "successes": successes,
@@ -382,6 +446,7 @@ impl Runner {
         body: &Node,
         ledger: &Mutex<Ledger>,
         items: &[serde_json::Value],
+        iteration: u32,
     ) -> Result<Vec<Result<serde_json::Value, String>>, CoreError> {
         let base_ledger = ledger.lock().unwrap().clone();
         let mut results = Vec::with_capacity(items.len());
@@ -391,20 +456,27 @@ impl Runner {
             self.emit(
                 ctx,
                 &item_path,
-                0,
+                iteration,
                 EventKind::MapItemStarted,
                 serde_json::json!({ "index": i }),
             );
             let item_ledger = Mutex::new(base_ledger.with_item(item));
             match self
-                .execute_node_with_ledger(ctx, item_path.clone(), body, &item_ledger, None)
+                .execute_node_with_ledger(
+                    ctx,
+                    item_path.clone(),
+                    body,
+                    &item_ledger,
+                    None,
+                    iteration,
+                )
                 .await
             {
                 Ok(result) => {
                     self.emit(
                         ctx,
                         &item_path,
-                        0,
+                        iteration,
                         EventKind::MapItemCompleted,
                         serde_json::json!({ "index": i }),
                     );
@@ -415,7 +487,7 @@ impl Runner {
                     self.emit(
                         ctx,
                         &item_path,
-                        0,
+                        iteration,
                         EventKind::MapItemFailed,
                         serde_json::json!({ "index": i, "error": message }),
                     );
@@ -434,7 +506,7 @@ impl Runner {
         body: &Node,
         ledger: &Mutex<Ledger>,
         items: &[serde_json::Value],
-        width: usize,
+        dispatch: MapDispatch,
     ) -> Result<Vec<Result<serde_json::Value, String>>, CoreError> {
         let base_ledger = ledger.lock().unwrap().clone();
         let mut prepared = Vec::with_capacity(items.len());
@@ -445,7 +517,7 @@ impl Runner {
         }
 
         let mut results = (0..items.len()).map(|_| None).collect::<Vec<_>>();
-        for chunk in prepared.chunks(width) {
+        for chunk in prepared.chunks(dispatch.width) {
             let futures = chunk
                 .iter()
                 .map(|(i, item_ledger, inputs)| {
@@ -457,7 +529,7 @@ impl Runner {
                         self.emit(
                             ctx,
                             &item_path,
-                            0,
+                            dispatch.iteration,
                             EventKind::MapItemStarted,
                             serde_json::json!({ "index": index }),
                         );
@@ -468,6 +540,7 @@ impl Runner {
                                 body,
                                 item_ledger.as_ref(),
                                 Some(inputs),
+                                dispatch.iteration,
                             )
                             .await;
                         match result {
@@ -475,7 +548,7 @@ impl Runner {
                                 self.emit(
                                     ctx,
                                     &item_path,
-                                    0,
+                                    dispatch.iteration,
                                     EventKind::MapItemCompleted,
                                     serde_json::json!({ "index": index }),
                                 );
@@ -486,7 +559,7 @@ impl Runner {
                                 self.emit(
                                     ctx,
                                     &item_path,
-                                    0,
+                                    dispatch.iteration,
                                     EventKind::MapItemFailed,
                                     serde_json::json!({ "index": index, "error": message }),
                                 );
@@ -514,9 +587,47 @@ impl Runner {
             .collect())
     }
 
+    async fn execute_for_each(
+        &self,
+        ctx: &RunCtx,
+        path: NodePath,
+        node: &Node,
+        ledger: &Mutex<Ledger>,
+        iteration: u32,
+    ) -> Result<serde_json::Value, CoreError> {
+        let NodeKind::ForEach {
+            over,
+            item_as,
+            body,
+        } = &node.kind
+        else {
+            unreachable!("execute_for_each is only called for for_each nodes");
+        };
+
+        let items = {
+            let ledger = ledger.lock().unwrap();
+            match ledger.resolve(over)? {
+                serde_json::Value::Array(items) => items,
+                _ => return Err(crate::ledger::LedgerError::TypeMismatch(over.0.clone()).into()),
+            }
+        };
+
+        let mut last = serde_json::Value::Null;
+        for (i, item) in items.into_iter().enumerate() {
+            let restore = ledger.lock().unwrap().bind_item(item_as, item);
+            let result = self
+                .execute_node_with_ledger(ctx, path.index(i as u32), body, ledger, None, iteration)
+                .await;
+            ledger.lock().unwrap().restore_item(restore);
+            last = result?;
+        }
+
+        Ok(last)
+    }
+
     /// Assemble the run record. `trace` (the ProcessNode tree) is built from the
     /// recorded outputs + node structure.
-    fn into_manifest(&self, ctx: &RunCtx, spec: &WorkflowSpec, spec_hash: String) -> RunManifest {
+    fn build_manifest(&self, ctx: &RunCtx, spec: &WorkflowSpec, spec_hash: String) -> RunManifest {
         RunManifest {
             run_id: ctx.run_id.clone(),
             workflow_name: spec.name.clone(),
@@ -530,6 +641,21 @@ impl Runner {
             trace: None,
             status: RunStatus::Completed,
         }
+    }
+}
+
+fn is_truthy(value: &serde_json::Value) -> bool {
+    match value {
+        serde_json::Value::Null => false,
+        serde_json::Value::Bool(value) => *value,
+        serde_json::Value::Number(value) => {
+            value.as_i64().is_some_and(|value| value != 0)
+                || value.as_u64().is_some_and(|value| value != 0)
+                || value.as_f64().is_some_and(|value| value != 0.0)
+        }
+        serde_json::Value::String(value) => !value.is_empty(),
+        serde_json::Value::Array(value) => !value.is_empty(),
+        serde_json::Value::Object(value) => !value.is_empty(),
     }
 }
 
