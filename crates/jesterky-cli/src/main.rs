@@ -148,7 +148,7 @@ fn runner(
     checkpoints: Option<Arc<dyn CheckpointStore>>,
 ) -> Runner {
     Runner {
-        programs: ProgramRegistry::new(),
+        programs: demo_programs(),
         actor,
         resource,
         sink: Arc::new(MemEventSink::new()),
@@ -156,6 +156,39 @@ fn runner(
         store: Arc::new(MemArtifactStore::new()),
         checkpoints,
     }
+}
+
+fn demo_programs() -> ProgramRegistry {
+    let mut programs = ProgramRegistry::new();
+    programs.register(
+        "quality.expand",
+        Arc::new(|_, _| {
+            Ok(serde_json::json!({
+                "jobs": [
+                    { "id": 0, "target": "alpha" },
+                    { "id": 1, "target": "beta" },
+                    { "id": 2, "target": "gamma" }
+                ]
+            }))
+        }),
+    );
+    programs.register(
+        "quality.aggregate",
+        Arc::new(|_, inputs| {
+            let scans = inputs
+                .get("scans")
+                .and_then(serde_json::Value::as_array)
+                .cloned()
+                .unwrap_or_default();
+            Ok(serde_json::json!({
+                "summary": {
+                    "count": scans.len(),
+                    "first": scans.first().cloned()
+                }
+            }))
+        }),
+    );
+    programs
 }
 
 fn parse_args(args_json: Option<&str>) -> Result<serde_json::Value, serde_json::Error> {

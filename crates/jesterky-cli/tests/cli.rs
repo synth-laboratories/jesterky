@@ -59,6 +59,46 @@ fn run_then_replay_quality_min_manifest() {
 }
 
 #[test]
+fn run_then_replay_quality_scan_map_reduce_manifest() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let temp = tempfile::tempdir().expect("tempdir");
+    let manifest = temp.path().join("quality_scan.manifest.json");
+    let spec = example_path("quality_scan.json");
+
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(&spec)
+        .arg("--out")
+        .arg(&manifest)
+        .output()
+        .expect("run command executes");
+    assert!(
+        run.status.success(),
+        "run failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&run.stdout),
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&run.stdout);
+    assert!(stdout.contains("workflow:quality_scan"));
+    assert!(stdout.contains("actor:quality_scanner"));
+    assert!(stdout.contains("status=completed"));
+
+    let replay = Command::new(bin)
+        .arg("replay")
+        .arg(&manifest)
+        .arg("--spec")
+        .arg(&spec)
+        .output()
+        .expect("replay command executes");
+    assert!(
+        replay.status.success(),
+        "replay failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&replay.stdout),
+        String::from_utf8_lossy(&replay.stderr)
+    );
+}
+
+#[test]
 fn schema_commands_emit_parseable_json_schema() {
     let bin = env!("CARGO_BIN_EXE_jesterky");
 
@@ -78,4 +118,12 @@ fn schema_commands_emit_parseable_json_schema() {
             serde_json::from_slice(&output.stdout).expect("schema output parses as JSON");
         assert!(schema.get("$schema").is_some(), "schema has $schema");
     }
+}
+
+fn example_path(name: &str) -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("..")
+        .join("..")
+        .join("examples")
+        .join(name)
 }
