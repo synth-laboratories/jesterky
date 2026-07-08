@@ -4,6 +4,7 @@ members = [
     "crates/jesterky-contract",
     "crates/jesterky-core",
     "crates/jesterky-actor",
+    "crates/jesterky-model",
     "crates/jesterky-cli",
 ]
 
@@ -18,3 +19,4 @@ async-recursion = "1"
 jesterky-contract = { path = "crates/jesterky-contract" }
 jesterky-core = { path = "crates/jesterky-core" }
 jesterky-actor = { path = "crates/jesterky-actor" }
+jesterky-model = { path = "crates/jesterky-model" }

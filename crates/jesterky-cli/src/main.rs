@@ -9,6 +9,7 @@ use jesterky_contract::{
     WorkflowSpec,
 };
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
+use jesterky_model::{CodexModel, ModelActor};
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -33,6 +34,10 @@ enum Command {
         out: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
+        /// Which host actor drives `actor` nodes. `fake` echoes inputs (default,
+        /// no network); `codex` calls the real model via `codex exec`.
+        #[arg(long, value_enum, default_value_t = ActorKind::Fake)]
+        actor: ActorKind,
     },
     Replay {
         manifest: PathBuf,
@@ -53,6 +58,14 @@ enum SchemaArtifact {
     Manifest,
 }
 
+#[derive(Clone, clap::ValueEnum)]
+enum ActorKind {
+    /// Echoes inputs as outputs — deterministic, no network (the default).
+    Fake,
+    /// Drives the real model via `codex exec` (ChatGPT-bundle auth, no API key).
+    Codex,
+}
+
 #[tokio::main]
 async fn main() -> ExitCode {
     match run_cli().await {
@@ -71,7 +84,8 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             args,
             out,
             run_id,
-        } => run_spec(&spec, args.as_deref(), out.as_deref(), run_id.as_deref()).await,
+            actor,
+        } => run_spec(&spec, args.as_deref(), out.as_deref(), run_id.as_deref(), actor).await,
         Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
         Command::Validate { spec } => validate_spec(&spec),
         Command::Schema { artifact } => {
@@ -114,11 +128,18 @@ async fn run_spec(
     args_json: Option<&str>,
     out: Option<&Path>,
     run_id: Option<&str>,
+    actor: ActorKind,
 ) -> Result<ExitCode, Box<dyn Error>> {
     let spec: WorkflowSpec = read_json(spec_path)?;
     let args = parse_args(args_json)?;
+    let actor: Arc<dyn jesterky_core::Actor> = match actor {
+        ActorKind::Fake => Arc::new(FakeActor),
+        // Real model call via codex (ChatGPT-bundle auth). Runs the agent's cwd
+        // in the repo so it stays sandboxed to read-only there.
+        ActorKind::Codex => Arc::new(ModelActor::new(CodexModel::gpt55())),
+    };
     let runner = runner(
-        Arc::new(FakeActor),
+        actor,
         None,
         Arc::new(SystemClock),
         Some(Arc::new(ManifestCheckpointStore::default())),
