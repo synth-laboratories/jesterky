@@ -4,17 +4,19 @@ use serde_json::json;
 use std::path::Path;
 
 #[test]
-fn checked_in_quality_min_workflow_conforms_to_schema() {
+fn checked_in_workflow_examples_conform_to_schema() {
     let root = workspace_root();
     let schema = read_json(root.join("jesterky.schema.json"));
-    let instance = read_json(root.join("examples").join("quality_min.json"));
 
-    assert_schema_valid(&schema, &instance);
-    let workflow: WorkflowSpec =
-        serde_json::from_value(instance).expect("workflow fixture deserializes");
-    workflow
-        .validate_and_hash()
-        .expect("workflow fixture validates and hashes");
+    for fixture in ["quality_min.json", "quality_scan.json"] {
+        let instance = read_json(root.join("examples").join(fixture));
+        assert_schema_valid(&schema, &instance);
+        let workflow: WorkflowSpec =
+            serde_json::from_value(instance).expect("workflow fixture deserializes");
+        workflow
+            .validate_and_hash()
+            .unwrap_or_else(|err| panic!("{fixture} validates and hashes: {err}"));
+    }
 }
 
 #[test]
@@ -35,9 +37,7 @@ fn assert_schema_valid(schema: &serde_json::Value, instance: &serde_json::Value)
     let compiled = JSONSchema::compile(schema).expect("schema compiles");
     let messages = match compiled.validate(instance) {
         Ok(()) => Vec::new(),
-        Err(errors) => errors
-            .map(|error| error.to_string())
-            .collect::<Vec<_>>(),
+        Err(errors) => errors.map(|error| error.to_string()).collect::<Vec<_>>(),
     };
     if !messages.is_empty() {
         panic!("schema validation failed:\n{}", messages.join("\n"));
