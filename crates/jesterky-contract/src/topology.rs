@@ -7,7 +7,8 @@
 //! ledger, e.g. `ledger.jobs`, `item`, `item.target`.
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use sha2::{Digest, Sha256};
+use std::collections::{BTreeMap, BTreeSet};
 
 pub type NodeId = String;
 
@@ -43,12 +44,24 @@ pub enum NodeKind {
         body: Box<Node>,
     },
     /// Serial iteration with side effects visible across items.
-    ForEach { over: Ref, item_as: String, body: Box<Node> },
+    ForEach {
+        over: Ref,
+        item_as: String,
+        body: Box<Node>,
+    },
     /// Loop `body` while `cond` resolves truthy, bounded by `max_iters`. Each
     /// pass increments the `Addr::iteration` at this node.
-    While { cond: Ref, body: Box<Node>, max_iters: u32 },
+    While {
+        cond: Ref,
+        body: Box<Node>,
+        max_iters: u32,
+    },
     /// Take `then` if `cond` is truthy, else `otherwise`.
-    Branch { cond: Ref, then: NodeId, otherwise: Option<NodeId> },
+    Branch {
+        cond: Ref,
+        then: NodeId,
+        otherwise: Option<NodeId>,
+    },
     /// Spawn one session per element of `sessions`, each running `body` against
     /// the named `actor`. `limit` (permits) serializes shared-resource access —
     /// this is the "poll under a center logic" pattern (DungeonGrid): set
@@ -117,7 +130,11 @@ pub struct RunPlan {
 
 impl Default for RunPlan {
     fn default() -> Self {
-        Self { limits: BTreeMap::new(), map_concurrency: None, verbosity: Verbosity::Standard }
+        Self {
+            limits: BTreeMap::new(),
+            map_concurrency: None,
+            verbosity: Verbosity::Standard,
+        }
     }
 }
 
@@ -158,7 +175,23 @@ impl WorkflowSpec {
     /// TODO(M0): implement cycle-DFS, canonicalize (recursive key/edge sort),
     /// SHA-256 over canonical bytes; return typed `Diagnostic`s on failure.
     pub fn validate_and_hash(&self) -> Result<String, ContractError> {
-        todo!("M0: canonicalize → SHA-256; cycle-DFS; typed diagnostics")
+        let errors = self
+            .validate()
+            .into_iter()
+            .filter(|d| d.severity == Severity::Error)
+            .collect::<Vec<_>>();
+        if !errors.is_empty() {
+            return Err(ContractError::Invalid(format_diagnostics(&errors)));
+        }
+
+        let mut canonical = serde_json::to_value(self)
+            .map_err(|e| ContractError::Invalid(format!("failed to serialize topology: {e}")))?;
+        canonicalize_value(&mut canonical);
+        let bytes = serde_json::to_vec(&canonical).map_err(|e| {
+            ContractError::Invalid(format!("failed to serialize canonical topology: {e}"))
+        })?;
+        let digest = Sha256::digest(bytes);
+        Ok(digest.iter().map(|b| format!("{b:02x}")).collect())
     }
 
     /// Non-fatal validation pass: unknown refs, dangling entrypoints, unresolved
@@ -166,7 +199,43 @@ impl WorkflowSpec {
     /// TODO(M0): implement; `validate_and_hash` calls this and fails on any
     /// `Severity::Error`.
     pub fn validate(&self) -> Vec<Diagnostic> {
-        todo!("M0: structural checks → typed Diagnostics")
+        let mut diagnostics = Vec::new();
+
+        for (idx, id) in self.entrypoint.iter().enumerate() {
+            if !self.nodes.contains_key(id) {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Error,
+                    path: format!("entrypoint[{idx}]"),
+                    message: format!("dangling entrypoint references unknown node `{id}`"),
+                });
+            }
+        }
+
+        for (id, node) in &self.nodes {
+            validate_node(
+                node,
+                &format!("nodes.{id}"),
+                &self.nodes,
+                &self.runplan.limits,
+                &mut diagnostics,
+            );
+        }
+
+        let graph = named_node_edges(&self.nodes);
+        detect_cycles(&graph, &mut diagnostics);
+
+        let reachable = reachable_nodes(&self.entrypoint, &graph, &self.nodes);
+        for id in self.nodes.keys() {
+            if !reachable.contains(id) {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Warning,
+                    path: format!("nodes.{id}"),
+                    message: format!("node `{id}` is not reachable from any entrypoint"),
+                });
+            }
+        }
+
+        diagnostics
     }
 }
 
@@ -176,4 +245,217 @@ pub enum ContractError {
     Invalid(String),
     #[error("cycle detected at node {0}")]
     Cycle(String),
+}
+
+fn validate_node(
+    node: &Node,
+    path: &str,
+    nodes: &BTreeMap<NodeId, Node>,
+    limits: &BTreeMap<String, u32>,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    match &node.kind {
+        NodeKind::Program { .. } | NodeKind::Reduce { .. } | NodeKind::Actor { .. } => {}
+        NodeKind::Map {
+            min_success, body, ..
+        } => {
+            if !(0.0..=1.0).contains(min_success) {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Error,
+                    path: format!("{path}.min_success"),
+                    message: format!("min_success must be between 0.0 and 1.0, got {min_success}"),
+                });
+            }
+            validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
+        }
+        NodeKind::ForEach { body, .. } => {
+            validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
+        }
+        NodeKind::While {
+            body, max_iters, ..
+        } => {
+            if *max_iters == 0 {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Error,
+                    path: format!("{path}.max_iters"),
+                    message: "max_iters must be greater than 0".to_string(),
+                });
+            }
+            validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
+        }
+        NodeKind::Branch {
+            then, otherwise, ..
+        } => {
+            if !nodes.contains_key(then) {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Error,
+                    path: format!("{path}.then"),
+                    message: format!("branch references unknown node `{then}`"),
+                });
+            }
+            if let Some(otherwise) = otherwise {
+                if !nodes.contains_key(otherwise) {
+                    diagnostics.push(Diagnostic {
+                        severity: Severity::Error,
+                        path: format!("{path}.otherwise"),
+                        message: format!("branch references unknown node `{otherwise}`"),
+                    });
+                }
+            }
+        }
+        NodeKind::SessionGroup { body, limit, .. } => {
+            if let Some(limit) = limit {
+                if !limits.contains_key(&limit.name) {
+                    diagnostics.push(Diagnostic {
+                        severity: Severity::Error,
+                        path: format!("{path}.limit"),
+                        message: format!(
+                            "limit `{}` is not declared in runplan.limits",
+                            limit.name
+                        ),
+                    });
+                }
+            }
+            validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
+        }
+        NodeKind::ResumeSession { body, .. } => {
+            validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
+        }
+    }
+}
+
+fn named_node_edges(nodes: &BTreeMap<NodeId, Node>) -> BTreeMap<NodeId, Vec<NodeId>> {
+    nodes
+        .iter()
+        .map(|(id, node)| (id.clone(), node_edges(node)))
+        .collect()
+}
+
+fn node_edges(node: &Node) -> Vec<NodeId> {
+    match &node.kind {
+        NodeKind::Branch {
+            then, otherwise, ..
+        } => {
+            let mut refs = vec![then.clone()];
+            if let Some(otherwise) = otherwise {
+                refs.push(otherwise.clone());
+            }
+            refs
+        }
+        _ => Vec::new(),
+    }
+}
+
+fn detect_cycles(graph: &BTreeMap<NodeId, Vec<NodeId>>, diagnostics: &mut Vec<Diagnostic>) {
+    #[derive(Clone, Copy, PartialEq, Eq)]
+    enum Mark {
+        Visiting,
+        Done,
+    }
+
+    fn visit(
+        id: &str,
+        graph: &BTreeMap<NodeId, Vec<NodeId>>,
+        marks: &mut BTreeMap<NodeId, Mark>,
+        stack: &mut Vec<NodeId>,
+        diagnostics: &mut Vec<Diagnostic>,
+    ) {
+        if matches!(marks.get(id), Some(Mark::Done)) {
+            return;
+        }
+        if matches!(marks.get(id), Some(Mark::Visiting)) {
+            let cycle_at = id.to_string();
+            if !diagnostics
+                .iter()
+                .any(|d| d.severity == Severity::Error && d.path == format!("nodes.{cycle_at}"))
+            {
+                diagnostics.push(Diagnostic {
+                    severity: Severity::Error,
+                    path: format!("nodes.{cycle_at}"),
+                    message: format!("cycle detected at node `{cycle_at}`"),
+                });
+            }
+            return;
+        }
+
+        marks.insert(id.to_string(), Mark::Visiting);
+        stack.push(id.to_string());
+        if let Some(edges) = graph.get(id) {
+            for next in edges {
+                if graph.contains_key(next) {
+                    visit(next, graph, marks, stack, diagnostics);
+                }
+            }
+        }
+        stack.pop();
+        marks.insert(id.to_string(), Mark::Done);
+    }
+
+    let mut marks = BTreeMap::new();
+    let mut stack = Vec::new();
+    for id in graph.keys() {
+        visit(id, graph, &mut marks, &mut stack, diagnostics);
+    }
+}
+
+fn reachable_nodes(
+    entrypoint: &[NodeId],
+    graph: &BTreeMap<NodeId, Vec<NodeId>>,
+    nodes: &BTreeMap<NodeId, Node>,
+) -> BTreeSet<NodeId> {
+    let mut reachable = BTreeSet::new();
+    let mut stack = entrypoint
+        .iter()
+        .filter(|id| nodes.contains_key(*id))
+        .cloned()
+        .collect::<Vec<_>>();
+
+    while let Some(id) = stack.pop() {
+        if !reachable.insert(id.clone()) {
+            continue;
+        }
+        if let Some(edges) = graph.get(&id) {
+            for next in edges.iter().rev() {
+                if nodes.contains_key(next) {
+                    stack.push(next.clone());
+                }
+            }
+        }
+    }
+
+    reachable
+}
+
+fn canonicalize_value(value: &mut serde_json::Value) {
+    match value {
+        serde_json::Value::Array(values) => {
+            for value in values {
+                canonicalize_value(value);
+            }
+        }
+        serde_json::Value::Object(map) => {
+            let mut sorted = map
+                .iter_mut()
+                .map(|(key, value)| {
+                    canonicalize_value(value);
+                    (key.clone(), std::mem::take(value))
+                })
+                .collect::<BTreeMap<_, _>>();
+            map.clear();
+            for (key, value) in std::mem::take(&mut sorted) {
+                map.insert(key, value);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn format_diagnostics(diagnostics: &[Diagnostic]) -> String {
+    serde_json::to_string(diagnostics).unwrap_or_else(|_| {
+        diagnostics
+            .iter()
+            .map(|d| format!("{}: {}", d.path, d.message))
+            .collect::<Vec<_>>()
+            .join("; ")
+    })
 }

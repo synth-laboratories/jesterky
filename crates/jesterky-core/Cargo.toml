@@ -14,3 +14,7 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 async-trait = { workspace = true }
 async-recursion = { workspace = true }
+
+[dev-dependencies]
+jesterky-actor = { path = "../jesterky-actor" }
+tokio = { version = "1", features = ["rt", "macros"] }
