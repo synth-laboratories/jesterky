@@ -4,8 +4,9 @@ The pinned Rust workflow substrate for the Synth stack — *ještěrky*, "lizard
 (they regrow tails: replay/resume). Fresh core that **supersedes** `workflow-rs`
 and `rust_backend/graph` (mines them for ideas, doesn't fork them).
 
-**This is an interface skeleton, not a runtime yet.** The joints and seams are
-locked; the bodies are documented `todo!()` for the implementing engineer. Full
+The core runtime is implemented for the M1 fake-actor surface: it runs the
+closed node taxonomy, emits deterministic `Addr`-ordered events, records actor
+calls, builds a process tree, and replays recorded runs byte-for-byte. Full
 design + ADR: `../mloky/HANDOFF_jesterky_rust_rebuild.md`, roadmap:
 `../mloky/ROADMAP_jesterky.md`.
 
@@ -21,20 +22,34 @@ design + ADR: `../mloky/HANDOFF_jesterky_rust_rebuild.md`, roadmap:
   - `ledger.rs` — declared-edge I/O (ADR #3).
 - **`jesterky-actor`** — host-side SDK: `ReplayActor` (fully implemented — proves
   the record/replay joint), `FakeActor`, and in-memory sink/store/clock doubles.
+- **`jesterky-cli`** — `jesterky run`, `jesterky replay`, and schema emission for
+  the M1 fake-actor ship surface.
+
+## Quickstart
+```bash
+cargo run -p jesterky-cli -- run examples/quality_scan.json --out /tmp/quality_scan.manifest.json
+cargo run -p jesterky-cli -- replay /tmp/quality_scan.manifest.json --spec examples/quality_scan.json
+cargo run -p jesterky-cli -- schema workflow
+```
+
+`examples/quality_scan.json` uses host-side demo programs in the CLI plus
+`FakeActor`; real model/process actors stay outside the core behind the `Actor`
+trait.
 
 ## What's locked vs skeletal
 LOCKED: every type in `jesterky-contract`; the five seam traits; `Addr` + its
 `Ord`; `Runner::emit` (per-node logical-clock allocation); `ReplayActor`; the
-`RunManifest` shape. SKELETAL (`todo!()` with algorithm docstrings): validation/
-hash, ref resolution, the per-kind execution bodies, and parallel map dispatch.
+`RunManifest` shape. IMPLEMENTED: schema emission, topology validation/hash,
+ledger resolution, all node execution bodies, serial/parallel map dispatch,
+session limits, trace-tree rendering, CLI run/replay, and starter conformance
+checks.
 
-## First tasks for the implementing engineer (M0 → M1)
-1. `schemars` derive on the contract → emit `jesterky.schema.json`; stand up the
-   conformance suite (seed = mloky's captured event streams).
-2. `WorkflowSpec::validate_and_hash` (cycle-DFS + canonicalize→SHA-256).
-3. `Ledger` ref resolution + binding store (`ledger.*` / `item.*` / literal).
-4. `Runner::execute_node` bodies + `execute_map` serial/parallel (keep `emit`'s
-   `Addr` scheme — never a global emit counter).
-5. Fold `recorded` + structure into the `ProcessNode` trace.
+## Remaining M0/M1 gates
+1. Seed the conformance suite from mloky's captured event streams and parity
+   fixtures.
+2. Publish/package `jesterky-contract` and the runtime surfaces.
+3. Add pyo3 Python bindings over the Rust core.
+4. Run the mloky parity gate: same topology + recorded outputs → matching
+   event stream under the agreed mapping.
 
 Read order: `traits.rs` → `runner.rs` → `ledger.rs`.
