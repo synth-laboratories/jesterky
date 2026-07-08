@@ -135,6 +135,34 @@ fn replay_rejects_a_spec_that_does_not_match_the_manifest() {
 }
 
 #[test]
+fn run_accepts_explicit_run_id() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let temp = tempfile::tempdir().expect("tempdir");
+    let manifest = temp.path().join("quality_min.manifest.json");
+
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(example_path("quality_min.json"))
+        .arg("--run-id")
+        .arg("fixed-run-1")
+        .arg("--out")
+        .arg(&manifest)
+        .output()
+        .expect("run command executes");
+    assert!(
+        run.status.success(),
+        "run failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&run.stdout),
+        String::from_utf8_lossy(&run.stderr)
+    );
+
+    let manifest_json: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&manifest).expect("manifest reads"))
+            .expect("manifest parses");
+    assert_eq!(manifest_json["run_id"], "fixed-run-1");
+}
+
+#[test]
 fn schema_commands_emit_parseable_json_schema() {
     let bin = env!("CARGO_BIN_EXE_jesterky");
 

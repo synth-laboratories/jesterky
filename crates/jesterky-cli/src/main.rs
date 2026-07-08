@@ -31,6 +31,8 @@ enum Command {
         args: Option<String>,
         #[arg(long)]
         out: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
     },
     Replay {
         manifest: PathBuf,
@@ -64,7 +66,12 @@ async fn main() -> ExitCode {
 
 async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
     match Cli::parse().command {
-        Command::Run { spec, args, out } => run_spec(&spec, args.as_deref(), out.as_deref()).await,
+        Command::Run {
+            spec,
+            args,
+            out,
+            run_id,
+        } => run_spec(&spec, args.as_deref(), out.as_deref(), run_id.as_deref()).await,
         Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
         Command::Validate { spec } => validate_spec(&spec),
         Command::Schema { artifact } => {
@@ -106,6 +113,7 @@ async fn run_spec(
     spec_path: &Path,
     args_json: Option<&str>,
     out: Option<&Path>,
+    run_id: Option<&str>,
 ) -> Result<ExitCode, Box<dyn Error>> {
     let spec: WorkflowSpec = read_json(spec_path)?;
     let args = parse_args(args_json)?;
@@ -115,9 +123,8 @@ async fn run_spec(
         Arc::new(SystemClock),
         Some(Arc::new(ManifestCheckpointStore::default())),
     );
-    let manifest = runner
-        .run(&spec, "jesterky-cli-run".to_string(), args)
-        .await?;
+    let run_id = run_id.unwrap_or("jesterky-cli-run").to_string();
+    let manifest = runner.run(&spec, run_id, args).await?;
 
     print_manifest(&manifest);
     if let Some(out) = out {
