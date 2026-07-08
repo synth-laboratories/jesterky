@@ -99,6 +99,42 @@ fn run_then_replay_quality_scan_map_reduce_manifest() {
 }
 
 #[test]
+fn replay_rejects_a_spec_that_does_not_match_the_manifest() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let temp = tempfile::tempdir().expect("tempdir");
+    let manifest = temp.path().join("quality_min.manifest.json");
+
+    // Produce a manifest from quality_min...
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(example_path("quality_min.json"))
+        .arg("--out")
+        .arg(&manifest)
+        .output()
+        .expect("run command executes");
+    assert!(run.status.success(), "run failed");
+
+    // ...then replay it against a DIFFERENT spec. spec_hash must reject it
+    // rather than silently re-driving the wrong topology.
+    let replay = Command::new(bin)
+        .arg("replay")
+        .arg(&manifest)
+        .arg("--spec")
+        .arg(example_path("quality_scan.json"))
+        .output()
+        .expect("replay command executes");
+    assert!(
+        !replay.status.success(),
+        "replay with a mismatched spec must fail, but it succeeded"
+    );
+    let stderr = String::from_utf8_lossy(&replay.stderr);
+    assert!(
+        stderr.contains("spec_hash"),
+        "mismatch error should mention spec_hash; got:\n{stderr}"
+    );
+}
+
+#[test]
 fn schema_commands_emit_parseable_json_schema() {
     let bin = env!("CARGO_BIN_EXE_jesterky");
 

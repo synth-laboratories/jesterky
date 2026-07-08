@@ -109,6 +109,19 @@ async fn replay_manifest(
             spec_path.display()
         )
     })?;
+    // Make `spec_hash` load-bearing: the replay spec MUST be the exact topology
+    // the manifest was recorded from. Otherwise we'd silently re-drive a
+    // different spec and report a confusing event diff instead of "wrong spec".
+    let spec_hash = spec.validate_and_hash()?;
+    if spec_hash != manifest.spec_hash {
+        return Err(format!(
+            "replay spec `{}` (spec_hash {spec_hash}) does not match the manifest, \
+             which was recorded from spec_hash {} — wrong or stale spec",
+            spec_path.display(),
+            manifest.spec_hash
+        )
+        .into());
+    }
     let replay_clock = Arc::new(ManifestClock::from_manifest(&manifest));
     let checkpoints = Arc::new(ManifestCheckpointStore::from_manifest(&manifest)?);
     let runner = runner(
