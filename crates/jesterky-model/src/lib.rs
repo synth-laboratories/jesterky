@@ -27,6 +27,7 @@ pub use codex::CodexModel;
 use async_trait::async_trait;
 use jesterky_core::{Actor, ActorRequest, ActorResult, HostError};
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 /// One model completion. The IO boundary: a real impl talks to a model host, a
 /// stub returns canned text. Errors are **classified** (auth / quota / config /
@@ -47,6 +48,8 @@ pub struct ModelRequest {
     pub system: Option<String>,
     /// The resolved, typed inputs the model should act on.
     pub inputs: serde_json::Value,
+    /// Optional JSON Schema file for codex `--output-schema` (per-actor).
+    pub output_schema: Option<PathBuf>,
 }
 
 /// A model failure, classified by kind so callers can react (retry a transient,
@@ -72,6 +75,7 @@ pub enum ModelError {
 pub struct ModelActor<M: Model> {
     model: M,
     roles: HashMap<String, String>,
+    output_schemas: HashMap<String, PathBuf>,
 }
 
 impl<M: Model> ModelActor<M> {
@@ -79,6 +83,7 @@ impl<M: Model> ModelActor<M> {
         Self {
             model,
             roles: HashMap::new(),
+            output_schemas: HashMap::new(),
         }
     }
 
@@ -86,6 +91,12 @@ impl<M: Model> ModelActor<M> {
     /// generic instruction built from their name + inputs.
     pub fn with_role(mut self, actor: impl Into<String>, system: impl Into<String>) -> Self {
         self.roles.insert(actor.into(), system.into());
+        self
+    }
+
+    /// Register a JSON Schema path for an actor (codex `--output-schema`).
+    pub fn with_output_schema(mut self, actor: impl Into<String>, schema: impl Into<PathBuf>) -> Self {
+        self.output_schemas.insert(actor.into(), schema.into());
         self
     }
 }
@@ -97,6 +108,7 @@ impl<M: Model> Actor for ModelActor<M> {
             actor: req.actor.clone(),
             system: self.roles.get(&req.actor).cloned(),
             inputs: req.inputs,
+            output_schema: self.output_schemas.get(&req.actor).cloned(),
         };
         let raw = self.model.complete(&mreq).await.map_err(|err| HostError::Actor {
             actor: req.actor.clone(),

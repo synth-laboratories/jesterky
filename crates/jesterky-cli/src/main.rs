@@ -11,6 +11,7 @@ use jesterky_contract::{
 };
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use jesterky_model::{CodexModel, ModelActor};
+use jesterky_quality::{SCANNER_ACTOR, SUMMARY_ACTOR};
 use std::collections::HashMap;
 use std::error::Error;
 use std::io::IsTerminal;
@@ -220,6 +221,16 @@ async fn run_spec(
             for (name, prompt) in jesterky_quality::roles() {
                 model_actor = model_actor.with_role(name, prompt);
             }
+            let examples = spec_path.parent().unwrap_or(spec_path);
+            model_actor = model_actor
+                .with_output_schema(
+                    SCANNER_ACTOR,
+                    examples.join("quality_verdict.schema.json"),
+                )
+                .with_output_schema(
+                    SUMMARY_ACTOR,
+                    examples.join("quality_summary.schema.json"),
+                );
             Arc::new(model_actor)
         }
     };

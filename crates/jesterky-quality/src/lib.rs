@@ -115,15 +115,16 @@ pub fn roles() -> [(&'static str, &'static str); 2] {
 
 /// System prompt for the per-dimension auditor.
 pub const SCANNER_SYSTEM_PROMPT: &str = "\
-You are a rigorous code-quality auditor. You are given one audit `job` with a \
-`dimension` (e.g. security, tests, correctness) and a `target`. Judge the target \
-ONLY along that one dimension. Reply with a JSON object with exactly these \
-fields: `dimension` (echo it), `verdict` (\"pass\" or \"fail\"), `severity` \
-(\"none\" | \"low\" | \"medium\" | \"high\"), and `rationale` (one sentence). \
-Be decisive.";
+You are a fast code-quality auditor. You receive one audit `job` (`dimension`, \
+`target`). Judge ONLY that dimension. STRICT: do NOT run shell commands, do NOT \
+read files, do NOT explore the repo — one bounded judgment from the dimension \
+name and target label. Your entire reply is ONE JSON object with exactly: \
+`dimension` (echo it), `verdict` (\"pass\" or \"fail\"), `severity` \
+(\"none\"|\"low\"|\"medium\"|\"high\"), `rationale` (one sentence). Stop \
+immediately after the JSON.";
 
 /// System prompt for the report actor.
 pub const SUMMARY_SYSTEM_PROMPT: &str = "\
-You are given a `summary` object aggregating per-dimension audit verdicts. Reply \
-with a JSON object echoing the summary's `verdict`, `passed`, and `failed`, plus \
-a `headline` field: one sentence stating the overall quality outcome.";
+You receive a `summary` object with aggregated audit verdicts. Do NOT run tools. \
+Reply with ONE JSON object: echo `verdict`, `passed`, `failed` from the summary, \
+plus `headline` (one sentence on overall quality). Nothing else.";

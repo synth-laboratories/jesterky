@@ -64,6 +64,7 @@ fn prompt_carries_role_system_and_inputs() {
         actor: "auditor".to_string(),
         system: Some("Be terse.".to_string()),
         inputs: json!({ "n": 1 }),
+        output_schema: None,
     });
     assert!(prompt.contains("Be terse."));
     assert!(prompt.contains("auditor"));

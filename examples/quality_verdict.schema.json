@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dimension", "verdict", "severity", "rationale"],
+  "properties": {
+    "dimension": { "type": "string" },
+    "verdict": { "type": "string", "enum": ["pass", "fail"] },
+    "severity": { "type": "string", "enum": ["none", "low", "medium", "high"] },
+    "rationale": { "type": "string" }
+  }
+}

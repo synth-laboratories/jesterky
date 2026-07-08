@@ -8,6 +8,7 @@
 use crate::{build_prompt, Model, ModelError, ModelRequest};
 use async_trait::async_trait;
 use std::path::PathBuf;
+use std::process::Stdio;
 use tokio::process::Command;
 
 pub struct CodexModel {
@@ -74,7 +75,12 @@ impl Model for CodexModel {
         }
         cmd.arg("--sandbox")
             .arg("read-only")
-            .arg("--skip-git-repo-check");
+            .arg("--skip-git-repo-check")
+            .arg("--ephemeral");
+        if let Some(schema) = &req.output_schema {
+            cmd.arg("--output-schema").arg(schema);
+        }
+        cmd.stdin(Stdio::null());
         if let Some(cwd) = &self.cwd {
             cmd.arg("--cd").arg(cwd);
         }
