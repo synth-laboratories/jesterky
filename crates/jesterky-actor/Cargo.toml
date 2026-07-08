@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-actor"
-version = "0.0.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
 description = "jesterky host-side SDK: seam trait helpers, test doubles, and the replay driver."
+keywords = ["workflow", "actor", "replay", "host", "async"]
+categories = ["asynchronous", "development-tools"]
 
 [dependencies]
 jesterky-contract = { workspace = true }

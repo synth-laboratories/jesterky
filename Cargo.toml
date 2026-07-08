@@ -9,6 +9,17 @@ members = [
     "crates/jesterky-cli",
 ]
 
+# Shared package metadata (inherited via `<field>.workspace = true`). Single
+# source of truth for the version train and publish identity.
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/jesterky/jesterky"
+homepage = "https://github.com/jesterky/jesterky"
+authors = ["Synth Laboratories"]
+readme = "README.md"
+
 # Shared dependency versions. Kept deliberately tiny — the OSS core takes on no
 # model/HTTP/runtime deps; those live in the host (ADR #6).
 [workspace.dependencies]
@@ -17,8 +28,8 @@ serde_json = "1"
 thiserror = "1"
 async-trait = "0.1"
 async-recursion = "1"
-jesterky-contract = { path = "crates/jesterky-contract" }
-jesterky-core = { path = "crates/jesterky-core" }
-jesterky-actor = { path = "crates/jesterky-actor" }
-jesterky-model = { path = "crates/jesterky-model" }
-jesterky-quality = { path = "crates/jesterky-quality" }
+jesterky-contract = { path = "crates/jesterky-contract", version = "0.1.0" }
+jesterky-core = { path = "crates/jesterky-core", version = "0.1.0" }
+jesterky-actor = { path = "crates/jesterky-actor", version = "0.1.0" }
+jesterky-model = { path = "crates/jesterky-model", version = "0.1.0" }
+jesterky-quality = { path = "crates/jesterky-quality", version = "0.1.0" }

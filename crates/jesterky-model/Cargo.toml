@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-model"
-version = "0.0.0"
-edition = "2021"
-description = "Model-backed host actors for jesterky: the ModelActor seam adapter + the codex (ChatGPT-bundle) model. This is the M1→M2 step — a real Actor to swap in for FakeActor."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
+description = "Model-backed host actors for jesterky: the ModelActor seam adapter + the codex (ChatGPT-bundle) model. This is the M1->M2 step — a real Actor to swap in for FakeActor."
+keywords = ["workflow", "actor", "llm", "codex", "async"]
+categories = ["asynchronous", "development-tools"]
 
 [dependencies]
 jesterky-contract = { workspace = true }

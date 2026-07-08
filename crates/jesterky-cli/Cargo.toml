@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-cli"
-version = "0.0.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
 description = "jesterky command-line runner and replay checker."
+keywords = ["workflow", "cli", "runner", "replay", "orchestration"]
+categories = ["command-line-utilities", "development-tools"]
 
 [[bin]]
 name = "jesterky"

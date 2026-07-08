@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-core"
-version = "0.0.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
 description = "The jesterky orchestration core: pure graph execution, events, replay. No IO."
+keywords = ["workflow", "orchestration", "dag", "replay", "async"]
+categories = ["asynchronous", "data-structures", "development-tools"]
 
 # ADR #6: the core takes on NO model/HTTP/subprocess/runtime deps. All IO crosses
 # the seam via the traits in `traits.rs`, implemented by the host. `async-trait`

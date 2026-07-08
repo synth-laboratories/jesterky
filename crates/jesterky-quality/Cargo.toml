@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-quality"
-version = "0.0.0"
-edition = "2021"
-description = "The reference M2 workload: a structured code quality scan (expand → map audit dimensions → reduce report) that runs on a jesterky host actor."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
+description = "The reference M2 workload: a structured code quality scan (expand -> map audit dimensions -> reduce report) that runs on a jesterky host actor."
+keywords = ["workflow", "quality", "audit", "scan", "codex"]
+categories = ["development-tools"]
 
 [dependencies]
 jesterky-core = { workspace = true }

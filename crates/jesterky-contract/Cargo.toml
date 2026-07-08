@@ -1,8 +1,15 @@
 [package]
 name = "jesterky-contract"
-version = "0.0.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
 description = "The pinned jesterky workflow contract: topology, event, artifact, replay schemas."
+keywords = ["workflow", "schema", "replay", "contract", "orchestration"]
+categories = ["data-structures", "development-tools"]
 
 # NOTE (ADR #1): source of truth = these Rust types. M0 task = add `schemars`
 # derive and emit `jesterky.schema.json` (the interop artifact) + pyo3 Python
