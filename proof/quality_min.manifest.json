@@ -1,0 +1,172 @@
+{
+  "run_id": "demo-fake-001",
+  "workflow_name": "quality_min",
+  "spec_hash": "daf98393a68cc9c1827fb31910a304640722e711b46b4f072ab0ca7e039196da",
+  "args": {},
+  "events": [
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {},
+      "wall_ms": 1783490367466
+    },
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [
+          {
+            "node": "scan"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783490367466
+    },
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [
+          {
+            "node": "scan"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "quality_scanner"
+      },
+      "wall_ms": 1783490367466
+    },
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [
+          {
+            "node": "scan"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783490367466
+    },
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783490367466
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "demo-fake-001",
+        "node_path": [
+          {
+            "node": "scan"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "call": {
+        "call": "actor",
+        "actor": "quality_scanner"
+      },
+      "outputs": {
+        "rubric": "minimal quality pass",
+        "target": "alpha"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "demo-fake-001",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:quality_min",
+    "inputs": {},
+    "outputs": null,
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "demo-fake-001",
+          "node_path": [
+            {
+              "node": "scan"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "scan",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "demo-fake-001",
+              "node_path": [
+                {
+                  "node": "scan"
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 1
+            },
+            "label": "actor:quality_scanner",
+            "inputs": null,
+            "outputs": {
+              "rubric": "minimal quality pass",
+              "target": "alpha"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed"
+}

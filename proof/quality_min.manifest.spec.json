@@ -1,0 +1,22 @@
+{
+  "name": "quality_min",
+  "entrypoint": [
+    "scan"
+  ],
+  "nodes": {
+    "scan": {
+      "kind": "actor",
+      "actor": "quality_scanner",
+      "inputs": {
+        "rubric": "\"minimal quality pass\"",
+        "target": "\"alpha\""
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "limits": {},
+    "map_concurrency": null,
+    "verbosity": "standard"
+  }
+}

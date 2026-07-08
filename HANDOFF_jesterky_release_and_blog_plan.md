@@ -23,8 +23,25 @@ state, open workstreams, gates, and how the public story ships.
 - **2026-07-08 · WS0 done** — landed the per-actor output-schema WIP + codex
   `--ephemeral`/`--output-schema`/stdin-null hardening + strict no-tool scanner
   prompts (`95dad43`); tree clean, `cargo test --workspace` green (2 live-codex
-  ignored). main at `57fd273`. Cadence: codex `gpt-5.5` xhigh=draft / medium=grind,
-  one reviewed cycle = one commit, revert-on-break. Order: WS0→(WS1∥WS2∥WS4)→WS3→WS5→WS6.
+  ignored). Cadence: codex `gpt-5.5` xhigh=draft / medium=grind, one reviewed
+  cycle = one commit, revert-on-break. Order: WS0→(WS1∥WS2∥WS4)→WS3→WS5→WS6.
+- **2026-07-08 · WS1 publish-ready** — `f36eda9` all six crates carry shared
+  `[workspace.package]` metadata (v0.1.0, MIT OR Apache-2.0, repo/homepage/authors),
+  keywords+categories, version-pinned internal deps, root LICENSE-MIT/LICENSE-APACHE.
+  `cargo publish --dry-run -p jesterky-contract` green. `cd5555a` Python client-only
+  types package (`python/jesterky`, pydantic v2 codegen'd from the pinned schema via
+  `gen.sh`) — imports, validates all example specs, builds sdist+wheel. Note: codex
+  timed out at the 9m40s bash wall mid-think (known xhigh failure mode); did this
+  bounded, fully-specified slice by hand instead.
+- **2026-07-08 · WS2 install + fake-E2E proven** — `cargo install --path
+  crates/jesterky-cli` yields a clean ~3 MB `jesterky` binary; `run examples/quality_min.json
+  --actor fake` → completed (5 events, 1 recorded); `replay` → ok. Captured in `proof/`.
+  Still owed for WS2: the mloky parity gate (needs the parity-mapping judgment + oracle).
+
+**⚠ Josh-gated (irreversible / outward-facing — do NOT auto-execute):**
+`cargo publish` to crates.io · PyPI upload of the `jesterky` package · making the
+`github.com/jesterky` org+repo public · flipping the launch blog live. Everything
+above is driven to publish-READY; these four are the finish-line triggers.
 
 **Blog pattern (operator preference):** ship as a **feature release** — lead with
 what shipped and how it works; **mention applications at the end** (Stack,
