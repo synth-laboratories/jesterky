@@ -1,2 +1,7 @@
 /target
 Cargo.lock
+
+# Python package build artifacts
+python/dist/
+python/**/__pycache__/
+python/*.egg-info/

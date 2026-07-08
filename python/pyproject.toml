@@ -1,0 +1,27 @@
+[project]
+name = "jesterky"
+version = "0.1.0"
+description = "Python contract types for the jesterky workflow substrate (client-only, generated from the pinned JSON Schema)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT OR Apache-2.0"
+authors = [{ name = "Synth Laboratories" }]
+keywords = ["workflow", "orchestration", "schema", "replay", "contract"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "Typing :: Typed",
+]
+dependencies = ["pydantic>=2,<3"]
+
+[project.urls]
+Homepage = "https://github.com/jesterky/jesterky"
+Repository = "https://github.com/jesterky/jesterky"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jesterky"]
