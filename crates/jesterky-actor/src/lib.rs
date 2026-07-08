@@ -18,6 +18,8 @@ use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
 
+pub mod viz;
+
 /// Replays recorded actor outputs by [`Addr`] (ADR #7). Live orchestration +
 /// this actor ⇒ a byte-identical event stream, which is the core acceptance
 /// invariant ("replay fidelity").

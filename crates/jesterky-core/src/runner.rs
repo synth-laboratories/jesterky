@@ -497,6 +497,7 @@ impl Runner {
     ) -> Result<serde_json::Value, CoreError> {
         let NodeKind::Map {
             over,
+            item_as,
             concurrency,
             min_success,
             body,
@@ -516,12 +517,13 @@ impl Runner {
         let total = items.len();
         let width = (*concurrency).or(ctx.map_concurrency).unwrap_or(1).max(1) as usize;
         let results = if width <= 1 {
-            self.execute_map_serial(ctx, &path, body, ledger, &items, iteration)
+            self.execute_map_serial(ctx, &path, item_as, body, ledger, &items, iteration)
                 .await
         } else {
             self.execute_map_parallel(
                 ctx,
                 &path,
+                item_as,
                 body,
                 ledger,
                 &items,
@@ -566,6 +568,7 @@ impl Runner {
         &self,
         ctx: &RunCtx,
         path: &NodePath,
+        item_as: &str,
         body: &Node,
         ledger: &Mutex<Ledger>,
         items: &[serde_json::Value],
@@ -583,7 +586,7 @@ impl Runner {
                 EventKind::MapItemStarted,
                 serde_json::json!({ "index": i }),
             );
-            let item_ledger = Mutex::new(base_ledger.with_item(item));
+            let item_ledger = Mutex::new(base_ledger.with_item_as(item_as, item));
             match self
                 .execute_node_with_ledger(
                     ctx,
@@ -626,6 +629,7 @@ impl Runner {
         &self,
         ctx: &RunCtx,
         path: &NodePath,
+        item_as: &str,
         body: &Node,
         ledger: &Mutex<Ledger>,
         items: &[serde_json::Value],
@@ -634,7 +638,7 @@ impl Runner {
         let base_ledger = ledger.lock().unwrap().clone();
         let mut prepared = Vec::with_capacity(items.len());
         for (i, item) in items.iter().cloned().enumerate() {
-            let item_ledger = base_ledger.with_item(item);
+            let item_ledger = base_ledger.with_item_as(item_as, item);
             let inputs = item_ledger.resolve_bindings(&body.inputs)?;
             prepared.push((i, item_ledger, inputs));
         }
