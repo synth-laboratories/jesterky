@@ -94,11 +94,22 @@ struct MapDispatch {
 
 impl RunCtx {
     fn new(run_id: String, args: serde_json::Value, spec: &WorkflowSpec) -> Self {
+        // Seed the ledger with the run args' top-level fields so a spec can
+        // parameterize itself via `ledger.<argkey>` bindings (e.g. a scan's
+        // `target`). Args are also carried on `WorkflowStarted`; this makes them
+        // addressable state, not just an event payload. Author opt-in: nothing
+        // reads these keys unless a binding names them.
+        let mut ledger = Ledger::new();
+        if let Some(fields) = args.as_object() {
+            for (key, value) in fields {
+                ledger.set(key, value.clone());
+            }
+        }
         Self {
             run_id,
             args,
             nodes: spec.nodes.clone(),
-            ledger: Mutex::new(Ledger::new()),
+            ledger: Mutex::new(ledger),
             addr_seqs: Mutex::new(HashMap::new()),
             events: Mutex::new(Vec::new()),
             recorded: Mutex::new(Vec::new()),
