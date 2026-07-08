@@ -4,7 +4,9 @@ use jesterky_actor::{
     viz::render_tree, FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayResource,
     SystemClock,
 };
-use jesterky_contract::{Artifact, Event, RunManifest, WorkflowSpec};
+use jesterky_contract::{
+    manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, WorkflowSpec,
+};
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
@@ -31,7 +33,18 @@ enum Command {
     },
     Replay {
         manifest: PathBuf,
+        #[arg(long)]
+        spec: Option<PathBuf>,
     },
+    Schema {
+        artifact: SchemaArtifact,
+    },
+}
+
+#[derive(Clone, clap::ValueEnum)]
+enum SchemaArtifact {
+    Workflow,
+    Manifest,
 }
 
 #[tokio::main]
@@ -48,7 +61,11 @@ async fn main() -> ExitCode {
 async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
     match Cli::parse().command {
         Command::Run { spec, args, out } => run_spec(&spec, args.as_deref(), out.as_deref()).await,
-        Command::Replay { manifest } => replay_manifest(&manifest).await,
+        Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
+        Command::Schema { artifact } => {
+            print_schema(artifact);
+            Ok(ExitCode::SUCCESS)
+        }
     }
 }
 
@@ -78,9 +95,14 @@ async fn run_spec(
     Ok(ExitCode::SUCCESS)
 }
 
-async fn replay_manifest(manifest_path: &Path) -> Result<ExitCode, Box<dyn Error>> {
+async fn replay_manifest(
+    manifest_path: &Path,
+    spec_override: Option<&Path>,
+) -> Result<ExitCode, Box<dyn Error>> {
     let manifest: RunManifest = read_json(manifest_path)?;
-    let spec_path = spec_sidecar_path(manifest_path);
+    let spec_path = spec_override
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| spec_sidecar_path(manifest_path));
     let spec: WorkflowSpec = read_json(&spec_path).map_err(|err| {
         format!(
             "failed to read replay spec sidecar `{}`: {err}",
@@ -109,6 +131,13 @@ async fn replay_manifest(manifest_path: &Path) -> Result<ExitCode, Box<dyn Error
     } else {
         eprintln!("{}", diff_summary(&manifest.events, &replayed.events));
         Ok(ExitCode::FAILURE)
+    }
+}
+
+fn print_schema(artifact: SchemaArtifact) {
+    match artifact {
+        SchemaArtifact::Workflow => println!("{}", workflow_schema_json()),
+        SchemaArtifact::Manifest => println!("{}", manifest_schema_json()),
     }
 }
 

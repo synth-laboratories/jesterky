@@ -42,4 +42,40 @@ fn run_then_replay_quality_min_manifest() {
         String::from_utf8_lossy(&replay.stdout),
         String::from_utf8_lossy(&replay.stderr)
     );
+
+    let replay_with_spec = Command::new(bin)
+        .arg("replay")
+        .arg(&manifest)
+        .arg("--spec")
+        .arg(&spec)
+        .output()
+        .expect("replay --spec command executes");
+    assert!(
+        replay_with_spec.status.success(),
+        "replay --spec failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&replay_with_spec.stdout),
+        String::from_utf8_lossy(&replay_with_spec.stderr)
+    );
+}
+
+#[test]
+fn schema_commands_emit_parseable_json_schema() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+
+    for artifact in ["workflow", "manifest"] {
+        let output = Command::new(bin)
+            .arg("schema")
+            .arg(artifact)
+            .output()
+            .expect("schema command executes");
+        assert!(
+            output.status.success(),
+            "schema {artifact} failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let schema: serde_json::Value =
+            serde_json::from_slice(&output.stdout).expect("schema output parses as JSON");
+        assert!(schema.get("$schema").is_some(), "schema has $schema");
+    }
 }
