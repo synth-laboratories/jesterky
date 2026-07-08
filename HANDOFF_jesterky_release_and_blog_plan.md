@@ -56,8 +56,8 @@ above is driven to publish-READY; these four are the finish-line triggers.
 
 **PUBLISH STATUS (2026-07-08, Josh authorized "publish crates now"):**
 - ✅ crates.io: `jesterky-contract`, `-core`, `-actor`, `-model`, `-quality` @0.1.0 LIVE.
-- ⏳ `jesterky-cli` @0.1.0 — hit crates.io new-crate rate limit (429); auto-retry
-  scheduled for 13:47:52 GMT (background). Verify: `curl crates.io/api/v1/crates/jesterky-cli`.
+- ✅ `jesterky-cli` @0.1.0 LIVE — cleared the rate limit and published on auto-retry.
+  All six crates now live on crates.io.
 - ✅ PyPI `jesterky` @0.1.0 LIVE → https://pypi.org/project/jesterky/0.1.0/ (Josh
   authorized; uploaded via `twine` using `~/.pypirc` — `uv publish` needs a token env).
 - ⛔ `github.com/jesterky` org+repo public — HELD by Josh ("no github just yet").
