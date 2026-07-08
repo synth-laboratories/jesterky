@@ -156,6 +156,51 @@ fn schema_commands_emit_parseable_json_schema() {
     }
 }
 
+#[test]
+fn validate_accepts_quality_min_and_prints_spec_hash() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+
+    let output = Command::new(bin)
+        .arg("validate")
+        .arg(example_path("quality_min.json"))
+        .output()
+        .expect("validate command executes");
+    assert!(
+        output.status.success(),
+        "validate failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("spec_hash "),
+        "validate should print spec_hash; got:\n{stdout}"
+    );
+}
+
+#[test]
+fn validate_rejects_invalid_spec_and_prints_diagnostic() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+
+    let output = Command::new(bin)
+        .arg("validate")
+        .arg(example_path("invalid_dangling_entrypoint.json"))
+        .output()
+        .expect("validate command executes");
+    assert!(
+        !output.status.success(),
+        "validate invalid spec should fail\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout
+            .contains("error entrypoint[0]: dangling entrypoint references unknown node `missing`"),
+        "validate should print diagnostic; got:\n{stdout}"
+    );
+}
+
 fn example_path(name: &str) -> std::path::PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("..")

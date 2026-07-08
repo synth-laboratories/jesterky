@@ -5,7 +5,8 @@ use jesterky_actor::{
     SystemClock,
 };
 use jesterky_contract::{
-    manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, WorkflowSpec,
+    manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, Severity,
+    WorkflowSpec,
 };
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use std::collections::{HashMap, VecDeque};
@@ -36,6 +37,9 @@ enum Command {
         #[arg(long)]
         spec: Option<PathBuf>,
     },
+    Validate {
+        spec: PathBuf,
+    },
     Schema {
         artifact: SchemaArtifact,
     },
@@ -62,10 +66,39 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
     match Cli::parse().command {
         Command::Run { spec, args, out } => run_spec(&spec, args.as_deref(), out.as_deref()).await,
         Command::Replay { manifest, spec } => replay_manifest(&manifest, spec.as_deref()).await,
+        Command::Validate { spec } => validate_spec(&spec),
         Command::Schema { artifact } => {
             print_schema(artifact);
             Ok(ExitCode::SUCCESS)
         }
+    }
+}
+
+fn validate_spec(spec_path: &Path) -> Result<ExitCode, Box<dyn Error>> {
+    let spec: WorkflowSpec = read_json(spec_path)?;
+    for diagnostic in spec.validate() {
+        println!(
+            "{} {}: {}",
+            severity_label(diagnostic.severity),
+            diagnostic.path,
+            diagnostic.message
+        );
+    }
+
+    match spec.validate_and_hash() {
+        Ok(spec_hash) => {
+            println!("spec_hash {spec_hash}");
+            Ok(ExitCode::SUCCESS)
+        }
+        Err(_) => Ok(ExitCode::FAILURE),
+    }
+}
+
+fn severity_label(severity: Severity) -> &'static str {
+    match severity {
+        Severity::Info => "info",
+        Severity::Warning => "warning",
+        Severity::Error => "error",
     }
 }
 

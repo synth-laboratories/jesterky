@@ -1,0 +1,12 @@
+{
+  "name": "invalid_dangling_entrypoint",
+  "entrypoint": ["missing"],
+  "nodes": {
+    "scan": {
+      "kind": "actor",
+      "actor": "quality_scanner",
+      "inputs": {},
+      "outputs": {}
+    }
+  }
+}
