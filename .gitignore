@@ -1,6 +1,17 @@
 /target
 Cargo.lock
 
+# Large local benchmark data (download via docs/OBLIQ.md)
+/data/
+
+# Heavy local run state inside proof run dirs — provenance (registries, result
+# manifests, event feeds, receipts) stays committed; caches and scratch do not.
+proof/**/workspace.sqlite
+proof/**/request_cache.sqlite
+proof/**/transitions.sqlite
+proof/**/proposer_workspaces/
+/proof/craftax_gold_target/
+
 # Python package build artifacts
 python/dist/
 python/**/__pycache__/
