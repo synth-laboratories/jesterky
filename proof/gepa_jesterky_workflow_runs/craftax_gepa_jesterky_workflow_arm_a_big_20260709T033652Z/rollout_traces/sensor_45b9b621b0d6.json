@@ -1,0 +1,164 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 11,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:48:24Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_22da38877a15",
+    "seed": 11,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_train_11",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 11,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_11"
+      }
+    },
+    "updated_at": "2026-07-09T03:48:24Z",
+    "usage": {
+      "completion_tokens": 237,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4424,
+      "total_tokens": 4661
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_22da38877a15",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_train_11",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_11",
+      "seed": 11,
+      "split": "train",
+      "task_id": "train:11"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 11,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_11"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 237,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4424,
+    "total_tokens": 4661
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:54:42Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn, read the compact observation (player stats, inventory, local map) and silently choose one near-term subgoal before acting. Respond ONLY with a single <tool_call> block for crafter_interact; never output prose, markdown, or JSON alone. Use 1-5 valid actions per call, and never invent actions outside: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\nPriority order: 1) collect nearby wood, 2) place a table once wood is available, 3) craft a wood pickaxe, 4) gather stone/coal/iron and upgrade tools, 5) recover from hunger, health, blocked movement, or lava risk.\nRepair rule: if the last turn did not unlock progress or reveal a better target, switch to a fresh scan and change subgoal before repeating any movement pattern.\nAction rule: batch only actions that directly serve the current subgoal. Prefer move + do/place/craft in the same call when adjacency and prerequisites are already satisfied. If the path is blocked or the target is absent, change direction or scan instead of looping.\nAvoid aimless exploration, repeated no-op loops, and lava."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_04d3fd3ec41d",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_left",
+        "do",
+        "move_up",
+        "do",
+        "move_left"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T02:54:42Z",
+    "usage": {
+      "completion_tokens": 218,
+      "cost_usd": 0.0,
+      "prompt_tokens": 5442,
+      "total_tokens": 5660
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn, read the compact observation (player stats, inventory, local map) and silently choose one near-term subgoal before acting. Respond ONLY with a single <tool_call> block for crafter_interact; never output prose, markdown, or JSON alone. Use 1-5 valid actions per call, and never invent actions outside: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\nPriority order: 1) collect nearby wood, 2) place a table once wood is available, 3) craft a wood pickaxe, 4) gather stone/coal/iron and upgrade tools, 5) recover from hunger, health, blocked movement, or lava risk.\nRepair rule: if the last turn did not unlock progress or reveal a better target, switch to a fresh scan and change subgoal before repeating any movement pattern.\nAction rule: batch only actions that directly serve the current subgoal. Prefer move + do/place/craft in the same call when adjacency and prerequisites are already satisfied. If the path is blocked or the target is absent, change direction or scan instead of looping.\nAvoid aimless exploration, repeated no-op loops, and lava."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn, read the compact observation (player stats, inventory, local map) and silently choose one near-term subgoal before acting. Respond ONLY with a single <tool_call> block for crafter_interact; never output prose, markdown, or JSON alone. Use 1-5 valid actions per call, and never invent actions outside: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\nPriority order: 1) collect nearby wood, 2) place a table once wood is available, 3) craft a wood pickaxe, 4) gather stone/coal/iron and upgrade tools, 5) recover from hunger, health, blocked movement, or lava risk.\nRepair rule: if the last turn did not unlock progress or reveal a better target, switch to a fresh scan and change subgoal before repeating any movement pattern.\nAction rule: batch only actions that directly serve the current subgoal. Prefer move + do/place/craft in the same call when adjacency and prerequisites are already satisfied. If the path is blocked or the target is absent, change direction or scan instead of looping.\nAvoid aimless exploration, repeated no-op loops, and lava."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_04d3fd3ec41d",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_left",
+      "do",
+      "move_up",
+      "do",
+      "move_left"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 218,
+    "cost_usd": 0.0,
+    "prompt_tokens": 5442,
+    "total_tokens": 5660
+  }
+}

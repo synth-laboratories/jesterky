@@ -1,0 +1,256 @@
+{
+  "events": [
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 0; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"right\",\"do\",\"right\",\"do\",\"right\",\"do\",\"make_wood_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 24,
+          "prompt_tokens": 825,
+          "total_tokens": 849
+        }
+      },
+      "metadata": {
+        "env_action": "do"
+      },
+      "sequence_index": 1,
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0001",
+      "type": "lm_call"
+    },
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 8; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"do\",\"do\",\"do\",\"do\",\"make_stone_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 876,
+          "total_tokens": 896
+        }
+      },
+      "metadata": {
+        "env_action": "do"
+      },
+      "sequence_index": 2,
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0002",
+      "type": "lm_call"
+    },
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 14; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"up\",\"do\",\"do\",\"do\",\"do\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 896,
+          "total_tokens": 911
+        }
+      },
+      "metadata": {
+        "env_action": "up"
+      },
+      "sequence_index": 3,
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0003",
+      "type": "lm_call"
+    }
+  ],
+  "metadata": {
+    "achievement_count": 1,
+    "env": "gamebench.craftax-singleplayer.rust_gold",
+    "final_objective_labels": [
+      "achievement:collect_wood",
+      "objective:craftax_policy_dev",
+      "reward:1.0000",
+      "truncated"
+    ],
+    "objective_labels": [
+      "achievement:collect_wood",
+      "objective:craftax_policy_dev",
+      "reward:1.0000",
+      "truncated"
+    ],
+    "policy_llm_turns": 3,
+    "source": "capture_craftax_v4_traces.py"
+  },
+  "rollout_id": "craftax-v4-seed-5-6e2b87e3",
+  "schema_version": "synth_rollout_trace_v4",
+  "span_count": 3,
+  "spans": [
+    {
+      "call_index": 1,
+      "metadata": {
+        "batch_size": 8,
+        "request_id": "HXFOarGNG9i8jrEP2u6VSA"
+      },
+      "metrics": {
+        "env_action": "do",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 1.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 0; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"right\",\"do\",\"right\",\"do\",\"right\",\"do\",\"make_wood_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 24,
+          "prompt_tokens": 825,
+          "total_tokens": 849
+        }
+      },
+      "run_id": "craftax-v4-seed-5-6e2b87e3",
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0001"
+    },
+    {
+      "call_index": 2,
+      "metadata": {
+        "batch_size": 6,
+        "request_id": "HnFOasSyBpmljrEP-O6zMQ"
+      },
+      "metrics": {
+        "env_action": "do",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 1.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 8; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"do\",\"do\",\"do\",\"do\",\"make_stone_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 876,
+          "total_tokens": 896
+        }
+      },
+      "run_id": "craftax-v4-seed-5-6e2b87e3",
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0002"
+    },
+    {
+      "call_index": 3,
+      "metadata": {
+        "batch_size": 6,
+        "request_id": "HnFOat-iLMGEjrEPnffykA0"
+      },
+      "metrics": {
+        "env_action": "up",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 1.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 14; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"up\",\"do\",\"do\",\"do\",\"do\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 896,
+          "total_tokens": 911
+        }
+      },
+      "run_id": "craftax-v4-seed-5-6e2b87e3",
+      "span_id": "craftax-v4-seed-5-6e2b87e3-span-0003"
+    }
+  ],
+  "status": "completed",
+  "summary": {
+    "achievements": [
+      "collect_wood"
+    ],
+    "invalid_parse_turns": 0,
+    "llm_turns": 3,
+    "max_steps": 20,
+    "outcome_reward": 1.0,
+    "policy_model": "gemini-3.1-flash-lite",
+    "policy_provider": "gemini",
+    "reward": 1.0,
+    "seed": 5
+  },
+  "trace_correlation_id": "craftax-v4-seed-5-6e2b87e3",
+  "trace_schema_version": 4
+}

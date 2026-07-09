@@ -1,0 +1,168 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:06:37Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block of the form: <tool_call>{\"name\":\"crafter_interact\",\"arguments\":{\"actions_list\":[\"move_right\",\"do\"]}}</tool_call>. Use 1-5 valid actions per call. Prioritize collecting wood, placing a table, crafting tools, then collecting stone/coal/iron. Avoid lava."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_da236b25b92f",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "do",
+        "do",
+        "move_up"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T04:06:37Z",
+    "usage": {
+      "completion_tokens": 235,
+      "cost_usd": 0.0,
+      "prompt_tokens": 3282,
+      "total_tokens": 3517
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block of the form: <tool_call>{\"name\":\"crafter_interact\",\"arguments\":{\"actions_list\":[\"move_right\",\"do\"]}}</tool_call>. Use 1-5 valid actions per call. Prioritize collecting wood, placing a table, crafting tools, then collecting stone/coal/iron. Avoid lava."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block of the form: <tool_call>{\"name\":\"crafter_interact\",\"arguments\":{\"actions_list\":[\"move_right\",\"do\"]}}</tool_call>. Use 1-5 valid actions per call. Prioritize collecting wood, placing a table, crafting tools, then collecting stone/coal/iron. Avoid lava."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_da236b25b92f",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "do",
+      "do",
+      "move_up"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 235,
+    "cost_usd": 0.0,
+    "prompt_tokens": 3282,
+    "total_tokens": 3517
+  }
+}

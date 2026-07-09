@@ -1,0 +1,93 @@
+{
+  "name": "quality_scan_blogs",
+  "entrypoint": [
+    "expand_posts",
+    "audit_posts",
+    "aggregate",
+    "record_matrix"
+  ],
+  "nodes": {
+    "aggregate": {
+      "kind": "reduce",
+      "op": "blog.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "audit_posts": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 8,
+      "min_success": 0.85,
+      "body": {
+        "kind": "actor",
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "inputs": {},
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "expand_posts": {
+      "kind": "program",
+      "op": "blog.expand",
+      "inputs": {
+        "blog_dir": "ledger.blog_dir"
+      },
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "record_matrix": {
+      "kind": "actor",
+      "actor": "blog_matrix_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "limits": {},
+    "map_concurrency": 8,
+    "budgets": {
+      "caps": [],
+      "warning_percent": 80.0,
+      "fail_on_hard_exhaust": true,
+      "eta": {
+        "enabled": true,
+        "mode": "all",
+        "min_wall_secs": 1.0,
+        "sample_interval_secs": 0.45
+      },
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "show_eta": true,
+        "show_nearest_tag": true,
+        "short_labels": true
+      }
+    },
+    "goals": {
+      "goals": [],
+      "terminate_on_met": true,
+      "fail_on_unmet": true,
+      "cancel_in_flight": false,
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "short_labels": true
+      }
+    },
+    "verbosity": "standard"
+  },
+  "host": null
+}

@@ -1,0 +1,174 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_drink"
+      ],
+      "n_steps": 12,
+      "seed": 15,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_drink"
+        ],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:40:55Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. The observation is a compact summary of nearby terrain, inventory, and stats. Your job is not to wander; your job is to complete the current progression stage as efficiently as possible.\n\nReturn exactly one <tool_call> block for crafter_interact with 1-5 valid actions and no extra text. Valid actions are: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nUse this ladder:\n1. Find and harvest wood.\n2. When you have enough wood, place a table.\n3. Craft a wood pickaxe as soon as prerequisites are met.\n4. Use the pickaxe to harvest stone and other deeper resources.\n5. Place a furnace when stone-level progression is available.\n6. Upgrade tools only after the prerequisite materials exist.\n\nPlanning rule: if a prerequisite is missing, spend the turn on the missing prerequisite, not on the final craft. If you have already spent a turn moving without reaching a new useful tile, re-route instead of repeating the same path. Favor short movement bursts followed by do or craft actions when the map supports it. Avoid lava, dead-end loops, and do-only turns that do not interact with a target."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_drink"
+        ],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_20d5d6e8093f",
+    "seed": 15,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_drink"
+      ],
+      "actions_taken": [
+        "move_left",
+        "move_left",
+        "do",
+        "move_left",
+        "do"
+      ],
+      "example_id": "ep_train_15",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_drink"
+          ],
+          "n_steps": 12,
+          "seed": 15,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_15"
+      }
+    },
+    "updated_at": "2026-07-09T03:40:55Z",
+    "usage": {
+      "completion_tokens": 218,
+      "cost_usd": 0.0,
+      "prompt_tokens": 6186,
+      "total_tokens": 6404
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. The observation is a compact summary of nearby terrain, inventory, and stats. Your job is not to wander; your job is to complete the current progression stage as efficiently as possible.\n\nReturn exactly one <tool_call> block for crafter_interact with 1-5 valid actions and no extra text. Valid actions are: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nUse this ladder:\n1. Find and harvest wood.\n2. When you have enough wood, place a table.\n3. Craft a wood pickaxe as soon as prerequisites are met.\n4. Use the pickaxe to harvest stone and other deeper resources.\n5. Place a furnace when stone-level progression is available.\n6. Upgrade tools only after the prerequisite materials exist.\n\nPlanning rule: if a prerequisite is missing, spend the turn on the missing prerequisite, not on the final craft. If you have already spent a turn moving without reaching a new useful tile, re-route instead of repeating the same path. Favor short movement bursts followed by do or craft actions when the map supports it. Avoid lava, dead-end loops, and do-only turns that do not interact with a target."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. The observation is a compact summary of nearby terrain, inventory, and stats. Your job is not to wander; your job is to complete the current progression stage as efficiently as possible.\n\nReturn exactly one <tool_call> block for crafter_interact with 1-5 valid actions and no extra text. Valid actions are: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nUse this ladder:\n1. Find and harvest wood.\n2. When you have enough wood, place a table.\n3. Craft a wood pickaxe as soon as prerequisites are met.\n4. Use the pickaxe to harvest stone and other deeper resources.\n5. Place a furnace when stone-level progression is available.\n6. Upgrade tools only after the prerequisite materials exist.\n\nPlanning rule: if a prerequisite is missing, spend the turn on the missing prerequisite, not on the final craft. If you have already spent a turn moving without reaching a new useful tile, re-route instead of repeating the same path. Favor short movement bursts followed by do or craft actions when the map supports it. Avoid lava, dead-end loops, and do-only turns that do not interact with a target."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_20d5d6e8093f",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_drink"
+    ],
+    "actions_taken": [
+      "move_left",
+      "move_left",
+      "do",
+      "move_left",
+      "do"
+    ],
+    "example_id": "ep_train_15",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_15",
+      "seed": 15,
+      "split": "train",
+      "task_id": "train:15"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_drink"
+        ],
+        "n_steps": 12,
+        "seed": 15,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_15"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 218,
+    "cost_usd": 0.0,
+    "prompt_tokens": 6186,
+    "total_tokens": 6404
+  }
+}

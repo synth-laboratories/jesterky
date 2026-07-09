@@ -1,0 +1,188 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood"
+      ],
+      "n_steps": 12,
+      "seed": 13,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:20:31Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a Craftax bootstrap planner, not a generic narrator. Each turn, read the compact observation and immediately emit one <tool_call> block for crafter_interact with 1-5 valid actions. Your job is to convert the current state into the next concrete progress step.\n\nBootstrap policy:\n1. First ask: what is the nearest safe progress source visible now? Prefer wood, saplings, or another harvestable resource over exploration.\n2. If a harvestable resource is reachable in 1-2 moves, spend the batch reaching it and harvesting it now.\n3. After the first wood/sapling gain, switch to the crafting chain: place a table when materials allow, then make a wood pickaxe, then expand to stone and furnace.\n4. If the last turn failed to move or harvest, change the direction or target instead of repeating the same path.\n5. If the map offers no productive target, explore outward in a widening search that improves information and preserves safety.\n\nRecovery rules: if movement is blocked, do not keep pushing into the same tile; turn, backtrack, or choose a different nearby route. If hunger, health, or danger is mentioned, spend the batch on survival first, then return to the resource chain. Never spend a turn on neutral motion when a visible target or repair action exists.\n\nHard constraints: use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava, repeated noop/sleep loops, and any batch that does not advance harvesting, crafting, or recovery."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_21d732a1ad45",
+    "seed": 13,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood"
+      ],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_left",
+        "move_left",
+        "move_left",
+        "move_left",
+        "do",
+        "move_right",
+        "do",
+        "move_left"
+      ],
+      "example_id": "ep_train_13",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "n_steps": 12,
+          "seed": 13,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_13"
+      }
+    },
+    "updated_at": "2026-07-09T04:20:31Z",
+    "usage": {
+      "completion_tokens": 148,
+      "cost_usd": 0.0,
+      "prompt_tokens": 3773,
+      "total_tokens": 3921
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a Craftax bootstrap planner, not a generic narrator. Each turn, read the compact observation and immediately emit one <tool_call> block for crafter_interact with 1-5 valid actions. Your job is to convert the current state into the next concrete progress step.\n\nBootstrap policy:\n1. First ask: what is the nearest safe progress source visible now? Prefer wood, saplings, or another harvestable resource over exploration.\n2. If a harvestable resource is reachable in 1-2 moves, spend the batch reaching it and harvesting it now.\n3. After the first wood/sapling gain, switch to the crafting chain: place a table when materials allow, then make a wood pickaxe, then expand to stone and furnace.\n4. If the last turn failed to move or harvest, change the direction or target instead of repeating the same path.\n5. If the map offers no productive target, explore outward in a widening search that improves information and preserves safety.\n\nRecovery rules: if movement is blocked, do not keep pushing into the same tile; turn, backtrack, or choose a different nearby route. If hunger, health, or danger is mentioned, spend the batch on survival first, then return to the resource chain. Never spend a turn on neutral motion when a visible target or repair action exists.\n\nHard constraints: use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava, repeated noop/sleep loops, and any batch that does not advance harvesting, crafting, or recovery."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a Craftax bootstrap planner, not a generic narrator. Each turn, read the compact observation and immediately emit one <tool_call> block for crafter_interact with 1-5 valid actions. Your job is to convert the current state into the next concrete progress step.\n\nBootstrap policy:\n1. First ask: what is the nearest safe progress source visible now? Prefer wood, saplings, or another harvestable resource over exploration.\n2. If a harvestable resource is reachable in 1-2 moves, spend the batch reaching it and harvesting it now.\n3. After the first wood/sapling gain, switch to the crafting chain: place a table when materials allow, then make a wood pickaxe, then expand to stone and furnace.\n4. If the last turn failed to move or harvest, change the direction or target instead of repeating the same path.\n5. If the map offers no productive target, explore outward in a widening search that improves information and preserves safety.\n\nRecovery rules: if movement is blocked, do not keep pushing into the same tile; turn, backtrack, or choose a different nearby route. If hunger, health, or danger is mentioned, spend the batch on survival first, then return to the resource chain. Never spend a turn on neutral motion when a visible target or repair action exists.\n\nHard constraints: use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava, repeated noop/sleep loops, and any batch that does not advance harvesting, crafting, or recovery."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_21d732a1ad45",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood"
+    ],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_left",
+      "move_left",
+      "move_left",
+      "move_left",
+      "do",
+      "move_right",
+      "do",
+      "move_left"
+    ],
+    "example_id": "ep_train_13",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_13",
+      "seed": 13,
+      "split": "train",
+      "task_id": "train:13"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "n_steps": 12,
+        "seed": 13,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_13"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 148,
+    "cost_usd": 0.0,
+    "prompt_tokens": 3773,
+    "total_tokens": 3921
+  }
+}

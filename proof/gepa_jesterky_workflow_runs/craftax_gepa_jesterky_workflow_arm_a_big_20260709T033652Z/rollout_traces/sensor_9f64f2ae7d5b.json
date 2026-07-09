@@ -1,0 +1,156 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 18,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_18",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:50:54Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a survival-stage controller for Craftax. Your job is to convert the current observation into the next prerequisite milestone as fast as possible, not to wander.\n\nRespond only with a single <tool_call> block for crafter_interact, using 1-5 valid actions.\n\nRun this priority stack every turn:\n1. Safety first: if lava, blocked movement, or obvious dead-end pressure is present, move away and do not keep pushing the same direction.\n2. Resource stage: if wood is not secured, hunt wood before anything else.\n3. Workshop stage: once wood exists, place a table as soon as the map and inventory support it.\n4. Tool stage: craft the wood pickaxe as soon as prerequisites are met; do not keep harvesting the same low-value resource after the recipe is available.\n5. Mining stage: use the pickaxe to collect stone and unlock furnace progress.\n6. Upgrade stage: only then consider stronger tools.\n\nTurn-selection rules:\n- Prefer short movement bursts that end in do, craft, or place when adjacent.\n- If a turn would repeat the same ineffective move/do pattern, replace it with a different direction or a wider search sweep.\n- If the target is not visible, search systematically instead of dithering.\n- Never spend a turn on noop or repeated do unless the local map makes it a deliberate interaction.\n\nChoose the smallest action sequence that advances the current stage by one clear step."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_18",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_c3a3f0ea7be2",
+    "seed": 18,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "do"
+      ],
+      "example_id": "ep_train_18",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 18,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_18"
+      }
+    },
+    "updated_at": "2026-07-09T03:50:54Z",
+    "usage": {
+      "completion_tokens": 306,
+      "cost_usd": 0.0,
+      "prompt_tokens": 7472,
+      "total_tokens": 7778
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a survival-stage controller for Craftax. Your job is to convert the current observation into the next prerequisite milestone as fast as possible, not to wander.\n\nRespond only with a single <tool_call> block for crafter_interact, using 1-5 valid actions.\n\nRun this priority stack every turn:\n1. Safety first: if lava, blocked movement, or obvious dead-end pressure is present, move away and do not keep pushing the same direction.\n2. Resource stage: if wood is not secured, hunt wood before anything else.\n3. Workshop stage: once wood exists, place a table as soon as the map and inventory support it.\n4. Tool stage: craft the wood pickaxe as soon as prerequisites are met; do not keep harvesting the same low-value resource after the recipe is available.\n5. Mining stage: use the pickaxe to collect stone and unlock furnace progress.\n6. Upgrade stage: only then consider stronger tools.\n\nTurn-selection rules:\n- Prefer short movement bursts that end in do, craft, or place when adjacent.\n- If a turn would repeat the same ineffective move/do pattern, replace it with a different direction or a wider search sweep.\n- If the target is not visible, search systematically instead of dithering.\n- Never spend a turn on noop or repeated do unless the local map makes it a deliberate interaction.\n\nChoose the smallest action sequence that advances the current stage by one clear step."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a survival-stage controller for Craftax. Your job is to convert the current observation into the next prerequisite milestone as fast as possible, not to wander.\n\nRespond only with a single <tool_call> block for crafter_interact, using 1-5 valid actions.\n\nRun this priority stack every turn:\n1. Safety first: if lava, blocked movement, or obvious dead-end pressure is present, move away and do not keep pushing the same direction.\n2. Resource stage: if wood is not secured, hunt wood before anything else.\n3. Workshop stage: once wood exists, place a table as soon as the map and inventory support it.\n4. Tool stage: craft the wood pickaxe as soon as prerequisites are met; do not keep harvesting the same low-value resource after the recipe is available.\n5. Mining stage: use the pickaxe to collect stone and unlock furnace progress.\n6. Upgrade stage: only then consider stronger tools.\n\nTurn-selection rules:\n- Prefer short movement bursts that end in do, craft, or place when adjacent.\n- If a turn would repeat the same ineffective move/do pattern, replace it with a different direction or a wider search sweep.\n- If the target is not visible, search systematically instead of dithering.\n- Never spend a turn on noop or repeated do unless the local map makes it a deliberate interaction.\n\nChoose the smallest action sequence that advances the current stage by one clear step."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_c3a3f0ea7be2",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "do"
+    ],
+    "example_id": "ep_train_18",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_18",
+      "seed": 18,
+      "split": "train",
+      "task_id": "train:18"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 18,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_18"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 306,
+    "cost_usd": 0.0,
+    "prompt_tokens": 7472,
+    "total_tokens": 7778
+  }
+}

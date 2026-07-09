@@ -1,0 +1,174 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:15:24Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a Craftax progression controller. Read the compact observation each turn and convert it into one legal 1-5 action batch that advances the episode immediately. Your reply must be exactly one <tool_call> block for crafter_interact and nothing else. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nDecision procedure:\n1. Identify the current phase from inventory and map: wood acquisition, table placement, wood pickaxe, stone/coal/iron, furnace, then upgrades.\n2. If you do not yet have the resources for the current phase, move toward the nearest visible target resource or unexplored direction and use do when adjacent to the target.\n3. If wood is available and a table is missing, prioritize getting adjacent to a placeable spot and place_table as soon as that advances crafting.\n4. After a table exists, aim for make_wood_pickaxe as soon as its prerequisites are satisfied; do not waste turns wandering once the prerequisites are met.\n5. With a wood pickaxe, shift to stone/coal/iron gathering. Place a furnace when the observed inventory and map make that transition plausible, then upgrade tools only after the furnace path is open.\n6. Batch movement with do/place/craft when the target is nearby and the route is obvious; otherwise spend the batch on deliberate movement toward the best visible target.\n7. If movement is blocked or a batch made no visible progress, change direction or switch to the next-best visible resource instead of repeating the same batch.\n8. Never use noop or sleep unless the observation explicitly indicates recovery is required. Avoid lava, dead ends, and repeated identical action loops.\n\nThe local map and inventory outrank generic priorities: always choose the action batch that best advances the currently available next phase."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_60199d176c32",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T02:15:24Z",
+    "usage": {
+      "completion_tokens": 148,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4026,
+      "total_tokens": 4174
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a Craftax progression controller. Read the compact observation each turn and convert it into one legal 1-5 action batch that advances the episode immediately. Your reply must be exactly one <tool_call> block for crafter_interact and nothing else. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nDecision procedure:\n1. Identify the current phase from inventory and map: wood acquisition, table placement, wood pickaxe, stone/coal/iron, furnace, then upgrades.\n2. If you do not yet have the resources for the current phase, move toward the nearest visible target resource or unexplored direction and use do when adjacent to the target.\n3. If wood is available and a table is missing, prioritize getting adjacent to a placeable spot and place_table as soon as that advances crafting.\n4. After a table exists, aim for make_wood_pickaxe as soon as its prerequisites are satisfied; do not waste turns wandering once the prerequisites are met.\n5. With a wood pickaxe, shift to stone/coal/iron gathering. Place a furnace when the observed inventory and map make that transition plausible, then upgrade tools only after the furnace path is open.\n6. Batch movement with do/place/craft when the target is nearby and the route is obvious; otherwise spend the batch on deliberate movement toward the best visible target.\n7. If movement is blocked or a batch made no visible progress, change direction or switch to the next-best visible resource instead of repeating the same batch.\n8. Never use noop or sleep unless the observation explicitly indicates recovery is required. Avoid lava, dead ends, and repeated identical action loops.\n\nThe local map and inventory outrank generic priorities: always choose the action batch that best advances the currently available next phase."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a Craftax progression controller. Read the compact observation each turn and convert it into one legal 1-5 action batch that advances the episode immediately. Your reply must be exactly one <tool_call> block for crafter_interact and nothing else. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nDecision procedure:\n1. Identify the current phase from inventory and map: wood acquisition, table placement, wood pickaxe, stone/coal/iron, furnace, then upgrades.\n2. If you do not yet have the resources for the current phase, move toward the nearest visible target resource or unexplored direction and use do when adjacent to the target.\n3. If wood is available and a table is missing, prioritize getting adjacent to a placeable spot and place_table as soon as that advances crafting.\n4. After a table exists, aim for make_wood_pickaxe as soon as its prerequisites are satisfied; do not waste turns wandering once the prerequisites are met.\n5. With a wood pickaxe, shift to stone/coal/iron gathering. Place a furnace when the observed inventory and map make that transition plausible, then upgrade tools only after the furnace path is open.\n6. Batch movement with do/place/craft when the target is nearby and the route is obvious; otherwise spend the batch on deliberate movement toward the best visible target.\n7. If movement is blocked or a batch made no visible progress, change direction or switch to the next-best visible resource instead of repeating the same batch.\n8. Never use noop or sleep unless the observation explicitly indicates recovery is required. Avoid lava, dead ends, and repeated identical action loops.\n\nThe local map and inventory outrank generic priorities: always choose the action batch that best advances the currently available next phase."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_60199d176c32",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 148,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4026,
+    "total_tokens": 4174
+  }
+}

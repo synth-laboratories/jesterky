@@ -1,0 +1,103 @@
+{
+  "name": "obliq_math_verify",
+  "entrypoint": [
+    "expand_queries",
+    "rank_queries",
+    "aggregate",
+    "record_metrics"
+  ],
+  "nodes": {
+    "aggregate": {
+      "kind": "reduce",
+      "op": "obliq.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "expand_queries": {
+      "kind": "program",
+      "op": "obliq.expand",
+      "inputs": {},
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "rank_queries": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 4,
+      "min_success": 0.8,
+      "body": {
+        "kind": "actor",
+        "actor": "obliq_reranker",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "inputs": {},
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "record_metrics": {
+      "kind": "actor",
+      "actor": "obliq_metrics_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "limits": {},
+    "map_concurrency": 4,
+    "budgets": {
+      "caps": [
+        {
+          "kind": "actor_calls",
+          "max": 20.0,
+          "hard": false,
+          "label": "calls",
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "tokens",
+          "max": 400000.0,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "wall_seconds",
+          "max": 900.0,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        }
+      ],
+      "warning_percent": 80.0,
+      "fail_on_hard_exhaust": false,
+      "eta": {
+        "enabled": true,
+        "mode": "all",
+        "min_wall_secs": 1.0,
+        "sample_interval_secs": 0.45
+      },
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "show_eta": true,
+        "show_nearest_tag": true,
+        "short_labels": true
+      }
+    },
+    "verbosity": "standard"
+  },
+  "host": null
+}

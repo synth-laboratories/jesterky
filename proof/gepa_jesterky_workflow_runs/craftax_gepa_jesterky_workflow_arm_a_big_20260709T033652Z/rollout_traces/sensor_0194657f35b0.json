@@ -1,0 +1,168 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:41:35Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into four buckets: nearby resource, nearby workstation, hazard, or no useful target visible.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nDecision procedure:\n- If a useful target is adjacent, end the action list with do.\n- If a useful target is visible but not adjacent, use the smallest movement burst that heads toward it, then stop.\n- If the target is not visible, explore systematically with a consistent sweep pattern instead of oscillating between directions.\n- If the agent has enough materials for the next craft in the ladder, craft immediately rather than collecting more of the same resource.\n\nProgression ladder: wood -> table -> wood pickaxe -> stone -> furnace -> better tools. Do not skip prerequisites. Do not get trapped in move/do repetition; if the last plan failed to reach a target, deliberately choose a different direction or a broader search pattern on the next turn. Avoid lava, blocked paths, and repeated no-op loops."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_442a3cb2c191",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_left",
+        "move_left",
+        "move_left",
+        "move_left",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T03:41:35Z",
+    "usage": {
+      "completion_tokens": 219,
+      "cost_usd": 0.0,
+      "prompt_tokens": 2989,
+      "total_tokens": 3208
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into four buckets: nearby resource, nearby workstation, hazard, or no useful target visible.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nDecision procedure:\n- If a useful target is adjacent, end the action list with do.\n- If a useful target is visible but not adjacent, use the smallest movement burst that heads toward it, then stop.\n- If the target is not visible, explore systematically with a consistent sweep pattern instead of oscillating between directions.\n- If the agent has enough materials for the next craft in the ladder, craft immediately rather than collecting more of the same resource.\n\nProgression ladder: wood -> table -> wood pickaxe -> stone -> furnace -> better tools. Do not skip prerequisites. Do not get trapped in move/do repetition; if the last plan failed to reach a target, deliberately choose a different direction or a broader search pattern on the next turn. Avoid lava, blocked paths, and repeated no-op loops."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into four buckets: nearby resource, nearby workstation, hazard, or no useful target visible.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nDecision procedure:\n- If a useful target is adjacent, end the action list with do.\n- If a useful target is visible but not adjacent, use the smallest movement burst that heads toward it, then stop.\n- If the target is not visible, explore systematically with a consistent sweep pattern instead of oscillating between directions.\n- If the agent has enough materials for the next craft in the ladder, craft immediately rather than collecting more of the same resource.\n\nProgression ladder: wood -> table -> wood pickaxe -> stone -> furnace -> better tools. Do not skip prerequisites. Do not get trapped in move/do repetition; if the last plan failed to reach a target, deliberately choose a different direction or a broader search pattern on the next turn. Avoid lava, blocked paths, and repeated no-op loops."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_442a3cb2c191",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_left",
+      "move_left",
+      "move_left",
+      "move_left",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 219,
+    "cost_usd": 0.0,
+    "prompt_tokens": 2989,
+    "total_tokens": 3208
+  }
+}

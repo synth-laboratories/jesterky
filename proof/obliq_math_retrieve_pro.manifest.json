@@ -1,0 +1,3569 @@
+{
+  "run_id": "obliq-math-retrieve-pro-q12",
+  "workflow_name": "obliq_math_verify",
+  "spec_hash": "605a89865bfe135fd4810f9b1037426e5c5f51725b25488d6841c77d0d1445de",
+  "args": {
+    "data_dir": "data/obliq-bench/math",
+    "k": 10,
+    "max_doc_chars": 700,
+    "max_queries": 12,
+    "mode": "retrieve",
+    "pool_size": 16,
+    "seed": 7
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "data_dir": "data/obliq-bench/math",
+        "k": 10,
+        "max_doc_chars": 700,
+        "max_queries": 12,
+        "mode": "retrieve",
+        "pool_size": 16,
+        "seed": 7
+      },
+      "wall_ms": 1783540906089
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "expand_queries"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540906089
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "expand_queries"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783540907745
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540907745
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783540907746
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540907746
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783540907747
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540907747
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783540907748
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540907748
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783540907749
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540907749
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783540941027
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783540941027
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783540941027
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783540949294
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783540949294
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783540949294
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783540957721
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783540957721
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783540957721
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783540964773
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783540964773
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783540964773
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783540964774
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540964774
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783540964776
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540964776
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783540964777
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540964777
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783540964778
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783540964778
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541010917
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541010917
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783541010917
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541011023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541011023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783541011023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541023580
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541023580
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783541023580
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541030318
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541030318
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783541030318
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 8
+      },
+      "wall_ms": 1783541030319
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541030319
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 9
+      },
+      "wall_ms": 1783541030321
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541030321
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 10
+      },
+      "wall_ms": 1783541030323
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541030323
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 11
+      },
+      "wall_ms": 1783541030325
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541030325
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541058949
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541058949
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 10
+      },
+      "wall_ms": 1783541058949
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541075693
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541075693
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 8
+      },
+      "wall_ms": 1783541075693
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541101010
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541101010
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 11
+      },
+      "wall_ms": 1783541101010
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_reranker"
+      },
+      "wall_ms": 1783541135023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541135023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 9
+      },
+      "wall_ms": 1783541135023
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 12,
+        "total": 12
+      },
+      "wall_ms": 1783541135025
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541135025
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541135025
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541135028
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "record_metrics"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783541135028
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "record_metrics"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "obliq_metrics_recorder"
+      },
+      "wall_ms": 1783541154794
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "record_metrics"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541154794
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783541154794
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q00267",
+        "ranked_ids": [
+          "american-math-monthly___2006___11070",
+          "contests-higher-math___None___G.32",
+          "american-math-monthly___2013___11560",
+          "american-math-monthly___2012___11524",
+          "american-math-monthly___2016___11760",
+          "harvard-quals___2024___F24.13",
+          "harvard-quals___2008___F08.3.1",
+          "harvard-quals___2010___F10.5",
+          "harvard-quals___2021___F21.3",
+          "harvard-quals___2014___S14.III.3",
+          "harvard-quals___2023___S23.14",
+          "american-math-monthly___2025___12446",
+          "american-math-monthly___1997___10518",
+          "contests-higher-math___None___T.7",
+          "umichigan-quals___2023___la.W23.3",
+          "american-math-monthly___2024___12348"
+        ],
+        "rationale": "Ranked by closeness to the query's core insight pattern — using a symmetry/commutation condition plus matching local data to force a global structural conclusion — with 11070 (commuting analytic maps ⇒ equality) being the closest structural analogue."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q01341",
+        "ranked_ids": [
+          "american-math-monthly___2014___11654",
+          "american-math-monthly___2008___11295",
+          "american-math-monthly___2016___11746",
+          "american-math-monthly___2015___11691",
+          "harvard-quals___2014___S14.III.3",
+          "harvard-quals___2013___F13.III.6",
+          "american-math-monthly___2008___11244",
+          "american-math-monthly___2010___11412",
+          "umichigan-quals___2025___calc.W25.3",
+          "american-math-monthly___2016___11760",
+          "harvard-quals___2023___F23.5",
+          "harvard-quals___2020___F20.6",
+          "harvard-quals___2013___F13.I.5",
+          "harvard-quals___2011___S11.9",
+          "american-math-monthly___2024___12348",
+          "american-math-monthly___2004___10956"
+        ],
+        "rationale": "Ranked by proximity to the 'aha' pattern of a seemingly messy double/iterated integral collapsing to an elegant closed form via clever substitution, internal symmetry, or integral-representation trick, regardless of surface topic."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q00604",
+        "ranked_ids": [
+          "american-math-monthly___1999___10610",
+          "american-math-monthly___2010___11351",
+          "american-math-monthly___2006___11099",
+          "american-math-monthly___2004___10956",
+          "american-math-monthly___2007___11217",
+          "american-math-monthly___2016___11760",
+          "american-math-monthly___2019___11987",
+          "american-math-monthly___2005___11029",
+          "american-math-monthly___1999___10596",
+          "american-math-monthly___1998___10493",
+          "american-math-monthly___2016___11733",
+          "american-math-monthly___2022___12208",
+          "harvard-quals___2014___F14.III.2",
+          "harvard-quals___2014___S14.III.6",
+          "american-math-monthly___1999___10606",
+          "american-math-monthly___2008___11236"
+        ],
+        "rationale": "Ranked by the shared latent insight of choosing an extremal canonical set of small integers to optimize a combinatorial objective — most directly mirrored in C(m), zero-sum extremal sets, and the 1–9 magic-square arrangement."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q00211",
+        "ranked_ids": [
+          "american-math-monthly___2011___11452",
+          "american-math-monthly___2004___10968",
+          "american-math-monthly___1999___10596",
+          "american-math-monthly___2024___12348",
+          "american-math-monthly___2016___11733",
+          "american-math-monthly___2007___11217",
+          "american-math-monthly___2013___11560",
+          "american-math-monthly___2009___11266",
+          "american-math-monthly___1997___10430",
+          "contests-higher-math___None___F.15",
+          "american-math-monthly___2016___11760",
+          "umichigan-quals___2024___prob.W24.5",
+          "harvard-quals___2014___F14.III.2",
+          "american-math-monthly___2022___12208",
+          "harvard-quals___2013___F13.III.6",
+          "american-math-monthly___2025___12446"
+        ],
+        "rationale": "Ranked by latent structural match to the query's core pattern — equivalence classes of combinatorial objects under a symmetry operation (here cyclic block permutation), prioritizing problems involving equivalence relations, cyclic/group action structures, and combinatorial enumeration of orbits."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q01630",
+        "ranked_ids": [
+          "american-math-monthly___2012___11499",
+          "harvard-quals___2014___S14.II.6",
+          "harvard-quals___2025___F25.12",
+          "harvard-quals___2024___F24.14",
+          "american-math-monthly___2015___11691",
+          "american-math-monthly___2016___11746",
+          "american-math-monthly___2007___11185",
+          "american-math-monthly___2016___11812",
+          "american-math-monthly___2013___11618",
+          "harvard-quals___2025___F25.18",
+          "harvard-quals___2010___F10.18",
+          "harvard-quals___2014___S14.III.3",
+          "harvard-quals___2020___F20.14",
+          "contests-higher-math___None___P.22",
+          "american-math-monthly___2005___11017",
+          "american-math-monthly___2008___11236"
+        ],
+        "rationale": "Ranked by shared 'eureka' of representing an integrand/sum via an integral or series representation then interchanging operations (Fubini, sum-integral swap, differentiation under integral) to unlock a closed-form evaluation yielding π."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q01488",
+        "ranked_ids": [
+          "american-math-monthly___2016___11774",
+          "american-math-monthly___2010___11386",
+          "american-math-monthly___2018___11900",
+          "american-math-monthly___2003___3887",
+          "american-math-monthly___2004___10955",
+          "american-math-monthly___2024___12325",
+          "american-math-monthly___2015___11735",
+          "american-math-monthly___2017___11784",
+          "american-math-monthly___2000___10693",
+          "american-math-monthly___2016___11737",
+          "american-math-monthly___2020___12112",
+          "american-math-monthly___2000___10703",
+          "american-math-monthly___2005___11017",
+          "harvard-quals___2013___F13.III.6",
+          "harvard-quals___2024___F24.13",
+          "american-math-monthly___2024___12348"
+        ],
+        "rationale": "Ranked by shared core insight — expressing geometric quantities (especially tangent-circle radii) in terms of triangle angles/parameters (r,R) and then bounding via analytic inequalities — with mixtilinear-incircle problems closest, then related circumcircle/incircle-tangency constructions, then other triangle-inequality problems, and finally unrelated domains."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q01986",
+        "ranked_ids": [
+          "contests-higher-math___None___P.27",
+          "american-math-monthly___2008___11244",
+          "harvard-quals___2014___S14.II.6",
+          "harvard-quals___2025___F25.12",
+          "harvard-quals___2020___F20.14",
+          "harvard-quals___2014___S14.III.6",
+          "american-math-monthly___2007___11200",
+          "american-math-monthly___2009___11327",
+          "contests-higher-math___None___P.22",
+          "harvard-quals___2014___F14.III.2",
+          "harvard-quals___2013___F13.III.6",
+          "harvard-quals___2024___F24.14",
+          "american-math-monthly___2010___11378",
+          "harvard-quals___2014___S14.III.3",
+          "harvard-quals___2023___S23.13",
+          "umichigan-quals___2025___prob.W25.4"
+        ],
+        "rationale": "Ranked by shared eureka insight: a nonlinear function applied to a mixture/convex combination in an extreme limit is dominated by one extreme component (largest σ_i governs Φ⁻¹ asymptotics via Laplace-principle / tail-domination reasoning)."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q01588",
+        "ranked_ids": [
+          "american-math-monthly___2018___11960",
+          "harvard-quals___2014___S14.III.6",
+          "american-math-monthly___2008___11269",
+          "harvard-quals___2013___F13.I.6",
+          "harvard-quals___2014___S14.II.6",
+          "harvard-quals___2025___F25.12",
+          "american-math-monthly___2016___11811",
+          "american-math-monthly___2007___11200",
+          "harvard-quals___2024___F24.14",
+          "american-math-monthly___1998___10571",
+          "harvard-quals___2020___F20.14",
+          "american-math-monthly___2013___11618",
+          "american-math-monthly___2016___11760",
+          "contests-higher-math___None___F.50",
+          "american-math-monthly___1997___10419",
+          "american-math-monthly___1998___10497"
+        ],
+        "rationale": "Ranked by structural affinity to the core reasoning pattern (interchanging double sums and exploiting binomial/combinatorial identities to reduce a series to closed form), prioritizing candidates involving series manipulation with binomial coefficients, termwise operations on sums, and combinatorial-sum telescoping over surface lexical similarity."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 10
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q02835",
+        "ranked_ids": [
+          "harvard-quals___2013___F13.III.6",
+          "harvard-quals___2024___F24.6",
+          "american-math-monthly___1998___10563",
+          "harvard-quals___2014___S14.III.3",
+          "american-math-monthly___2010___11412",
+          "harvard-quals___2014___S14.III.6",
+          "umichigan-quals___2023___la.W23.3",
+          "harvard-quals___2021___F21.3",
+          "harvard-quals___2013___F13.I.5",
+          "harvard-quals___2020___F20.17",
+          "american-math-monthly___2024___12348",
+          "american-math-monthly___2004___10956",
+          "american-math-monthly___2006___11099",
+          "american-math-monthly___2025___12446",
+          "american-math-monthly___2015___11687",
+          "contests-higher-math___None___G.32"
+        ],
+        "rationale": "Ranked by latent Plancherel/L²-isometry insight: explicit Plancherel use (F13.III.6) and operator-theoretic L² structure (F24.6) top, then integral-transform asymptotics (10563, S14.III.3), with unrelated combinatorics/geometry/ode at bottom."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 8
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q02001",
+        "ranked_ids": [
+          "american-math-monthly___2014___11644",
+          "american-math-monthly___2003___10939",
+          "american-math-monthly___2019___11973",
+          "american-math-monthly___2009___11331",
+          "harvard-quals___2014___S14.III.3",
+          "american-math-monthly___2016___11746",
+          "harvard-quals___2025___F25.18",
+          "harvard-quals___2024___F24.14",
+          "harvard-quals___2014___S14.II.6",
+          "harvard-quals___2025___F25.12",
+          "harvard-quals___2013___F13.III.6",
+          "contests-higher-math___None___F.50",
+          "harvard-quals___2023___S23.14",
+          "harvard-quals___2020___F20.14",
+          "harvard-quals___2014___S14.III.6",
+          "contests-higher-math___None___P.22"
+        ],
+        "rationale": "Ranked by the latent 'aha' of evaluating a nontrivial integral/series to yield zeta values or special constants via analytic regularization, contour integration, or generating-function manipulation, with decreasing structural similarity to the query's tanh-contour-to-zeta pattern."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 11
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q03027",
+        "ranked_ids": [
+          "american-math-monthly___2006___11070",
+          "harvard-quals___2021___S21.7",
+          "harvard-quals___2020___S20.4",
+          "harvard-quals___2023___S23.13",
+          "harvard-quals___2014___S14.III.3",
+          "harvard-quals___2020___F20.17",
+          "contests-higher-math___None___F.46",
+          "berkeley-quals___1995___F1.1.34",
+          "american-math-monthly___2013___11560",
+          "american-math-monthly___2016___11760",
+          "harvard-quals___2013___F13.III.6",
+          "harvard-quals___2023___S23.14",
+          "contests-higher-math___None___G.32",
+          "american-math-monthly___2021___12174",
+          "harvard-quals___2020___F20.14",
+          "contests-higher-math___None___T.7"
+        ],
+        "rationale": "Ranked by latent reasoning affinity to Riemann Mapping + Schwarz Lemma composition trick: top candidates involve comparing holomorphic maps at a shared point, preserving injectivity/boundedness under limits, or proving existence of a structure-preserving transformation."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "rank_queries"
+          },
+          {
+            "index": 9
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_reranker"
+      },
+      "outputs": {
+        "query_id": "q02137",
+        "ranked_ids": [
+          "umichigan-quals___2025___la.F25.3",
+          "berkeley-quals___1995___F1.1.34",
+          "umichigan-quals___2024___la.W24.4",
+          "harvard-quals___2015___F15.12",
+          "umichigan-quals___2025___la.F25.5",
+          "umichigan-quals___2025___la.W25.5",
+          "umichigan-quals___2023___la.W23.3",
+          "berkeley-quals___1986___F3.1.18",
+          "berkeley-quals___1984___F3.4.11",
+          "american-math-monthly___2024___12348",
+          "american-math-monthly___2004___10956",
+          "american-math-monthly___2010___11412",
+          "american-math-monthly___2016___11760",
+          "american-math-monthly___2009___11328",
+          "harvard-quals___2013___F13.III.6",
+          "harvard-quals___2020___F20.6"
+        ],
+        "rationale": "Ranked by proximity to the core 'aha' of reducing a differential problem to an algebraic eigenstructure/characteristic equation whose root multiplicities dictate solution form, prioritizing problems that require recognizing a hidden algebraic reduction (inverse eigenvalue, functional-to-ODE, fundamental matrix, Wronskian structure, separation of variables) over surface ODE overlap or unrelated domains."
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "obliq-math-retrieve-pro-q12",
+        "node_path": [
+          {
+            "node": "record_metrics"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "call": {
+        "call": "actor",
+        "actor": "obliq_metrics_recorder"
+      },
+      "outputs": {
+        "headline": "Model collapses on oblique math retrieval — 10 of 12 queries recover zero golds and mean nDCG sits at 0.125, far below the pass threshold.",
+        "k": 10,
+        "matrix_report": [
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q00211",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q00211",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2011___11452",
+              "american-math-monthly___2004___10968",
+              "american-math-monthly___1999___10596",
+              "american-math-monthly___2024___12348",
+              "american-math-monthly___2016___11733"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q00267",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q00267",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2006___11070",
+              "contests-higher-math___None___G.32",
+              "american-math-monthly___2013___11560",
+              "american-math-monthly___2012___11524",
+              "american-math-monthly___2016___11760"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q00604",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q00604",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___1999___10610",
+              "american-math-monthly___2010___11351",
+              "american-math-monthly___2006___11099",
+              "american-math-monthly___2004___10956",
+              "american-math-monthly___2007___11217"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q01341",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q01341",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2014___11654",
+              "american-math-monthly___2008___11295",
+              "american-math-monthly___2016___11746",
+              "american-math-monthly___2015___11691",
+              "harvard-quals___2014___S14.III.3"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q01488",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q01488",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2016___11774",
+              "american-math-monthly___2010___11386",
+              "american-math-monthly___2018___11900",
+              "american-math-monthly___2003___3887",
+              "american-math-monthly___2004___10955"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q01588",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q01588",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2018___11960",
+              "harvard-quals___2014___S14.III.6",
+              "american-math-monthly___2008___11269",
+              "harvard-quals___2013___F13.I.6",
+              "harvard-quals___2014___S14.II.6"
+            ]
+          },
+          {
+            "blocker": false,
+            "finding": "R@10=1.00 nDCG@10=1.00 golds=1",
+            "fix": "strong latent rank",
+            "item": "q01630",
+            "n_gold": 1,
+            "n_ranked": 16,
+            "ndcg_at_k": 1.0,
+            "query_id": "q01630",
+            "recall_at_k": 1.0,
+            "score": 10.0,
+            "severity": "none",
+            "top_ids": [
+              "american-math-monthly___2012___11499",
+              "harvard-quals___2014___S14.II.6",
+              "harvard-quals___2025___F25.12",
+              "harvard-quals___2024___F24.14",
+              "american-math-monthly___2015___11691"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q01986",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q01986",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "contests-higher-math___None___P.27",
+              "american-math-monthly___2008___11244",
+              "harvard-quals___2014___S14.II.6",
+              "harvard-quals___2025___F25.12",
+              "harvard-quals___2020___F20.14"
+            ]
+          },
+          {
+            "blocker": false,
+            "finding": "R@10=1.00 nDCG@10=0.50 golds=1",
+            "fix": "strong latent rank",
+            "item": "q02001",
+            "n_gold": 1,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.5,
+            "query_id": "q02001",
+            "recall_at_k": 1.0,
+            "score": 5.0,
+            "severity": "none",
+            "top_ids": [
+              "american-math-monthly___2014___11644",
+              "american-math-monthly___2003___10939",
+              "american-math-monthly___2019___11973",
+              "american-math-monthly___2009___11331",
+              "harvard-quals___2014___S14.III.3"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q02137",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q02137",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "umichigan-quals___2025___la.F25.3",
+              "berkeley-quals___1995___F1.1.34",
+              "umichigan-quals___2024___la.W24.4",
+              "harvard-quals___2015___F15.12",
+              "umichigan-quals___2025___la.F25.5"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q02835",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q02835",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "harvard-quals___2013___F13.III.6",
+              "harvard-quals___2024___F24.6",
+              "american-math-monthly___1998___10563",
+              "harvard-quals___2014___S14.III.3",
+              "american-math-monthly___2010___11412"
+            ]
+          },
+          {
+            "blocker": true,
+            "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+            "fix": "weak latent rank",
+            "item": "q03027",
+            "n_gold": 0,
+            "n_ranked": 16,
+            "ndcg_at_k": 0.0,
+            "query_id": "q03027",
+            "recall_at_k": 0.0,
+            "score": 0.0,
+            "severity": "high",
+            "top_ids": [
+              "american-math-monthly___2006___11070",
+              "harvard-quals___2021___S21.7",
+              "harvard-quals___2020___S20.4",
+              "harvard-quals___2023___S23.13",
+              "harvard-quals___2014___S14.III.3"
+            ]
+          }
+        ],
+        "mean_ndcg_at_k": 0.125,
+        "mean_recall_at_k": 0.1667,
+        "mode": "retrieve",
+        "n_queries": 12,
+        "ndcg_at_k": 0.125,
+        "recall_at_k": 0.1667,
+        "verdict": "fail"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "obliq-math-retrieve-pro-q12",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:obliq_math_verify",
+    "inputs": {
+      "data_dir": "data/obliq-bench/math",
+      "k": 10,
+      "max_doc_chars": 700,
+      "max_queries": 12,
+      "mode": "retrieve",
+      "pool_size": 16,
+      "seed": 7
+    },
+    "outputs": null,
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "obliq-math-retrieve-pro-q12",
+          "node_path": [
+            {
+              "node": "rank_queries"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "rank_queries",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q00211",
+                  "ranked_ids": [
+                    "american-math-monthly___2011___11452",
+                    "american-math-monthly___2004___10968",
+                    "american-math-monthly___1999___10596",
+                    "american-math-monthly___2024___12348",
+                    "american-math-monthly___2016___11733",
+                    "american-math-monthly___2007___11217",
+                    "american-math-monthly___2013___11560",
+                    "american-math-monthly___2009___11266",
+                    "american-math-monthly___1997___10430",
+                    "contests-higher-math___None___F.15",
+                    "american-math-monthly___2016___11760",
+                    "umichigan-quals___2024___prob.W24.5",
+                    "harvard-quals___2014___F14.III.2",
+                    "american-math-monthly___2022___12208",
+                    "harvard-quals___2013___F13.III.6",
+                    "american-math-monthly___2025___12446"
+                  ],
+                  "rationale": "Ranked by latent structural match to the query's core pattern — equivalence classes of combinatorial objects under a symmetry operation (here cyclic block permutation), prioritizing problems involving equivalence relations, cyclic/group action structures, and combinatorial enumeration of orbits."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q00267",
+                  "ranked_ids": [
+                    "american-math-monthly___2006___11070",
+                    "contests-higher-math___None___G.32",
+                    "american-math-monthly___2013___11560",
+                    "american-math-monthly___2012___11524",
+                    "american-math-monthly___2016___11760",
+                    "harvard-quals___2024___F24.13",
+                    "harvard-quals___2008___F08.3.1",
+                    "harvard-quals___2010___F10.5",
+                    "harvard-quals___2021___F21.3",
+                    "harvard-quals___2014___S14.III.3",
+                    "harvard-quals___2023___S23.14",
+                    "american-math-monthly___2025___12446",
+                    "american-math-monthly___1997___10518",
+                    "contests-higher-math___None___T.7",
+                    "umichigan-quals___2023___la.W23.3",
+                    "american-math-monthly___2024___12348"
+                  ],
+                  "rationale": "Ranked by closeness to the query's core insight pattern — using a symmetry/commutation condition plus matching local data to force a global structural conclusion — with 11070 (commuting analytic maps ⇒ equality) being the closest structural analogue."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q00604",
+                  "ranked_ids": [
+                    "american-math-monthly___1999___10610",
+                    "american-math-monthly___2010___11351",
+                    "american-math-monthly___2006___11099",
+                    "american-math-monthly___2004___10956",
+                    "american-math-monthly___2007___11217",
+                    "american-math-monthly___2016___11760",
+                    "american-math-monthly___2019___11987",
+                    "american-math-monthly___2005___11029",
+                    "american-math-monthly___1999___10596",
+                    "american-math-monthly___1998___10493",
+                    "american-math-monthly___2016___11733",
+                    "american-math-monthly___2022___12208",
+                    "harvard-quals___2014___F14.III.2",
+                    "harvard-quals___2014___S14.III.6",
+                    "american-math-monthly___1999___10606",
+                    "american-math-monthly___2008___11236"
+                  ],
+                  "rationale": "Ranked by the shared latent insight of choosing an extremal canonical set of small integers to optimize a combinatorial objective — most directly mirrored in C(m), zero-sum extremal sets, and the 1–9 magic-square arrangement."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q01341",
+                  "ranked_ids": [
+                    "american-math-monthly___2014___11654",
+                    "american-math-monthly___2008___11295",
+                    "american-math-monthly___2016___11746",
+                    "american-math-monthly___2015___11691",
+                    "harvard-quals___2014___S14.III.3",
+                    "harvard-quals___2013___F13.III.6",
+                    "american-math-monthly___2008___11244",
+                    "american-math-monthly___2010___11412",
+                    "umichigan-quals___2025___calc.W25.3",
+                    "american-math-monthly___2016___11760",
+                    "harvard-quals___2023___F23.5",
+                    "harvard-quals___2020___F20.6",
+                    "harvard-quals___2013___F13.I.5",
+                    "harvard-quals___2011___S11.9",
+                    "american-math-monthly___2024___12348",
+                    "american-math-monthly___2004___10956"
+                  ],
+                  "rationale": "Ranked by proximity to the 'aha' pattern of a seemingly messy double/iterated integral collapsing to an elegant closed form via clever substitution, internal symmetry, or integral-representation trick, regardless of surface topic."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 4
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[4]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 4
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q01488",
+                  "ranked_ids": [
+                    "american-math-monthly___2016___11774",
+                    "american-math-monthly___2010___11386",
+                    "american-math-monthly___2018___11900",
+                    "american-math-monthly___2003___3887",
+                    "american-math-monthly___2004___10955",
+                    "american-math-monthly___2024___12325",
+                    "american-math-monthly___2015___11735",
+                    "american-math-monthly___2017___11784",
+                    "american-math-monthly___2000___10693",
+                    "american-math-monthly___2016___11737",
+                    "american-math-monthly___2020___12112",
+                    "american-math-monthly___2000___10703",
+                    "american-math-monthly___2005___11017",
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2024___F24.13",
+                    "american-math-monthly___2024___12348"
+                  ],
+                  "rationale": "Ranked by shared core insight — expressing geometric quantities (especially tangent-circle radii) in terms of triangle angles/parameters (r,R) and then bounding via analytic inequalities — with mixtilinear-incircle problems closest, then related circumcircle/incircle-tangency constructions, then other triangle-inequality problems, and finally unrelated domains."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 5
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[5]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 5
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q01588",
+                  "ranked_ids": [
+                    "american-math-monthly___2018___11960",
+                    "harvard-quals___2014___S14.III.6",
+                    "american-math-monthly___2008___11269",
+                    "harvard-quals___2013___F13.I.6",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "american-math-monthly___2016___11811",
+                    "american-math-monthly___2007___11200",
+                    "harvard-quals___2024___F24.14",
+                    "american-math-monthly___1998___10571",
+                    "harvard-quals___2020___F20.14",
+                    "american-math-monthly___2013___11618",
+                    "american-math-monthly___2016___11760",
+                    "contests-higher-math___None___F.50",
+                    "american-math-monthly___1997___10419",
+                    "american-math-monthly___1998___10497"
+                  ],
+                  "rationale": "Ranked by structural affinity to the core reasoning pattern (interchanging double sums and exploiting binomial/combinatorial identities to reduce a series to closed form), prioritizing candidates involving series manipulation with binomial coefficients, termwise operations on sums, and combinatorial-sum telescoping over surface lexical similarity."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 6
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[6]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 6
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q01630",
+                  "ranked_ids": [
+                    "american-math-monthly___2012___11499",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "harvard-quals___2024___F24.14",
+                    "american-math-monthly___2015___11691",
+                    "american-math-monthly___2016___11746",
+                    "american-math-monthly___2007___11185",
+                    "american-math-monthly___2016___11812",
+                    "american-math-monthly___2013___11618",
+                    "harvard-quals___2025___F25.18",
+                    "harvard-quals___2010___F10.18",
+                    "harvard-quals___2014___S14.III.3",
+                    "harvard-quals___2020___F20.14",
+                    "contests-higher-math___None___P.22",
+                    "american-math-monthly___2005___11017",
+                    "american-math-monthly___2008___11236"
+                  ],
+                  "rationale": "Ranked by shared 'eureka' of representing an integrand/sum via an integral or series representation then interchanging operations (Fubini, sum-integral swap, differentiation under integral) to unlock a closed-form evaluation yielding π."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 7
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[7]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 7
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q01986",
+                  "ranked_ids": [
+                    "contests-higher-math___None___P.27",
+                    "american-math-monthly___2008___11244",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "harvard-quals___2020___F20.14",
+                    "harvard-quals___2014___S14.III.6",
+                    "american-math-monthly___2007___11200",
+                    "american-math-monthly___2009___11327",
+                    "contests-higher-math___None___P.22",
+                    "harvard-quals___2014___F14.III.2",
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2024___F24.14",
+                    "american-math-monthly___2010___11378",
+                    "harvard-quals___2014___S14.III.3",
+                    "harvard-quals___2023___S23.13",
+                    "umichigan-quals___2025___prob.W25.4"
+                  ],
+                  "rationale": "Ranked by shared eureka insight: a nonlinear function applied to a mixture/convex combination in an extreme limit is dominated by one extreme component (largest σ_i governs Φ⁻¹ asymptotics via Laplace-principle / tail-domination reasoning)."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 8
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[8]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 8
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q02001",
+                  "ranked_ids": [
+                    "american-math-monthly___2014___11644",
+                    "american-math-monthly___2003___10939",
+                    "american-math-monthly___2019___11973",
+                    "american-math-monthly___2009___11331",
+                    "harvard-quals___2014___S14.III.3",
+                    "american-math-monthly___2016___11746",
+                    "harvard-quals___2025___F25.18",
+                    "harvard-quals___2024___F24.14",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "harvard-quals___2013___F13.III.6",
+                    "contests-higher-math___None___F.50",
+                    "harvard-quals___2023___S23.14",
+                    "harvard-quals___2020___F20.14",
+                    "harvard-quals___2014___S14.III.6",
+                    "contests-higher-math___None___P.22"
+                  ],
+                  "rationale": "Ranked by the latent 'aha' of evaluating a nontrivial integral/series to yield zeta values or special constants via analytic regularization, contour integration, or generating-function manipulation, with decreasing structural similarity to the query's tanh-contour-to-zeta pattern."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 9
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[9]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 9
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q02137",
+                  "ranked_ids": [
+                    "umichigan-quals___2025___la.F25.3",
+                    "berkeley-quals___1995___F1.1.34",
+                    "umichigan-quals___2024___la.W24.4",
+                    "harvard-quals___2015___F15.12",
+                    "umichigan-quals___2025___la.F25.5",
+                    "umichigan-quals___2025___la.W25.5",
+                    "umichigan-quals___2023___la.W23.3",
+                    "berkeley-quals___1986___F3.1.18",
+                    "berkeley-quals___1984___F3.4.11",
+                    "american-math-monthly___2024___12348",
+                    "american-math-monthly___2004___10956",
+                    "american-math-monthly___2010___11412",
+                    "american-math-monthly___2016___11760",
+                    "american-math-monthly___2009___11328",
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2020___F20.6"
+                  ],
+                  "rationale": "Ranked by proximity to the core 'aha' of reducing a differential problem to an algebraic eigenstructure/characteristic equation whose root multiplicities dictate solution form, prioritizing problems that require recognizing a hidden algebraic reduction (inverse eigenvalue, functional-to-ODE, fundamental matrix, Wronskian structure, separation of variables) over surface ODE overlap or unrelated domains."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 10
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[10]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 10
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q02835",
+                  "ranked_ids": [
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2024___F24.6",
+                    "american-math-monthly___1998___10563",
+                    "harvard-quals___2014___S14.III.3",
+                    "american-math-monthly___2010___11412",
+                    "harvard-quals___2014___S14.III.6",
+                    "umichigan-quals___2023___la.W23.3",
+                    "harvard-quals___2021___F21.3",
+                    "harvard-quals___2013___F13.I.5",
+                    "harvard-quals___2020___F20.17",
+                    "american-math-monthly___2024___12348",
+                    "american-math-monthly___2004___10956",
+                    "american-math-monthly___2006___11099",
+                    "american-math-monthly___2025___12446",
+                    "american-math-monthly___2015___11687",
+                    "contests-higher-math___None___G.32"
+                  ],
+                  "rationale": "Ranked by latent Plancherel/L²-isometry insight: explicit Plancherel use (F13.III.6) and operator-theoretic L² structure (F24.6) top, then integral-transform asymptotics (10563, S14.III.3), with unrelated combinatorics/geometry/ode at bottom."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "rank_queries"
+                },
+                {
+                  "index": 11
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[11]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "obliq-math-retrieve-pro-q12",
+                  "node_path": [
+                    {
+                      "node": "rank_queries"
+                    },
+                    {
+                      "index": 11
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:obliq_reranker",
+                "inputs": null,
+                "outputs": {
+                  "query_id": "q03027",
+                  "ranked_ids": [
+                    "american-math-monthly___2006___11070",
+                    "harvard-quals___2021___S21.7",
+                    "harvard-quals___2020___S20.4",
+                    "harvard-quals___2023___S23.13",
+                    "harvard-quals___2014___S14.III.3",
+                    "harvard-quals___2020___F20.17",
+                    "contests-higher-math___None___F.46",
+                    "berkeley-quals___1995___F1.1.34",
+                    "american-math-monthly___2013___11560",
+                    "american-math-monthly___2016___11760",
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2023___S23.14",
+                    "contests-higher-math___None___G.32",
+                    "american-math-monthly___2021___12174",
+                    "harvard-quals___2020___F20.14",
+                    "contests-higher-math___None___T.7"
+                  ],
+                  "rationale": "Ranked by latent reasoning affinity to Riemann Mapping + Schwarz Lemma composition trick: top candidates involve comparing holomorphic maps at a shared point, preserving injectivity/boundedness under limits, or proving existence of a structure-preserving transformation."
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "addr": {
+          "run_id": "obliq-math-retrieve-pro-q12",
+          "node_path": [
+            {
+              "node": "record_metrics"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "record_metrics",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "obliq-math-retrieve-pro-q12",
+              "node_path": [
+                {
+                  "node": "record_metrics"
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 1
+            },
+            "label": "actor:obliq_metrics_recorder",
+            "inputs": null,
+            "outputs": {
+              "headline": "Model collapses on oblique math retrieval — 10 of 12 queries recover zero golds and mean nDCG sits at 0.125, far below the pass threshold.",
+              "k": 10,
+              "matrix_report": [
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q00211",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q00211",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2011___11452",
+                    "american-math-monthly___2004___10968",
+                    "american-math-monthly___1999___10596",
+                    "american-math-monthly___2024___12348",
+                    "american-math-monthly___2016___11733"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q00267",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q00267",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2006___11070",
+                    "contests-higher-math___None___G.32",
+                    "american-math-monthly___2013___11560",
+                    "american-math-monthly___2012___11524",
+                    "american-math-monthly___2016___11760"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q00604",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q00604",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___1999___10610",
+                    "american-math-monthly___2010___11351",
+                    "american-math-monthly___2006___11099",
+                    "american-math-monthly___2004___10956",
+                    "american-math-monthly___2007___11217"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q01341",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q01341",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2014___11654",
+                    "american-math-monthly___2008___11295",
+                    "american-math-monthly___2016___11746",
+                    "american-math-monthly___2015___11691",
+                    "harvard-quals___2014___S14.III.3"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q01488",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q01488",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2016___11774",
+                    "american-math-monthly___2010___11386",
+                    "american-math-monthly___2018___11900",
+                    "american-math-monthly___2003___3887",
+                    "american-math-monthly___2004___10955"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q01588",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q01588",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2018___11960",
+                    "harvard-quals___2014___S14.III.6",
+                    "american-math-monthly___2008___11269",
+                    "harvard-quals___2013___F13.I.6",
+                    "harvard-quals___2014___S14.II.6"
+                  ]
+                },
+                {
+                  "blocker": false,
+                  "finding": "R@10=1.00 nDCG@10=1.00 golds=1",
+                  "fix": "strong latent rank",
+                  "item": "q01630",
+                  "n_gold": 1,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 1.0,
+                  "query_id": "q01630",
+                  "recall_at_k": 1.0,
+                  "score": 10.0,
+                  "severity": "none",
+                  "top_ids": [
+                    "american-math-monthly___2012___11499",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "harvard-quals___2024___F24.14",
+                    "american-math-monthly___2015___11691"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q01986",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q01986",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "contests-higher-math___None___P.27",
+                    "american-math-monthly___2008___11244",
+                    "harvard-quals___2014___S14.II.6",
+                    "harvard-quals___2025___F25.12",
+                    "harvard-quals___2020___F20.14"
+                  ]
+                },
+                {
+                  "blocker": false,
+                  "finding": "R@10=1.00 nDCG@10=0.50 golds=1",
+                  "fix": "strong latent rank",
+                  "item": "q02001",
+                  "n_gold": 1,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.5,
+                  "query_id": "q02001",
+                  "recall_at_k": 1.0,
+                  "score": 5.0,
+                  "severity": "none",
+                  "top_ids": [
+                    "american-math-monthly___2014___11644",
+                    "american-math-monthly___2003___10939",
+                    "american-math-monthly___2019___11973",
+                    "american-math-monthly___2009___11331",
+                    "harvard-quals___2014___S14.III.3"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q02137",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q02137",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "umichigan-quals___2025___la.F25.3",
+                    "berkeley-quals___1995___F1.1.34",
+                    "umichigan-quals___2024___la.W24.4",
+                    "harvard-quals___2015___F15.12",
+                    "umichigan-quals___2025___la.F25.5"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q02835",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q02835",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "harvard-quals___2013___F13.III.6",
+                    "harvard-quals___2024___F24.6",
+                    "american-math-monthly___1998___10563",
+                    "harvard-quals___2014___S14.III.3",
+                    "american-math-monthly___2010___11412"
+                  ]
+                },
+                {
+                  "blocker": true,
+                  "finding": "R@10=0.00 nDCG@10=0.00 golds=0",
+                  "fix": "weak latent rank",
+                  "item": "q03027",
+                  "n_gold": 0,
+                  "n_ranked": 16,
+                  "ndcg_at_k": 0.0,
+                  "query_id": "q03027",
+                  "recall_at_k": 0.0,
+                  "score": 0.0,
+                  "severity": "high",
+                  "top_ids": [
+                    "american-math-monthly___2006___11070",
+                    "harvard-quals___2021___S21.7",
+                    "harvard-quals___2020___S20.4",
+                    "harvard-quals___2023___S23.13",
+                    "harvard-quals___2014___S14.III.3"
+                  ]
+                }
+              ],
+              "mean_ndcg_at_k": 0.125,
+              "mean_recall_at_k": 0.1667,
+              "mode": "retrieve",
+              "n_queries": 12,
+              "ndcg_at_k": 0.125,
+              "recall_at_k": 0.1667,
+              "verdict": "fail"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed",
+  "budgets": {
+    "schema_version": "budget_engine.v1",
+    "run_id": "obliq-math-retrieve-pro-q12",
+    "wall_secs": 248.737345958,
+    "plan": {
+      "caps": [
+        {
+          "kind": "actor_calls",
+          "max": 20.0,
+          "hard": false,
+          "label": "calls",
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "tokens",
+          "max": 400000.0,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "wall_seconds",
+          "max": 900.0,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        }
+      ],
+      "warning_percent": 80.0,
+      "fail_on_hard_exhaust": false,
+      "eta": {
+        "enabled": true,
+        "mode": "all",
+        "min_wall_secs": 1.0,
+        "sample_interval_secs": 0.45
+      },
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "show_eta": true,
+        "show_nearest_tag": true,
+        "short_labels": true
+      }
+    },
+    "items": [
+      {
+        "kind": "actor_calls",
+        "label": "calls",
+        "unit": "calls",
+        "max": 20.0,
+        "spent": 13.0,
+        "remaining": 7.0,
+        "utilization": 0.65,
+        "used_percent": 65.0,
+        "state": "ok",
+        "hard": false,
+        "show_progress": true,
+        "show_eta": true,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 133.93549397738462,
+          "seconds_to_limit_low": 66.96774698869231,
+          "seconds_to_limit_high": 267.87098795476925,
+          "rate_per_second": 0.05226396522778323,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      },
+      {
+        "kind": "tokens",
+        "label": "tokens",
+        "unit": "tokens",
+        "max": 400000.0,
+        "spent": 151785.0,
+        "remaining": 248215.0,
+        "utilization": 0.3794625,
+        "used_percent": 37.94625,
+        "state": "ok",
+        "hard": false,
+        "show_progress": true,
+        "show_eta": true,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 406.76180338613807,
+          "seconds_to_limit_low": 203.38090169306903,
+          "seconds_to_limit_high": 813.5236067722761,
+          "rate_per_second": 610.2219970845445,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      },
+      {
+        "kind": "wall_seconds",
+        "label": "wall_seconds",
+        "unit": "seconds",
+        "max": 900.0,
+        "spent": 248.737345958,
+        "remaining": 651.262654042,
+        "utilization": 0.2763748288422222,
+        "used_percent": 27.63748288422222,
+        "state": "ok",
+        "hard": false,
+        "show_progress": true,
+        "show_eta": true,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 651.262654042,
+          "seconds_to_limit_low": 325.631327021,
+          "seconds_to_limit_high": 1302.525308084,
+          "rate_per_second": 1.0,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      }
+    ],
+    "nearest": {
+      "kind": "actor_calls",
+      "label": "calls",
+      "unit": "calls",
+      "max": 20.0,
+      "spent": 13.0,
+      "remaining": 7.0,
+      "utilization": 0.65,
+      "used_percent": 65.0,
+      "state": "ok",
+      "hard": false,
+      "show_progress": true,
+      "show_eta": true,
+      "forecast": {
+        "model": "median_rate",
+        "seconds_to_limit": 133.93549397738462,
+        "seconds_to_limit_low": 66.96774698869231,
+        "seconds_to_limit_high": 267.87098795476925,
+        "rate_per_second": 0.05226396522778323,
+        "confidence": "low",
+        "sample_count": 2
+      }
+    },
+    "state": "ok"
+  }
+}

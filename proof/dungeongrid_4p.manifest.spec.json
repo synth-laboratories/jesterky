@@ -1,0 +1,94 @@
+{
+  "name": "dungeongrid_4p",
+  "entrypoint": [
+    "reset_env",
+    "play_turns",
+    "finalize_episode"
+  ],
+  "nodes": {
+    "finalize_episode": {
+      "kind": "program",
+      "op": "dungeongrid.finalize",
+      "inputs": {
+        "turns": "ledger.turns"
+      },
+      "outputs": {
+        "episode_result": "ledger.episode_result"
+      }
+    },
+    "play_turns": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 1,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "hero",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "inputs": {},
+      "outputs": {
+        "job": "ledger.turns"
+      }
+    },
+    "reset_env": {
+      "kind": "program",
+      "op": "dungeongrid.reset",
+      "inputs": {},
+      "outputs": {
+        "episode_done": "ledger.episode_done",
+        "hero_ids": "ledger.hero_ids",
+        "jobs": "ledger.jobs",
+        "turn_count": "ledger.turn_count"
+      }
+    }
+  },
+  "runplan": {
+    "limits": {
+      "env_calls": 1
+    },
+    "map_concurrency": 1,
+    "budgets": {
+      "caps": [
+        {
+          "kind": "actor_calls",
+          "max": 64.0,
+          "hard": true
+        },
+        {
+          "kind": "tokens",
+          "max": 500000.0,
+          "hard": false
+        },
+        {
+          "kind": "wall_seconds",
+          "max": 900.0,
+          "hard": false
+        }
+      ]
+    },
+    "verbosity": "standard"
+  },
+  "host": {
+    "roles": {
+      "hero": {
+        "prompt": "You control one DungeonGrid hero on a shared grid. Each turn you receive an observation with pos, goal, dist, and legal moves. Choose exactly ONE action from the legal set. Prefer reducing Manhattan distance to the goal. Never immediately reverse your previous move when another on-goal move exists (anti-oscillation). Reply with ONE JSON object: {\"action\":\"move:east|move:west|move:north|move:south|wait\",\"rationale\":\"one short sentence\"}. No tools, no prose outside the JSON.",
+        "prompt_file": null
+      }
+    },
+    "output_schemas": {
+      "hero": "dungeongrid_action.schema.json"
+    },
+    "viz": {
+      "item_labels_op": "dungeongrid.reset",
+      "item_jobs_field": "hero_ids",
+      "item_label_field": "hero_id",
+      "map_node": "play_turns",
+      "matrix_report_field": "episode_result"
+    }
+  }
+}

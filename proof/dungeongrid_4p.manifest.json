@@ -1,0 +1,2040 @@
+{
+  "run_id": "jesterky-cli-run",
+  "workflow_name": "dungeongrid_4p",
+  "spec_hash": "9400a1d9f56adae44d430d53166d785480cf64f9602da52c57151e1e1170118e",
+  "args": {
+    "hero_ids": [
+      "hero_1",
+      "hero_2",
+      "hero_3",
+      "hero_4"
+    ],
+    "max_turns": 8
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "hero_ids": [
+          "hero_1",
+          "hero_2",
+          "hero_3",
+          "hero_4"
+        ],
+        "max_turns": 8
+      },
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "reset_env"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "reset_env"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538367964
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538372048
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538372048
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783538372048
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783538372048
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538372048
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538375309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538375309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783538375309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783538375309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538375309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538379809
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538379809
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783538379809
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783538379809
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538379809
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538384435
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538384435
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783538384435
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783538384435
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538384435
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538388930
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538388930
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783538388930
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783538388930
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538388930
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538392826
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538392826
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783538392826
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783538392826
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538392826
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538397306
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538397306
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783538397306
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783538397306
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538397306
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "hero"
+      },
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 8,
+        "total": 8
+      },
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "finalize_episode"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783538402137
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "finalize_episode"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538402138
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783538402138
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "exploration.first_step",
+        "action": "move:east",
+        "dist": 11,
+        "done": false,
+        "hero_id": "hero_1",
+        "label": "move:east    +0.27  [2,1]",
+        "new_achievements": [
+          "exploration.first_step"
+        ],
+        "observation": "quest=lantern_crypt hero=hero_1 pos=[1,1] goal=[7,7] dist=12 world_turns=0 score=0.00 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          2,
+          1
+        ],
+        "rationale": "Move east toward goal at [7,7] to reduce Manhattan distance.",
+        "reward": 0.27,
+        "score": 7.0,
+        "turn": 0
+      },
+      "score": 0.27,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 10,
+        "done": false,
+        "hero_id": "hero_2",
+        "label": "move:east    +0.17  [2,2]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_2 pos=[1,2] goal=[7,7] dist=11 world_turns=1 score=0.27 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          2,
+          2
+        ],
+        "rationale": "Moving east from x=1 toward goal x=7 reduces Manhattan distance by 1.",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 1
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 10,
+        "done": false,
+        "hero_id": "hero_3",
+        "label": "move:east    +0.17  [3,1]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_3 pos=[2,1] goal=[7,7] dist=11 world_turns=2 score=0.44 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          3,
+          1
+        ],
+        "rationale": "Moving east reduces Manhattan distance from 11 to 10, progressing toward the goal at [7,7].",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 2
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 9,
+        "done": false,
+        "hero_id": "hero_4",
+        "label": "move:east    +0.17  [3,2]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_4 pos=[2,2] goal=[7,7] dist=10 world_turns=3 score=0.61 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          3,
+          2
+        ],
+        "rationale": "Moving east reduces Manhattan distance from 10 to 9, heading toward goal [7,7].",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 3
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 10,
+        "done": false,
+        "hero_id": "hero_1",
+        "label": "move:east    +0.17  [3,1]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_1 pos=[2,1] goal=[7,7] dist=11 world_turns=4 score=0.78 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          3,
+          1
+        ],
+        "rationale": "Moving east reduces x-distance from 5 to 4 toward goal column 7.",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 4
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 9,
+        "done": false,
+        "hero_id": "hero_2",
+        "label": "move:east    +0.17  [3,2]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_2 pos=[2,2] goal=[7,7] dist=10 world_turns=5 score=0.95 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          3,
+          2
+        ],
+        "rationale": "Goal is east and north; moving east again continues reducing distance and maintains progress.",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 5
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 9,
+        "done": false,
+        "hero_id": "hero_3",
+        "label": "move:east    +0.17  [4,1]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_3 pos=[3,1] goal=[7,7] dist=10 world_turns=6 score=1.12 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          4,
+          1
+        ],
+        "rationale": "Moving east reduces Manhattan distance from 10 to 9, continuing in the same direction as my last move.",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 6
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "play_turns"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "hero"
+      },
+      "outputs": {
+        "achievements_note": "",
+        "action": "move:east",
+        "dist": 8,
+        "done": false,
+        "hero_id": "hero_4",
+        "label": "move:east    +0.17  [4,2]",
+        "new_achievements": [],
+        "observation": "quest=lantern_crypt hero=hero_4 pos=[3,2] goal=[7,7] dist=9 world_turns=7 score=1.29 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+        "policy_source": "llm",
+        "pos": [
+          4,
+          2
+        ],
+        "rationale": "Moving east reduces Manhattan distance from 9 to 8 and continues the previous heading.",
+        "reward": 0.16999999999999998,
+        "score": 7.0,
+        "turn": 7
+      },
+      "score": 0.16999999999999998,
+      "signal": {
+        "done": false,
+        "policy_source": "llm"
+      },
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "jesterky-cli-run",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:dungeongrid_4p",
+    "inputs": {
+      "hero_ids": [
+        "hero_1",
+        "hero_2",
+        "hero_3",
+        "hero_4"
+      ],
+      "max_turns": 8
+    },
+    "outputs": null,
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "play_turns"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "play_turns",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "exploration.first_step",
+                  "action": "move:east",
+                  "dist": 11,
+                  "done": false,
+                  "hero_id": "hero_1",
+                  "label": "move:east    +0.27  [2,1]",
+                  "new_achievements": [
+                    "exploration.first_step"
+                  ],
+                  "observation": "quest=lantern_crypt hero=hero_1 pos=[1,1] goal=[7,7] dist=12 world_turns=0 score=0.00 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    2,
+                    1
+                  ],
+                  "rationale": "Move east toward goal at [7,7] to reduce Manhattan distance.",
+                  "reward": 0.27,
+                  "score": 7.0,
+                  "turn": 0
+                },
+                "score": 0.27,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 10,
+                  "done": false,
+                  "hero_id": "hero_2",
+                  "label": "move:east    +0.17  [2,2]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_2 pos=[1,2] goal=[7,7] dist=11 world_turns=1 score=0.27 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    2,
+                    2
+                  ],
+                  "rationale": "Moving east from x=1 toward goal x=7 reduces Manhattan distance by 1.",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 1
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 10,
+                  "done": false,
+                  "hero_id": "hero_3",
+                  "label": "move:east    +0.17  [3,1]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_3 pos=[2,1] goal=[7,7] dist=11 world_turns=2 score=0.44 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    3,
+                    1
+                  ],
+                  "rationale": "Moving east reduces Manhattan distance from 11 to 10, progressing toward the goal at [7,7].",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 2
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 9,
+                  "done": false,
+                  "hero_id": "hero_4",
+                  "label": "move:east    +0.17  [3,2]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_4 pos=[2,2] goal=[7,7] dist=10 world_turns=3 score=0.61 last=none legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    3,
+                    2
+                  ],
+                  "rationale": "Moving east reduces Manhattan distance from 10 to 9, heading toward goal [7,7].",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 3
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 4
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[4]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 4
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 10,
+                  "done": false,
+                  "hero_id": "hero_1",
+                  "label": "move:east    +0.17  [3,1]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_1 pos=[2,1] goal=[7,7] dist=11 world_turns=4 score=0.78 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    3,
+                    1
+                  ],
+                  "rationale": "Moving east reduces x-distance from 5 to 4 toward goal column 7.",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 4
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 5
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[5]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 5
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 9,
+                  "done": false,
+                  "hero_id": "hero_2",
+                  "label": "move:east    +0.17  [3,2]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_2 pos=[2,2] goal=[7,7] dist=10 world_turns=5 score=0.95 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    3,
+                    2
+                  ],
+                  "rationale": "Goal is east and north; moving east again continues reducing distance and maintains progress.",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 5
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 6
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[6]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 6
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 9,
+                  "done": false,
+                  "hero_id": "hero_3",
+                  "label": "move:east    +0.17  [4,1]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_3 pos=[3,1] goal=[7,7] dist=10 world_turns=6 score=1.12 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    4,
+                    1
+                  ],
+                  "rationale": "Moving east reduces Manhattan distance from 10 to 9, continuing in the same direction as my last move.",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 6
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "play_turns"
+                },
+                {
+                  "index": 7
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[7]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "play_turns"
+                    },
+                    {
+                      "index": 7
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:hero",
+                "inputs": null,
+                "outputs": {
+                  "achievements_note": "",
+                  "action": "move:east",
+                  "dist": 8,
+                  "done": false,
+                  "hero_id": "hero_4",
+                  "label": "move:east    +0.17  [4,2]",
+                  "new_achievements": [],
+                  "observation": "quest=lantern_crypt hero=hero_4 pos=[3,2] goal=[7,7] dist=9 world_turns=7 score=1.29 last=move:east legal=[wait, move:north, move:south, move:west, move:east]",
+                  "policy_source": "llm",
+                  "pos": [
+                    4,
+                    2
+                  ],
+                  "rationale": "Moving east reduces Manhattan distance from 9 to 8 and continues the previous heading.",
+                  "reward": 0.16999999999999998,
+                  "score": 7.0,
+                  "turn": 7
+                },
+                "score": 0.16999999999999998,
+                "signal": {
+                  "done": false,
+                  "policy_source": "llm"
+                },
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed",
+  "budgets": {
+    "schema_version": "budget_engine.v1",
+    "run_id": "jesterky-cli-run",
+    "wall_secs": 34.207953459,
+    "items": [
+      {
+        "kind": "actor_calls",
+        "unit": "calls",
+        "max": 64.0,
+        "spent": 8.0,
+        "remaining": 56.0,
+        "utilization": 0.125,
+        "used_percent": 12.5,
+        "state": "ok",
+        "hard": true,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 239.455674213,
+          "seconds_to_limit_low": 119.7278371065,
+          "seconds_to_limit_high": 478.911348426,
+          "rate_per_second": 0.23386374193909065,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      },
+      {
+        "kind": "tokens",
+        "unit": "tokens",
+        "max": 500000.0,
+        "spent": 39957.0,
+        "remaining": 460043.0,
+        "utilization": 0.079914,
+        "used_percent": 7.9914,
+        "state": "ok",
+        "hard": false,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 393.8516288294601,
+          "seconds_to_limit_low": 196.92581441473004,
+          "seconds_to_limit_high": 787.7032576589202,
+          "rate_per_second": 1168.0616920825307,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      },
+      {
+        "kind": "wall_seconds",
+        "unit": "seconds",
+        "max": 900.0,
+        "spent": 34.207953459,
+        "remaining": 865.792046541,
+        "utilization": 0.03800883717666667,
+        "used_percent": 3.800883717666667,
+        "state": "ok",
+        "hard": false,
+        "forecast": {
+          "model": "median_rate",
+          "seconds_to_limit": 865.792046541,
+          "seconds_to_limit_low": 432.8960232705,
+          "seconds_to_limit_high": 1731.584093082,
+          "rate_per_second": 1.0,
+          "confidence": "low",
+          "sample_count": 2
+        }
+      }
+    ],
+    "nearest": {
+      "kind": "actor_calls",
+      "unit": "calls",
+      "max": 64.0,
+      "spent": 8.0,
+      "remaining": 56.0,
+      "utilization": 0.125,
+      "used_percent": 12.5,
+      "state": "ok",
+      "hard": true,
+      "forecast": {
+        "model": "median_rate",
+        "seconds_to_limit": 239.455674213,
+        "seconds_to_limit_low": 119.7278371065,
+        "seconds_to_limit_high": 478.911348426,
+        "rate_per_second": 0.23386374193909065,
+        "confidence": "low",
+        "sample_count": 2
+      }
+    },
+    "state": "ok"
+  }
+}

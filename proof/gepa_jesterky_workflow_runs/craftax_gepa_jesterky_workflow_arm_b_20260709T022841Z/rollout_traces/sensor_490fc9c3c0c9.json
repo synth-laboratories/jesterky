@@ -1,0 +1,170 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 11,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:33:01Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block for crafter_interact and include 1-5 valid actions.\n\nBefore choosing actions, identify one immediate, state-valid micro-goal from the current observation. Prefer the nearest progress-making step: harvest visible wood, move toward visible wood, place a table once wood is available, craft a wood pickaxe once a table is available, or move toward the next visible resource if the current target is blocked.\n\nUse direct movement-plus-action batches. If a batch does not advance toward the micro-goal, change direction or switch to the next nearest resource instead of repeating the same action. Do not waste turns on noop or sleep unless trapped. Avoid lava.\n\nKeep the policy simple and local: choose the next achievable milestone, verify it is supported by inventory and map cues, and then emit the shortest valid action batch that moves the episode forward."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_9cb579be2670",
+    "seed": 11,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_right",
+        "do"
+      ],
+      "example_id": "ep_train_11",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 11,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_11"
+      }
+    },
+    "updated_at": "2026-07-09T02:33:01Z",
+    "usage": {
+      "completion_tokens": 189,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4018,
+      "total_tokens": 4207
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block for crafter_interact and include 1-5 valid actions.\n\nBefore choosing actions, identify one immediate, state-valid micro-goal from the current observation. Prefer the nearest progress-making step: harvest visible wood, move toward visible wood, place a table once wood is available, craft a wood pickaxe once a table is available, or move toward the next visible resource if the current target is blocked.\n\nUse direct movement-plus-action batches. If a batch does not advance toward the micro-goal, change direction or switch to the next nearest resource instead of repeating the same action. Do not waste turns on noop or sleep unless trapped. Avoid lava.\n\nKeep the policy simple and local: choose the next achievable milestone, verify it is supported by inventory and map cues, and then emit the shortest valid action batch that moves the episode forward."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block for crafter_interact and include 1-5 valid actions.\n\nBefore choosing actions, identify one immediate, state-valid micro-goal from the current observation. Prefer the nearest progress-making step: harvest visible wood, move toward visible wood, place a table once wood is available, craft a wood pickaxe once a table is available, or move toward the next visible resource if the current target is blocked.\n\nUse direct movement-plus-action batches. If a batch does not advance toward the micro-goal, change direction or switch to the next nearest resource instead of repeating the same action. Do not waste turns on noop or sleep unless trapped. Avoid lava.\n\nKeep the policy simple and local: choose the next achievable milestone, verify it is supported by inventory and map cues, and then emit the shortest valid action batch that moves the episode forward."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_9cb579be2670",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_right",
+      "do"
+    ],
+    "example_id": "ep_train_11",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_11",
+      "seed": 11,
+      "split": "train",
+      "task_id": "train:11"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 11,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_11"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 189,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4018,
+    "total_tokens": 4207
+  }
+}

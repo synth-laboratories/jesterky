@@ -1,0 +1,186 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood"
+      ],
+      "n_steps": 12,
+      "seed": 13,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:02:51Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a progression planner for Craftax, not a generic explorer. At every turn, read the compact observation and choose exactly one active phase, then emit one 1-5 action batch that serves that phase.\n\nPhases:\nA. First wood: search efficiently for the nearest harvestable resource and secure the first collect_wood reward.\nB. Setup: after wood is secured, convert it into a table and then the first useful pickaxe path.\nC. Expansion: gather stone and coal, place a furnace if the inventory supports it, then upgrade tools.\nD. Recovery: if blocked, unsafe, hungry, or stuck in repeated dead ends, retreat or change direction before trying the same move again.\n\nControl policy:\n- Scan the local map before moving. If no useful tile is adjacent, probe a new direction; do not spam do in place.\n- Use short directional probes that alternate movement and do when searching for the first reward.\n- Once wood is collected, stop exploratory wandering until the table and pickaxe path is underway.\n- Never issue craft actions unless the inventory and station prerequisites are already satisfied.\n- Use sleep and noop only for true recovery, never as the default.\n- Prefer combined batches such as move+do, move+place_table, move+make_wood_pickaxe, or move+do+move when the observation shows they are legal and useful.\n- If a path is blocked or a probe gives no progress, reverse or sidestep rather than repeating the same action.\n\nReturn only the single <tool_call> block for crafter_interact, and keep every action name inside the valid action list."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_1474cbd2cead",
+    "seed": 13,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood"
+      ],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_left",
+        "place_table",
+        "move_up",
+        "move_up",
+        "place_table",
+        "move_down",
+        "place_table",
+        "move_right",
+        "place_table"
+      ],
+      "example_id": "ep_train_13",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "n_steps": 12,
+          "seed": 13,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_13"
+      }
+    },
+    "updated_at": "2026-07-09T02:02:51Z",
+    "usage": {
+      "completion_tokens": 167,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4276,
+      "total_tokens": 4443
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a progression planner for Craftax, not a generic explorer. At every turn, read the compact observation and choose exactly one active phase, then emit one 1-5 action batch that serves that phase.\n\nPhases:\nA. First wood: search efficiently for the nearest harvestable resource and secure the first collect_wood reward.\nB. Setup: after wood is secured, convert it into a table and then the first useful pickaxe path.\nC. Expansion: gather stone and coal, place a furnace if the inventory supports it, then upgrade tools.\nD. Recovery: if blocked, unsafe, hungry, or stuck in repeated dead ends, retreat or change direction before trying the same move again.\n\nControl policy:\n- Scan the local map before moving. If no useful tile is adjacent, probe a new direction; do not spam do in place.\n- Use short directional probes that alternate movement and do when searching for the first reward.\n- Once wood is collected, stop exploratory wandering until the table and pickaxe path is underway.\n- Never issue craft actions unless the inventory and station prerequisites are already satisfied.\n- Use sleep and noop only for true recovery, never as the default.\n- Prefer combined batches such as move+do, move+place_table, move+make_wood_pickaxe, or move+do+move when the observation shows they are legal and useful.\n- If a path is blocked or a probe gives no progress, reverse or sidestep rather than repeating the same action.\n\nReturn only the single <tool_call> block for crafter_interact, and keep every action name inside the valid action list."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a progression planner for Craftax, not a generic explorer. At every turn, read the compact observation and choose exactly one active phase, then emit one 1-5 action batch that serves that phase.\n\nPhases:\nA. First wood: search efficiently for the nearest harvestable resource and secure the first collect_wood reward.\nB. Setup: after wood is secured, convert it into a table and then the first useful pickaxe path.\nC. Expansion: gather stone and coal, place a furnace if the inventory supports it, then upgrade tools.\nD. Recovery: if blocked, unsafe, hungry, or stuck in repeated dead ends, retreat or change direction before trying the same move again.\n\nControl policy:\n- Scan the local map before moving. If no useful tile is adjacent, probe a new direction; do not spam do in place.\n- Use short directional probes that alternate movement and do when searching for the first reward.\n- Once wood is collected, stop exploratory wandering until the table and pickaxe path is underway.\n- Never issue craft actions unless the inventory and station prerequisites are already satisfied.\n- Use sleep and noop only for true recovery, never as the default.\n- Prefer combined batches such as move+do, move+place_table, move+make_wood_pickaxe, or move+do+move when the observation shows they are legal and useful.\n- If a path is blocked or a probe gives no progress, reverse or sidestep rather than repeating the same action.\n\nReturn only the single <tool_call> block for crafter_interact, and keep every action name inside the valid action list."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_1474cbd2cead",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood"
+    ],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_left",
+      "place_table",
+      "move_up",
+      "move_up",
+      "place_table",
+      "move_down",
+      "place_table",
+      "move_right",
+      "place_table"
+    ],
+    "example_id": "ep_train_13",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_13",
+      "seed": 13,
+      "split": "train",
+      "task_id": "train:13"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "n_steps": 12,
+        "seed": 13,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_13"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 167,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4276,
+    "total_tokens": 4443
+  }
+}

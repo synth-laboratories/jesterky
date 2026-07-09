@@ -1,0 +1,2310 @@
+{
+  "run_id": "jesterky-cli-run",
+  "workflow_name": "gepa_trace_annotate",
+  "spec_hash": "82a2f976ec20e75d57df3d2d9546cdcb322df7513f2cac9aaf0b3adb46ab62a3",
+  "args": {
+    "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+      },
+      "wall_ms": 1783526873096
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873096
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526873098
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873098
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783526873098
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873098
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783526873099
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873099
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783526873101
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873101
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783526873102
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526873102
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526895505
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526895505
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783526895505
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526897205
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526897205
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783526897205
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526897810
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526897810
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783526897810
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526910314
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526910314
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783526910314
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783526910314
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526910314
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783526910315
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526910315
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783526910315
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526910315
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783526910316
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526910316
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526935925
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526935925
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783526935925
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526950031
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526950031
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783526950031
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526953893
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526953893
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783526953893
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gepa_trace_annotator"
+      },
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 8,
+        "total": 8
+      },
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956466
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956467
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_registry"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956467
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_registry"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956467
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956467
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 3,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "trace_unreadable_in_current_tool_context",
+            "evidence": "The requested trace file was not available in the prompt, and the instruction forbids shell commands, skills, browsing, or loading other files; no compliant file-read tool is available in this turn.",
+            "fix_hint": "Provide the trace JSON content inline or permit a direct read of job.path so rollout actions, observations, parse/repair loops, deaths, and achievements can be annotated.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Cannot safely infer Craftax rollout behavior from summary alone; need trace events to identify actionable prompt failures.",
+        "reusable_rules": [
+          {
+            "confidence": 0.99,
+            "rule_id": "require_trace_content_for_annotation",
+            "then": "Ask for inline trace content or an explicit direct-read allowance; do not infer failure modes from summary alone.",
+            "when": "Annotating a GEPA rollout trace without a permitted file-read channel"
+          }
+        ],
+        "reward": 2.8,
+        "severity": "medium",
+        "theme_tags": [
+          "trace_access",
+          "annotation_blocked_by_io_constraint"
+        ],
+        "trace_id": "seed-1"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 2,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "insufficient_trace_access",
+            "evidence": "Trace file was not inspected because the instruction prohibited shell commands and no non-shell file-read tool is available in this turn; only summary is available: reward=2.0, achievements=2, llm_turns=3.",
+            "fix_hint": "Provide trace contents directly or allow a file-read mechanism so proposer annotations can cite exact parse loops, invalid actions, stalls, deaths, and missed achievement opportunities.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Need trace body access for evidence-grounded GEPA labels; summary alone cannot distinguish parse errors, invalid actions, stalls, death, or missed achievement strategy.",
+        "reusable_rules": [
+          {
+            "confidence": 0.96,
+            "rule_id": "require_trace_evidence",
+            "then": "If only summary metadata is available, emit a trace-access failure note rather than inventing gameplay failures.",
+            "when": "Annotating Craftax rollouts for prompt repair, require concrete action-observation evidence from the v4 JSON before diagnosing behavior."
+          }
+        ],
+        "reward": 2,
+        "severity": "medium",
+        "theme_tags": [
+          "trace_access",
+          "insufficient_evidence",
+          "low_reward"
+        ],
+        "trace_id": "seed-3"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 2,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "achievement_gap_low_progress",
+            "evidence": "Summary shows only 2 achievements and reward 2.0 over 2 LLM turns for seed 2; trace completed without evidence of deeper progression.",
+            "fix_hint": "Prompt should prioritize an early-game checklist: secure wood/stone/food, craft basic tools, avoid unnecessary wandering, and explicitly target the next unlockable achievement after each success.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Annotation based on provided rollout summary only; no parse/repair or invalid-action evidence was available without inspecting additional content.",
+        "reusable_rules": [
+          {
+            "confidence": 0.55,
+            "rule_id": "craftax_prioritize_next_achievement",
+            "then": "Recompute the nearest feasible achievement and choose actions that gather its prerequisite resources before exploration or optional actions.",
+            "when": "After any achievement is earned or the agent has only low reward after the opening turns"
+          },
+          {
+            "confidence": 0.5,
+            "rule_id": "craftax_opening_resource_loop",
+            "then": "Follow a compact opening loop: collect immediately useful resources, craft basic tools as soon as requirements are met, maintain food/health safety, and avoid speculative movement.",
+            "when": "At the start of a Craftax rollout with no established tool/resource base"
+          }
+        ],
+        "reward": 2,
+        "severity": "medium",
+        "theme_tags": [
+          "low_achievement_count",
+          "early_game_progression",
+          "resource_gathering"
+        ],
+        "trace_id": "seed-2"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 4,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "no_parse_or_repair_issue",
+            "evidence": "All 3 spans report invalid_parse=false and repaired=false; responses are valid JSON action arrays.",
+            "fix_hint": "Keep strict JSON action-array formatting; no parse-specific prompt repair needed for this trace.",
+            "severity": "none"
+          },
+          {
+            "code": "repetitive_low_information_actions",
+            "evidence": "Turn 0 emits repeated do/right loops; turn 10 emits do/do/up/do/do before make_wood_pickaxe; reward remains 1.0 through turn 10 and only 2.0 by turn 16.",
+            "fix_hint": "Prompt should condition action batches on visible target/resource goals, limit blind repeated do actions, and reassess after each new achievement.",
+            "severity": "medium"
+          },
+          {
+            "code": "achievement_progression_gap",
+            "evidence": "Final achievements are only collect_wood, collect_sapling, collect_food, eat_cow with reward 4.0; no mining, crafting, or tool-tier achievements before max_steps=20 truncation.",
+            "fix_hint": "Add an early-game priority ladder: wood/sapling -> craft wood pickaxe only when resources permit -> seek stone/coal/iron, while opportunistically collecting food.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Trace is parse-clean. Main rewrite opportunity is strategic: reduce blind repeated do loops and add a compact early-game achievement ladder before truncation.",
+        "reusable_rules": [
+          {
+            "confidence": 0.95,
+            "rule_id": "valid_json_actions_only",
+            "then": "Return exactly a JSON object with an actions array of legal action strings, with no extra prose.",
+            "when": "Every Craftax response must be parsed by the harness."
+          },
+          {
+            "confidence": 0.78,
+            "rule_id": "avoid_blind_do_loops",
+            "then": "Switch to navigation or targeted interaction toward visible resources instead of continuing do-heavy loops.",
+            "when": "The previous reward has not increased after several repeated do actions."
+          },
+          {
+            "confidence": 0.7,
+            "rule_id": "gate_crafting_by_state",
+            "then": "Only craft after confirming likely inventory prerequisites and position safety; otherwise gather missing materials first.",
+            "when": "Considering make_wood_pickaxe or another craft action."
+          }
+        ],
+        "reward": 4.0,
+        "severity": "medium",
+        "theme_tags": [
+          "parse_clean",
+          "repetitive_actions",
+          "early_game_progression",
+          "truncated_rollout",
+          "crafting_gap"
+        ],
+        "trace_id": "seed-4"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "trace_not_read_due_to_no_shell_constraint",
+            "evidence": "The job summary reports reward 1.0, achievement_count 1, and only 3 llm_turns, but the requested trace file could not be inspected without violating the instruction not to run shell commands or load other tools.",
+            "fix_hint": "Provide the trace JSON content inline or allow a direct file-read mechanism so parse/repair loops, invalid actions, resource stalls, death cause, and missed achievements can be annotated from evidence.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Need trace contents, not summary alone, to diagnose action validity, parser repair, gathering stalls, early death, and missed achievements.",
+        "reusable_rules": [
+          {
+            "confidence": 0.95,
+            "rule_id": "require_trace_evidence_for_rollout_annotation",
+            "then": "Base failure codes on concrete trace events such as observations, actions, parser errors, inventory changes, health, and terminal state rather than summary-only metadata.",
+            "when": "Annotating Craftax rollout failures for GEPA from a trace path"
+          }
+        ],
+        "reward": 1,
+        "severity": "medium",
+        "theme_tags": [
+          "insufficient_trace_evidence",
+          "low_achievement_count"
+        ],
+        "trace_id": "seed-7"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "stalled_resource_gathering",
+            "evidence": "Across 3 LLM turns reward stayed at 1.0 and achievements stayed ['collect_wood']; turns 8 and 14 use repeated do actions without new achievements before truncation at max_steps=20.",
+            "fix_hint": "Prompt should require checking next achievement preconditions and switching to targeted exploration/resource collection when reward does not change after a batch.",
+            "severity": "high"
+          },
+          {
+            "code": "premature_crafting_attempts",
+            "evidence": "Turn 0 ends with make_wood_pickaxe and turn 8 ends with make_stone_pickaxe, but no crafting/tool/stone achievements follow; only collect_wood is ever recorded.",
+            "fix_hint": "Add a rule to craft only when required materials and station/tool prerequisites are believed available; otherwise gather missing stone/wood or reposition first.",
+            "severity": "medium"
+          },
+          {
+            "code": "action_repetition_low_information",
+            "evidence": "Turn 8 emits five consecutive do actions before make_stone_pickaxe; turn 14 emits up followed by five do actions, with no reward increase.",
+            "fix_hint": "Limit repeated do actions unless harvesting a known adjacent resource; interleave movement/inspection-oriented exploration when repeated interactions fail.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "JSON parsing is fine. The rewrite should target strategic replanning: avoid do spam and premature crafting after collect_wood when reward is flat.",
+        "reusable_rules": [
+          {
+            "confidence": 0.95,
+            "rule_id": "valid_json_action_batch",
+            "then": "Return strict JSON with an actions array of valid game actions; this trace had zero invalid_parse or repaired turns.",
+            "when": "Emitting Craftax actions"
+          },
+          {
+            "confidence": 0.9,
+            "rule_id": "no_progress_replan",
+            "then": "Stop repeating do/craft attempts and choose a new resource target or movement direction based on the next missing achievement.",
+            "when": "Reward and achievements are unchanged after an action batch"
+          },
+          {
+            "confidence": 0.85,
+            "rule_id": "craft_only_with_prereqs",
+            "then": "First ensure the likely inventory/station prerequisites are satisfied; if not, gather the missing resource instead.",
+            "when": "Considering make_wood_pickaxe, make_stone_pickaxe, or other crafting actions"
+          }
+        ],
+        "reward": 1.0,
+        "severity": "high",
+        "theme_tags": [
+          "valid_json",
+          "stalled_gathering",
+          "premature_crafting",
+          "do_spam",
+          "achievement_gap",
+          "truncated"
+        ],
+        "trace_id": "seed-5"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "stalled_resource_gathering",
+            "evidence": "All 3 LLM turns stayed at reward_total=1.0 with achievements=['collect_wood']; rollout ended truncated at max_steps=20 with no additional achievements.",
+            "fix_hint": "After collect_wood, require an explicit next-achievement plan such as locate stone/coal, gather varied resources, and avoid spending batches on unchanged reward states.",
+            "severity": "medium"
+          },
+          {
+            "code": "action_repetition_do_bias",
+            "evidence": "Generated batches contain 15/20 actions as 'do' and only 5 movement actions: turn 0 repeats do around right moves, turn 10 has six 'do' actions, turn 17 ends left/do/do.",
+            "fix_hint": "Add a rule to limit repeated 'do' unless adjacent to a known target; when reward and achievements do not change, switch to exploration and resource-targeted movement.",
+            "severity": "medium"
+          },
+          {
+            "code": "achievement_gap_after_initial_wood",
+            "evidence": "Final summary achievements only ['collect_wood'] with achievement_count=1 despite valid JSON, no repairs, and no invalid_parse_turns.",
+            "fix_hint": "Prompt should prioritize post-wood milestones and stop treating collect_wood as sufficient; choose actions that unlock craft/place table and stone-tool progression.",
+            "severity": "medium"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "No parse or repair issues. Trace lacks observations, but reward plateau and repeated do actions show a prompt-level need for post-wood progression and anti-repetition rules.",
+        "reusable_rules": [
+          {
+            "confidence": 0.83,
+            "rule_id": "after_reward_plateau_change_strategy",
+            "then": "Stop repeating the same interaction action; explore toward new resource types or craft prerequisites for the next achievement.",
+            "when": "Reward_total and achievements are unchanged across consecutive decision batches."
+          },
+          {
+            "confidence": 0.86,
+            "rule_id": "cap_repeated_do_without_target",
+            "then": "Replace most repeated 'do' actions with movement/search actions and reserve 'do' for adjacent resources or crafting interactions.",
+            "when": "The proposed action list contains many 'do' actions without evidence of a new achievement or target interaction."
+          },
+          {
+            "confidence": 0.78,
+            "rule_id": "post_wood_progression",
+            "then": "Plan for the next unlocks: gather stone/coal/food as visible, craft/place a table when possible, and diversify resources.",
+            "when": "collect_wood is already achieved early in Craftax."
+          }
+        ],
+        "reward": 1.0,
+        "severity": "medium",
+        "theme_tags": [
+          "stalled_resource_gathering",
+          "achievement_gap",
+          "action_repetition",
+          "no_parse_errors",
+          "truncated_rollout"
+        ],
+        "trace_id": "seed-8"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gepa_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "blocker": false,
+        "failure_modes": [
+          {
+            "code": "stalled_after_initial_achievement",
+            "evidence": "Trace starts with collect_wood and reward_total=1.0, then remains reward_total=1.0 at turns 12 and 19 with no additional achievements before truncation.",
+            "fix_hint": "After collect_wood, explicitly switch objectives to exploration and next-tier resources/crafting instead of continuing the same harvesting pattern.",
+            "severity": "medium"
+          },
+          {
+            "code": "repetitive_do_action_batches",
+            "evidence": "Action batches are dominated by do: turn 0 has 9/12 do actions, turn 12 has 6/7 do actions, and turn 19 emits only do.",
+            "fix_hint": "Prompt should require checking whether do is still productive, moving to new tiles when reward/achievements stagnate, and using directional actions to seek stone/coal/crafting opportunities.",
+            "severity": "medium"
+          },
+          {
+            "code": "parse_repair_not_issue",
+            "evidence": "All spans report invalid_parse=false and repaired=false; responses are valid JSON action lists.",
+            "fix_hint": "Do not spend prompt budget on JSON repair for this seed; prioritize strategic progression and anti-stall rules.",
+            "severity": "none"
+          }
+        ],
+        "optimizer": "gepa",
+        "prompt_harness_notes": "Valid JSON throughout; failure is strategic stagnation after collect_wood, with do-heavy batches and no progression before truncation.",
+        "reusable_rules": [
+          {
+            "confidence": 0.86,
+            "rule_id": "advance_after_collect_wood",
+            "then": "Change the active goal to finding/crafting next progression resources rather than repeating do on the same resource.",
+            "when": "The rollout already has collect_wood and reward has not increased on the next decision point."
+          },
+          {
+            "confidence": 0.9,
+            "rule_id": "anti_do_spam",
+            "then": "Insert movement/exploration actions and only use do when adjacent to a useful resource or crafting target.",
+            "when": "A proposed batch contains mostly do actions and the current reward/achievement state is unchanged."
+          },
+          {
+            "confidence": 0.82,
+            "rule_id": "stagnation_trigger",
+            "then": "Force a plan reset: identify missing early achievements and navigate toward the nearest prerequisite resource.",
+            "when": "Two consecutive LLM turns show identical reward_total and achievement list."
+          }
+        ],
+        "reward": 1.0,
+        "severity": "medium",
+        "theme_tags": [
+          "craftax",
+          "stagnation",
+          "do-spam",
+          "achievement-gap",
+          "valid-json"
+        ],
+        "trace_id": "seed-6"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "jesterky-cli-run",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:gepa_trace_annotate",
+    "inputs": {
+      "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+    },
+    "outputs": null,
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "annotate_traces"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "annotate_traces",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 3,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "trace_unreadable_in_current_tool_context",
+                      "evidence": "The requested trace file was not available in the prompt, and the instruction forbids shell commands, skills, browsing, or loading other files; no compliant file-read tool is available in this turn.",
+                      "fix_hint": "Provide the trace JSON content inline or permit a direct read of job.path so rollout actions, observations, parse/repair loops, deaths, and achievements can be annotated.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Cannot safely infer Craftax rollout behavior from summary alone; need trace events to identify actionable prompt failures.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.99,
+                      "rule_id": "require_trace_content_for_annotation",
+                      "then": "Ask for inline trace content or an explicit direct-read allowance; do not infer failure modes from summary alone.",
+                      "when": "Annotating a GEPA rollout trace without a permitted file-read channel"
+                    }
+                  ],
+                  "reward": 2.8,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "trace_access",
+                    "annotation_blocked_by_io_constraint"
+                  ],
+                  "trace_id": "seed-1"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 2,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "achievement_gap_low_progress",
+                      "evidence": "Summary shows only 2 achievements and reward 2.0 over 2 LLM turns for seed 2; trace completed without evidence of deeper progression.",
+                      "fix_hint": "Prompt should prioritize an early-game checklist: secure wood/stone/food, craft basic tools, avoid unnecessary wandering, and explicitly target the next unlockable achievement after each success.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Annotation based on provided rollout summary only; no parse/repair or invalid-action evidence was available without inspecting additional content.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.55,
+                      "rule_id": "craftax_prioritize_next_achievement",
+                      "then": "Recompute the nearest feasible achievement and choose actions that gather its prerequisite resources before exploration or optional actions.",
+                      "when": "After any achievement is earned or the agent has only low reward after the opening turns"
+                    },
+                    {
+                      "confidence": 0.5,
+                      "rule_id": "craftax_opening_resource_loop",
+                      "then": "Follow a compact opening loop: collect immediately useful resources, craft basic tools as soon as requirements are met, maintain food/health safety, and avoid speculative movement.",
+                      "when": "At the start of a Craftax rollout with no established tool/resource base"
+                    }
+                  ],
+                  "reward": 2,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "low_achievement_count",
+                    "early_game_progression",
+                    "resource_gathering"
+                  ],
+                  "trace_id": "seed-2"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 2,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "insufficient_trace_access",
+                      "evidence": "Trace file was not inspected because the instruction prohibited shell commands and no non-shell file-read tool is available in this turn; only summary is available: reward=2.0, achievements=2, llm_turns=3.",
+                      "fix_hint": "Provide trace contents directly or allow a file-read mechanism so proposer annotations can cite exact parse loops, invalid actions, stalls, deaths, and missed achievement opportunities.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Need trace body access for evidence-grounded GEPA labels; summary alone cannot distinguish parse errors, invalid actions, stalls, death, or missed achievement strategy.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.96,
+                      "rule_id": "require_trace_evidence",
+                      "then": "If only summary metadata is available, emit a trace-access failure note rather than inventing gameplay failures.",
+                      "when": "Annotating Craftax rollouts for prompt repair, require concrete action-observation evidence from the v4 JSON before diagnosing behavior."
+                    }
+                  ],
+                  "reward": 2,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "trace_access",
+                    "insufficient_evidence",
+                    "low_reward"
+                  ],
+                  "trace_id": "seed-3"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 4,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "no_parse_or_repair_issue",
+                      "evidence": "All 3 spans report invalid_parse=false and repaired=false; responses are valid JSON action arrays.",
+                      "fix_hint": "Keep strict JSON action-array formatting; no parse-specific prompt repair needed for this trace.",
+                      "severity": "none"
+                    },
+                    {
+                      "code": "repetitive_low_information_actions",
+                      "evidence": "Turn 0 emits repeated do/right loops; turn 10 emits do/do/up/do/do before make_wood_pickaxe; reward remains 1.0 through turn 10 and only 2.0 by turn 16.",
+                      "fix_hint": "Prompt should condition action batches on visible target/resource goals, limit blind repeated do actions, and reassess after each new achievement.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "achievement_progression_gap",
+                      "evidence": "Final achievements are only collect_wood, collect_sapling, collect_food, eat_cow with reward 4.0; no mining, crafting, or tool-tier achievements before max_steps=20 truncation.",
+                      "fix_hint": "Add an early-game priority ladder: wood/sapling -> craft wood pickaxe only when resources permit -> seek stone/coal/iron, while opportunistically collecting food.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Trace is parse-clean. Main rewrite opportunity is strategic: reduce blind repeated do loops and add a compact early-game achievement ladder before truncation.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.95,
+                      "rule_id": "valid_json_actions_only",
+                      "then": "Return exactly a JSON object with an actions array of legal action strings, with no extra prose.",
+                      "when": "Every Craftax response must be parsed by the harness."
+                    },
+                    {
+                      "confidence": 0.78,
+                      "rule_id": "avoid_blind_do_loops",
+                      "then": "Switch to navigation or targeted interaction toward visible resources instead of continuing do-heavy loops.",
+                      "when": "The previous reward has not increased after several repeated do actions."
+                    },
+                    {
+                      "confidence": 0.7,
+                      "rule_id": "gate_crafting_by_state",
+                      "then": "Only craft after confirming likely inventory prerequisites and position safety; otherwise gather missing materials first.",
+                      "when": "Considering make_wood_pickaxe or another craft action."
+                    }
+                  ],
+                  "reward": 4.0,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "parse_clean",
+                    "repetitive_actions",
+                    "early_game_progression",
+                    "truncated_rollout",
+                    "crafting_gap"
+                  ],
+                  "trace_id": "seed-4"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 4
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[4]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 4
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "stalled_resource_gathering",
+                      "evidence": "Across 3 LLM turns reward stayed at 1.0 and achievements stayed ['collect_wood']; turns 8 and 14 use repeated do actions without new achievements before truncation at max_steps=20.",
+                      "fix_hint": "Prompt should require checking next achievement preconditions and switching to targeted exploration/resource collection when reward does not change after a batch.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "premature_crafting_attempts",
+                      "evidence": "Turn 0 ends with make_wood_pickaxe and turn 8 ends with make_stone_pickaxe, but no crafting/tool/stone achievements follow; only collect_wood is ever recorded.",
+                      "fix_hint": "Add a rule to craft only when required materials and station/tool prerequisites are believed available; otherwise gather missing stone/wood or reposition first.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "action_repetition_low_information",
+                      "evidence": "Turn 8 emits five consecutive do actions before make_stone_pickaxe; turn 14 emits up followed by five do actions, with no reward increase.",
+                      "fix_hint": "Limit repeated do actions unless harvesting a known adjacent resource; interleave movement/inspection-oriented exploration when repeated interactions fail.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "JSON parsing is fine. The rewrite should target strategic replanning: avoid do spam and premature crafting after collect_wood when reward is flat.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.95,
+                      "rule_id": "valid_json_action_batch",
+                      "then": "Return strict JSON with an actions array of valid game actions; this trace had zero invalid_parse or repaired turns.",
+                      "when": "Emitting Craftax actions"
+                    },
+                    {
+                      "confidence": 0.9,
+                      "rule_id": "no_progress_replan",
+                      "then": "Stop repeating do/craft attempts and choose a new resource target or movement direction based on the next missing achievement.",
+                      "when": "Reward and achievements are unchanged after an action batch"
+                    },
+                    {
+                      "confidence": 0.85,
+                      "rule_id": "craft_only_with_prereqs",
+                      "then": "First ensure the likely inventory/station prerequisites are satisfied; if not, gather the missing resource instead.",
+                      "when": "Considering make_wood_pickaxe, make_stone_pickaxe, or other crafting actions"
+                    }
+                  ],
+                  "reward": 1.0,
+                  "severity": "high",
+                  "theme_tags": [
+                    "valid_json",
+                    "stalled_gathering",
+                    "premature_crafting",
+                    "do_spam",
+                    "achievement_gap",
+                    "truncated"
+                  ],
+                  "trace_id": "seed-5"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 5
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[5]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 5
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "stalled_after_initial_achievement",
+                      "evidence": "Trace starts with collect_wood and reward_total=1.0, then remains reward_total=1.0 at turns 12 and 19 with no additional achievements before truncation.",
+                      "fix_hint": "After collect_wood, explicitly switch objectives to exploration and next-tier resources/crafting instead of continuing the same harvesting pattern.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "repetitive_do_action_batches",
+                      "evidence": "Action batches are dominated by do: turn 0 has 9/12 do actions, turn 12 has 6/7 do actions, and turn 19 emits only do.",
+                      "fix_hint": "Prompt should require checking whether do is still productive, moving to new tiles when reward/achievements stagnate, and using directional actions to seek stone/coal/crafting opportunities.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "parse_repair_not_issue",
+                      "evidence": "All spans report invalid_parse=false and repaired=false; responses are valid JSON action lists.",
+                      "fix_hint": "Do not spend prompt budget on JSON repair for this seed; prioritize strategic progression and anti-stall rules.",
+                      "severity": "none"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Valid JSON throughout; failure is strategic stagnation after collect_wood, with do-heavy batches and no progression before truncation.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.86,
+                      "rule_id": "advance_after_collect_wood",
+                      "then": "Change the active goal to finding/crafting next progression resources rather than repeating do on the same resource.",
+                      "when": "The rollout already has collect_wood and reward has not increased on the next decision point."
+                    },
+                    {
+                      "confidence": 0.9,
+                      "rule_id": "anti_do_spam",
+                      "then": "Insert movement/exploration actions and only use do when adjacent to a useful resource or crafting target.",
+                      "when": "A proposed batch contains mostly do actions and the current reward/achievement state is unchanged."
+                    },
+                    {
+                      "confidence": 0.82,
+                      "rule_id": "stagnation_trigger",
+                      "then": "Force a plan reset: identify missing early achievements and navigate toward the nearest prerequisite resource.",
+                      "when": "Two consecutive LLM turns show identical reward_total and achievement list."
+                    }
+                  ],
+                  "reward": 1.0,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "craftax",
+                    "stagnation",
+                    "do-spam",
+                    "achievement-gap",
+                    "valid-json"
+                  ],
+                  "trace_id": "seed-6"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 6
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[6]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 6
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "trace_not_read_due_to_no_shell_constraint",
+                      "evidence": "The job summary reports reward 1.0, achievement_count 1, and only 3 llm_turns, but the requested trace file could not be inspected without violating the instruction not to run shell commands or load other tools.",
+                      "fix_hint": "Provide the trace JSON content inline or allow a direct file-read mechanism so parse/repair loops, invalid actions, resource stalls, death cause, and missed achievements can be annotated from evidence.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "Need trace contents, not summary alone, to diagnose action validity, parser repair, gathering stalls, early death, and missed achievements.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.95,
+                      "rule_id": "require_trace_evidence_for_rollout_annotation",
+                      "then": "Base failure codes on concrete trace events such as observations, actions, parser errors, inventory changes, health, and terminal state rather than summary-only metadata.",
+                      "when": "Annotating Craftax rollout failures for GEPA from a trace path"
+                    }
+                  ],
+                  "reward": 1,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "insufficient_trace_evidence",
+                    "low_achievement_count"
+                  ],
+                  "trace_id": "seed-7"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 7
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[7]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 7
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gepa_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "blocker": false,
+                  "failure_modes": [
+                    {
+                      "code": "stalled_resource_gathering",
+                      "evidence": "All 3 LLM turns stayed at reward_total=1.0 with achievements=['collect_wood']; rollout ended truncated at max_steps=20 with no additional achievements.",
+                      "fix_hint": "After collect_wood, require an explicit next-achievement plan such as locate stone/coal, gather varied resources, and avoid spending batches on unchanged reward states.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "action_repetition_do_bias",
+                      "evidence": "Generated batches contain 15/20 actions as 'do' and only 5 movement actions: turn 0 repeats do around right moves, turn 10 has six 'do' actions, turn 17 ends left/do/do.",
+                      "fix_hint": "Add a rule to limit repeated 'do' unless adjacent to a known target; when reward and achievements do not change, switch to exploration and resource-targeted movement.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "achievement_gap_after_initial_wood",
+                      "evidence": "Final summary achievements only ['collect_wood'] with achievement_count=1 despite valid JSON, no repairs, and no invalid_parse_turns.",
+                      "fix_hint": "Prompt should prioritize post-wood milestones and stop treating collect_wood as sufficient; choose actions that unlock craft/place table and stone-tool progression.",
+                      "severity": "medium"
+                    }
+                  ],
+                  "optimizer": "gepa",
+                  "prompt_harness_notes": "No parse or repair issues. Trace lacks observations, but reward plateau and repeated do actions show a prompt-level need for post-wood progression and anti-repetition rules.",
+                  "reusable_rules": [
+                    {
+                      "confidence": 0.83,
+                      "rule_id": "after_reward_plateau_change_strategy",
+                      "then": "Stop repeating the same interaction action; explore toward new resource types or craft prerequisites for the next achievement.",
+                      "when": "Reward_total and achievements are unchanged across consecutive decision batches."
+                    },
+                    {
+                      "confidence": 0.86,
+                      "rule_id": "cap_repeated_do_without_target",
+                      "then": "Replace most repeated 'do' actions with movement/search actions and reserve 'do' for adjacent resources or crafting interactions.",
+                      "when": "The proposed action list contains many 'do' actions without evidence of a new achievement or target interaction."
+                    },
+                    {
+                      "confidence": 0.78,
+                      "rule_id": "post_wood_progression",
+                      "then": "Plan for the next unlocks: gather stone/coal/food as visible, craft/place a table when possible, and diversify resources.",
+                      "when": "collect_wood is already achieved early in Craftax."
+                    }
+                  ],
+                  "reward": 1.0,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "stalled_resource_gathering",
+                    "achievement_gap",
+                    "action_repetition",
+                    "no_parse_errors",
+                    "truncated_rollout"
+                  ],
+                  "trace_id": "seed-8"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed"
+}

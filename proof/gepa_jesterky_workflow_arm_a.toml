@@ -1,0 +1,90 @@
+# GEPA ± jesterky workflows Arm A
+# Differs from sibling arm ONLY on jesterky_workflow.enabled
+
+[run]
+run_id = "craftax_gepa_jesterky_workflow_arm_a"
+output_dir = "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs"
+seed = 0
+
+[container]
+url = "http://127.0.0.1:8768"
+command = [
+  "/usr/bin/env",
+  "CRAFTER_POLICY_MODEL=gemini-3.1-flash-lite",
+  "CRAFTER_POLICY_API_KEY_ENV=GEMINI_API_KEY",
+  "CRAFTER_POLICY_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai",
+  "CRAFTER_MAX_TURNS=12",
+  "CRAFTER_MIN_BATCH=1",
+  "CRAFTER_MAX_BATCH=5",
+  "uv", "run", "--project", "crafter_container",
+  "python", "crafter_container/synth_service_app.py",
+  "--host", "127.0.0.1", "--port", "8768",
+]
+cwd = "/Users/joshpurtell/Documents/GitHub/synth-cookbooks-public/cookbooks/optimizers/gepa"
+startup_timeout_seconds = 180
+
+[taskset]
+train_split = "train"
+heldout_split = "test"
+train_ids = ["train:11", "train:12", "train:13", "train:14", "train:15", "train:16", "train:17", "train:18"]
+heldout_ids = ["test:101", "test:102", "test:103", "test:104"]
+
+[candidate]
+target_modules = ["react_system_prompt"]
+
+[seed_candidate]
+react_system_prompt = "You are controlling a Craftax survival agent. Each turn you see a compact text observation (player stats, inventory, local map). Respond ONLY with a single <tool_call> block of the form: <tool_call>{\"name\":\"crafter_interact\",\"arguments\":{\"actions_list\":[\"move_right\",\"do\"]}}</tool_call>. Use 1-5 valid actions per call. Prioritize collecting wood, placing a table, crafting tools, then collecting stone/coal/iron. Avoid lava."
+
+[policy]
+provider = "openai"
+model = "gemini-3.1-flash-lite"
+api_key_env = "GEMINI_API_KEY"
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+
+[proposer]
+backend = "codex_app_server"
+execution_mode = "local_process"
+timeout_seconds = 900
+model = "gpt-5.4-mini"
+reasoning_effort = "medium"
+auth_mode = "chatgpt"
+copy_host_auth = true
+codex_home = "/Users/joshpurtell/.codex"
+sandbox_mode = "workspace-write"
+approval_policy = "never"
+
+[gepa]
+max_generations = 6
+proposals_per_generation = 3
+minibatch_size = 4
+max_train_rollouts = 72
+max_heldout_rollouts = 24
+max_total_rollouts = 120
+max_cost_usd = 0.0
+proposer_estimated_cost_usd = 0.08
+rollout_estimated_cost_usd = 0.01
+rollout_async_timeout_seconds = 300
+
+[gepa.task_pools]
+pareto = ["train:11", "train:12", "train:13", "train:14", "train:15", "train:16", "train:17", "train:18"]
+minibatch = ["train:11", "train:12", "train:13", "train:14", "train:15", "train:16", "train:17", "train:18"]
+reflection = ["train:11", "train:12", "train:13", "train:14", "train:15", "train:16", "train:17", "train:18"]
+heldout = ["test:101", "test:102", "test:103", "test:104"]
+
+[gepa.pipeline]
+mode = "async_pipelined"
+max_in_flight_candidates = 2
+
+[gepa.pipeline.workers]
+rollout = 6
+
+[jesterky_workflow]
+enabled = false
+spec = "/Users/joshpurtell/Documents/GitHub/jesterky/examples/gepa_trace_annotate.json"
+command = "jesterky"
+actor = "codex"
+concurrency = 4
+timeout_seconds = 900
+fail_closed = true
+
+[cache]

@@ -1,0 +1,193 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood",
+        "collect_sapling"
+      ],
+      "n_steps": 12,
+      "seed": 104,
+      "total_reward": 2.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 2.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood",
+          "collect_sapling"
+        ],
+        "example_id": "ep_test_104",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        2.0
+      ],
+      "metrics": {},
+      "outcome_reward": 2.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:05:26Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nHard rules: only use `do` when the current observation makes a harvestable resource, workstation, or other intended target adjacent; never use `do` on empty space. If the previous turn did not create a new adjacent target, do not repeat the same move/do pattern; change direction or search route instead. Avoid noop loops.\n\nPriority ladder: collect the nearest basic resource first, then place a table, then craft the next prerequisite tool as soon as its materials exist, then gather deeper resources, then place a furnace, then upgrade tools. When no useful target is visible, keep a short, consistent sweep before switching direction. Avoid lava, blocked paths, and backtracking that does not reveal new tiles."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood",
+          "collect_sapling"
+        ],
+        "example_id": "ep_test_104",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        2.0
+      ],
+      "outcome_reward": 2.0
+    },
+    "rollout_id": "rollout_dcb772b8322c",
+    "seed": 104,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood",
+        "collect_sapling"
+      ],
+      "actions_taken": [
+        "move_right",
+        "do",
+        "move_left",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_test_104",
+      "n_steps": 12,
+      "outcome_reward": 2.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood",
+            "collect_sapling"
+          ],
+          "n_steps": 12,
+          "seed": 104,
+          "total_reward": 2.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_test_104"
+      }
+    },
+    "updated_at": "2026-07-09T04:05:26Z",
+    "usage": {
+      "completion_tokens": 147,
+      "cost_usd": 0.0,
+      "prompt_tokens": 2846,
+      "total_tokens": 2993
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nHard rules: only use `do` when the current observation makes a harvestable resource, workstation, or other intended target adjacent; never use `do` on empty space. If the previous turn did not create a new adjacent target, do not repeat the same move/do pattern; change direction or search route instead. Avoid noop loops.\n\nPriority ladder: collect the nearest basic resource first, then place a table, then craft the next prerequisite tool as soon as its materials exist, then gather deeper resources, then place a furnace, then upgrade tools. When no useful target is visible, keep a short, consistent sweep before switching direction. Avoid lava, blocked paths, and backtracking that does not reveal new tiles."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nHard rules: only use `do` when the current observation makes a harvestable resource, workstation, or other intended target adjacent; never use `do` on empty space. If the previous turn did not create a new adjacent target, do not repeat the same move/do pattern; change direction or search route instead. Avoid noop loops.\n\nPriority ladder: collect the nearest basic resource first, then place a table, then craft the next prerequisite tool as soon as its materials exist, then gather deeper resources, then place a furnace, then upgrade tools. When no useful target is visible, keep a short, consistent sweep before switching direction. Avoid lava, blocked paths, and backtracking that does not reveal new tiles."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_dcb772b8322c",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood",
+      "collect_sapling"
+    ],
+    "actions_taken": [
+      "move_right",
+      "do",
+      "move_left",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_test_104",
+    "n_steps": 12,
+    "outcome_reward": 2.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_test_104",
+      "seed": 104,
+      "split": "test",
+      "task_id": "test:104"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood",
+          "collect_sapling"
+        ],
+        "n_steps": 12,
+        "seed": 104,
+        "total_reward": 2.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_test_104"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 147,
+    "cost_usd": 0.0,
+    "prompt_tokens": 2846,
+    "total_tokens": 2993
+  }
+}

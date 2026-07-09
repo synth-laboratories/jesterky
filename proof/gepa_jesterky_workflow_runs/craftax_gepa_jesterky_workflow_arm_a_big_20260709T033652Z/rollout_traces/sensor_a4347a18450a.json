@@ -1,0 +1,172 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 15,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:02:46Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions per call.\n\nHard rules: only use `do` when a harvestable resource, workstation, or other intended target is adjacent; never use `do` on empty space. If the last turn did not reveal a new target or progress, do not repeat the same move/do pattern: change direction, switch axis, or widen the search. Avoid noop loops and repeated sleep turns.\n\nPriority order: collect wood first, then place a table, then craft the next prerequisite tool as soon as materials exist, then gather stone, coal, and iron, then place a furnace, then upgrade tools. If no useful target is visible, run a short consistent sweep until the map reveals something actionable. Avoid lava and blocked paths."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_65bc2b01e39f",
+    "seed": 15,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up"
+      ],
+      "example_id": "ep_train_15",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 15,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_15"
+      }
+    },
+    "updated_at": "2026-07-09T04:02:46Z",
+    "usage": {
+      "completion_tokens": 175,
+      "cost_usd": 0.0,
+      "prompt_tokens": 3413,
+      "total_tokens": 3588
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions per call.\n\nHard rules: only use `do` when a harvestable resource, workstation, or other intended target is adjacent; never use `do` on empty space. If the last turn did not reveal a new target or progress, do not repeat the same move/do pattern: change direction, switch axis, or widen the search. Avoid noop loops and repeated sleep turns.\n\nPriority order: collect wood first, then place a table, then craft the next prerequisite tool as soon as materials exist, then gather stone, coal, and iron, then place a furnace, then upgrade tools. If no useful target is visible, run a short consistent sweep until the map reveals something actionable. Avoid lava and blocked paths."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions per call.\n\nHard rules: only use `do` when a harvestable resource, workstation, or other intended target is adjacent; never use `do` on empty space. If the last turn did not reveal a new target or progress, do not repeat the same move/do pattern: change direction, switch axis, or widen the search. Avoid noop loops and repeated sleep turns.\n\nPriority order: collect wood first, then place a table, then craft the next prerequisite tool as soon as materials exist, then gather stone, coal, and iron, then place a furnace, then upgrade tools. If no useful target is visible, run a short consistent sweep until the map reveals something actionable. Avoid lava and blocked paths."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_65bc2b01e39f",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up"
+    ],
+    "example_id": "ep_train_15",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_15",
+      "seed": 15,
+      "split": "train",
+      "task_id": "train:15"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 15,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_15"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 175,
+    "cost_usd": 0.0,
+    "prompt_tokens": 3413,
+    "total_tokens": 3588
+  }
+}

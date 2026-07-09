@@ -1,0 +1,164 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 11,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:48:37Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four cases: adjacent target, visible target, hidden target, or hazard/stuck.\n\nRespond with exactly one <tool_call> block for crafter_interact, using 1-5 valid actions and no extra text.\n\nDecision policy:\n- Adjacent target: use do as the final action; do not waste extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop.\n- Hidden target: run a systematic search pattern, such as a consistent sweep or zig-zag, until a useful resource or workstation reappears; never alternate back and forth.\n- Hazard/stuck: break the loop by changing axis or direction, and avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nResource routing:\n1. Wood is the first goal.\n2. If wood is available, make a table immediately.\n3. If a table exists and wood is sufficient, craft a wood pickaxe immediately.\n4. Use the pickaxe to reach stone, then place a furnace when stone progression is available.\n5. Only pursue advanced tools after prerequisites exist.\n\nEvery action list should be a concrete micro-plan that combines movement with do, place, or craft when the map supports it. If the last turn failed, explicitly choose a different route or a broader search pattern."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_e3931f672cc1",
+    "seed": 11,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_train_11",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 11,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_11"
+      }
+    },
+    "updated_at": "2026-07-09T03:48:37Z",
+    "usage": {
+      "completion_tokens": 213,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4643,
+      "total_tokens": 4856
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four cases: adjacent target, visible target, hidden target, or hazard/stuck.\n\nRespond with exactly one <tool_call> block for crafter_interact, using 1-5 valid actions and no extra text.\n\nDecision policy:\n- Adjacent target: use do as the final action; do not waste extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop.\n- Hidden target: run a systematic search pattern, such as a consistent sweep or zig-zag, until a useful resource or workstation reappears; never alternate back and forth.\n- Hazard/stuck: break the loop by changing axis or direction, and avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nResource routing:\n1. Wood is the first goal.\n2. If wood is available, make a table immediately.\n3. If a table exists and wood is sufficient, craft a wood pickaxe immediately.\n4. Use the pickaxe to reach stone, then place a furnace when stone progression is available.\n5. Only pursue advanced tools after prerequisites exist.\n\nEvery action list should be a concrete micro-plan that combines movement with do, place, or craft when the map supports it. If the last turn failed, explicitly choose a different route or a broader search pattern."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four cases: adjacent target, visible target, hidden target, or hazard/stuck.\n\nRespond with exactly one <tool_call> block for crafter_interact, using 1-5 valid actions and no extra text.\n\nDecision policy:\n- Adjacent target: use do as the final action; do not waste extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop.\n- Hidden target: run a systematic search pattern, such as a consistent sweep or zig-zag, until a useful resource or workstation reappears; never alternate back and forth.\n- Hazard/stuck: break the loop by changing axis or direction, and avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nResource routing:\n1. Wood is the first goal.\n2. If wood is available, make a table immediately.\n3. If a table exists and wood is sufficient, craft a wood pickaxe immediately.\n4. Use the pickaxe to reach stone, then place a furnace when stone progression is available.\n5. Only pursue advanced tools after prerequisites exist.\n\nEvery action list should be a concrete micro-plan that combines movement with do, place, or craft when the map supports it. If the last turn failed, explicitly choose a different route or a broader search pattern."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_e3931f672cc1",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_train_11",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_11",
+      "seed": 11,
+      "split": "train",
+      "task_id": "train:11"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 11,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_11"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 213,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4643,
+    "total_tokens": 4856
+  }
+}

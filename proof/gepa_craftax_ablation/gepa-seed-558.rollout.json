@@ -1,0 +1,2506 @@
+{
+  "artifact": [
+    {
+      "artifact_type": "turns",
+      "turns": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "{\"actions\":[\"do\",\"do\",\"do\",\"up\",\"up\",\"up\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 0,
+          "repaired": false,
+          "request_id": "2dFOar2hIdac9MoPt4OBoAI",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_tokens": 1136,
+            "total_tokens": 1157
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 1,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 2,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 3,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 4,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 5,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 6,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 7,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 8,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"down\",\"down\",\"right\",\"right\",\"right\",\"right\",\"right\",\"do\",\"do\",\"do\",\"place_table\",\"make_wood_pickaxe\"]}",
+          "batch_index": 0,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 9,
+          "repaired": false,
+          "request_id": "2tFOauujHNev1MkP0YKR6QY",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 38,
+            "prompt_tokens": 1139,
+            "total_tokens": 1177
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 10,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 11,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 12,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 13,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 14,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 15,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 16,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 17,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 9,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 18,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 10,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 19,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 11,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 20,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "place_table",
+          "assistant_text": "",
+          "batch_index": 12,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 21,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "make_wood_pickaxe",
+          "assistant_text": "",
+          "batch_index": 13,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 22,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "{\"actions\":[\"up\",\"up\",\"up\",\"up\",\"do\",\"do\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 23,
+          "repaired": false,
+          "request_id": "29FOatSoB7Xg_uMPt_jUqA8",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_tokens": 1201,
+            "total_tokens": 1222
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 24,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 25,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 26,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 27,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 28,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 29,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 30,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 31,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"down\",\"down\",\"right\",\"right\",\"do\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 32,
+          "repaired": false,
+          "request_id": "3NFOauO2E6awjMcPmoGPkAE",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 23,
+            "prompt_tokens": 1172,
+            "total_tokens": 1195
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 33,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 34,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 35,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 36,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 37,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 38,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 39,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 40,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 9,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 41,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"left\",\"left\",\"left\",\"do\",\"place_table\",\"make_wood_pickaxe\"]}",
+          "batch_index": 0,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 42,
+          "repaired": false,
+          "request_id": "3NFOaofyOrKZ_uMPyb-tsA8",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 26,
+            "prompt_tokens": 1218,
+            "total_tokens": 1244
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 43,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 44,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 45,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 46,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 47,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "place_table",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 48,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "make_wood_pickaxe",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 49,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 50,
+          "repaired": false,
+          "request_id": "3dFOarOiLZ_2jrEP0eWRiAk",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 13,
+            "prompt_tokens": 1235,
+            "total_tokens": 1248
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 51,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 52,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 53,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 3.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 54,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "{\"actions\":[\"right\",\"right\",\"right\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 55,
+          "repaired": false,
+          "request_id": "3tFOavysEsWFjrEPseebuAM",
+          "reward_total": 2.8,
+          "usage": {
+            "completion_tokens": 13,
+            "prompt_tokens": 1227,
+            "total_tokens": 1240
+          }
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 56,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 57,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 58,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 59,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 60,
+          "repaired": false,
+          "request_id": "3tFOapigMLqZ-8YPyan1kQM",
+          "reward_total": 2.5999999999999996,
+          "usage": {
+            "completion_tokens": 11,
+            "prompt_tokens": 1227,
+            "total_tokens": 1238
+          }
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 61,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 62,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 63,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_type": "turns",
+      "turns": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "{\"actions\":[\"do\",\"do\",\"do\",\"up\",\"up\",\"up\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 0,
+          "repaired": false,
+          "request_id": "2dFOar2hIdac9MoPt4OBoAI",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_tokens": 1136,
+            "total_tokens": 1157
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 1,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 2,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 3,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 4,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 5,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 6,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 7,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 1,
+          "model": null,
+          "ply": 8,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"down\",\"down\",\"right\",\"right\",\"right\",\"right\",\"right\",\"do\",\"do\",\"do\",\"place_table\",\"make_wood_pickaxe\"]}",
+          "batch_index": 0,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 9,
+          "repaired": false,
+          "request_id": "2tFOauujHNev1MkP0YKR6QY",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 38,
+            "prompt_tokens": 1139,
+            "total_tokens": 1177
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 10,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 11,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 12,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 13,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 14,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 15,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 16,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 17,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 9,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 18,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 10,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 19,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 11,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 20,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "place_table",
+          "assistant_text": "",
+          "batch_index": 12,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 21,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "make_wood_pickaxe",
+          "assistant_text": "",
+          "batch_index": 13,
+          "batch_size": 14,
+          "invalid_parse": false,
+          "llm_call": 2,
+          "model": null,
+          "ply": 22,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "{\"actions\":[\"up\",\"up\",\"up\",\"up\",\"do\",\"do\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 23,
+          "repaired": false,
+          "request_id": "29FOatSoB7Xg_uMPt_jUqA8",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 21,
+            "prompt_tokens": 1201,
+            "total_tokens": 1222
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 24,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 25,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "up",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 26,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 27,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 28,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 29,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 30,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 9,
+          "invalid_parse": false,
+          "llm_call": 3,
+          "model": null,
+          "ply": 31,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"down\",\"down\",\"right\",\"right\",\"do\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 32,
+          "repaired": false,
+          "request_id": "3NFOauO2E6awjMcPmoGPkAE",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 23,
+            "prompt_tokens": 1172,
+            "total_tokens": 1195
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 33,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 34,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 35,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 36,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 37,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 38,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 39,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 8,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 40,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 9,
+          "batch_size": 10,
+          "invalid_parse": false,
+          "llm_call": 4,
+          "model": null,
+          "ply": 41,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"left\",\"left\",\"left\",\"do\",\"place_table\",\"make_wood_pickaxe\"]}",
+          "batch_index": 0,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 42,
+          "repaired": false,
+          "request_id": "3NFOaofyOrKZ_uMPyb-tsA8",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 26,
+            "prompt_tokens": 1218,
+            "total_tokens": 1244
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 43,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 44,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 45,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "left",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 46,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 5,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 47,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "place_table",
+          "assistant_text": "",
+          "batch_index": 6,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 48,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "make_wood_pickaxe",
+          "assistant_text": "",
+          "batch_index": 7,
+          "batch_size": 8,
+          "invalid_parse": false,
+          "llm_call": 5,
+          "model": null,
+          "ply": 49,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"do\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 50,
+          "repaired": false,
+          "request_id": "3dFOarOiLZ_2jrEP0eWRiAk",
+          "reward_total": 1.0,
+          "usage": {
+            "completion_tokens": 13,
+            "prompt_tokens": 1235,
+            "total_tokens": 1248
+          }
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 51,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 52,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 1.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 53,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 3.0,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 6,
+          "model": null,
+          "ply": 54,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "{\"actions\":[\"right\",\"right\",\"right\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 55,
+          "repaired": false,
+          "request_id": "3tFOavysEsWFjrEPseebuAM",
+          "reward_total": 2.8,
+          "usage": {
+            "completion_tokens": 13,
+            "prompt_tokens": 1227,
+            "total_tokens": 1240
+          }
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 56,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "right",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 57,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 58,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 4,
+          "batch_size": 5,
+          "invalid_parse": false,
+          "llm_call": 7,
+          "model": null,
+          "ply": 59,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.8,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "down",
+          "assistant_text": "{\"actions\":[\"down\",\"down\",\"do\",\"do\"]}",
+          "batch_index": 0,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": "gemini-3.1-flash-lite",
+          "ply": 60,
+          "repaired": false,
+          "request_id": "3tFOapigMLqZ-8YPyan1kQM",
+          "reward_total": 2.5999999999999996,
+          "usage": {
+            "completion_tokens": 11,
+            "prompt_tokens": 1227,
+            "total_tokens": 1238
+          }
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "down",
+          "assistant_text": "",
+          "batch_index": 1,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 61,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 2,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 62,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        },
+        {
+          "achievements": [
+            "collect_food",
+            "collect_wood",
+            "eat_cow"
+          ],
+          "action": "do",
+          "assistant_text": "",
+          "batch_index": 3,
+          "batch_size": 4,
+          "invalid_parse": false,
+          "llm_call": 8,
+          "model": null,
+          "ply": 63,
+          "repaired": false,
+          "request_id": null,
+          "reward_total": 2.3999999999999995,
+          "usage": {}
+        }
+      ]
+    }
+  ],
+  "checkpoint": {
+    "achievements": [
+      "collect_food",
+      "collect_wood",
+      "eat_cow"
+    ],
+    "checkpoint_id": "gepa-gepa-seed-558-aa860480_terminal",
+    "metadata": {
+      "achievements": [
+        "collect_food",
+        "collect_wood",
+        "eat_cow"
+      ],
+      "objective_labels": [
+        "achievement:collect_food",
+        "achievement:collect_wood",
+        "achievement:eat_cow",
+        "objective:craftax_policy_dev",
+        "reward:2.4000",
+        "truncated"
+      ],
+      "policy_llm_call_index": 8,
+      "rollout_id": "gepa-gepa-seed-558-aa860480"
+    },
+    "objective_labels": [
+      "achievement:collect_food",
+      "achievement:collect_wood",
+      "achievement:eat_cow",
+      "objective:craftax_policy_dev",
+      "reward:2.4000",
+      "truncated"
+    ],
+    "policy_llm_call_index": 8,
+    "reward": 2.3999999999999995,
+    "rollout_id": "gepa-gepa-seed-558-aa860480"
+  },
+  "final_objective_labels": [
+    "achievement:collect_food",
+    "achievement:collect_wood",
+    "achievement:eat_cow",
+    "objective:craftax_policy_dev",
+    "reward:2.4000",
+    "truncated"
+  ],
+  "metadata": {
+    "achievement_count": 3,
+    "final_objective_labels": [
+      "achievement:collect_food",
+      "achievement:collect_wood",
+      "achievement:eat_cow",
+      "objective:craftax_policy_dev",
+      "reward:2.4000",
+      "truncated"
+    ],
+    "objective_labels": [
+      "achievement:collect_food",
+      "achievement:collect_wood",
+      "achievement:eat_cow",
+      "objective:craftax_policy_dev",
+      "reward:2.4000",
+      "truncated"
+    ],
+    "policy_llm_turns": 8
+  },
+  "objective_labels": [
+    "achievement:collect_food",
+    "achievement:collect_wood",
+    "achievement:eat_cow",
+    "objective:craftax_policy_dev",
+    "reward:2.4000",
+    "truncated"
+  ],
+  "parent_checkpoint_id": null,
+  "parent_rollout_id": null,
+  "reward_info": {
+    "details": {
+      "achievements": [
+        "collect_food",
+        "collect_wood",
+        "eat_cow"
+      ],
+      "call_accounting": {
+        "completion_tokens": 166,
+        "input_tokens": 9555,
+        "llm_calls": 8,
+        "prompt_tokens": 9555,
+        "total_tokens": 9721
+      },
+      "completion_tokens": 166,
+      "done_reason": "max_steps",
+      "gold_rollout_id": "31a8c243-2f37-4509-b7a9-5bba0b43e096",
+      "input_tokens": 9555,
+      "invalid_action_count": 0,
+      "llm_calls": 8,
+      "model": "gemini-3.1-flash-lite",
+      "objective": "collect resources, craft tools, and unlock Craftax achievements",
+      "outcome": "truncated",
+      "prompt_tokens": 9555,
+      "seed": 558,
+      "steps": 64,
+      "task_id": "craftax_policy_dev"
+    },
+    "outcome_reward": 2.3999999999999995
+  },
+  "rollout_id": "gepa-gepa-seed-558-aa860480",
+  "scheduled_checkpoints": [],
+  "schema_version": "goex_rollout_response.v1",
+  "state": {
+    "private": {
+      "achievements": [
+        "collect_food",
+        "collect_wood",
+        "eat_cow"
+      ],
+      "config_hash": "b6b766fc56951ea3",
+      "done_reason": "max_steps",
+      "episode_id": "bb07f67149436aa427a4a6d0bccb21ac",
+      "invalid_action_count": 0,
+      "reward_last": 0.0,
+      "scenario_id": "craftax_policy_dev",
+      "seed": 558,
+      "step_index": 64,
+      "task_id": "craftax_policy_dev",
+      "terminated": false,
+      "total_reward": 2.3999999999999995,
+      "truncated": true
+    },
+    "public": {
+      "achievements": {
+        "collect_food": 1,
+        "collect_wood": 1,
+        "eat_cow": 1
+      },
+      "done": true,
+      "inventory": {
+        "armour": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "armour_enchantments": [
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "arrows": 0,
+        "books": 0,
+        "boss_progress": 0,
+        "bow": 0,
+        "bow_enchantment": "none",
+        "coal": 0,
+        "dexterity": 1,
+        "diamond": 0,
+        "drink": 9,
+        "energy": 9,
+        "food": 9,
+        "health": 3.0,
+        "intelligence": 1,
+        "iron": 0,
+        "learned_spells": [],
+        "mana": 9,
+        "pickaxe": 0,
+        "potions": {
+          "blue": 0,
+          "cyan": 0,
+          "green": 0,
+          "pink": 0,
+          "red": 0,
+          "yellow": 0
+        },
+        "ruby": 0,
+        "sapling": 0,
+        "sapphire": 0,
+        "stone": 0,
+        "strength": 1,
+        "sword": 0,
+        "sword_enchantment": "none",
+        "torches": 0,
+        "wood": 2,
+        "xp": 0
+      },
+      "level": 0,
+      "observation": {},
+      "player_pos": [
+        2,
+        5
+      ]
+    },
+    "reward": 2.3999999999999995,
+    "terminated": false,
+    "total_reward": 2.3999999999999995,
+    "truncated": true
+  },
+  "status": "completed",
+  "status_detail": "truncated",
+  "success_status": "success",
+  "summary": {
+    "outcome": "truncated",
+    "reward": 2.3999999999999995,
+    "steps": 64
+  },
+  "terminal_checkpoint_id": "gepa-gepa-seed-558-aa860480_terminal",
+  "trace_correlation_id": "gepa-gepa-seed-558-aa860480",
+  "trial_id": "craftax-goex-558"
+}

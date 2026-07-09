@@ -1,0 +1,101 @@
+{
+  "pass": false,
+  "failures": [
+    "Arm B did not beat Arm A on best_holdout_mean (A=1.5; B=1.0)"
+  ],
+  "arm_a": {
+    "label": "A",
+    "result_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_big_20260709T033652Z/result_manifest.json",
+    "candidate_count": 12,
+    "candidate_sources": {
+      "seed": 1,
+      "reflector:parent_variation": 11
+    },
+    "non_seed_candidates": 11,
+    "baseline_holdout_mean": 0.75,
+    "best_holdout_mean": 1.5,
+    "holdout_uplift": 0.75,
+    "best_candidate_id": "gepa_0f34df687ccf",
+    "jesterky_enabled_config": false,
+    "jesterky_receipt_count": 0,
+    "jesterky_receipts": [],
+    "expect_jesterky": false
+  },
+  "arm_b": {
+    "label": "B",
+    "result_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/result_manifest.json",
+    "candidate_count": 7,
+    "candidate_sources": {
+      "seed": 1,
+      "reflector:parent_variation": 6
+    },
+    "non_seed_candidates": 6,
+    "baseline_holdout_mean": 1.0,
+    "best_holdout_mean": 1.0,
+    "holdout_uplift": 0.0,
+    "best_candidate_id": "gepa_d3da93b581f8",
+    "jesterky_enabled_config": true,
+    "jesterky_receipt_count": 3,
+    "jesterky_receipts": [
+      {
+        "actor": "codex",
+        "annotated": 6,
+        "blockers": 0,
+        "command": "jesterky",
+        "elapsed_ms": 103391,
+        "enabled": true,
+        "generation": 0,
+        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_gepa_annotate.manifest.json",
+        "model": "gpt-5.4-mini",
+        "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
+        "theme_count": 20,
+        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_traces"
+      },
+      {
+        "actor": "codex",
+        "annotated": 6,
+        "blockers": 0,
+        "command": "jesterky",
+        "elapsed_ms": 99426,
+        "enabled": true,
+        "generation": 1,
+        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_gepa_annotate.manifest.json",
+        "model": "gpt-5.4-mini",
+        "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
+        "theme_count": 23,
+        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_traces"
+      },
+      {
+        "actor": "codex",
+        "annotated": 6,
+        "blockers": 0,
+        "command": "jesterky",
+        "elapsed_ms": 106171,
+        "enabled": true,
+        "generation": 2,
+        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_gepa_annotate.manifest.json",
+        "model": "gpt-5.4-mini",
+        "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
+        "theme_count": 22,
+        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_traces"
+      }
+    ],
+    "expect_jesterky": true
+  },
+  "min_non_seed": 1,
+  "status": "fail_heldout_b_behind",
+  "runs": {
+    "arm_a": "craftax_gepa_jesterky_workflow_arm_a_big_20260709T033652Z",
+    "arm_b": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
+    "prior_small_a": "craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z",
+    "prior_small_b": "craftax_gepa_jesterky_workflow_arm_b_20260709T024622Z"
+  },
+  "budget": {
+    "max_generations": 6,
+    "proposals_per_generation": 3,
+    "train_ids": 8,
+    "heldout_ids": 4,
+    "max_total_rollouts": 120
+  },
+  "note": "Bigger budget still FAIL: A best_heldout=1.5 > B=1.0. B themes non-empty (20/23/22). Hook ok; M5a primary not cleared."
+}

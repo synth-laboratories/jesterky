@@ -1,0 +1,4351 @@
+{
+  "run_id": "jesterky-cli-run",
+  "workflow_name": "quality_scan_blogs",
+  "spec_hash": "7b515720d9b543915a7b797c7831efeb27fd7c028e32f87bb4c36a2fb2a54efe",
+  "args": {
+    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog"
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog"
+      },
+      "wall_ms": 1783572133551
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_posts"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133551
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_posts"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572133554
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133554
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783572133554
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133554
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133555
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133556
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783572133557
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572133557
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "managed-factory",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+            "slug": "managed-factory"
+          }
+        }
+      },
+      "wall_ms": 1783572157544
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572157544
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783572157544
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "stack-handoffs",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+            "slug": "stack-handoffs"
+          }
+        }
+      },
+      "wall_ms": 1783572158099
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572158099
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783572158099
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "launching-synth-managed-research-mcp-first",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+            "slug": "launching-synth-managed-research-mcp-first"
+          }
+        }
+      },
+      "wall_ms": 1783572158924
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572158924
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783572158924
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "smr-launch-gamebench-pilot",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+            "slug": "smr-launch-gamebench-pilot"
+          }
+        }
+      },
+      "wall_ms": 1783572159243
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572159244
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783572159244
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "go-explore",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+            "slug": "go-explore"
+          }
+        }
+      },
+      "wall_ms": 1783572162275
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572162275
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783572162275
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "synth-tag-v1",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+            "slug": "synth-tag-v1"
+          }
+        }
+      },
+      "wall_ms": 1783572164717
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572164717
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783572164717
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "managed-research",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+            "slug": "managed-research"
+          }
+        }
+      },
+      "wall_ms": 1783572165284
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572165284
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783572165284
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": {
+            "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+            "dimension": "scaling-train-time-compute-for-gepa",
+            "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+            "slug": "scaling-train-time-compute-for-gepa"
+          }
+        }
+      },
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 8,
+        "total": 8
+      },
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572180336
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572180337
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_matrix"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783572180337
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_matrix"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "blog_matrix_recorder",
+        "inputs": {
+          "summary": {
+            "blockers": 6,
+            "failed": 1,
+            "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+            "passed": 7,
+            "posts": [
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+                "internal_type": "research_post",
+                "item": "go-explore",
+                "score": 7.1,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META,CRAFT",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "CRAFT",
+                    "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "unknown",
+                "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+                "internal_type": "launch_post",
+                "item": "launching-synth-managed-research-mcp-first",
+                "score": 5.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,V5,V6",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V5",
+                    "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V6",
+                    "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+                "internal_type": "launch_post",
+                "item": "managed-factory",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "metadata.required_fields",
+                "violations": [
+                  {
+                    "code": "metadata.required_fields",
+                    "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+                "internal_type": "launch_post",
+                "item": "managed-research",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "metadata.required,V3,V1",
+                "violations": [
+                  {
+                    "code": "metadata.required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V3",
+                    "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V1",
+                    "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "dev_evidence",
+                "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+                "internal_type": "research_post",
+                "item": "scaling-train-time-compute-for-gepa",
+                "score": 7.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+                "internal_type": "launch_post",
+                "item": "smr-launch-gamebench-pilot",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+                "internal_type": "feature_release",
+                "item": "stack-handoffs",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,metadata_required",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "metadata_required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+                "internal_type": "feature_release",
+                "item": "synth-tag-v1",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED,LAUNCH_ROUTING",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "LAUNCH_ROUTING",
+                    "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                    "severity": "medium"
+                  }
+                ]
+              }
+            ],
+            "total": 8,
+            "verdict": "fail"
+          }
+        }
+      },
+      "wall_ms": 1783572190347
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_matrix"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572190347
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783572190347
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "SOUND",
+        "blocker": false,
+        "claim_tier": "smoke",
+        "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+        "fix": "Add required strategy metadata and canonical proof fields.",
+        "internal_type": "launch_post",
+        "item": "managed-factory",
+        "score": 7,
+        "severity": "medium",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "metadata.required_fields",
+            "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "measured",
+        "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+        "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+        "internal_type": "feature_release",
+        "item": "stack-handoffs",
+        "score": 6,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "V3",
+            "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+            "severity": "high"
+          },
+          {
+            "code": "metadata_required",
+            "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "unknown",
+        "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+        "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+        "internal_type": "launch_post",
+        "item": "launching-synth-managed-research-mcp-first",
+        "score": 5,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "V3",
+            "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+            "severity": "high"
+          },
+          {
+            "code": "V5",
+            "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+            "severity": "high"
+          },
+          {
+            "code": "V6",
+            "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "measured",
+        "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+        "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+        "internal_type": "launch_post",
+        "item": "smr-launch-gamebench-pilot",
+        "score": 6,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "V3",
+            "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+            "severity": "high"
+          },
+          {
+            "code": "META",
+            "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "measured",
+        "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+        "fix": "Add proof page, artifact links, and required metadata.",
+        "internal_type": "research_post",
+        "item": "go-explore",
+        "score": 7.1,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "V3",
+            "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+            "severity": "high"
+          },
+          {
+            "code": "META",
+            "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+            "severity": "medium"
+          },
+          {
+            "code": "CRAFT",
+            "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "SOUND",
+        "blocker": false,
+        "claim_tier": "smoke",
+        "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+        "fix": "Add required frontmatter fields and release-note linkage.",
+        "internal_type": "feature_release",
+        "item": "synth-tag-v1",
+        "score": 7,
+        "severity": "medium",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "META_REQUIRED",
+            "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+            "severity": "medium"
+          },
+          {
+            "code": "LAUNCH_ROUTING",
+            "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "measured",
+        "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+        "fix": "Add required metadata and link system card/artifacts.",
+        "internal_type": "launch_post",
+        "item": "managed-research",
+        "score": 6,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "metadata.required",
+            "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+            "severity": "high"
+          },
+          {
+            "code": "V3",
+            "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+            "severity": "high"
+          },
+          {
+            "code": "V1",
+            "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+            "severity": "medium"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "audit_posts"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_auditor"
+      },
+      "outputs": {
+        "algorithm_verdict": "FRAGILE",
+        "blocker": true,
+        "claim_tier": "dev_evidence",
+        "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+        "fix": "Add required frontmatter and chart provenance metadata.",
+        "internal_type": "research_post",
+        "item": "scaling-train-time-compute-for-gepa",
+        "score": 7,
+        "severity": "high",
+        "surface": "blog",
+        "violations": [
+          {
+            "code": "META_REQUIRED",
+            "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+            "severity": "high"
+          }
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_matrix"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "call": {
+        "call": "actor",
+        "actor": "blog_matrix_recorder"
+      },
+      "outputs": {
+        "blockers": 6,
+        "failed": 1,
+        "headline": "The corpus has several promising, candid technical posts, but overall quality is held back by missing metadata and reproducibility proof for measured claims.",
+        "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+        "passed": 7,
+        "total": 8,
+        "verdict": "fail"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "jesterky-cli-run",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:quality_scan_blogs",
+    "inputs": {
+      "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog"
+    },
+    "outputs": {
+      "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+      "jobs": [
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "go-explore",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+          "slug": "go-explore"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "launching-synth-managed-research-mcp-first",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+          "slug": "launching-synth-managed-research-mcp-first"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "managed-factory",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+          "slug": "managed-factory"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "managed-research",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+          "slug": "managed-research"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "scaling-train-time-compute-for-gepa",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+          "slug": "scaling-train-time-compute-for-gepa"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "smr-launch-gamebench-pilot",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+          "slug": "smr-launch-gamebench-pilot"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "stack-handoffs",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+          "slug": "stack-handoffs"
+        },
+        {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+          "dimension": "synth-tag-v1",
+          "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+          "slug": "synth-tag-v1"
+        }
+      ],
+      "scans": [
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "measured",
+          "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+          "fix": "Add proof page, artifact links, and required metadata.",
+          "internal_type": "research_post",
+          "item": "go-explore",
+          "score": 7.1,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "V3",
+              "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+              "severity": "high"
+            },
+            {
+              "code": "META",
+              "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+              "severity": "medium"
+            },
+            {
+              "code": "CRAFT",
+              "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "unknown",
+          "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+          "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+          "internal_type": "launch_post",
+          "item": "launching-synth-managed-research-mcp-first",
+          "score": 5,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "V3",
+              "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+              "severity": "high"
+            },
+            {
+              "code": "V5",
+              "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+              "severity": "high"
+            },
+            {
+              "code": "V6",
+              "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "SOUND",
+          "blocker": false,
+          "claim_tier": "smoke",
+          "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+          "fix": "Add required strategy metadata and canonical proof fields.",
+          "internal_type": "launch_post",
+          "item": "managed-factory",
+          "score": 7,
+          "severity": "medium",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "metadata.required_fields",
+              "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "measured",
+          "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+          "fix": "Add required metadata and link system card/artifacts.",
+          "internal_type": "launch_post",
+          "item": "managed-research",
+          "score": 6,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "metadata.required",
+              "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+              "severity": "high"
+            },
+            {
+              "code": "V3",
+              "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+              "severity": "high"
+            },
+            {
+              "code": "V1",
+              "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "dev_evidence",
+          "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+          "fix": "Add required frontmatter and chart provenance metadata.",
+          "internal_type": "research_post",
+          "item": "scaling-train-time-compute-for-gepa",
+          "score": 7,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "META_REQUIRED",
+              "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+              "severity": "high"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "measured",
+          "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+          "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+          "internal_type": "launch_post",
+          "item": "smr-launch-gamebench-pilot",
+          "score": 6,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "V3",
+              "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+              "severity": "high"
+            },
+            {
+              "code": "META",
+              "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "FRAGILE",
+          "blocker": true,
+          "claim_tier": "measured",
+          "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+          "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+          "internal_type": "feature_release",
+          "item": "stack-handoffs",
+          "score": 6,
+          "severity": "high",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "V3",
+              "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+              "severity": "high"
+            },
+            {
+              "code": "metadata_required",
+              "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+              "severity": "medium"
+            }
+          ]
+        },
+        {
+          "algorithm_verdict": "SOUND",
+          "blocker": false,
+          "claim_tier": "smoke",
+          "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+          "fix": "Add required frontmatter fields and release-note linkage.",
+          "internal_type": "feature_release",
+          "item": "synth-tag-v1",
+          "score": 7,
+          "severity": "medium",
+          "surface": "blog",
+          "violations": [
+            {
+              "code": "META_REQUIRED",
+              "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+              "severity": "medium"
+            },
+            {
+              "code": "LAUNCH_ROUTING",
+              "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+              "severity": "medium"
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "blockers": 6,
+        "failed": 1,
+        "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+        "passed": 7,
+        "posts": [
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "measured",
+            "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+            "internal_type": "research_post",
+            "item": "go-explore",
+            "score": 7.1,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "V3,META,CRAFT",
+            "violations": [
+              {
+                "code": "V3",
+                "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                "severity": "high"
+              },
+              {
+                "code": "META",
+                "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                "severity": "medium"
+              },
+              {
+                "code": "CRAFT",
+                "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "unknown",
+            "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+            "internal_type": "launch_post",
+            "item": "launching-synth-managed-research-mcp-first",
+            "score": 5.0,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "V3,V5,V6",
+            "violations": [
+              {
+                "code": "V3",
+                "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                "severity": "high"
+              },
+              {
+                "code": "V5",
+                "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                "severity": "high"
+              },
+              {
+                "code": "V6",
+                "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "SOUND",
+            "blocker": false,
+            "claim_tier": "smoke",
+            "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+            "internal_type": "launch_post",
+            "item": "managed-factory",
+            "score": 7.0,
+            "severity": "medium",
+            "surface": "blog",
+            "violation_codes": "metadata.required_fields",
+            "violations": [
+              {
+                "code": "metadata.required_fields",
+                "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "measured",
+            "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+            "internal_type": "launch_post",
+            "item": "managed-research",
+            "score": 6.0,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "metadata.required,V3,V1",
+            "violations": [
+              {
+                "code": "metadata.required",
+                "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                "severity": "high"
+              },
+              {
+                "code": "V3",
+                "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                "severity": "high"
+              },
+              {
+                "code": "V1",
+                "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "dev_evidence",
+            "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+            "internal_type": "research_post",
+            "item": "scaling-train-time-compute-for-gepa",
+            "score": 7.0,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "META_REQUIRED",
+            "violations": [
+              {
+                "code": "META_REQUIRED",
+                "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                "severity": "high"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "measured",
+            "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+            "internal_type": "launch_post",
+            "item": "smr-launch-gamebench-pilot",
+            "score": 6.0,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "V3,META",
+            "violations": [
+              {
+                "code": "V3",
+                "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                "severity": "high"
+              },
+              {
+                "code": "META",
+                "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "FRAGILE",
+            "blocker": true,
+            "claim_tier": "measured",
+            "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+            "internal_type": "feature_release",
+            "item": "stack-handoffs",
+            "score": 6.0,
+            "severity": "high",
+            "surface": "blog",
+            "violation_codes": "V3,metadata_required",
+            "violations": [
+              {
+                "code": "V3",
+                "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                "severity": "high"
+              },
+              {
+                "code": "metadata_required",
+                "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                "severity": "medium"
+              }
+            ]
+          },
+          {
+            "algorithm_verdict": "SOUND",
+            "blocker": false,
+            "claim_tier": "smoke",
+            "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+            "internal_type": "feature_release",
+            "item": "synth-tag-v1",
+            "score": 7.0,
+            "severity": "medium",
+            "surface": "blog",
+            "violation_codes": "META_REQUIRED,LAUNCH_ROUTING",
+            "violations": [
+              {
+                "code": "META_REQUIRED",
+                "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                "severity": "medium"
+              },
+              {
+                "code": "LAUNCH_ROUTING",
+                "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                "severity": "medium"
+              }
+            ]
+          }
+        ],
+        "total": 8,
+        "verdict": "fail"
+      }
+    },
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "aggregate"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "aggregate",
+        "inputs": {
+          "scans": [
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+              "fix": "Add proof page, artifact links, and required metadata.",
+              "internal_type": "research_post",
+              "item": "go-explore",
+              "score": 7.1,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "CRAFT",
+                  "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "unknown",
+              "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+              "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+              "internal_type": "launch_post",
+              "item": "launching-synth-managed-research-mcp-first",
+              "score": 5,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V5",
+                  "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V6",
+                  "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+              "fix": "Add required strategy metadata and canonical proof fields.",
+              "internal_type": "launch_post",
+              "item": "managed-factory",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required_fields",
+                  "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+              "fix": "Add required metadata and link system card/artifacts.",
+              "internal_type": "launch_post",
+              "item": "managed-research",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V3",
+                  "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V1",
+                  "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "dev_evidence",
+              "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter and chart provenance metadata.",
+              "internal_type": "research_post",
+              "item": "scaling-train-time-compute-for-gepa",
+              "score": 7,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+              "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+              "internal_type": "launch_post",
+              "item": "smr-launch-gamebench-pilot",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+              "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+              "internal_type": "feature_release",
+              "item": "stack-handoffs",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "metadata_required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter fields and release-note linkage.",
+              "internal_type": "feature_release",
+              "item": "synth-tag-v1",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "LAUNCH_ROUTING",
+                  "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                  "severity": "medium"
+                }
+              ]
+            }
+          ]
+        },
+        "outputs": {
+          "summary": {
+            "blockers": 6,
+            "failed": 1,
+            "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+            "passed": 7,
+            "posts": [
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+                "internal_type": "research_post",
+                "item": "go-explore",
+                "score": 7.1,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META,CRAFT",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "CRAFT",
+                    "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "unknown",
+                "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+                "internal_type": "launch_post",
+                "item": "launching-synth-managed-research-mcp-first",
+                "score": 5.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,V5,V6",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V5",
+                    "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V6",
+                    "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+                "internal_type": "launch_post",
+                "item": "managed-factory",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "metadata.required_fields",
+                "violations": [
+                  {
+                    "code": "metadata.required_fields",
+                    "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+                "internal_type": "launch_post",
+                "item": "managed-research",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "metadata.required,V3,V1",
+                "violations": [
+                  {
+                    "code": "metadata.required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V3",
+                    "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V1",
+                    "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "dev_evidence",
+                "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+                "internal_type": "research_post",
+                "item": "scaling-train-time-compute-for-gepa",
+                "score": 7.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+                "internal_type": "launch_post",
+                "item": "smr-launch-gamebench-pilot",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+                "internal_type": "feature_release",
+                "item": "stack-handoffs",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,metadata_required",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "metadata_required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+                "internal_type": "feature_release",
+                "item": "synth-tag-v1",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED,LAUNCH_ROUTING",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "LAUNCH_ROUTING",
+                    "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                    "severity": "medium"
+                  }
+                ]
+              }
+            ],
+            "total": 8,
+            "verdict": "fail"
+          }
+        },
+        "score": 0.875,
+        "signal": {
+          "blockers": 6,
+          "failed": 1,
+          "passed": 7,
+          "total": 8,
+          "verdict": "fail"
+        },
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "audit_posts"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "audit_posts",
+        "inputs": {
+          "concurrency": 8,
+          "item_as": "item",
+          "min_success": 0.85,
+          "over": [
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "go-explore",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+              "slug": "go-explore"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "launching-synth-managed-research-mcp-first",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+              "slug": "launching-synth-managed-research-mcp-first"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "managed-factory",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+              "slug": "managed-factory"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "managed-research",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+              "slug": "managed-research"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "scaling-train-time-compute-for-gepa",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+              "slug": "scaling-train-time-compute-for-gepa"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "smr-launch-gamebench-pilot",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+              "slug": "smr-launch-gamebench-pilot"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "stack-handoffs",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+              "slug": "stack-handoffs"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "synth-tag-v1",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+              "slug": "synth-tag-v1"
+            }
+          ]
+        },
+        "outputs": {
+          "job": [
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+              "fix": "Add proof page, artifact links, and required metadata.",
+              "internal_type": "research_post",
+              "item": "go-explore",
+              "score": 7.1,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "CRAFT",
+                  "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "unknown",
+              "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+              "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+              "internal_type": "launch_post",
+              "item": "launching-synth-managed-research-mcp-first",
+              "score": 5,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V5",
+                  "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V6",
+                  "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+              "fix": "Add required strategy metadata and canonical proof fields.",
+              "internal_type": "launch_post",
+              "item": "managed-factory",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required_fields",
+                  "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+              "fix": "Add required metadata and link system card/artifacts.",
+              "internal_type": "launch_post",
+              "item": "managed-research",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V3",
+                  "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V1",
+                  "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "dev_evidence",
+              "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter and chart provenance metadata.",
+              "internal_type": "research_post",
+              "item": "scaling-train-time-compute-for-gepa",
+              "score": 7,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+              "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+              "internal_type": "launch_post",
+              "item": "smr-launch-gamebench-pilot",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+              "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+              "internal_type": "feature_release",
+              "item": "stack-handoffs",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "metadata_required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter fields and release-note linkage.",
+              "internal_type": "feature_release",
+              "item": "synth-tag-v1",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "LAUNCH_ROUTING",
+                  "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                  "severity": "medium"
+                }
+              ]
+            }
+          ]
+        },
+        "score": null,
+        "signal": {
+          "attempted": 8,
+          "cancelled": false,
+          "successes": 8,
+          "total": 8
+        },
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "go-explore",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+                "slug": "go-explore"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+              "fix": "Add proof page, artifact links, and required metadata.",
+              "internal_type": "research_post",
+              "item": "go-explore",
+              "score": 7.1,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "CRAFT",
+                  "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "go-explore",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+                    "slug": "go-explore"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "measured",
+                  "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+                  "fix": "Add proof page, artifact links, and required metadata.",
+                  "internal_type": "research_post",
+                  "item": "go-explore",
+                  "score": 7.1,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "V3",
+                      "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "META",
+                      "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "CRAFT",
+                      "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "launching-synth-managed-research-mcp-first",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+                "slug": "launching-synth-managed-research-mcp-first"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "unknown",
+              "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+              "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+              "internal_type": "launch_post",
+              "item": "launching-synth-managed-research-mcp-first",
+              "score": 5,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V5",
+                  "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V6",
+                  "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "launching-synth-managed-research-mcp-first",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+                    "slug": "launching-synth-managed-research-mcp-first"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "unknown",
+                  "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+                  "fix": "Add metadata, release note/docs links, proof page, run ID, and evaluator outputs.",
+                  "internal_type": "launch_post",
+                  "item": "launching-synth-managed-research-mcp-first",
+                  "score": 5,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "V3",
+                      "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "V5",
+                      "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "V6",
+                      "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "managed-factory",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+                "slug": "managed-factory"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+              "fix": "Add required strategy metadata and canonical proof fields.",
+              "internal_type": "launch_post",
+              "item": "managed-factory",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required_fields",
+                  "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "managed-factory",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+                    "slug": "managed-factory"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "SOUND",
+                  "blocker": false,
+                  "claim_tier": "smoke",
+                  "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+                  "fix": "Add required strategy metadata and canonical proof fields.",
+                  "internal_type": "launch_post",
+                  "item": "managed-factory",
+                  "score": 7,
+                  "severity": "medium",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "metadata.required_fields",
+                      "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "managed-research",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+                "slug": "managed-research"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+              "fix": "Add required metadata and link system card/artifacts.",
+              "internal_type": "launch_post",
+              "item": "managed-research",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "metadata.required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V3",
+                  "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                  "severity": "high"
+                },
+                {
+                  "code": "V1",
+                  "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "managed-research",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+                    "slug": "managed-research"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "measured",
+                  "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+                  "fix": "Add required metadata and link system card/artifacts.",
+                  "internal_type": "launch_post",
+                  "item": "managed-research",
+                  "score": 6,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "metadata.required",
+                      "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "V3",
+                      "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "V1",
+                      "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 4
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[4]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "scaling-train-time-compute-for-gepa",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+                "slug": "scaling-train-time-compute-for-gepa"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "dev_evidence",
+              "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter and chart provenance metadata.",
+              "internal_type": "research_post",
+              "item": "scaling-train-time-compute-for-gepa",
+              "score": 7,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                  "severity": "high"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 4
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "scaling-train-time-compute-for-gepa",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+                    "slug": "scaling-train-time-compute-for-gepa"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "dev_evidence",
+                  "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+                  "fix": "Add required frontmatter and chart provenance metadata.",
+                  "internal_type": "research_post",
+                  "item": "scaling-train-time-compute-for-gepa",
+                  "score": 7,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "META_REQUIRED",
+                      "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                      "severity": "high"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 5
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[5]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "smr-launch-gamebench-pilot",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+                "slug": "smr-launch-gamebench-pilot"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+              "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+              "internal_type": "launch_post",
+              "item": "smr-launch-gamebench-pilot",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                  "severity": "high"
+                },
+                {
+                  "code": "META",
+                  "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 5
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "smr-launch-gamebench-pilot",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+                    "slug": "smr-launch-gamebench-pilot"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "measured",
+                  "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+                  "fix": "Add proof, claim_tier metadata, run IDs, seeds, baselines, artifact links.",
+                  "internal_type": "launch_post",
+                  "item": "smr-launch-gamebench-pilot",
+                  "score": 6,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "V3",
+                      "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "META",
+                      "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 6
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[6]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "stack-handoffs",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+                "slug": "stack-handoffs"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "FRAGILE",
+              "blocker": true,
+              "claim_tier": "measured",
+              "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+              "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+              "internal_type": "feature_release",
+              "item": "stack-handoffs",
+              "score": 6,
+              "severity": "high",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "V3",
+                  "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                  "severity": "high"
+                },
+                {
+                  "code": "metadata_required",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 6
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "stack-handoffs",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+                    "slug": "stack-handoffs"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "FRAGILE",
+                  "blocker": true,
+                  "claim_tier": "measured",
+                  "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+                  "fix": "Add proof page, run IDs, configs, and required frontmatter.",
+                  "internal_type": "feature_release",
+                  "item": "stack-handoffs",
+                  "score": 6,
+                  "severity": "high",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "V3",
+                      "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                      "severity": "high"
+                    },
+                    {
+                      "code": "metadata_required",
+                      "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "audit_posts"
+                },
+                {
+                  "index": 7
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[7]",
+            "inputs": {
+              "job": {
+                "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                "dimension": "synth-tag-v1",
+                "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+                "slug": "synth-tag-v1"
+              }
+            },
+            "outputs": {
+              "algorithm_verdict": "SOUND",
+              "blocker": false,
+              "claim_tier": "smoke",
+              "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+              "fix": "Add required frontmatter fields and release-note linkage.",
+              "internal_type": "feature_release",
+              "item": "synth-tag-v1",
+              "score": 7,
+              "severity": "medium",
+              "surface": "blog",
+              "violations": [
+                {
+                  "code": "META_REQUIRED",
+                  "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                  "severity": "medium"
+                },
+                {
+                  "code": "LAUNCH_ROUTING",
+                  "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                  "severity": "medium"
+                }
+              ]
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "audit_posts"
+                    },
+                    {
+                      "index": 7
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:blog_auditor",
+                "inputs": {
+                  "job": {
+                    "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+                    "dimension": "synth-tag-v1",
+                    "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+                    "slug": "synth-tag-v1"
+                  }
+                },
+                "outputs": {
+                  "algorithm_verdict": "SOUND",
+                  "blocker": false,
+                  "claim_tier": "smoke",
+                  "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+                  "fix": "Add required frontmatter fields and release-note linkage.",
+                  "internal_type": "feature_release",
+                  "item": "synth-tag-v1",
+                  "score": 7,
+                  "severity": "medium",
+                  "surface": "blog",
+                  "violations": [
+                    {
+                      "code": "META_REQUIRED",
+                      "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                      "severity": "medium"
+                    },
+                    {
+                      "code": "LAUNCH_ROUTING",
+                      "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                      "severity": "medium"
+                    }
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "expand_posts"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "expand_posts",
+        "inputs": {
+          "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog"
+        },
+        "outputs": {
+          "jobs": [
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "go-explore",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/go-explore/index.mdx",
+              "slug": "go-explore"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "launching-synth-managed-research-mcp-first",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/launching-synth-managed-research-mcp-first.mdx",
+              "slug": "launching-synth-managed-research-mcp-first"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "managed-factory",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-factory/index.mdx",
+              "slug": "managed-factory"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "managed-research",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/managed-research/index.mdx",
+              "slug": "managed-research"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "scaling-train-time-compute-for-gepa",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/scaling-train-time-compute-for-gepa/index.mdx",
+              "slug": "scaling-train-time-compute-for-gepa"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "smr-launch-gamebench-pilot",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/smr-launch-gamebench-pilot/index.mdx",
+              "slug": "smr-launch-gamebench-pilot"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "stack-handoffs",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/stack-handoffs/index.mdx",
+              "slug": "stack-handoffs"
+            },
+            {
+              "blog_dir": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog",
+              "dimension": "synth-tag-v1",
+              "path": "/Users/joshpurtell/Documents/GitHub/frontend-main/content/blog/synth-tag-v1/index.mdx",
+              "slug": "synth-tag-v1"
+            }
+          ]
+        },
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "record_matrix"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "record_matrix",
+        "inputs": {
+          "summary": {
+            "blockers": 6,
+            "failed": 1,
+            "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+            "passed": 7,
+            "posts": [
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+                "internal_type": "research_post",
+                "item": "go-explore",
+                "score": 7.1,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META,CRAFT",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "CRAFT",
+                    "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "unknown",
+                "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+                "internal_type": "launch_post",
+                "item": "launching-synth-managed-research-mcp-first",
+                "score": 5.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,V5,V6",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V5",
+                    "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V6",
+                    "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+                "internal_type": "launch_post",
+                "item": "managed-factory",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "metadata.required_fields",
+                "violations": [
+                  {
+                    "code": "metadata.required_fields",
+                    "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+                "internal_type": "launch_post",
+                "item": "managed-research",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "metadata.required,V3,V1",
+                "violations": [
+                  {
+                    "code": "metadata.required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V3",
+                    "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "V1",
+                    "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "dev_evidence",
+                "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+                "internal_type": "research_post",
+                "item": "scaling-train-time-compute-for-gepa",
+                "score": 7.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                    "severity": "high"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+                "internal_type": "launch_post",
+                "item": "smr-launch-gamebench-pilot",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,META",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "META",
+                    "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "FRAGILE",
+                "blocker": true,
+                "claim_tier": "measured",
+                "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+                "internal_type": "feature_release",
+                "item": "stack-handoffs",
+                "score": 6.0,
+                "severity": "high",
+                "surface": "blog",
+                "violation_codes": "V3,metadata_required",
+                "violations": [
+                  {
+                    "code": "V3",
+                    "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                    "severity": "high"
+                  },
+                  {
+                    "code": "metadata_required",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  }
+                ]
+              },
+              {
+                "algorithm_verdict": "SOUND",
+                "blocker": false,
+                "claim_tier": "smoke",
+                "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+                "internal_type": "feature_release",
+                "item": "synth-tag-v1",
+                "score": 7.0,
+                "severity": "medium",
+                "surface": "blog",
+                "violation_codes": "META_REQUIRED,LAUNCH_ROUTING",
+                "violations": [
+                  {
+                    "code": "META_REQUIRED",
+                    "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                    "severity": "medium"
+                  },
+                  {
+                    "code": "LAUNCH_ROUTING",
+                    "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                    "severity": "medium"
+                  }
+                ]
+              }
+            ],
+            "total": 8,
+            "verdict": "fail"
+          }
+        },
+        "outputs": {
+          "blockers": 6,
+          "failed": 1,
+          "headline": "The corpus has several promising, candid technical posts, but overall quality is held back by missing metadata and reproducibility proof for measured claims.",
+          "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+          "passed": 7,
+          "total": 8,
+          "verdict": "fail"
+        },
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "record_matrix"
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 1
+            },
+            "label": "actor:blog_matrix_recorder",
+            "inputs": {
+              "summary": {
+                "blockers": 6,
+                "failed": 1,
+                "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+                "passed": 7,
+                "posts": [
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "measured",
+                    "finding": "Strong honest research narrative, but measured benchmark claims lack required proof metadata and reproducibility trail.",
+                    "internal_type": "research_post",
+                    "item": "go-explore",
+                    "score": 7.1,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "V3,META,CRAFT",
+                    "violations": [
+                      {
+                        "code": "V3",
+                        "note": "No frontmatter proof/release/canonical_url/version/type/surface/status/owner/claim_tier; measured Craftax/NetHack/Crafter results cite no auditable artifact trail.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "META",
+                        "note": "Required metadata fields missing: type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                        "severity": "medium"
+                      },
+                      {
+                        "code": "CRAFT",
+                        "note": "Uses <GeloBlogCta /> without importing it in the visible MDX import block, risking render failure.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "unknown",
+                    "finding": "Launch walkthrough is specific but lacks required launch metadata, proof/release custody, and a concrete reproducibility artifact.",
+                    "internal_type": "launch_post",
+                    "item": "launching-synth-managed-research-mcp-first",
+                    "score": 5.0,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "V3,V5,V6",
+                    "violations": [
+                      {
+                        "code": "V3",
+                        "note": "Repro trail is incomplete: commands are listed, but no run ID, commit SHA, workspace artifact, or evaluator output is provided.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "V5",
+                        "note": "Required metadata is missing for launch routing: type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "V6",
+                        "note": "Launch custody is under-specified: docsLink and repoLink exist, but no release note or proof page ties the launch claim to evidence.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "SOUND",
+                    "blocker": false,
+                    "claim_tier": "smoke",
+                    "finding": "Strong narrow launch proof and limitations, but required routing metadata is mostly absent from frontmatter.",
+                    "internal_type": "launch_post",
+                    "item": "managed-factory",
+                    "score": 7.0,
+                    "severity": "medium",
+                    "surface": "blog",
+                    "violation_codes": "metadata.required_fields",
+                    "violations": [
+                      {
+                        "code": "metadata.required_fields",
+                        "note": "Missing type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "measured",
+                    "finding": "Strong limitation honesty, but launch metadata and proof links are incomplete for measured benchmark claims.",
+                    "internal_type": "launch_post",
+                    "item": "managed-research",
+                    "score": 6.0,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "metadata.required,V3,V1",
+                    "violations": [
+                      {
+                        "code": "metadata.required",
+                        "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, canonical_url.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "V3",
+                        "note": "Measured claims cite a system card and artifact bundles, but no direct proof page/system-card/artifact URL is provided.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "V1",
+                        "note": "The '222 launch-target tools' count lacks an inline inventory, baseline, or linked evidence trail.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "dev_evidence",
+                    "finding": "Strong limitations and evidence links, but required routing metadata is largely absent.",
+                    "internal_type": "research_post",
+                    "item": "scaling-train-time-compute-for-gepa",
+                    "score": 7.0,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "META_REQUIRED",
+                    "violations": [
+                      {
+                        "code": "META_REQUIRED",
+                        "note": "Frontmatter omits type, surface, status, owner, claim_tier, cta, release, proof, product_area, audience, version, canonical_url.",
+                        "severity": "high"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "measured",
+                    "finding": "Measured GameBench lifts lack visible proof metadata and reproducible receipt trail in the MDX.",
+                    "internal_type": "launch_post",
+                    "item": "smr-launch-gamebench-pilot",
+                    "score": 6.0,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "V3,META",
+                    "violations": [
+                      {
+                        "code": "V3",
+                        "note": "Numeric claims cite Craftax 0.152 vs 0.127 and Rogue scout lifts, but MDX exposes no proof metadata, seeds, or concrete receipt links.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "META",
+                        "note": "Frontmatter lacks required type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "FRAGILE",
+                    "blocker": true,
+                    "claim_tier": "measured",
+                    "finding": "Strong thesis and honest limitations, but measured experiment claims lack reproducible proof trail and required routing metadata.",
+                    "internal_type": "feature_release",
+                    "item": "stack-handoffs",
+                    "score": 6.0,
+                    "severity": "high",
+                    "surface": "blog",
+                    "violation_codes": "V3,metadata_required",
+                    "violations": [
+                      {
+                        "code": "V3",
+                        "note": "Experiment table reports reward, cost, duration, validity, and baselines without raw runs, config, commit, proof page, or reproducibility trail.",
+                        "severity": "high"
+                      },
+                      {
+                        "code": "metadata_required",
+                        "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                        "severity": "medium"
+                      }
+                    ]
+                  },
+                  {
+                    "algorithm_verdict": "SOUND",
+                    "blocker": false,
+                    "claim_tier": "smoke",
+                    "finding": "Clear beta release post with limitations and smoke proof, but required routing metadata is largely absent.",
+                    "internal_type": "feature_release",
+                    "item": "synth-tag-v1",
+                    "score": 7.0,
+                    "severity": "medium",
+                    "surface": "blog",
+                    "violation_codes": "META_REQUIRED,LAUNCH_ROUTING",
+                    "violations": [
+                      {
+                        "code": "META_REQUIRED",
+                        "note": "Frontmatter lacks type, surface, status, owner, claim_tier, release, proof, product_area, audience, version, and canonical_url.",
+                        "severity": "medium"
+                      },
+                      {
+                        "code": "LAUNCH_ROUTING",
+                        "note": "Feature/launch post links docs and includes proof, but has no explicit release_note metadata or launch_post/feature_release type.",
+                        "severity": "medium"
+                      }
+                    ]
+                  }
+                ],
+                "total": 8,
+                "verdict": "fail"
+              }
+            },
+            "outputs": {
+              "blockers": 6,
+              "failed": 1,
+              "headline": "The corpus has several promising, candid technical posts, but overall quality is held back by missing metadata and reproducibility proof for measured claims.",
+              "matrix_report": "blog matrix — scores & violations per post\npost                         score severity      algorithm violations\n────────────────────────────────────────────────────────────────────────────\ngo-explore                     7.1     high        FRAGILE V3,META,CRAFT\nlaunching-synth-managed-res…   5.0     high        FRAGILE V3,V5,V6\nmanaged-factory                7.0   medium          SOUND metadata.required_fields\nmanaged-research               6.0     high        FRAGILE metadata.required,V3,V1\nscaling-train-time-compute-…   7.0     high        FRAGILE META_REQUIRED\nsmr-launch-gamebench-pilot     6.0     high        FRAGILE V3,META\nstack-handoffs                 6.0     high        FRAGILE V3,metadata_required\nsynth-tag-v1                   7.0   medium          SOUND META_REQUIRED,LAUNCH_ROUTING\n",
+              "passed": 7,
+              "total": 8,
+              "verdict": "fail"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed",
+  "stop_reason": "completed",
+  "invariants": {
+    "all_ok": true,
+    "checks": [
+      {
+        "name": "unique_event_addrs",
+        "ok": true,
+        "detail": "52 events, all addrs distinct"
+      },
+      {
+        "name": "no_orphaned_records",
+        "ok": true,
+        "detail": "9 recorded outputs all present in trace"
+      },
+      {
+        "name": "map:audit_posts.over_matches_total",
+        "ok": true,
+        "detail": "fanned over 8 items, recorded total 8"
+      },
+      {
+        "name": "map:audit_posts.min_success_honored",
+        "ok": true,
+        "detail": "8/8 succeeded (>= min_success 0.85)"
+      },
+      {
+        "name": "map:audit_posts.children_within_total",
+        "ok": true,
+        "detail": "8 item children <= 8 attempted"
+      }
+    ]
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood"
+      ],
+      "n_steps": 12,
+      "seed": 12,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_12",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:03:29Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four states: adjacent target, visible target, hidden target, or hazard/stuck.\n\nReturn exactly one <tool_call> block for crafter_interact and no other text. Use only valid actions and keep each batch to 1-5 actions.\n\nDecision rules:\n- Adjacent target: finish with `do`; do not spend extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop if the target is still visible next turn.\n- Hidden target: use a systematic sweep or zig-zag that explores new tiles; never alternate back and forth.\n- Hazard/stuck: immediately break the loop by changing axis or direction; avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nProgression policy:\n1. Wood is first.\n2. If wood is available, place a table immediately rather than wandering.\n3. If a table exists and the materials are present, craft the next prerequisite tool immediately.\n4. Use the tool ladder to reach stone and then furnace progression.\n5. Only pursue advanced tools after prerequisites exist.\n\nAlways treat the current inventory and local map as the source of truth. Every action list should be a concrete micro-plan that combines movement with `do`, `place_*`, or `make_*` when the map supports it."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_12",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_26504c820d8f",
+    "seed": 12,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood"
+      ],
+      "actions_taken": [
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_train_12",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "n_steps": 12,
+          "seed": 12,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_12"
+      }
+    },
+    "updated_at": "2026-07-09T04:03:29Z",
+    "usage": {
+      "completion_tokens": 395,
+      "cost_usd": 0.0,
+      "prompt_tokens": 7312,
+      "total_tokens": 7707
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four states: adjacent target, visible target, hidden target, or hazard/stuck.\n\nReturn exactly one <tool_call> block for crafter_interact and no other text. Use only valid actions and keep each batch to 1-5 actions.\n\nDecision rules:\n- Adjacent target: finish with `do`; do not spend extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop if the target is still visible next turn.\n- Hidden target: use a systematic sweep or zig-zag that explores new tiles; never alternate back and forth.\n- Hazard/stuck: immediately break the loop by changing axis or direction; avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nProgression policy:\n1. Wood is first.\n2. If wood is available, place a table immediately rather than wandering.\n3. If a table exists and the materials are present, craft the next prerequisite tool immediately.\n4. Use the tool ladder to reach stone and then furnace progression.\n5. Only pursue advanced tools after prerequisites exist.\n\nAlways treat the current inventory and local map as the source of truth. Every action list should be a concrete micro-plan that combines movement with `do`, `place_*`, or `make_*` when the map supports it."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a deterministic Craftax planner. Before choosing actions, classify the observation into one of four states: adjacent target, visible target, hidden target, or hazard/stuck.\n\nReturn exactly one <tool_call> block for crafter_interact and no other text. Use only valid actions and keep each batch to 1-5 actions.\n\nDecision rules:\n- Adjacent target: finish with `do`; do not spend extra movement on the same object.\n- Visible but distant target: take the smallest movement burst that reduces distance, then stop if the target is still visible next turn.\n- Hidden target: use a systematic sweep or zig-zag that explores new tiles; never alternate back and forth.\n- Hazard/stuck: immediately break the loop by changing axis or direction; avoid lava, blocked tiles, repeated no-op turns, and repeated sleep turns.\n\nProgression policy:\n1. Wood is first.\n2. If wood is available, place a table immediately rather than wandering.\n3. If a table exists and the materials are present, craft the next prerequisite tool immediately.\n4. Use the tool ladder to reach stone and then furnace progression.\n5. Only pursue advanced tools after prerequisites exist.\n\nAlways treat the current inventory and local map as the source of truth. Every action list should be a concrete micro-plan that combines movement with `do`, `place_*`, or `make_*` when the map supports it."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_26504c820d8f",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood"
+    ],
+    "actions_taken": [
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_train_12",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_12",
+      "seed": 12,
+      "split": "train",
+      "task_id": "train:12"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "n_steps": 12,
+        "seed": 12,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_12"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 395,
+    "cost_usd": 0.0,
+    "prompt_tokens": 7312,
+    "total_tokens": 7707
+  }
+}

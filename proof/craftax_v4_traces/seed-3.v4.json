@@ -1,0 +1,259 @@
+{
+  "events": [
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 0; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"do\",\"do\",\"right\",\"do\",\"do\",\"do\",\"up\",\"make_wood_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 826,
+          "total_tokens": 852
+        }
+      },
+      "metadata": {
+        "env_action": "do"
+      },
+      "sequence_index": 1,
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0001",
+      "type": "lm_call"
+    },
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 9; reward_total=2.0; achievements=['collect_sapling', 'collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"left\",\"do\",\"do\",\"do\",\"right\",\"right\",\"do\",\"do\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 871,
+          "total_tokens": 892
+        }
+      },
+      "metadata": {
+        "env_action": "left"
+      },
+      "sequence_index": 2,
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0002",
+      "type": "lm_call"
+    },
+    {
+      "llm_request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 18; reward_total=2.0; achievements=['collect_sapling', 'collect_wood']",
+            "role": "user"
+          }
+        ],
+        "model": "gemini-3.1-flash-lite"
+      },
+      "llm_response": {
+        "message": {
+          "content": "{\"actions\":[\"up\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 7,
+          "prompt_tokens": 891,
+          "total_tokens": 898
+        }
+      },
+      "metadata": {
+        "env_action": "up"
+      },
+      "sequence_index": 3,
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0003",
+      "type": "lm_call"
+    }
+  ],
+  "metadata": {
+    "achievement_count": 2,
+    "env": "gamebench.craftax-singleplayer.rust_gold",
+    "final_objective_labels": [
+      "achievement:collect_sapling",
+      "achievement:collect_wood",
+      "objective:craftax_policy_dev",
+      "reward:2.0000",
+      "truncated"
+    ],
+    "objective_labels": [
+      "achievement:collect_sapling",
+      "achievement:collect_wood",
+      "objective:craftax_policy_dev",
+      "reward:2.0000",
+      "truncated"
+    ],
+    "policy_llm_turns": 3,
+    "source": "capture_craftax_v4_traces.py"
+  },
+  "rollout_id": "craftax-v4-seed-3-b30c1456",
+  "schema_version": "synth_rollout_trace_v4",
+  "span_count": 3,
+  "spans": [
+    {
+      "call_index": 1,
+      "metadata": {
+        "batch_size": 9,
+        "request_id": "GHFOav-TOtOz1MkPvZKo8Ak"
+      },
+      "metrics": {
+        "env_action": "do",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 1.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 0; reward_total=1.0; achievements=['collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"do\",\"do\",\"do\",\"right\",\"do\",\"do\",\"do\",\"up\",\"make_wood_pickaxe\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 826,
+          "total_tokens": 852
+        }
+      },
+      "run_id": "craftax-v4-seed-3-b30c1456",
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0001"
+    },
+    {
+      "call_index": 2,
+      "metadata": {
+        "batch_size": 9,
+        "request_id": "GXFOatLwK9qR-8YP4KTiUQ"
+      },
+      "metrics": {
+        "env_action": "left",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 2.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 9; reward_total=2.0; achievements=['collect_sapling', 'collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"left\",\"do\",\"do\",\"do\",\"right\",\"right\",\"do\",\"do\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 871,
+          "total_tokens": 892
+        }
+      },
+      "run_id": "craftax-v4-seed-3-b30c1456",
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0002"
+    },
+    {
+      "call_index": 3,
+      "metadata": {
+        "batch_size": 2,
+        "request_id": "GnFOaoThJI6J_uMPusGzkA4"
+      },
+      "metrics": {
+        "env_action": "up",
+        "invalid_parse": false,
+        "repaired": false,
+        "reward_total": 2.0
+      },
+      "request": {
+        "messages": [
+          {
+            "content": "Craftax ReAct policy",
+            "role": "system"
+          },
+          {
+            "content": "Craftax turn 18; reward_total=2.0; achievements=['collect_sapling', 'collect_wood']",
+            "role": "user"
+          }
+        ],
+        "provider_hint": "openai_compat"
+      },
+      "response": {
+        "message": {
+          "content": "{\"actions\":[\"up\",\"do\"]}",
+          "role": "assistant"
+        },
+        "usage": {
+          "completion_tokens": 7,
+          "prompt_tokens": 891,
+          "total_tokens": 898
+        }
+      },
+      "run_id": "craftax-v4-seed-3-b30c1456",
+      "span_id": "craftax-v4-seed-3-b30c1456-span-0003"
+    }
+  ],
+  "status": "completed",
+  "summary": {
+    "achievements": [
+      "collect_sapling",
+      "collect_wood"
+    ],
+    "invalid_parse_turns": 0,
+    "llm_turns": 3,
+    "max_steps": 20,
+    "outcome_reward": 2.0,
+    "policy_model": "gemini-3.1-flash-lite",
+    "policy_provider": "gemini",
+    "reward": 2.0,
+    "seed": 3
+  },
+  "trace_correlation_id": "craftax-v4-seed-3-b30c1456",
+  "trace_schema_version": 4
+}

@@ -1,0 +1,186 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_sapling"
+      ],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:48:33Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_16bacca42acf",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_sapling"
+      ],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_left",
+        "move_up",
+        "do",
+        "move_up"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_sapling"
+          ],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T03:48:33Z",
+    "usage": {
+      "completion_tokens": 172,
+      "cost_usd": 0.0,
+      "prompt_tokens": 2782,
+      "total_tokens": 2954
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact observation with player stats, inventory, and local map. Respond ONLY with a single <tool_call> block for crafter_interact and nothing else. Use 1-5 valid actions only.\n\nBase your action list on the local map:\n- If a useful target is adjacent, end the batch with do.\n- If a useful target is visible but not adjacent, use the shortest movement burst that approaches it, then stop.\n- If no useful target is visible, explore with a consistent sweep instead of oscillating between directions.\n- If the current route failed to make progress, change route on the next turn rather than repeating the same move/do pattern.\n\nPriority ladder: collect wood -> place a table -> craft wood pickaxe -> gather stone -> place a furnace -> upgrade tools. Do not skip prerequisites. Avoid lava and repeated no-op loops."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_16bacca42acf",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_sapling"
+    ],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_left",
+      "move_up",
+      "do",
+      "move_up"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 172,
+    "cost_usd": 0.0,
+    "prompt_tokens": 2782,
+    "total_tokens": 2954
+  }
+}

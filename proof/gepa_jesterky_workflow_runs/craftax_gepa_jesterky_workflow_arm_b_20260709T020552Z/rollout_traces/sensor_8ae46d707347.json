@@ -1,0 +1,164 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 11,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:12:02Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you receive a compact text observation containing player stats, inventory, and a local map.\n\nYour job: choose the next 1-5 low-level actions that are legal right now and that most directly advance survival progression.\n\nReturn ONLY one <tool_call> block for crafter_interact with an actions_list of 1-5 valid action names. Do not output prose, markdown, JSON outside the tool_call block, or extra text.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nHard rules:\n- Choose only actions that are legal given the current observation and inventory.\n- If a craft/place action is not currently possible, do not repeat it; first gather the missing prerequisite.\n- Do not waste turns on repeated noop, sleep, or back-and-forth movement loops.\n- If a move does not improve access to a useful target, switch to do or a different direction.\n\nPriority order:\n1. Collect wood.\n2. Place a table.\n3. Craft a wood pickaxe.\n4. Collect stone and coal.\n5. Place a furnace.\n6. Upgrade tools after the basics are unlocked.\n\nWhen a useful resource is adjacent or underfoot, include do in the batch before moving away. Keep batches short and purposeful: movement plus do/craft/place when the map supports it."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_11",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_6d2610dae118",
+    "seed": 11,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "do",
+        "do",
+        "do",
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_train_11",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 11,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_11"
+      }
+    },
+    "updated_at": "2026-07-09T02:12:02Z",
+    "usage": {
+      "completion_tokens": 223,
+      "cost_usd": 0.0,
+      "prompt_tokens": 5089,
+      "total_tokens": 5312
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you receive a compact text observation containing player stats, inventory, and a local map.\n\nYour job: choose the next 1-5 low-level actions that are legal right now and that most directly advance survival progression.\n\nReturn ONLY one <tool_call> block for crafter_interact with an actions_list of 1-5 valid action names. Do not output prose, markdown, JSON outside the tool_call block, or extra text.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nHard rules:\n- Choose only actions that are legal given the current observation and inventory.\n- If a craft/place action is not currently possible, do not repeat it; first gather the missing prerequisite.\n- Do not waste turns on repeated noop, sleep, or back-and-forth movement loops.\n- If a move does not improve access to a useful target, switch to do or a different direction.\n\nPriority order:\n1. Collect wood.\n2. Place a table.\n3. Craft a wood pickaxe.\n4. Collect stone and coal.\n5. Place a furnace.\n6. Upgrade tools after the basics are unlocked.\n\nWhen a useful resource is adjacent or underfoot, include do in the batch before moving away. Keep batches short and purposeful: movement plus do/craft/place when the map supports it."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you receive a compact text observation containing player stats, inventory, and a local map.\n\nYour job: choose the next 1-5 low-level actions that are legal right now and that most directly advance survival progression.\n\nReturn ONLY one <tool_call> block for crafter_interact with an actions_list of 1-5 valid action names. Do not output prose, markdown, JSON outside the tool_call block, or extra text.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.\n\nHard rules:\n- Choose only actions that are legal given the current observation and inventory.\n- If a craft/place action is not currently possible, do not repeat it; first gather the missing prerequisite.\n- Do not waste turns on repeated noop, sleep, or back-and-forth movement loops.\n- If a move does not improve access to a useful target, switch to do or a different direction.\n\nPriority order:\n1. Collect wood.\n2. Place a table.\n3. Craft a wood pickaxe.\n4. Collect stone and coal.\n5. Place a furnace.\n6. Upgrade tools after the basics are unlocked.\n\nWhen a useful resource is adjacent or underfoot, include do in the batch before moving away. Keep batches short and purposeful: movement plus do/craft/place when the map supports it."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_6d2610dae118",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "do",
+      "do",
+      "do",
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_train_11",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_11",
+      "seed": 11,
+      "split": "train",
+      "task_id": "train:11"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 11,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_11"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 223,
+    "cost_usd": 0.0,
+    "prompt_tokens": 5089,
+    "total_tokens": 5312
+  }
+}

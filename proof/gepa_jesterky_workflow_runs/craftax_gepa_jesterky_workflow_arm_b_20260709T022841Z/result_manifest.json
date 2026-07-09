@@ -1,0 +1,438 @@
+{
+  "best_candidate_id": "gepa_9e7ad4835f2f",
+  "cache_profile_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/cache_profile.json",
+  "cost_usd": 0.0,
+  "event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/events.jsonl",
+  "failure": {
+    "error_code": "synth_optimizer_failed",
+    "failure": {
+      "details": {},
+      "failure_type": "validation",
+      "message": "jesterky exceeded timeout of 600s",
+      "mutated": false,
+      "reason_code": "config_error",
+      "retryable": false
+    },
+    "message": "GEPA runtime job effect:effect_df54e73b369f61f7 failed: jesterky exceeded timeout of 600s"
+  },
+  "normalized_event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/events.normalized.jsonl",
+  "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+  "schema_version": "gepa_failure_manifest.v1",
+  "state_history": [
+    {
+      "at": "2026-07-09T02:28:41.933109Z",
+      "details": {
+        "heldout_ids": [
+          "test:101",
+          "test:102"
+        ],
+        "heldout_split": "test",
+        "policy_model": "gemini-3.1-flash-lite",
+        "policy_provider": "openai",
+        "proposer_model": "gpt-5.4-mini",
+        "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+        "train_ids": [
+          "train:11",
+          "train:12",
+          "train:13",
+          "train:14"
+        ],
+        "train_split": "train"
+      },
+      "from": "created",
+      "message": "GEPA run initializing",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "initializing",
+      "trigger": "run_started"
+    },
+    {
+      "at": "2026-07-09T02:28:46.220373Z",
+      "details": {
+        "heldout_rows": 2,
+        "minibatch_rows": 4,
+        "pareto_rows": 4,
+        "reflection_rows": 4
+      },
+      "from": "initializing",
+      "message": "Container, program, and taskset ready",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "ready",
+      "trigger": "container_ready"
+    },
+    {
+      "at": "2026-07-09T02:28:46.222675Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53",
+        "rollout_count": 4,
+        "row_count": 4,
+        "stage": "seed_full_train"
+      },
+      "from": "ready",
+      "message": "Seed candidate rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_queueing",
+      "trigger": "rollouts_queued"
+    },
+    {
+      "at": "2026-07-09T02:28:46.223244Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53",
+        "rollout_count": 4,
+        "row_count": 4,
+        "stage": "seed_full_train"
+      },
+      "from": "rollout_queueing",
+      "message": "Seed candidate rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_running",
+      "trigger": "rollouts_started"
+    },
+    {
+      "at": "2026-07-09T02:29:20.889497Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53",
+        "stage": "seed_full_train"
+      },
+      "from": "rollout_running",
+      "message": "Rollouts finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "evaluating",
+      "trigger": "rollouts_finished"
+    },
+    {
+      "at": "2026-07-09T02:29:20.905964Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53"
+      },
+      "from": "evaluating",
+      "message": "Seed candidate evaluation finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "ready",
+      "trigger": "evaluation_finished"
+    },
+    {
+      "at": "2026-07-09T02:29:20.912652Z",
+      "details": {
+        "backend": "codex_app_server",
+        "candidate_count": 1,
+        "frontier_size": 1,
+        "generation": 0,
+        "loss_count": 2,
+        "model": "gpt-5.4-mini",
+        "parent_candidate_id": "gepa_86ef6f361d53",
+        "parent_selection": {
+          "candidate_id": "gepa_86ef6f361d53",
+          "cells": [
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:11",
+              "frontier_key": "example:train:11",
+              "objective_id": null,
+              "score": 0.0
+            },
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:12",
+              "frontier_key": "example:train:12",
+              "objective_id": null,
+              "score": 1.0
+            },
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:13",
+              "frontier_key": "example:train:13",
+              "objective_id": null,
+              "score": 1.0
+            },
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:14",
+              "frontier_key": "example:train:14",
+              "objective_id": null,
+              "score": 0.0
+            }
+          ],
+          "frontier": [
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "selection_weight": 4,
+              "win_count": 4
+            }
+          ],
+          "frontier_size": 1,
+          "frontier_type": "per_example",
+          "raw_weight": 4,
+          "reason": "pareto_weighted_frontier",
+          "selector": {
+            "configured_name": "pareto_weighted",
+            "epsilon": null,
+            "k": null,
+            "name": "pareto_weighted"
+          },
+          "strategy": "pareto_weighted",
+          "total_weight": 4,
+          "weight": 1.0,
+          "win_count": 4
+        },
+        "proposal_count": 2,
+        "rollout_row_count": 8,
+        "win_count": 2,
+        "workspace": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/proposer_workspaces/generation_000"
+      },
+      "from": "ready",
+      "message": "Async proposer started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "proposing",
+      "trigger": "proposer_started"
+    },
+    {
+      "at": "2026-07-09T02:31:57.014748Z",
+      "details": {
+        "generation": 0,
+        "proposal_count": 2
+      },
+      "from": "proposing",
+      "message": "Proposer returned candidates; rollout queue ready",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_queueing",
+      "trigger": "proposer_finished"
+    },
+    {
+      "at": "2026-07-09T02:31:57.028967Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53",
+        "generation": 0,
+        "row_count": 2,
+        "stage": "parent_minibatch_reference"
+      },
+      "from": "rollout_queueing",
+      "message": "Parent minibatch reference rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_running",
+      "trigger": "rollouts_started"
+    },
+    {
+      "at": "2026-07-09T02:31:57.056745Z",
+      "details": {
+        "candidate_id": "gepa_86ef6f361d53",
+        "stage": "parent_minibatch_reference"
+      },
+      "from": "rollout_running",
+      "message": "Rollouts finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "evaluating",
+      "trigger": "rollouts_finished"
+    },
+    {
+      "at": "2026-07-09T02:31:57.072883Z",
+      "details": {
+        "generation": 0
+      },
+      "from": "evaluating",
+      "message": "Candidate evaluation finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_queueing",
+      "trigger": "evaluation_finished"
+    },
+    {
+      "at": "2026-07-09T02:31:57.085576Z",
+      "details": {
+        "candidate_count": 1,
+        "generation": 0,
+        "rollout_count": 2,
+        "stage": "candidate_minibatch"
+      },
+      "from": "rollout_queueing",
+      "message": "Candidate minibatch rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_running",
+      "trigger": "rollouts_started"
+    },
+    {
+      "at": "2026-07-09T02:32:25.239657Z",
+      "details": {
+        "candidate_count": 1,
+        "stage": "candidate_minibatch"
+      },
+      "from": "rollout_running",
+      "message": "Rollout batch finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "evaluating",
+      "trigger": "rollouts_finished"
+    },
+    {
+      "at": "2026-07-09T02:32:25.256379Z",
+      "details": {
+        "candidate_count": 1,
+        "generation": 0,
+        "rollout_count": 4,
+        "stage": "candidate_full_train"
+      },
+      "from": "evaluating",
+      "message": "Candidate full-train rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_queueing",
+      "trigger": "rollouts_queued"
+    },
+    {
+      "at": "2026-07-09T02:32:25.257367Z",
+      "details": {
+        "candidate_count": 1,
+        "generation": 0,
+        "rollout_count": 4,
+        "stage": "candidate_full_train"
+      },
+      "from": "rollout_queueing",
+      "message": "Candidate full-train rollouts started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_running",
+      "trigger": "rollouts_started"
+    },
+    {
+      "at": "2026-07-09T02:33:01.698747Z",
+      "details": {
+        "candidate_count": 1,
+        "stage": "candidate_full_train"
+      },
+      "from": "rollout_running",
+      "message": "Rollout batch finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "evaluating",
+      "trigger": "rollouts_finished"
+    },
+    {
+      "at": "2026-07-09T02:33:01.711395Z",
+      "details": {
+        "generation": 0
+      },
+      "from": "evaluating",
+      "message": "Candidate evaluation finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "rollout_queueing",
+      "trigger": "evaluation_finished"
+    },
+    {
+      "at": "2026-07-09T02:33:01.727104Z",
+      "details": {
+        "generation": 0
+      },
+      "from": "rollout_queueing",
+      "message": "Generation evaluation finished",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "ready",
+      "trigger": "evaluation_finished"
+    },
+    {
+      "at": "2026-07-09T02:33:01.732876Z",
+      "details": {
+        "backend": "codex_app_server",
+        "candidate_count": 2,
+        "frontier_size": 1,
+        "generation": 1,
+        "loss_count": 4,
+        "model": "gpt-5.4-mini",
+        "parent_candidate_id": "gepa_86ef6f361d53",
+        "parent_selection": {
+          "candidate_id": "gepa_86ef6f361d53",
+          "cells": [
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:11",
+              "frontier_key": "example:train:11",
+              "objective_id": null,
+              "score": 0.0
+            },
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:12",
+              "frontier_key": "example:train:12",
+              "objective_id": null,
+              "score": 1.0
+            },
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "example_id": "train:13",
+              "frontier_key": "example:train:13",
+              "objective_id": null,
+              "score": 1.0
+            },
+            {
+              "candidate_id": "gepa_9e7ad4835f2f",
+              "example_id": "train:14",
+              "frontier_key": "example:train:14",
+              "objective_id": null,
+              "score": 1.0
+            }
+          ],
+          "frontier": [
+            {
+              "candidate_id": "gepa_86ef6f361d53",
+              "selection_weight": 3,
+              "win_count": 3
+            },
+            {
+              "candidate_id": "gepa_9e7ad4835f2f",
+              "selection_weight": 1,
+              "win_count": 1
+            }
+          ],
+          "frontier_size": 2,
+          "frontier_type": "per_example",
+          "raw_weight": 3,
+          "reason": "pareto_weighted_frontier",
+          "selector": {
+            "configured_name": "pareto_weighted",
+            "epsilon": null,
+            "k": null,
+            "name": "pareto_weighted"
+          },
+          "strategy": "pareto_weighted",
+          "total_weight": 4,
+          "weight": 0.75,
+          "win_count": 3
+        },
+        "proposal_count": 2,
+        "rollout_row_count": 22,
+        "win_count": 8,
+        "workspace": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/proposer_workspaces/generation_001"
+      },
+      "from": "ready",
+      "message": "Async proposer started",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "proposing",
+      "trigger": "proposer_started"
+    },
+    {
+      "at": "2026-07-09T02:43:01.980291Z",
+      "details": {
+        "best_candidate_id": "gepa_9e7ad4835f2f",
+        "error": {
+          "error_code": "synth_optimizer_failed",
+          "failure": {
+            "details": {},
+            "failure_type": "validation",
+            "message": "jesterky exceeded timeout of 600s",
+            "mutated": false,
+            "reason_code": "config_error",
+            "retryable": false
+          },
+          "message": "GEPA runtime job effect:effect_df54e73b369f61f7 failed: jesterky exceeded timeout of 600s"
+        }
+      },
+      "from": "proposing",
+      "message": "GEPA run failed",
+      "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z",
+      "to": "failed",
+      "trigger": "failure_raised"
+    }
+  ],
+  "status": "failed",
+  "usage": {
+    "completion_tokens": 2686,
+    "prompt_tokens": 100790,
+    "proposer_calls": 1,
+    "rollout_calls": 12,
+    "total_tokens": 103476
+  },
+  "workspace_db_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022841Z/workspace.sqlite"
+}

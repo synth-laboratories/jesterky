@@ -1,0 +1,186 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_sapling"
+      ],
+      "n_steps": 12,
+      "seed": 15,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:03:52Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a route-planning Craftax agent with a short-horizon state machine. Your job is to turn compact stats, inventory, and local map into a concrete 1-5 action micro-plan every turn.\n\nReturn only one <tool_call> block for crafter_interact. No prose, JSON wrapper, or markdown. Use only valid actions.\n\nOperate in two modes:\n- Exploration mode: when no useful target is adjacent, move to reveal new tiles. Prefer a consistent sweep, but if the previous batch did not uncover progress, rotate to a new axis instead of repeating the same pattern. Never stay on `noop`, `sleep`, or an unchanged move/do loop.\n- Execution mode: when a target is visible or adjacent, commit immediately. Use movement first and put `do`, `place_*`, or `make_*` at the end of the batch if the local map and inventory make the action valid.\n\nPriority ladder with strict dependencies:\n- Collect wood first, then place a table.\n- After a table exists, craft the earliest prerequisite tool whose materials are actually present.\n- Use that tool to unlock stone and deeper resources, then place a furnace as soon as stone progression is available.\n- Advance tools only after the prerequisite chain is satisfied.\n\nRecovery rule: if a batch fails to create a new adjacent target, if movement is blocked, or if `do` yields nothing, immediately change route instead of repeating the same plan. Treat lava, dead ends, and backtracking that fails to reveal new tiles as hard reasons to reroute."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_15",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_b120d543823d",
+    "seed": 15,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_sapling"
+      ],
+      "actions_taken": [
+        "move_left",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "move_left",
+        "move_left",
+        "do"
+      ],
+      "example_id": "ep_train_15",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_sapling"
+          ],
+          "n_steps": 12,
+          "seed": 15,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_15"
+      }
+    },
+    "updated_at": "2026-07-09T04:03:52Z",
+    "usage": {
+      "completion_tokens": 142,
+      "cost_usd": 0.0,
+      "prompt_tokens": 3468,
+      "total_tokens": 3610
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are a route-planning Craftax agent with a short-horizon state machine. Your job is to turn compact stats, inventory, and local map into a concrete 1-5 action micro-plan every turn.\n\nReturn only one <tool_call> block for crafter_interact. No prose, JSON wrapper, or markdown. Use only valid actions.\n\nOperate in two modes:\n- Exploration mode: when no useful target is adjacent, move to reveal new tiles. Prefer a consistent sweep, but if the previous batch did not uncover progress, rotate to a new axis instead of repeating the same pattern. Never stay on `noop`, `sleep`, or an unchanged move/do loop.\n- Execution mode: when a target is visible or adjacent, commit immediately. Use movement first and put `do`, `place_*`, or `make_*` at the end of the batch if the local map and inventory make the action valid.\n\nPriority ladder with strict dependencies:\n- Collect wood first, then place a table.\n- After a table exists, craft the earliest prerequisite tool whose materials are actually present.\n- Use that tool to unlock stone and deeper resources, then place a furnace as soon as stone progression is available.\n- Advance tools only after the prerequisite chain is satisfied.\n\nRecovery rule: if a batch fails to create a new adjacent target, if movement is blocked, or if `do` yields nothing, immediately change route instead of repeating the same plan. Treat lava, dead ends, and backtracking that fails to reveal new tiles as hard reasons to reroute."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are a route-planning Craftax agent with a short-horizon state machine. Your job is to turn compact stats, inventory, and local map into a concrete 1-5 action micro-plan every turn.\n\nReturn only one <tool_call> block for crafter_interact. No prose, JSON wrapper, or markdown. Use only valid actions.\n\nOperate in two modes:\n- Exploration mode: when no useful target is adjacent, move to reveal new tiles. Prefer a consistent sweep, but if the previous batch did not uncover progress, rotate to a new axis instead of repeating the same pattern. Never stay on `noop`, `sleep`, or an unchanged move/do loop.\n- Execution mode: when a target is visible or adjacent, commit immediately. Use movement first and put `do`, `place_*`, or `make_*` at the end of the batch if the local map and inventory make the action valid.\n\nPriority ladder with strict dependencies:\n- Collect wood first, then place a table.\n- After a table exists, craft the earliest prerequisite tool whose materials are actually present.\n- Use that tool to unlock stone and deeper resources, then place a furnace as soon as stone progression is available.\n- Advance tools only after the prerequisite chain is satisfied.\n\nRecovery rule: if a batch fails to create a new adjacent target, if movement is blocked, or if `do` yields nothing, immediately change route instead of repeating the same plan. Treat lava, dead ends, and backtracking that fails to reveal new tiles as hard reasons to reroute."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_b120d543823d",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_sapling"
+    ],
+    "actions_taken": [
+      "move_left",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "move_left",
+      "move_left",
+      "do"
+    ],
+    "example_id": "ep_train_15",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_15",
+      "seed": 15,
+      "split": "train",
+      "task_id": "train:15"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "n_steps": 12,
+        "seed": 15,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_15"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 142,
+    "cost_usd": 0.0,
+    "prompt_tokens": 3468,
+    "total_tokens": 3610
+  }
+}

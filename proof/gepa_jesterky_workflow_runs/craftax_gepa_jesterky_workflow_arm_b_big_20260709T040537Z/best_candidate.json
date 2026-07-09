@@ -1,0 +1,1783 @@
+{
+  "acceptance_metadata": {
+    "acceptance_criterion": "primary_improvement",
+    "acceptance_reason": "primary_improvement",
+    "comparison_result": "challenger_dominates",
+    "decision_source": "acceptance_criterion"
+  },
+  "acceptance_score": {
+    "acceptance_criterion": "primary_improvement",
+    "acceptance_reason": "primary_improvement",
+    "accepted": true,
+    "candidate_objectives": {
+      "total_episode_reward": 0.875
+    },
+    "challenger_score_vector_id": "scorevector_95668e7e316043d6",
+    "challenger_selection_score": 0.875,
+    "comparison": {
+      "challenger_candidate_id": "gepa_d3da93b581f8",
+      "challenger_score_vector_id": "scorevector_95668e7e316043d6",
+      "dominance": {
+        "better_objectives": [
+          "total_episode_reward"
+        ],
+        "challenger_selection_score": 0.875,
+        "equal_objectives": [],
+        "incumbent_selection_score": 0.625,
+        "missing_objectives": [],
+        "worse_objectives": []
+      },
+      "evaluation_stage": "candidate_full_train",
+      "frontier_type": "per_example",
+      "incumbent_candidate_id": "gepa_3224ffb3c9ac",
+      "incumbent_score_vector_id": "scorevector_b0b5d570e489b3e6",
+      "metadata": {
+        "source": "gepa.decision_bridge"
+      },
+      "objective_set_hash": "849f1b614cf39fe0db60b6391c302519f00106892b0a58a821f82f04640febe3",
+      "objective_set_id": "objective_set_849f1b614cf39fe0",
+      "pareto_comparison_id": "pareto_7ed49e832b50a434",
+      "rationale": "challenger is at least as good on all comparable objectives and better on at least one",
+      "result": "challenger_dominates",
+      "schema_version": "pareto_comparison.v1",
+      "split": "train"
+    },
+    "comparison_result": "challenger_dominates",
+    "decision_source": "acceptance_criterion",
+    "evaluation_stage": "candidate_full_train",
+    "frontier_type": "per_example",
+    "incumbent_score_vector_id": "scorevector_b0b5d570e489b3e6",
+    "incumbent_selection_score": 0.625,
+    "margin": 0.0,
+    "objective_acceptance": {
+      "min_objective_delta": 0.05,
+      "objective_regression_tolerance": 0.1,
+      "protected_objectives": []
+    },
+    "objective_deltas": {},
+    "objective_set_hash": "849f1b614cf39fe0db60b6391c302519f00106892b0a58a821f82f04640febe3",
+    "objective_set_id": "objective_set_849f1b614cf39fe0",
+    "parent_objectives": {
+      "total_episode_reward": 0.625
+    },
+    "primary_delta": 0.25,
+    "schema_version": "gepa_decision_score.v1",
+    "selection_delta": 0.25,
+    "selection_objective": "total_episode_reward",
+    "split": "train"
+  },
+  "candidate_id": "gepa_d3da93b581f8",
+  "heldout_reward": 1.0,
+  "lever_bundle": {
+    "bundle_id": "gepa_d3da93b581f8",
+    "metadata": {},
+    "mutated_lever_ids": [
+      "react_system_prompt"
+    ],
+    "parent_ids": [
+      "gepa_3224ffb3c9ac"
+    ],
+    "schema_version": "lever_bundle.v1",
+    "values": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block for crafter_interact, and put 1-5 valid actions in actions_list. Do not output prose, markdown, or JSON outside the tool_call.\n\nOn every turn, choose a concrete plan immediately. If wood or a sapling is visible and safe, move directly toward it and harvest it now. If you are already adjacent to a harvestable resource, spend the batch on do rather than wandering. If no obvious resource is visible, take the shortest safe move that increases visibility or proximity to wood.\n\nNever emit empty actions, repeated noop/sleep, or back-and-forth movement that does not advance harvesting. Only repeat do when you are actively harvesting a visible target. Keep action batches short and purposeful: move+do, move+move+do, or a craft/place action only when the needed materials are already present.\n\nPriority order: wood and saplings first, then table placement, then wood pickaxe, then stone, then furnace, then higher-tier tools. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava and blocked paths."
+    }
+  },
+  "minibatch_reward": 0.5,
+  "minibatch_scores": [
+    {
+      "example_id": "train:14",
+      "reward": 1.0,
+      "task_id": "train:14"
+    },
+    {
+      "example_id": "train:16",
+      "reward": 0.0,
+      "task_id": "train:16"
+    },
+    {
+      "example_id": "train:11",
+      "reward": 0.0,
+      "task_id": "train:11"
+    },
+    {
+      "example_id": "train:18",
+      "reward": 1.0,
+      "task_id": "train:18"
+    }
+  ],
+  "parent_id": "gepa_3224ffb3c9ac",
+  "payload": {
+    "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block for crafter_interact, and put 1-5 valid actions in actions_list. Do not output prose, markdown, or JSON outside the tool_call.\n\nOn every turn, choose a concrete plan immediately. If wood or a sapling is visible and safe, move directly toward it and harvest it now. If you are already adjacent to a harvestable resource, spend the batch on do rather than wandering. If no obvious resource is visible, take the shortest safe move that increases visibility or proximity to wood.\n\nNever emit empty actions, repeated noop/sleep, or back-and-forth movement that does not advance harvesting. Only repeat do when you are actively harvesting a visible target. Keep action batches short and purposeful: move+do, move+move+do, or a craft/place action only when the needed materials are already present.\n\nPriority order: wood and saplings first, then table placement, then wood pickaxe, then stone, then furnace, then higher-tier tools. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava and blocked paths."
+  },
+  "sensor_frames": [
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 8018,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_cbf1d40fd7bd.json",
+          "retention": "debug",
+          "sha256": "4250b7a4a6d8032b2f85857234a2e0e6eceb73896a30083386be47bb82f98591"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_minibatch",
+      "example_id": "train:14",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_sapling"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_539eb04ea38b",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 8018,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_cbf1d40fd7bd.json",
+            "retention": "debug",
+            "sha256": "4250b7a4a6d8032b2f85857234a2e0e6eceb73896a30083386be47bb82f98591"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_539eb04ea38b",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_cbf1d40fd7bd",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:14",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "a270af4418c158b32fe8449575282f57aefa906675cdb1f6ef28356668a27339",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 156,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4183,
+        "total_tokens": 4339
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7605,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_2976735ad32a.json",
+          "retention": "debug",
+          "sha256": "f3a7a60ce7ed9feed558f8952639f7ae2625ab0674bbb76f98f13fd345320a8b"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_minibatch",
+      "example_id": "train:16",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": []
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 0.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "failed"
+          },
+          "rollout_id": "rollout_d8f102753358",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 0.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7605,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_2976735ad32a.json",
+            "retention": "debug",
+            "sha256": "f3a7a60ce7ed9feed558f8952639f7ae2625ab0674bbb76f98f13fd345320a8b"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 0.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 0.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 0.0
+        }
+      ],
+      "reward": 0.0,
+      "rollout_id": "rollout_d8f102753358",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_2976735ad32a",
+      "split": "train",
+      "status": "completed",
+      "success_status": "failed",
+      "task_id": "train:16",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "0a9e5ed79d2789893c3eefbaa1a27be409d25d8ace417a2c4f21001e6a562bc5",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 225,
+        "cost_usd": 0.0,
+        "prompt_tokens": 6329,
+        "total_tokens": 6554
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7627,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_e11c41104c8a.json",
+          "retention": "debug",
+          "sha256": "ebc31bbf66ad833b5d628be13389fb54462f907f5c10a37d16d608480b9dcd83"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_minibatch",
+      "example_id": "train:11",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": []
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 0.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "failed"
+          },
+          "rollout_id": "rollout_e007c6d8f057",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 0.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7627,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_e11c41104c8a.json",
+            "retention": "debug",
+            "sha256": "ebc31bbf66ad833b5d628be13389fb54462f907f5c10a37d16d608480b9dcd83"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 0.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 0.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 0.0
+        }
+      ],
+      "reward": 0.0,
+      "rollout_id": "rollout_e007c6d8f057",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_e11c41104c8a",
+      "split": "train",
+      "status": "completed",
+      "success_status": "failed",
+      "task_id": "train:11",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "801bd8464d1810a247db4ab2deae3d6aecd89c06a1f293ecf9125ba4abdf2b8c",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 204,
+        "cost_usd": 0.0,
+        "prompt_tokens": 5571,
+        "total_tokens": 5775
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7939,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_8414b34a6c6f.json",
+          "retention": "debug",
+          "sha256": "ee5ff2725c700994082dc2a0036a8638f961a51f6032c206aaaa20e090a2c414"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_minibatch",
+      "example_id": "train:18",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_219ce4852af3",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7939,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_8414b34a6c6f.json",
+            "retention": "debug",
+            "sha256": "ee5ff2725c700994082dc2a0036a8638f961a51f6032c206aaaa20e090a2c414"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_219ce4852af3",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_8414b34a6c6f",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:18",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "ceaf38482d2c01bb981cc61473c321f7999b3c74b5c9aac94e07fd9b9e670f32",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 193,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4915,
+        "total_tokens": 5108
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7627,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_6615dd912fd7.json",
+          "retention": "debug",
+          "sha256": "ebc31bbf66ad833b5d628be13389fb54462f907f5c10a37d16d608480b9dcd83"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:11",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": []
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 0.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "failed"
+          },
+          "rollout_id": "rollout_e007c6d8f057",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 0.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7627,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_6615dd912fd7.json",
+            "retention": "debug",
+            "sha256": "ebc31bbf66ad833b5d628be13389fb54462f907f5c10a37d16d608480b9dcd83"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 0.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 0.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 0.0
+        }
+      ],
+      "reward": 0.0,
+      "rollout_id": "rollout_e007c6d8f057",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_6615dd912fd7",
+      "split": "train",
+      "status": "completed",
+      "success_status": "failed",
+      "task_id": "train:11",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "801bd8464d1810a247db4ab2deae3d6aecd89c06a1f293ecf9125ba4abdf2b8c",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 204,
+        "cost_usd": 0.0,
+        "prompt_tokens": 5571,
+        "total_tokens": 5775
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7903,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_442ecd22970a.json",
+          "retention": "debug",
+          "sha256": "2f40ae0289c900513818d1fcfd988253fae5f6b370f2d5af556477eb9789eeff"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:12",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_0e34dad83bd2",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7903,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_442ecd22970a.json",
+            "retention": "debug",
+            "sha256": "2f40ae0289c900513818d1fcfd988253fae5f6b370f2d5af556477eb9789eeff"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_0e34dad83bd2",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_442ecd22970a",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:12",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "825a12ce1d6bddc27a12919cbec890bf988703563126b8893030c084716e9606",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 205,
+        "cost_usd": 0.0,
+        "prompt_tokens": 5589,
+        "total_tokens": 5794
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7947,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_a78ec7d43110.json",
+          "retention": "debug",
+          "sha256": "f6b8d8793ba1cee7477119fd7500edbf8a2cb17410535d850b00dda769da4c0e"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:13",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_355cfc1950a0",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7947,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_a78ec7d43110.json",
+            "retention": "debug",
+            "sha256": "f6b8d8793ba1cee7477119fd7500edbf8a2cb17410535d850b00dda769da4c0e"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_355cfc1950a0",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_a78ec7d43110",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:13",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "d087bdc8fe14dad24f05eb224acc283a403fb16fc817048c11ee88f7c041d380",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 216,
+        "cost_usd": 0.0,
+        "prompt_tokens": 5622,
+        "total_tokens": 5838
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 8018,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_beef54fab979.json",
+          "retention": "debug",
+          "sha256": "4250b7a4a6d8032b2f85857234a2e0e6eceb73896a30083386be47bb82f98591"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:14",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_sapling"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_539eb04ea38b",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 8018,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_beef54fab979.json",
+            "retention": "debug",
+            "sha256": "4250b7a4a6d8032b2f85857234a2e0e6eceb73896a30083386be47bb82f98591"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_539eb04ea38b",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_beef54fab979",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:14",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "a270af4418c158b32fe8449575282f57aefa906675cdb1f6ef28356668a27339",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 156,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4183,
+        "total_tokens": 4339
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 8132,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_d9de7279b824.json",
+          "retention": "debug",
+          "sha256": "0287ed52c086589c6af66f31e7cf5825b30cdee9bbe827d2da5c71d98fd55f56"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:15",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood",
+            "collect_sapling"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 2.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_9f63f70f255f",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 2.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 8132,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_d9de7279b824.json",
+            "retention": "debug",
+            "sha256": "0287ed52c086589c6af66f31e7cf5825b30cdee9bbe827d2da5c71d98fd55f56"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 2.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 2.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 2.0
+        }
+      ],
+      "reward": 2.0,
+      "rollout_id": "rollout_9f63f70f255f",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_d9de7279b824",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:15",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "e854c71c655ade86062536229168a79fcd12a0b1dc8f77a398579a161299bd48",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 198,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4957,
+        "total_tokens": 5155
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7605,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_3bf5550f4eba.json",
+          "retention": "debug",
+          "sha256": "f3a7a60ce7ed9feed558f8952639f7ae2625ab0674bbb76f98f13fd345320a8b"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:16",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": []
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 0.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "failed"
+          },
+          "rollout_id": "rollout_d8f102753358",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 0.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7605,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_3bf5550f4eba.json",
+            "retention": "debug",
+            "sha256": "f3a7a60ce7ed9feed558f8952639f7ae2625ab0674bbb76f98f13fd345320a8b"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 0.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 0.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 0.0
+        }
+      ],
+      "reward": 0.0,
+      "rollout_id": "rollout_d8f102753358",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_3bf5550f4eba",
+      "split": "train",
+      "status": "completed",
+      "success_status": "failed",
+      "task_id": "train:16",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "0a9e5ed79d2789893c3eefbaa1a27be409d25d8ace417a2c4f21001e6a562bc5",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 225,
+        "cost_usd": 0.0,
+        "prompt_tokens": 6329,
+        "total_tokens": 6554
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7911,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_eae9469bcab4.json",
+          "retention": "debug",
+          "sha256": "c17d49efc594384164d0716125725fa7bafa9b21f240eccdd005a06a238415af"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:17",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_d61f5c772d6b",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7911,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_eae9469bcab4.json",
+            "retention": "debug",
+            "sha256": "c17d49efc594384164d0716125725fa7bafa9b21f240eccdd005a06a238415af"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_d61f5c772d6b",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_eae9469bcab4",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:17",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "f4bda295f198f868b4de144acfea78f7c268a7f891830d11878d2cf27f5c4ca4",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 191,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4184,
+        "total_tokens": 4375
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7939,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_4973c457bea6.json",
+          "retention": "debug",
+          "sha256": "ee5ff2725c700994082dc2a0036a8638f961a51f6032c206aaaa20e090a2c414"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "candidate_full_train",
+      "example_id": "train:18",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_219ce4852af3",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7939,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_4973c457bea6.json",
+            "retention": "debug",
+            "sha256": "ee5ff2725c700994082dc2a0036a8638f961a51f6032c206aaaa20e090a2c414"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_219ce4852af3",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_4973c457bea6",
+      "split": "train",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "train:18",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "ceaf38482d2c01bb981cc61473c321f7999b3c74b5c9aac94e07fd9b9e670f32",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 193,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4915,
+        "total_tokens": 5108
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7778,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_6814a63f7c14.json",
+          "retention": "debug",
+          "sha256": "cb91570a5f580a69b8a44fc06570e256c84d677ae48111b16035335b680f1036"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "heldout",
+      "example_id": "test:101",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_75b831926ca6",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7778,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_6814a63f7c14.json",
+            "retention": "debug",
+            "sha256": "cb91570a5f580a69b8a44fc06570e256c84d677ae48111b16035335b680f1036"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_75b831926ca6",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_6814a63f7c14",
+      "split": "test",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "test:101",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "79b69b9701c69159ec9d57d6ea4c0d8de8c765cbc4b77474a1181911c2af6e83",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 290,
+        "cost_usd": 0.0,
+        "prompt_tokens": 7716,
+        "total_tokens": 8006
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7733,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_e7119e3ee2dd.json",
+          "retention": "debug",
+          "sha256": "65b0d2efe76bc57b3ced79f06f1930a0a6cae2ab0cfc736080d9035917ba11b7"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "heldout",
+      "example_id": "test:102",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": []
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 0.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "failed"
+          },
+          "rollout_id": "rollout_dc4af6193e81",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 0.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7733,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_e7119e3ee2dd.json",
+            "retention": "debug",
+            "sha256": "65b0d2efe76bc57b3ced79f06f1930a0a6cae2ab0cfc736080d9035917ba11b7"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 0.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 0.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 0.0
+        }
+      ],
+      "reward": 0.0,
+      "rollout_id": "rollout_dc4af6193e81",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_e7119e3ee2dd",
+      "split": "test",
+      "status": "completed",
+      "success_status": "failed",
+      "task_id": "test:102",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "9e333bf171ded495c8d399fbe6e0c05d79ae7398bdbfcb4c4c2b0c6852dfc0e4",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 181,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4880,
+        "total_tokens": 5061
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 7975,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_4318f80d711a.json",
+          "retention": "debug",
+          "sha256": "bacfdd6eec25d1f61fb6256566f3c5493e38e14d97f8df6e2a10ecf05e5a6996"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "heldout",
+      "example_id": "test:103",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_sapling"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 1.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_e0dd69be8263",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 1.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 7975,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_4318f80d711a.json",
+            "retention": "debug",
+            "sha256": "bacfdd6eec25d1f61fb6256566f3c5493e38e14d97f8df6e2a10ecf05e5a6996"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 1.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 1.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 1.0
+        }
+      ],
+      "reward": 1.0,
+      "rollout_id": "rollout_e0dd69be8263",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_4318f80d711a",
+      "split": "test",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "test:103",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "b8a35257c7f2876c97074f79f903fdcc44bf6dd672cd7f702835e28685fa6807",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 180,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4907,
+        "total_tokens": 5087
+      }
+    },
+    {
+      "actionable_side_info": null,
+      "artifact_refs": [
+        {
+          "bytes": 8112,
+          "kind": "rollout_trace_payload",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_526c992b1c79.json",
+          "retention": "debug",
+          "sha256": "6dfa702ffd579aa7fb637f8c3977c1b23b6c2644877013f19e2f7abed75da871"
+        }
+      ],
+      "candidate_id": "gepa_d3da93b581f8",
+      "evaluation_stage": "heldout",
+      "example_id": "test:104",
+      "failure": null,
+      "metadata": {
+        "original_metadata_keys": [
+          "reward_details",
+          "rollout_trace",
+          "summary"
+        ],
+        "reward_details": {
+          "achievements": [
+            "collect_wood",
+            "collect_sapling"
+          ]
+        },
+        "rollout_trace": {
+          "outcome": {
+            "reward": 2.0,
+            "status": "completed",
+            "status_detail": null,
+            "success_status": "succeeded"
+          },
+          "rollout_id": "rollout_5bbf51f59818",
+          "schema": "synth_gepa.rollout_trace_summary_ref.v1",
+          "schema_version": "rollout_trace_payload.v1",
+          "storage_compacted": true,
+          "summary": {
+            "outcome_reward": 2.0
+          },
+          "task_id": "crafter.react_policy",
+          "trace_correlation_id": null
+        },
+        "rollout_trace_artifact_refs": [
+          {
+            "bytes": 8112,
+            "kind": "rollout_trace_payload",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/rollout_traces/sensor_526c992b1c79.json",
+            "retention": "debug",
+            "sha256": "6dfa702ffd579aa7fb637f8c3977c1b23b6c2644877013f19e2f7abed75da871"
+          }
+        ],
+        "schema": "synth_gepa.sensor_frame_artifact_summary.v1",
+        "storage_compacted": true,
+        "summary": {
+          "outcome_reward": 2.0
+        }
+      },
+      "objective_scores": [
+        {
+          "metadata": {},
+          "objective": "outcome_reward",
+          "rationale": null,
+          "source": "container.reward_info",
+          "value": 2.0
+        },
+        {
+          "metadata": {
+            "mapped_from_outcome_reward": true,
+            "objective_set_id": "objective_set_849f1b614cf39fe0",
+            "original_objectives": [
+              "outcome_reward"
+            ]
+          },
+          "objective": "total_episode_reward",
+          "rationale": "container outcome reward mapped to the declared selection objective",
+          "source": "objective_set.selection_reward",
+          "value": 2.0
+        }
+      ],
+      "reward": 2.0,
+      "rollout_id": "rollout_5bbf51f59818",
+      "schema_version": "sensor_frame.v1",
+      "sensor_frame_id": "sensor_526c992b1c79",
+      "split": "test",
+      "status": "completed",
+      "success_status": "succeeded",
+      "task_id": "test:104",
+      "trace_digest": {
+        "call_site_ids": [],
+        "event_count": 1,
+        "llm_request_count": 0,
+        "sha256": "4458b0f7b52b5dec814240c3520133f71683229372509e7644db74fcb36676dd",
+        "tool_call_count": 0
+      },
+      "usage": {
+        "completion_tokens": 179,
+        "cost_usd": 0.0,
+        "prompt_tokens": 4213,
+        "total_tokens": 4392
+      }
+    }
+  ],
+  "source": "reflector:parent_variation",
+  "status": "accepted",
+  "train_reward": 0.875,
+  "train_scores": [
+    {
+      "example_id": "train:11",
+      "reward": 0.0,
+      "task_id": "train:11"
+    },
+    {
+      "example_id": "train:12",
+      "reward": 1.0,
+      "task_id": "train:12"
+    },
+    {
+      "example_id": "train:13",
+      "reward": 1.0,
+      "task_id": "train:13"
+    },
+    {
+      "example_id": "train:14",
+      "reward": 1.0,
+      "task_id": "train:14"
+    },
+    {
+      "example_id": "train:15",
+      "reward": 2.0,
+      "task_id": "train:15"
+    },
+    {
+      "example_id": "train:16",
+      "reward": 0.0,
+      "task_id": "train:16"
+    },
+    {
+      "example_id": "train:17",
+      "reward": 1.0,
+      "task_id": "train:17"
+    },
+    {
+      "example_id": "train:18",
+      "reward": 1.0,
+      "task_id": "train:18"
+    }
+  ]
+}

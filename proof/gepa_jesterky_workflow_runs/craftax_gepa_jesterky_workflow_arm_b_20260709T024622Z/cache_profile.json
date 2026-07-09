@@ -1,0 +1,10 @@
+{
+  "entries": 26,
+  "hits": 10,
+  "max_bytes": 4294967296,
+  "misses": 26,
+  "mode": "readwrite",
+  "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T024622Z/request_cache.sqlite",
+  "size_bytes": 585728,
+  "writes": 26
+}

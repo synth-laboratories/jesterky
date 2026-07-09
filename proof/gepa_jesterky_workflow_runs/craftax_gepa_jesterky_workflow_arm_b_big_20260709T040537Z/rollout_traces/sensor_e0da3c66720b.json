@@ -1,0 +1,186 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood"
+      ],
+      "n_steps": 12,
+      "seed": 17,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_17",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:14:26Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each policy call must return exactly one <tool_call> block for crafter_interact with an actions_list of 1-5 valid actions. No prose, no markdown, no extra text.\n\nUse this decision procedure:\n1) Read the local map and inventory first.\n2) If wood or a tree/sapling is immediately reachable, take the shortest direct path to it and harvest it before anything else.\n3) If wood is not reachable but a safer informative move exists, move toward the nearest promising resource edge instead of waiting.\n4) If the first route is blocked, switch to the nearest alternative that still advances wood acquisition or tool prerequisites.\n5) Never spend the first turn on abstract setup, wandering, or repeated noop/sleep.\n\nEarly-game ladder: collect wood -> place table -> craft wood pickaxe -> collect stone/coal -> place furnace -> upgrade tools. If prerequisites are missing, spend the batch on the prerequisite-gathering step, not on higher-tier crafts. Use only these actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_17",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_ae99f73f5b62",
+    "seed": 17,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood"
+      ],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "move_right",
+        "do",
+        "move_up",
+        "move_left",
+        "move_left",
+        "move_left",
+        "do",
+        "move_down",
+        "do"
+      ],
+      "example_id": "ep_train_17",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "n_steps": 12,
+          "seed": 17,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_17"
+      }
+    },
+    "updated_at": "2026-07-09T04:14:26Z",
+    "usage": {
+      "completion_tokens": 158,
+      "cost_usd": 0.0,
+      "prompt_tokens": 3991,
+      "total_tokens": 4149
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each policy call must return exactly one <tool_call> block for crafter_interact with an actions_list of 1-5 valid actions. No prose, no markdown, no extra text.\n\nUse this decision procedure:\n1) Read the local map and inventory first.\n2) If wood or a tree/sapling is immediately reachable, take the shortest direct path to it and harvest it before anything else.\n3) If wood is not reachable but a safer informative move exists, move toward the nearest promising resource edge instead of waiting.\n4) If the first route is blocked, switch to the nearest alternative that still advances wood acquisition or tool prerequisites.\n5) Never spend the first turn on abstract setup, wandering, or repeated noop/sleep.\n\nEarly-game ladder: collect wood -> place table -> craft wood pickaxe -> collect stone/coal -> place furnace -> upgrade tools. If prerequisites are missing, spend the batch on the prerequisite-gathering step, not on higher-tier crafts. Use only these actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each policy call must return exactly one <tool_call> block for crafter_interact with an actions_list of 1-5 valid actions. No prose, no markdown, no extra text.\n\nUse this decision procedure:\n1) Read the local map and inventory first.\n2) If wood or a tree/sapling is immediately reachable, take the shortest direct path to it and harvest it before anything else.\n3) If wood is not reachable but a safer informative move exists, move toward the nearest promising resource edge instead of waiting.\n4) If the first route is blocked, switch to the nearest alternative that still advances wood acquisition or tool prerequisites.\n5) Never spend the first turn on abstract setup, wandering, or repeated noop/sleep.\n\nEarly-game ladder: collect wood -> place table -> craft wood pickaxe -> collect stone/coal -> place furnace -> upgrade tools. If prerequisites are missing, spend the batch on the prerequisite-gathering step, not on higher-tier crafts. Use only these actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_ae99f73f5b62",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood"
+    ],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "move_right",
+      "do",
+      "move_up",
+      "move_left",
+      "move_left",
+      "move_left",
+      "do",
+      "move_down",
+      "do"
+    ],
+    "example_id": "ep_train_17",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_17",
+      "seed": 17,
+      "split": "train",
+      "task_id": "train:17"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "n_steps": 12,
+        "seed": 17,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_17"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 158,
+    "cost_usd": 0.0,
+    "prompt_tokens": 3991,
+    "total_tokens": 4149
+  }
+}

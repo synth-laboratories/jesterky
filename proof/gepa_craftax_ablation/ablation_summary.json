@@ -1,0 +1,3218 @@
+{
+  "ablation": "gepa_craftax",
+  "arm_a_base": {
+    "completed_count": 64,
+    "mean_reward": 2.328125,
+    "reward_max": 4.8,
+    "reward_min": 5.551115123125783e-17,
+    "rewards": [
+      4.0,
+      2.8,
+      2.0,
+      2.8,
+      2.6,
+      1.4000000000000001,
+      2.8,
+      2.0,
+      1.8,
+      1.2000000000000002,
+      1.4000000000000001,
+      1.8,
+      3.0,
+      1.0000000000000002,
+      2.0,
+      1.0000000000000002,
+      2.0,
+      1.0000000000000002,
+      2.8,
+      1.2000000000000002,
+      4.6,
+      1.0000000000000002,
+      0.8,
+      2.4000000000000004,
+      2.8,
+      3.5999999999999996,
+      2.8,
+      1.6,
+      5.551115123125783e-17,
+      1.2000000000000002,
+      4.8,
+      3.8,
+      2.2,
+      2.2,
+      4.6,
+      2.0,
+      1.8,
+      4.4,
+      1.6,
+      1.8,
+      2.0,
+      3.1999999999999993,
+      4.0,
+      2.999999999999999,
+      1.0,
+      1.0000000000000002,
+      2.8,
+      0.20000000000000007,
+      2.4000000000000004,
+      1.2000000000000002,
+      2.8,
+      3.0,
+      2.4000000000000004,
+      2.8,
+      1.2000000000000002,
+      1.2000000000000002,
+      4.8,
+      2.0,
+      4.6,
+      2.6,
+      3.4000000000000004,
+      2.2,
+      1.2000000000000002,
+      3.3999999999999995
+    ]
+  },
+  "arm_b_gepa": {
+    "completed_count": 64,
+    "mean_reward": 3.0062499999999996,
+    "reward_max": 6.999999999999999,
+    "reward_min": 0.6000000000000001,
+    "rewards": [
+      0.6000000000000001,
+      4.8,
+      3.5999999999999996,
+      5.8,
+      3.0,
+      2.0,
+      3.2,
+      4.2,
+      3.0,
+      4.199999999999999,
+      1.9999999999999993,
+      1.9999999999999993,
+      1.0000000000000002,
+      3.999999999999999,
+      1.9999999999999993,
+      2.0,
+      2.0,
+      1.0000000000000002,
+      1.0000000000000002,
+      1.0000000000000002,
+      2.2,
+      2.0,
+      3.999999999999999,
+      6.999999999999999,
+      1.0000000000000002,
+      2.1999999999999993,
+      2.3999999999999995,
+      5.6,
+      2.4000000000000004,
+      5.8,
+      1.0,
+      3.4000000000000004,
+      3.6,
+      2.5999999999999996,
+      2.0,
+      3.8,
+      2.0,
+      2.0,
+      5.3999999999999995,
+      2.6,
+      0.6000000000000001,
+      4.8,
+      4.6,
+      1.9999999999999993,
+      1.0000000000000002,
+      2.0,
+      2.0,
+      3.8,
+      2.9999999999999996,
+      3.3999999999999995,
+      2.6,
+      3.5999999999999996,
+      5.8,
+      5.8,
+      3.0,
+      2.4000000000000004,
+      2.8,
+      2.3999999999999995,
+      3.999999999999999,
+      2.1999999999999993,
+      2.8,
+      5.3999999999999995,
+      2.0,
+      4.999999999999999
+    ]
+  },
+  "container": "http://127.0.0.1:18104",
+  "elapsed_s": 0.079,
+  "env": "gamebench.craftax-singleplayer.rust_gold",
+  "fairness": {
+    "arms_differ_only_by": "policy.config.system_prompt",
+    "incomplete_seeds_dropped_from_both_arms": true,
+    "output_contract": "Reply with JSON only, for example {\"actions\":[\"do\",\"right\",\"do\",\"left\",\"do\"]}. Use valid actions: noop, left, right, up, down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.",
+    "same_container": true,
+    "same_decode_config": true,
+    "same_model": true,
+    "same_output_contract": true,
+    "same_seed_set": true,
+    "tie_epsilon": 1e-09
+  },
+  "generated_at": "2026-07-08T22:44:10Z",
+  "gold_url": "http://127.0.0.1:8098",
+  "incomplete": {
+    "base": [],
+    "dropped_unpaired": [],
+    "gepa": []
+  },
+  "max_llm_turns": 12,
+  "max_steps": 64,
+  "max_tokens": 512,
+  "min_paired_n": 64,
+  "model": "gemini-3.1-flash-lite",
+  "n": 64,
+  "paired_deltas": [
+    -3.4,
+    2.0,
+    1.5999999999999996,
+    3.0,
+    0.3999999999999999,
+    0.5999999999999999,
+    0.40000000000000036,
+    2.2,
+    1.2,
+    2.999999999999999,
+    0.5999999999999992,
+    0.1999999999999993,
+    -1.9999999999999998,
+    2.999999999999999,
+    -6.661338147750939e-16,
+    0.9999999999999998,
+    0.0,
+    0.0,
+    -1.7999999999999996,
+    -0.19999999999999996,
+    -2.3999999999999995,
+    0.9999999999999998,
+    3.1999999999999993,
+    4.599999999999999,
+    -1.7999999999999996,
+    -1.4000000000000004,
+    -0.40000000000000036,
+    3.9999999999999996,
+    2.4000000000000004,
+    4.6,
+    -3.8,
+    -0.39999999999999947,
+    1.4,
+    0.39999999999999947,
+    -2.5999999999999996,
+    1.7999999999999998,
+    0.19999999999999996,
+    -2.4000000000000004,
+    3.7999999999999994,
+    0.8,
+    -1.4,
+    1.6000000000000005,
+    0.5999999999999996,
+    -0.9999999999999998,
+    2.220446049250313e-16,
+    0.9999999999999998,
+    -0.7999999999999998,
+    3.5999999999999996,
+    0.5999999999999992,
+    2.1999999999999993,
+    -0.19999999999999973,
+    0.5999999999999996,
+    3.3999999999999995,
+    3.0,
+    1.7999999999999998,
+    1.2000000000000002,
+    -2.0,
+    0.39999999999999947,
+    -0.6000000000000005,
+    -0.4000000000000008,
+    -0.6000000000000005,
+    3.1999999999999993,
+    0.7999999999999998,
+    1.5999999999999996
+  ],
+  "paired_losses": 20,
+  "paired_mean_delta": 0.6781249999999999,
+  "paired_seeds": [
+    501,
+    502,
+    503,
+    504,
+    505,
+    506,
+    507,
+    508,
+    509,
+    510,
+    511,
+    512,
+    513,
+    514,
+    515,
+    516,
+    517,
+    518,
+    519,
+    520,
+    521,
+    522,
+    523,
+    524,
+    525,
+    526,
+    527,
+    528,
+    529,
+    530,
+    531,
+    532,
+    533,
+    534,
+    535,
+    536,
+    537,
+    538,
+    539,
+    540,
+    541,
+    542,
+    543,
+    544,
+    545,
+    546,
+    547,
+    548,
+    549,
+    550,
+    551,
+    552,
+    553,
+    554,
+    555,
+    556,
+    557,
+    558,
+    559,
+    560,
+    561,
+    562,
+    563,
+    564
+  ],
+  "paired_ties": 4,
+  "paired_wins": 40,
+  "per_seed": {
+    "base": [
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-501.rollout.json",
+        "reward": 4.0,
+        "rollout_id": "gepa-ablation-base-seed-501-9270ddc5",
+        "seed": 501,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-502.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-ablation-base-seed-502-a25c82d9",
+        "seed": 502,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-503.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-ablation-base-seed-503-4d1f6b41",
+        "seed": 503,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-504.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-ablation-base-seed-504-ce46055b",
+        "seed": 504,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-505.rollout.json",
+        "reward": 2.6,
+        "rollout_id": "gepa-ablation-base-seed-505-c4da1e4f",
+        "seed": 505,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-506.rollout.json",
+        "reward": 1.4000000000000001,
+        "rollout_id": "gepa-ablation-base-seed-506-5b436141",
+        "seed": 506,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-507.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-ablation-base-seed-507-80bd0101",
+        "seed": 507,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-508.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-ablation-base-seed-508-972e5011",
+        "seed": 508,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-509.rollout.json",
+        "reward": 1.8,
+        "rollout_id": "gepa-base-seed-509-f06df404",
+        "seed": 509,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-510.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-510-fef16082",
+        "seed": 510,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-511.rollout.json",
+        "reward": 1.4000000000000001,
+        "rollout_id": "gepa-base-seed-511-bc6c83d7",
+        "seed": 511,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-512.rollout.json",
+        "reward": 1.8,
+        "rollout_id": "gepa-base-seed-512-dc29475c",
+        "seed": 512,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-513.rollout.json",
+        "reward": 3.0,
+        "rollout_id": "gepa-base-seed-513-763a9952",
+        "seed": 513,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-514.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-base-seed-514-28b600f4",
+        "seed": 514,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-515.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-base-seed-515-9d9b6e2c",
+        "seed": 515,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-516.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-base-seed-516-02728533",
+        "seed": 516,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-517.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-base-seed-517-f2e3bbc5",
+        "seed": 517,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-518.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-base-seed-518-5e840be7",
+        "seed": 518,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-519.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-519-1333be19",
+        "seed": 519,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-520.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-520-d804e559",
+        "seed": 520,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-521.rollout.json",
+        "reward": 4.6,
+        "rollout_id": "gepa-base-seed-521-ff737842",
+        "seed": 521,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-522.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-base-seed-522-48b47b1a",
+        "seed": 522,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-523.rollout.json",
+        "reward": 0.8,
+        "rollout_id": "gepa-base-seed-523-9eb76047",
+        "seed": 523,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-524.rollout.json",
+        "reward": 2.4000000000000004,
+        "rollout_id": "gepa-base-seed-524-8ff06aa4",
+        "seed": 524,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-525.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-525-83a111e6",
+        "seed": 525,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-526.rollout.json",
+        "reward": 3.5999999999999996,
+        "rollout_id": "gepa-base-seed-526-9c9d09f2",
+        "seed": 526,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-527.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-527-fe93c1ff",
+        "seed": 527,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-528.rollout.json",
+        "reward": 1.6,
+        "rollout_id": "gepa-base-seed-528-d6d07c58",
+        "seed": 528,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-529.rollout.json",
+        "reward": 5.551115123125783e-17,
+        "rollout_id": "gepa-base-seed-529-bc14e160",
+        "seed": 529,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-530.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-530-9761449d",
+        "seed": 530,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-531.rollout.json",
+        "reward": 4.8,
+        "rollout_id": "gepa-base-seed-531-dfe65158",
+        "seed": 531,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-532.rollout.json",
+        "reward": 3.8,
+        "rollout_id": "gepa-base-seed-532-45b52c42",
+        "seed": 532,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-533.rollout.json",
+        "reward": 2.2,
+        "rollout_id": "gepa-base-seed-533-6d0b38a4",
+        "seed": 533,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-534.rollout.json",
+        "reward": 2.2,
+        "rollout_id": "gepa-base-seed-534-2c0181a7",
+        "seed": 534,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-535.rollout.json",
+        "reward": 4.6,
+        "rollout_id": "gepa-base-seed-535-f7986c0e",
+        "seed": 535,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-536.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-base-seed-536-a0e85573",
+        "seed": 536,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-537.rollout.json",
+        "reward": 1.8,
+        "rollout_id": "gepa-base-seed-537-bad2ab58",
+        "seed": 537,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-538.rollout.json",
+        "reward": 4.4,
+        "rollout_id": "gepa-base-seed-538-e583fe86",
+        "seed": 538,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-539.rollout.json",
+        "reward": 1.6,
+        "rollout_id": "gepa-base-seed-539-f630558e",
+        "seed": 539,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-540.rollout.json",
+        "reward": 1.8,
+        "rollout_id": "gepa-base-seed-540-ae7eff09",
+        "seed": 540,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-541.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-base-seed-541-4ae8da7d",
+        "seed": 541,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-542.rollout.json",
+        "reward": 3.1999999999999993,
+        "rollout_id": "gepa-base-seed-542-99f69897",
+        "seed": 542,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-543.rollout.json",
+        "reward": 4.0,
+        "rollout_id": "gepa-base-seed-543-fb181f5e",
+        "seed": 543,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-544.rollout.json",
+        "reward": 2.999999999999999,
+        "rollout_id": "gepa-base-seed-544-d9099b4d",
+        "seed": 544,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-545.rollout.json",
+        "reward": 1.0,
+        "rollout_id": "gepa-base-seed-545-720c4ac3",
+        "seed": 545,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-546.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-base-seed-546-65afa8d8",
+        "seed": 546,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-547.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-547-3d85e1de",
+        "seed": 547,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-548.rollout.json",
+        "reward": 0.20000000000000007,
+        "rollout_id": "gepa-base-seed-548-1acf55ea",
+        "seed": 548,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-549.rollout.json",
+        "reward": 2.4000000000000004,
+        "rollout_id": "gepa-base-seed-549-37bb34db",
+        "seed": 549,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-550.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-550-9e1aca07",
+        "seed": 550,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-551.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-551-d6176399",
+        "seed": 551,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-552.rollout.json",
+        "reward": 3.0,
+        "rollout_id": "gepa-base-seed-552-6ddb8597",
+        "seed": 552,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-553.rollout.json",
+        "reward": 2.4000000000000004,
+        "rollout_id": "gepa-base-seed-553-8ffca2a5",
+        "seed": 553,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-554.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-base-seed-554-dfb6b2c1",
+        "seed": 554,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-555.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-555-062ee47f",
+        "seed": 555,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-556.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-556-70f3564b",
+        "seed": 556,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-557.rollout.json",
+        "reward": 4.8,
+        "rollout_id": "gepa-base-seed-557-154428aa",
+        "seed": 557,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-558.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-base-seed-558-710b0848",
+        "seed": 558,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-559.rollout.json",
+        "reward": 4.6,
+        "rollout_id": "gepa-base-seed-559-b80b8bf0",
+        "seed": 559,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-560.rollout.json",
+        "reward": 2.6,
+        "rollout_id": "gepa-base-seed-560-877e848f",
+        "seed": 560,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-561.rollout.json",
+        "reward": 3.4000000000000004,
+        "rollout_id": "gepa-base-seed-561-91978d63",
+        "seed": 561,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-562.rollout.json",
+        "reward": 2.2,
+        "rollout_id": "gepa-base-seed-562-83d2404d",
+        "seed": 562,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-563.rollout.json",
+        "reward": 1.2000000000000002,
+        "rollout_id": "gepa-base-seed-563-d751b086",
+        "seed": 563,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "base",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/base-seed-564.rollout.json",
+        "reward": 3.3999999999999995,
+        "rollout_id": "gepa-base-seed-564-6fc7efea",
+        "seed": 564,
+        "status": "completed",
+        "steps": 64
+      }
+    ],
+    "gepa": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-501.rollout.json",
+        "reward": 0.6000000000000001,
+        "rollout_id": "gepa-ablation-gepa-seed-501-ca6c3e3a",
+        "seed": 501,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-502.rollout.json",
+        "reward": 4.8,
+        "rollout_id": "gepa-ablation-gepa-seed-502-ef981e44",
+        "seed": 502,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-503.rollout.json",
+        "reward": 3.5999999999999996,
+        "rollout_id": "gepa-ablation-gepa-seed-503-c2a89456",
+        "seed": 503,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_stone",
+          "collect_wood",
+          "defeat_zombie",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-504.rollout.json",
+        "reward": 5.8,
+        "rollout_id": "gepa-ablation-gepa-seed-504-8b7041fc",
+        "seed": 504,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-505.rollout.json",
+        "reward": 3.0,
+        "rollout_id": "gepa-ablation-gepa-seed-505-00631b7d",
+        "seed": 505,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-506.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-ablation-gepa-seed-506-b1fb7074",
+        "seed": 506,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-507.rollout.json",
+        "reward": 3.2,
+        "rollout_id": "gepa-ablation-gepa-seed-507-3a2a968a",
+        "seed": 507,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-508.rollout.json",
+        "reward": 4.2,
+        "rollout_id": "gepa-ablation-gepa-seed-508-702774d9",
+        "seed": 508,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-509.rollout.json",
+        "reward": 3.0,
+        "rollout_id": "gepa-gepa-seed-509-1145a2c5",
+        "seed": 509,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-510.rollout.json",
+        "reward": 4.199999999999999,
+        "rollout_id": "gepa-gepa-seed-510-5393dc18",
+        "seed": 510,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-511.rollout.json",
+        "reward": 1.9999999999999993,
+        "rollout_id": "gepa-gepa-seed-511-520e15e5",
+        "seed": 511,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-512.rollout.json",
+        "reward": 1.9999999999999993,
+        "rollout_id": "gepa-gepa-seed-512-efbd9f23",
+        "seed": 512,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-513.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-513-e98a214b",
+        "seed": 513,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-514.rollout.json",
+        "reward": 3.999999999999999,
+        "rollout_id": "gepa-gepa-seed-514-5a5885dd",
+        "seed": 514,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-515.rollout.json",
+        "reward": 1.9999999999999993,
+        "rollout_id": "gepa-gepa-seed-515-c066142c",
+        "seed": 515,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-516.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-516-e82c1a73",
+        "seed": 516,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-517.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-517-a2740333",
+        "seed": 517,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-518.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-518-4cd1cbb4",
+        "seed": 518,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-519.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-519-88b3cde3",
+        "seed": 519,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-520.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-520-8bd0ec21",
+        "seed": 520,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-521.rollout.json",
+        "reward": 2.2,
+        "rollout_id": "gepa-gepa-seed-521-2d23517c",
+        "seed": 521,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-522.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-522-bcf97d10",
+        "seed": 522,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_stone",
+          "collect_wood",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-523.rollout.json",
+        "reward": 3.999999999999999,
+        "rollout_id": "gepa-gepa-seed-523-2884ee50",
+        "seed": 523,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_stone",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-524.rollout.json",
+        "reward": 6.999999999999999,
+        "rollout_id": "gepa-gepa-seed-524-28b4c9d8",
+        "seed": 524,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-525.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-525-3953f383",
+        "seed": 525,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-526.rollout.json",
+        "reward": 2.1999999999999993,
+        "rollout_id": "gepa-gepa-seed-526-dceeb22a",
+        "seed": 526,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-527.rollout.json",
+        "reward": 2.3999999999999995,
+        "rollout_id": "gepa-gepa-seed-527-a1bb5cd7",
+        "seed": 527,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-528.rollout.json",
+        "reward": 5.6,
+        "rollout_id": "gepa-gepa-seed-528-5aa47472",
+        "seed": 528,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-529.rollout.json",
+        "reward": 2.4000000000000004,
+        "rollout_id": "gepa-gepa-seed-529-b537197b",
+        "seed": 529,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_stone",
+          "collect_wood",
+          "defeat_zombie",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-530.rollout.json",
+        "reward": 5.8,
+        "rollout_id": "gepa-gepa-seed-530-1090bc2c",
+        "seed": 530,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-531.rollout.json",
+        "reward": 1.0,
+        "rollout_id": "gepa-gepa-seed-531-99c04f05",
+        "seed": 531,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-532.rollout.json",
+        "reward": 3.4000000000000004,
+        "rollout_id": "gepa-gepa-seed-532-23c372c8",
+        "seed": 532,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-533.rollout.json",
+        "reward": 3.6,
+        "rollout_id": "gepa-gepa-seed-533-ec8c7821",
+        "seed": 533,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-534.rollout.json",
+        "reward": 2.5999999999999996,
+        "rollout_id": "gepa-gepa-seed-534-e67d1917",
+        "seed": 534,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-535.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-535-34a3bce9",
+        "seed": 535,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-536.rollout.json",
+        "reward": 3.8,
+        "rollout_id": "gepa-gepa-seed-536-c19c112b",
+        "seed": 536,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-537.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-537-bc6f4159",
+        "seed": 537,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-538.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-538-89575e5f",
+        "seed": 538,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-539.rollout.json",
+        "reward": 5.3999999999999995,
+        "rollout_id": "gepa-gepa-seed-539-af7f4ad6",
+        "seed": 539,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-540.rollout.json",
+        "reward": 2.6,
+        "rollout_id": "gepa-gepa-seed-540-91a86f5c",
+        "seed": 540,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-541.rollout.json",
+        "reward": 0.6000000000000001,
+        "rollout_id": "gepa-gepa-seed-541-35bc9ace",
+        "seed": 541,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-542.rollout.json",
+        "reward": 4.8,
+        "rollout_id": "gepa-gepa-seed-542-0e813be9",
+        "seed": 542,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-543.rollout.json",
+        "reward": 4.6,
+        "rollout_id": "gepa-gepa-seed-543-9d9e8c0a",
+        "seed": 543,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-544.rollout.json",
+        "reward": 1.9999999999999993,
+        "rollout_id": "gepa-gepa-seed-544-491e1382",
+        "seed": 544,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-545.rollout.json",
+        "reward": 1.0000000000000002,
+        "rollout_id": "gepa-gepa-seed-545-3dc4ec3b",
+        "seed": 545,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-546.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-546-6753b3a6",
+        "seed": 546,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-547.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-547-9713bc15",
+        "seed": 547,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-548.rollout.json",
+        "reward": 3.8,
+        "rollout_id": "gepa-gepa-seed-548-1a5dc336",
+        "seed": 548,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_coal",
+          "collect_wood",
+          "make_wood_pickaxe",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-549.rollout.json",
+        "reward": 2.9999999999999996,
+        "rollout_id": "gepa-gepa-seed-549-ccba3c2d",
+        "seed": 549,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-550.rollout.json",
+        "reward": 3.3999999999999995,
+        "rollout_id": "gepa-gepa-seed-550-2fa1f66b",
+        "seed": 550,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-551.rollout.json",
+        "reward": 2.6,
+        "rollout_id": "gepa-gepa-seed-551-39695268",
+        "seed": 551,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-552.rollout.json",
+        "reward": 3.5999999999999996,
+        "rollout_id": "gepa-gepa-seed-552-967c6fbc",
+        "seed": 552,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-553.rollout.json",
+        "reward": 5.8,
+        "rollout_id": "gepa-gepa-seed-553-540c9833",
+        "seed": 553,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-554.rollout.json",
+        "reward": 5.8,
+        "rollout_id": "gepa-gepa-seed-554-17a6fa2f",
+        "seed": 554,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-555.rollout.json",
+        "reward": 3.0,
+        "rollout_id": "gepa-gepa-seed-555-6c903c2d",
+        "seed": 555,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_wood",
+          "defeat_zombie",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-556.rollout.json",
+        "reward": 2.4000000000000004,
+        "rollout_id": "gepa-gepa-seed-556-e0061504",
+        "seed": 556,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-557.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-gepa-seed-557-94243bdd",
+        "seed": 557,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_wood",
+          "eat_cow"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-558.rollout.json",
+        "reward": 2.3999999999999995,
+        "rollout_id": "gepa-gepa-seed-558-aa860480",
+        "seed": 558,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-559.rollout.json",
+        "reward": 3.999999999999999,
+        "rollout_id": "gepa-gepa-seed-559-b010e062",
+        "seed": 559,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-560.rollout.json",
+        "reward": 2.1999999999999993,
+        "rollout_id": "gepa-gepa-seed-560-45cdd4e4",
+        "seed": 560,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-561.rollout.json",
+        "reward": 2.8,
+        "rollout_id": "gepa-gepa-seed-561-53a93147",
+        "seed": 561,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-562.rollout.json",
+        "reward": 5.3999999999999995,
+        "rollout_id": "gepa-gepa-seed-562-2dbd7f0b",
+        "seed": 562,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_sapling",
+          "collect_wood",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-563.rollout.json",
+        "reward": 2.0,
+        "rollout_id": "gepa-gepa-seed-563-e9a533a6",
+        "seed": 563,
+        "status": "completed",
+        "steps": 64
+      },
+      {
+        "achievements": [
+          "collect_food",
+          "collect_sapling",
+          "collect_wood",
+          "defeat_zombie",
+          "eat_cow",
+          "place_table"
+        ],
+        "arm": "gepa",
+        "input_tokens": 0,
+        "invalid_action_count": 0,
+        "llm_calls": 64,
+        "output_tokens": 0,
+        "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/gepa-seed-564.rollout.json",
+        "reward": 4.999999999999999,
+        "rollout_id": "gepa-gepa-seed-564-e0a426ac",
+        "seed": 564,
+        "status": "completed",
+        "steps": 64
+      }
+    ],
+    "paired": [
+      {
+        "arm_a_reward": 4.0,
+        "arm_b_reward": 0.6000000000000001,
+        "delta": -3.4,
+        "seed": 501,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 4.8,
+        "delta": 2.0,
+        "seed": 502,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 3.5999999999999996,
+        "delta": 1.5999999999999996,
+        "seed": 503,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 5.8,
+        "delta": 3.0,
+        "seed": 504,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.6,
+        "arm_b_reward": 3.0,
+        "delta": 0.3999999999999999,
+        "seed": 505,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.4000000000000001,
+        "arm_b_reward": 2.0,
+        "delta": 0.5999999999999999,
+        "seed": 506,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 3.2,
+        "delta": 0.40000000000000036,
+        "seed": 507,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 4.2,
+        "delta": 2.2,
+        "seed": 508,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.8,
+        "arm_b_reward": 3.0,
+        "delta": 1.2,
+        "seed": 509,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 4.199999999999999,
+        "delta": 2.999999999999999,
+        "seed": 510,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.4000000000000001,
+        "arm_b_reward": 1.9999999999999993,
+        "delta": 0.5999999999999992,
+        "seed": 511,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.8,
+        "arm_b_reward": 1.9999999999999993,
+        "delta": 0.1999999999999993,
+        "seed": 512,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 3.0,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": -1.9999999999999998,
+        "seed": 513,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.0000000000000002,
+        "arm_b_reward": 3.999999999999999,
+        "delta": 2.999999999999999,
+        "seed": 514,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 1.9999999999999993,
+        "delta": -6.661338147750939e-16,
+        "seed": 515,
+        "winner": "tie"
+      },
+      {
+        "arm_a_reward": 1.0000000000000002,
+        "arm_b_reward": 2.0,
+        "delta": 0.9999999999999998,
+        "seed": 516,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 2.0,
+        "delta": 0.0,
+        "seed": 517,
+        "winner": "tie"
+      },
+      {
+        "arm_a_reward": 1.0000000000000002,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": 0.0,
+        "seed": 518,
+        "winner": "tie"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": -1.7999999999999996,
+        "seed": 519,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": -0.19999999999999996,
+        "seed": 520,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 4.6,
+        "arm_b_reward": 2.2,
+        "delta": -2.3999999999999995,
+        "seed": 521,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.0000000000000002,
+        "arm_b_reward": 2.0,
+        "delta": 0.9999999999999998,
+        "seed": 522,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 0.8,
+        "arm_b_reward": 3.999999999999999,
+        "delta": 3.1999999999999993,
+        "seed": 523,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.4000000000000004,
+        "arm_b_reward": 6.999999999999999,
+        "delta": 4.599999999999999,
+        "seed": 524,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": -1.7999999999999996,
+        "seed": 525,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 3.5999999999999996,
+        "arm_b_reward": 2.1999999999999993,
+        "delta": -1.4000000000000004,
+        "seed": 526,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 2.3999999999999995,
+        "delta": -0.40000000000000036,
+        "seed": 527,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.6,
+        "arm_b_reward": 5.6,
+        "delta": 3.9999999999999996,
+        "seed": 528,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 5.551115123125783e-17,
+        "arm_b_reward": 2.4000000000000004,
+        "delta": 2.4000000000000004,
+        "seed": 529,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 5.8,
+        "delta": 4.6,
+        "seed": 530,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.8,
+        "arm_b_reward": 1.0,
+        "delta": -3.8,
+        "seed": 531,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 3.8,
+        "arm_b_reward": 3.4000000000000004,
+        "delta": -0.39999999999999947,
+        "seed": 532,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.2,
+        "arm_b_reward": 3.6,
+        "delta": 1.4,
+        "seed": 533,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.2,
+        "arm_b_reward": 2.5999999999999996,
+        "delta": 0.39999999999999947,
+        "seed": 534,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.6,
+        "arm_b_reward": 2.0,
+        "delta": -2.5999999999999996,
+        "seed": 535,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 3.8,
+        "delta": 1.7999999999999998,
+        "seed": 536,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.8,
+        "arm_b_reward": 2.0,
+        "delta": 0.19999999999999996,
+        "seed": 537,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.4,
+        "arm_b_reward": 2.0,
+        "delta": -2.4000000000000004,
+        "seed": 538,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.6,
+        "arm_b_reward": 5.3999999999999995,
+        "delta": 3.7999999999999994,
+        "seed": 539,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.8,
+        "arm_b_reward": 2.6,
+        "delta": 0.8,
+        "seed": 540,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 0.6000000000000001,
+        "delta": -1.4,
+        "seed": 541,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 3.1999999999999993,
+        "arm_b_reward": 4.8,
+        "delta": 1.6000000000000005,
+        "seed": 542,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.0,
+        "arm_b_reward": 4.6,
+        "delta": 0.5999999999999996,
+        "seed": 543,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.999999999999999,
+        "arm_b_reward": 1.9999999999999993,
+        "delta": -0.9999999999999998,
+        "seed": 544,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 1.0,
+        "arm_b_reward": 1.0000000000000002,
+        "delta": 2.220446049250313e-16,
+        "seed": 545,
+        "winner": "tie"
+      },
+      {
+        "arm_a_reward": 1.0000000000000002,
+        "arm_b_reward": 2.0,
+        "delta": 0.9999999999999998,
+        "seed": 546,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 2.0,
+        "delta": -0.7999999999999998,
+        "seed": 547,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 0.20000000000000007,
+        "arm_b_reward": 3.8,
+        "delta": 3.5999999999999996,
+        "seed": 548,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.4000000000000004,
+        "arm_b_reward": 2.9999999999999996,
+        "delta": 0.5999999999999992,
+        "seed": 549,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 3.3999999999999995,
+        "delta": 2.1999999999999993,
+        "seed": 550,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 2.6,
+        "delta": -0.19999999999999973,
+        "seed": 551,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 3.0,
+        "arm_b_reward": 3.5999999999999996,
+        "delta": 0.5999999999999996,
+        "seed": 552,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.4000000000000004,
+        "arm_b_reward": 5.8,
+        "delta": 3.3999999999999995,
+        "seed": 553,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 2.8,
+        "arm_b_reward": 5.8,
+        "delta": 3.0,
+        "seed": 554,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 3.0,
+        "delta": 1.7999999999999998,
+        "seed": 555,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 2.4000000000000004,
+        "delta": 1.2000000000000002,
+        "seed": 556,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.8,
+        "arm_b_reward": 2.8,
+        "delta": -2.0,
+        "seed": 557,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.0,
+        "arm_b_reward": 2.3999999999999995,
+        "delta": 0.39999999999999947,
+        "seed": 558,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 4.6,
+        "arm_b_reward": 3.999999999999999,
+        "delta": -0.6000000000000005,
+        "seed": 559,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.6,
+        "arm_b_reward": 2.1999999999999993,
+        "delta": -0.4000000000000008,
+        "seed": 560,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 3.4000000000000004,
+        "arm_b_reward": 2.8,
+        "delta": -0.6000000000000005,
+        "seed": 561,
+        "winner": "base"
+      },
+      {
+        "arm_a_reward": 2.2,
+        "arm_b_reward": 5.3999999999999995,
+        "delta": 3.1999999999999993,
+        "seed": 562,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 1.2000000000000002,
+        "arm_b_reward": 2.0,
+        "delta": 0.7999999999999998,
+        "seed": 563,
+        "winner": "gepa"
+      },
+      {
+        "arm_a_reward": 3.3999999999999995,
+        "arm_b_reward": 4.999999999999999,
+        "delta": 1.5999999999999996,
+        "seed": 564,
+        "winner": "gepa"
+      }
+    ]
+  },
+  "prompt_provenance": {
+    "arm_a_base": {
+      "description": "Base ReAct prompt from smoke-run summary; output contract normalized.",
+      "json_path": "prompts.arm_a_base",
+      "original_source": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/containers/react/agent_policy.py",
+      "original_symbol": "DEFAULT_SYSTEM_PROMPT",
+      "source": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/ablation_summary.json"
+    },
+    "arm_b_gepa": {
+      "description": "GEPA proposer prompt from smoke-run summary; output contract normalized.",
+      "json_path": "prompts.arm_b_gepa",
+      "original_json_path": "proposals[0].proposed_payload.payload.react_system_prompt",
+      "original_source": "/Users/joshpurtell/Documents/GitHub/efforts/craftax-agent-hillclimb-20260705t162228z/findings/proof/20260705T162555Z/artifacts/gepa_runs/gepa_dc6d949fac464ca7b07f2291791081bb/proposer_workspaces/generation_000/proposal/manifest.json",
+      "source": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/ablation_summary.json"
+    }
+  },
+  "prompts": {
+    "arm_a_base": "You are playing GameBench Craftax rust gold. Each response must plan a short sequence of valid actions to execute in order before the next observation. Prioritize survival, collect wood and stone, craft basic tools, recover coal and iron, and make durable achievement progress. Reply with JSON only, for example {\"actions\":[\"do\",\"right\",\"do\",\"left\",\"do\"]}. Use valid actions: noop, left, right, up, down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword.",
+    "arm_b_gepa": "You are controlling a GameBench Craftax rust gold survival agent. Each turn you receive a compact observation with player stats, inventory, and a local map. Convert that observation into a short action plan.\nControl policy:\n1. Safety first: never walk into lava. If health or hunger is bad, choose the safest recovery action sequence available from the current map and inventory.\n2. Bootstrap phase: before anything else, get wood, then place a table, then craft a wood pickaxe as soon as the prerequisites are present.\n3. Progression phase: after a wood pickaxe, collect stone and other nearby useful resources. Place a furnace when the prerequisites are available and the episode has moved beyond the initial bootstrap.\n4. Exploration fallback: if no immediate craft/place action is valid, move toward the nearest useful resource or unexplored area instead of repeating noop.\n5. Anti-loop rule: if the last plan did not make progress or movement is blocked, change direction or switch to the next prerequisite target rather than repeating the same action batch.\n6. Batching rule: prefer action batches that combine movement with do/place/craft when the target is adjacent or already visible. Do not invent actions or try to craft without prerequisites.\n7. Priority order: wood -> table -> wood pickaxe -> stone/coal -> furnace -> stronger pickaxes -> sword only if needed for survival.\nReply with JSON only, for example {\"actions\":[\"do\",\"right\",\"do\",\"left\",\"do\"]}. Use valid actions: noop, left, right, up, down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+  },
+  "requested_seeds": [
+    501,
+    502,
+    503,
+    504,
+    505,
+    506,
+    507,
+    508,
+    509,
+    510,
+    511,
+    512,
+    513,
+    514,
+    515,
+    516,
+    517,
+    518,
+    519,
+    520,
+    521,
+    522,
+    523,
+    524,
+    525,
+    526,
+    527,
+    528,
+    529,
+    530,
+    531,
+    532,
+    533,
+    534,
+    535,
+    536,
+    537,
+    538,
+    539,
+    540,
+    541,
+    542,
+    543,
+    544,
+    545,
+    546,
+    547,
+    548,
+    549,
+    550,
+    551,
+    552,
+    553,
+    554,
+    555,
+    556,
+    557,
+    558,
+    559,
+    560,
+    561,
+    562,
+    563,
+    564
+  ],
+  "significance": {
+    "ci_excludes_zero": true,
+    "headline_claim_allowed": true,
+    "p_lt_0_05": true
+  },
+  "stats": {
+    "delta_ci_95": {
+      "high": 1.15147915337133,
+      "low": 0.20477084662866962,
+      "method": "normal_approx_z_1.96",
+      "sample_sd": 1.9320577688625724,
+      "standard_error": 0.24150722110782155
+    },
+    "sign_flip_permutation": {
+      "extreme_assignments": 129315035201182176,
+      "gcd": 200000,
+      "method": "exact_scaled_dp",
+      "observed_abs_sum": 217,
+      "p_two_sided": 0.00701018210500806,
+      "scale": 1000000,
+      "total_assignments": 18446744073709551616
+    }
+  },
+  "target_metric": "craftax_outcome_reward_mean",
+  "temperature": 0.0,
+  "uplift_mean": 0.6781249999999999
+}

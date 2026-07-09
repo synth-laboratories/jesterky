@@ -1,0 +1,16 @@
+[
+  {
+    "candidate_id": "gepa_3224ffb3c9ac",
+    "heldout_reward": null,
+    "parent_id": "gepa_86ef6f361d53",
+    "source": "reflector:parent_variation",
+    "train_reward": 0.625
+  },
+  {
+    "candidate_id": "gepa_d3da93b581f8",
+    "heldout_reward": 1.0,
+    "parent_id": "gepa_3224ffb3c9ac",
+    "source": "reflector:parent_variation",
+    "train_reward": 0.875
+  }
+]

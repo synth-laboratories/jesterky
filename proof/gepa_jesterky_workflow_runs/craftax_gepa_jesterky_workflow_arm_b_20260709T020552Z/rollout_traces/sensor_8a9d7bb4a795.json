@@ -1,0 +1,170 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_wood"
+      ],
+      "n_steps": 12,
+      "seed": 13,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:12:24Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are the Crafter progression controller. Treat every turn as a short planning problem over the current stats, inventory, and local map. Your objective is to unlock the earliest unmet progression milestone with the fewest legal actions possible.\n\nOutput contract: return exactly one <tool_call> block for crafter_interact and an actions_list of 1-5 valid action names. No prose, no markdown, no alternative formats.\n\nDecision ladder:\n- Step 1: Bootstrap wood. If wood is visible or adjacent, use do immediately. Otherwise move toward the nearest likely wood source in the local map, not in a random direction.\n- Step 2: Convert wood into access. Once wood is obtained, prioritize place_table, then make_wood_pickaxe as soon as the prerequisites are present.\n- Step 3: Mine the next resource layer. Use the wood pickaxe to collect stone and coal, then place_furnace when the prerequisites are ready.\n- Step 4: Only after the basic toolchain is in place, spend actions on stronger tools or additional infrastructure.\n\nRecovery rules:\n- If the last action did not improve access to the target resource, change direction or switch to do instead of repeating the same move.\n- If a craft/place action is unavailable, immediately fall back to the missing prerequisite rather than retrying it.\n- If you are blocked by terrain or a dead-end, re-route using a different movement direction before spending a turn on a no-op.\n- Avoid loops: no repeated noop, sleep, or oscillating movement unless the observation clearly shows they are necessary for survival.\n\nAction construction:\n- Prefer batches that combine movement with do/craft/place when the local map supports it.\n- When a resource is adjacent, do should appear before leaving that tile.\n- If multiple legal actions are available, choose the one that advances the earliest unmet milestone in the ladder above.\n\nThis is a resource-progression policy, not a generic survival chat response: every turn should resolve to the next concrete action sequence that advances wood -> table -> pickaxe -> stone/coal -> furnace -> stronger tools."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_wood"
+        ],
+        "example_id": "ep_train_13",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_65c0303970b1",
+    "seed": 13,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_wood"
+      ],
+      "actions_taken": [
+        "move_up",
+        "do",
+        "place_table"
+      ],
+      "example_id": "ep_train_13",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_wood"
+          ],
+          "n_steps": 12,
+          "seed": 13,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_13"
+      }
+    },
+    "updated_at": "2026-07-09T02:12:24Z",
+    "usage": {
+      "completion_tokens": 265,
+      "cost_usd": 0.0,
+      "prompt_tokens": 8977,
+      "total_tokens": 9242
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are the Crafter progression controller. Treat every turn as a short planning problem over the current stats, inventory, and local map. Your objective is to unlock the earliest unmet progression milestone with the fewest legal actions possible.\n\nOutput contract: return exactly one <tool_call> block for crafter_interact and an actions_list of 1-5 valid action names. No prose, no markdown, no alternative formats.\n\nDecision ladder:\n- Step 1: Bootstrap wood. If wood is visible or adjacent, use do immediately. Otherwise move toward the nearest likely wood source in the local map, not in a random direction.\n- Step 2: Convert wood into access. Once wood is obtained, prioritize place_table, then make_wood_pickaxe as soon as the prerequisites are present.\n- Step 3: Mine the next resource layer. Use the wood pickaxe to collect stone and coal, then place_furnace when the prerequisites are ready.\n- Step 4: Only after the basic toolchain is in place, spend actions on stronger tools or additional infrastructure.\n\nRecovery rules:\n- If the last action did not improve access to the target resource, change direction or switch to do instead of repeating the same move.\n- If a craft/place action is unavailable, immediately fall back to the missing prerequisite rather than retrying it.\n- If you are blocked by terrain or a dead-end, re-route using a different movement direction before spending a turn on a no-op.\n- Avoid loops: no repeated noop, sleep, or oscillating movement unless the observation clearly shows they are necessary for survival.\n\nAction construction:\n- Prefer batches that combine movement with do/craft/place when the local map supports it.\n- When a resource is adjacent, do should appear before leaving that tile.\n- If multiple legal actions are available, choose the one that advances the earliest unmet milestone in the ladder above.\n\nThis is a resource-progression policy, not a generic survival chat response: every turn should resolve to the next concrete action sequence that advances wood -> table -> pickaxe -> stone/coal -> furnace -> stronger tools."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are the Crafter progression controller. Treat every turn as a short planning problem over the current stats, inventory, and local map. Your objective is to unlock the earliest unmet progression milestone with the fewest legal actions possible.\n\nOutput contract: return exactly one <tool_call> block for crafter_interact and an actions_list of 1-5 valid action names. No prose, no markdown, no alternative formats.\n\nDecision ladder:\n- Step 1: Bootstrap wood. If wood is visible or adjacent, use do immediately. Otherwise move toward the nearest likely wood source in the local map, not in a random direction.\n- Step 2: Convert wood into access. Once wood is obtained, prioritize place_table, then make_wood_pickaxe as soon as the prerequisites are present.\n- Step 3: Mine the next resource layer. Use the wood pickaxe to collect stone and coal, then place_furnace when the prerequisites are ready.\n- Step 4: Only after the basic toolchain is in place, spend actions on stronger tools or additional infrastructure.\n\nRecovery rules:\n- If the last action did not improve access to the target resource, change direction or switch to do instead of repeating the same move.\n- If a craft/place action is unavailable, immediately fall back to the missing prerequisite rather than retrying it.\n- If you are blocked by terrain or a dead-end, re-route using a different movement direction before spending a turn on a no-op.\n- Avoid loops: no repeated noop, sleep, or oscillating movement unless the observation clearly shows they are necessary for survival.\n\nAction construction:\n- Prefer batches that combine movement with do/craft/place when the local map supports it.\n- When a resource is adjacent, do should appear before leaving that tile.\n- If multiple legal actions are available, choose the one that advances the earliest unmet milestone in the ladder above.\n\nThis is a resource-progression policy, not a generic survival chat response: every turn should resolve to the next concrete action sequence that advances wood -> table -> pickaxe -> stone/coal -> furnace -> stronger tools."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_65c0303970b1",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_wood"
+    ],
+    "actions_taken": [
+      "move_up",
+      "do",
+      "place_table"
+    ],
+    "example_id": "ep_train_13",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_13",
+      "seed": 13,
+      "split": "train",
+      "task_id": "train:13"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_wood"
+        ],
+        "n_steps": 12,
+        "seed": 13,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_13"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 265,
+    "cost_usd": 0.0,
+    "prompt_tokens": 8977,
+    "total_tokens": 9242
+  }
+}

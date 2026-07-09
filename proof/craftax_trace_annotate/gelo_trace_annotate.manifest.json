@@ -1,0 +1,2184 @@
+{
+  "run_id": "jesterky-cli-run",
+  "workflow_name": "gelo_trace_annotate",
+  "spec_hash": "647c167095c54b9a8dad0333793039a7920855b244e500923fa690441971b3fe",
+  "args": {
+    "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+      },
+      "wall_ms": 1783526956478
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956478
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526956480
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956480
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783526956480
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956480
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783526956481
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956481
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783526956482
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956482
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783526956483
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783526956483
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783526978309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526978309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783526978309
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783526989516
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526989516
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783526989516
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783526992003
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783526992003
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783526992003
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783527008155
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527008155
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783527008155
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783527008155
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527008155
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783527008159
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527008159
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783527008163
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527008163
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783527008165
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527008165
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783527028354
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527028354
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 6
+      },
+      "wall_ms": 1783527028354
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783527030245
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527030245
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 4
+      },
+      "wall_ms": 1783527030245
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783527031229
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527031229
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 5
+      },
+      "wall_ms": 1783527031229
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "gelo_trace_annotator"
+      },
+      "wall_ms": 1783527040164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527040164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 7
+      },
+      "wall_ms": 1783527040164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 8,
+        "total": 8
+      },
+      "wall_ms": 1783527040165
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527040165
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527040166
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527040166
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_registry"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783527040166
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_registry"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527040167
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783527040167
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 2,
+        "behavioral_diversity_score": 0.35,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "summary reports completed rollout with reward 2.0 and 2 achievements, indicating some successful early-game progression but not broad objective coverage.",
+            "saturation": 0.4,
+            "theme": "early_progress_with_limited_rollout_depth"
+          },
+          {
+            "evidence": "summary reports only 2 LLM turns, so the observed trace likely samples a narrow slice of policy behavior and exploration style.",
+            "saturation": 0.7,
+            "theme": "low_llm_turn_count_limits_behavioral_signal"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 2,
+        "severity": "low",
+        "theme_tags": [
+          "early-game",
+          "low-depth",
+          "partial-achievement",
+          "limited-diversity-signal"
+        ],
+        "trace_id": "seed-2",
+        "underexplored_actions": [
+          "systematic map coverage beyond immediate starting area",
+          "resource-tool experimentation after initial achievements",
+          "combat or hazard probing if safe",
+          "crafting/building branches not required by first two achievements"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 3,
+        "behavioral_diversity_score": 0.46,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "The rollout proposes 20 actions across 3 LLM turns, with 11 actions being `do`; turn 0 has two long `do` runs and later turns continue `do` clusters.",
+            "saturation": 0.82,
+            "theme": "Repeated harvesting/do-action exploitation"
+          },
+          {
+            "evidence": "Movement is limited to `right`, `up`, and repeated `down`; no `left` appears, and turns 10 and 17 both begin with `down`, suggesting local repositioning rather than broad traversal.",
+            "saturation": 0.62,
+            "theme": "Local vertical movement with narrow map coverage"
+          },
+          {
+            "evidence": "The policy attempts `make_wood_pickaxe` after initial wood collection and later attempts `make_stone_pickaxe`, but crafting actions are sparse compared with harvesting.",
+            "saturation": 0.38,
+            "theme": "Early tool-crafting progression"
+          },
+          {
+            "evidence": "No explicit noop or wait actions appear; the trace is active, though action diversity is constrained by harvesting repetition.",
+            "saturation": 0.05,
+            "theme": "Low idle/noop behavior"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 2.8,
+        "severity": "low",
+        "theme_tags": [
+          "harvest-heavy",
+          "local-exploration",
+          "vertical-looping",
+          "early-crafting",
+          "low-noop",
+          "truncated"
+        ],
+        "trace_id": "seed-1",
+        "underexplored_actions": [
+          "leftward/backtracking movement",
+          "broader horizontal scouting before repeated harvesting",
+          "place_table/place_furnace/place_stone style setup actions",
+          "make_wood_sword or other combat preparation",
+          "health/food recovery actions if available"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 2,
+        "behavioral_diversity_score": 0.35,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Planned actions contain 13 do actions out of 20, including runs of do,do,do in the first two turns; achievements reached were collect_wood and collect_sapling.",
+            "saturation": 0.65,
+            "theme": "Resource harvesting via repeated do actions"
+          },
+          {
+            "evidence": "Movement actions were sparse and local: right x3, up x2, left x1, with no down actions observed.",
+            "saturation": 0.3,
+            "theme": "Limited local repositioning"
+          },
+          {
+            "evidence": "Only one non-move/non-do action appears: make_wood_pickaxe at the end of the first planned batch.",
+            "saturation": 0.05,
+            "theme": "Single early crafting attempt"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 2,
+        "severity": "medium",
+        "theme_tags": [
+          "do-heavy",
+          "resource-harvest",
+          "low-map-coverage",
+          "limited-crafting",
+          "no-idle-loop"
+        ],
+        "trace_id": "seed-3",
+        "underexplored_actions": [
+          "down movement",
+          "broader directional scouting before harvesting",
+          "additional crafting actions after make_wood_pickaxe",
+          "combat/defensive interactions",
+          "placement/building actions",
+          "sleep/rest or recovery actions"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 4,
+        "behavioral_diversity_score": 0.38,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Planned actions are dominated by do: 14 of 20 queued actions, including long do/do/right cycles and ending with three consecutive do actions.",
+            "saturation": 0.7,
+            "theme": "Repeated harvesting/interact loop"
+          },
+          {
+            "evidence": "Movement appears limited to right/right/right, one up, and one down; no left action and no broad directional sweep, implying narrow map coverage.",
+            "saturation": 0.25,
+            "theme": "Short-range directional probing"
+          },
+          {
+            "evidence": "Only one explicit craft action appears: make_wood_pickaxe at turn 10; no follow-up crafting or tool-use chain is visible.",
+            "saturation": 0.05,
+            "theme": "Minimal crafting progression"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 4.0,
+        "severity": "medium",
+        "theme_tags": [
+          "do-heavy",
+          "resource-harvesting",
+          "limited-map-coverage",
+          "low-action-variety",
+          "some-crafting",
+          "no-parse-errors"
+        ],
+        "trace_id": "seed-4",
+        "underexplored_actions": [
+          "left movement for map coverage symmetry",
+          "sustained scouting in multiple directions",
+          "follow-up crafting after make_wood_pickaxe",
+          "combat or hunting-specific action variation",
+          "station placement or inventory/tool-use actions"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 6
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "behavioral_diversity_score": 0.2,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Job summary reports status completed with 3 LLM turns, reward 1.0, and 1 achievement; no additional trace actions were inspected under the no-shell/no-browse constraint.",
+            "saturation": 0.2,
+            "theme": "summary-only completed rollout"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 1,
+        "severity": "low",
+        "theme_tags": [
+          "completed",
+          "low-achievement",
+          "summary-only"
+        ],
+        "trace_id": "seed-7",
+        "underexplored_actions": [
+          "Cannot verify action-level diversity, idle/noop frequency, or map coverage from the provided summary alone."
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 4
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "behavioral_diversity_score": 0.0,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Trace contents were not inspected because the instruction forbids shell commands and no non-shell file-read tool is available in this turn.",
+            "saturation": 0.0,
+            "theme": "minimal trace evidence"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 1.0,
+        "severity": "medium",
+        "theme_tags": [
+          "uninspected",
+          "insufficient-evidence"
+        ],
+        "trace_id": "seed-5",
+        "underexplored_actions": [
+          "inspect movement/action sequence with an allowed direct file-read mechanism",
+          "score noop/idle repetition from trace events",
+          "measure map coverage from visited positions",
+          "derive saturation from actual action clusters"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 5
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "behavioral_diversity_score": 0.25,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Summary reports only 3 LLM turns, reward 1.0, and 1 achievement, indicating a short completed trace with narrow behavioral evidence available.",
+            "saturation": 0.8,
+            "theme": "minimal progression with limited rollout depth"
+          },
+          {
+            "evidence": "The rollout completed with reward 1.0 and achievement_count 1, suggesting at least one productive action sequence rather than pure idle/noop behavior.",
+            "saturation": 0.55,
+            "theme": "achievement-oriented early objective completion"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 1,
+        "severity": "low",
+        "theme_tags": [
+          "seed-6",
+          "short-rollout",
+          "single-achievement",
+          "low-diversity",
+          "early-progression"
+        ],
+        "trace_id": "seed-6",
+        "underexplored_actions": [
+          "extended map coverage",
+          "resource collection variety",
+          "tool crafting progression",
+          "combat or hazard interaction",
+          "inventory-driven planning beyond first achievement"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "annotate_traces"
+          },
+          {
+            "index": 7
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "gelo_trace_annotator"
+      },
+      "outputs": {
+        "achievement_count": 1,
+        "behavioral_diversity_score": 0.28,
+        "blocker": false,
+        "exploration_themes": [
+          {
+            "evidence": "Across 20 planned actions, 15 are `do`; each span begins with `do` except the final `left`, and reward remains 1.0 after `collect_wood`.",
+            "saturation": 0.75,
+            "theme": "Repeated harvest/use loop"
+          },
+          {
+            "evidence": "First batch alternates repeated `do` with three `right` moves, suggesting narrow local probing rather than broad traversal.",
+            "saturation": 0.15,
+            "theme": "Small rightward sweep"
+          },
+          {
+            "evidence": "Only one `up` and one `left` appear after turn 10; no `down` actions and no sustained navigation pattern.",
+            "saturation": 0.1,
+            "theme": "Minimal repositioning correction"
+          }
+        ],
+        "optimizer": "gelo",
+        "reward": 1,
+        "severity": "medium",
+        "theme_tags": [
+          "do-heavy",
+          "wood-collection",
+          "low-map-coverage",
+          "repetitive-local-actions",
+          "no-idle-noop"
+        ],
+        "trace_id": "seed-8",
+        "underexplored_actions": [
+          "down",
+          "sustained multi-direction movement",
+          "resource search beyond immediate wood collection",
+          "crafting/inventory actions after collecting wood",
+          "combat or hazard-response actions"
+        ]
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "jesterky-cli-run",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:gelo_trace_annotate",
+    "inputs": {
+      "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+    },
+    "outputs": null,
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "annotate_traces"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "annotate_traces",
+        "inputs": null,
+        "outputs": null,
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 3,
+                  "behavioral_diversity_score": 0.46,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "The rollout proposes 20 actions across 3 LLM turns, with 11 actions being `do`; turn 0 has two long `do` runs and later turns continue `do` clusters.",
+                      "saturation": 0.82,
+                      "theme": "Repeated harvesting/do-action exploitation"
+                    },
+                    {
+                      "evidence": "Movement is limited to `right`, `up`, and repeated `down`; no `left` appears, and turns 10 and 17 both begin with `down`, suggesting local repositioning rather than broad traversal.",
+                      "saturation": 0.62,
+                      "theme": "Local vertical movement with narrow map coverage"
+                    },
+                    {
+                      "evidence": "The policy attempts `make_wood_pickaxe` after initial wood collection and later attempts `make_stone_pickaxe`, but crafting actions are sparse compared with harvesting.",
+                      "saturation": 0.38,
+                      "theme": "Early tool-crafting progression"
+                    },
+                    {
+                      "evidence": "No explicit noop or wait actions appear; the trace is active, though action diversity is constrained by harvesting repetition.",
+                      "saturation": 0.05,
+                      "theme": "Low idle/noop behavior"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 2.8,
+                  "severity": "low",
+                  "theme_tags": [
+                    "harvest-heavy",
+                    "local-exploration",
+                    "vertical-looping",
+                    "early-crafting",
+                    "low-noop",
+                    "truncated"
+                  ],
+                  "trace_id": "seed-1",
+                  "underexplored_actions": [
+                    "leftward/backtracking movement",
+                    "broader horizontal scouting before repeated harvesting",
+                    "place_table/place_furnace/place_stone style setup actions",
+                    "make_wood_sword or other combat preparation",
+                    "health/food recovery actions if available"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 2,
+                  "behavioral_diversity_score": 0.35,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "summary reports completed rollout with reward 2.0 and 2 achievements, indicating some successful early-game progression but not broad objective coverage.",
+                      "saturation": 0.4,
+                      "theme": "early_progress_with_limited_rollout_depth"
+                    },
+                    {
+                      "evidence": "summary reports only 2 LLM turns, so the observed trace likely samples a narrow slice of policy behavior and exploration style.",
+                      "saturation": 0.7,
+                      "theme": "low_llm_turn_count_limits_behavioral_signal"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 2,
+                  "severity": "low",
+                  "theme_tags": [
+                    "early-game",
+                    "low-depth",
+                    "partial-achievement",
+                    "limited-diversity-signal"
+                  ],
+                  "trace_id": "seed-2",
+                  "underexplored_actions": [
+                    "systematic map coverage beyond immediate starting area",
+                    "resource-tool experimentation after initial achievements",
+                    "combat or hazard probing if safe",
+                    "crafting/building branches not required by first two achievements"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 2,
+                  "behavioral_diversity_score": 0.35,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Planned actions contain 13 do actions out of 20, including runs of do,do,do in the first two turns; achievements reached were collect_wood and collect_sapling.",
+                      "saturation": 0.65,
+                      "theme": "Resource harvesting via repeated do actions"
+                    },
+                    {
+                      "evidence": "Movement actions were sparse and local: right x3, up x2, left x1, with no down actions observed.",
+                      "saturation": 0.3,
+                      "theme": "Limited local repositioning"
+                    },
+                    {
+                      "evidence": "Only one non-move/non-do action appears: make_wood_pickaxe at the end of the first planned batch.",
+                      "saturation": 0.05,
+                      "theme": "Single early crafting attempt"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 2,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "do-heavy",
+                    "resource-harvest",
+                    "low-map-coverage",
+                    "limited-crafting",
+                    "no-idle-loop"
+                  ],
+                  "trace_id": "seed-3",
+                  "underexplored_actions": [
+                    "down movement",
+                    "broader directional scouting before harvesting",
+                    "additional crafting actions after make_wood_pickaxe",
+                    "combat/defensive interactions",
+                    "placement/building actions",
+                    "sleep/rest or recovery actions"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 4,
+                  "behavioral_diversity_score": 0.38,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Planned actions are dominated by do: 14 of 20 queued actions, including long do/do/right cycles and ending with three consecutive do actions.",
+                      "saturation": 0.7,
+                      "theme": "Repeated harvesting/interact loop"
+                    },
+                    {
+                      "evidence": "Movement appears limited to right/right/right, one up, and one down; no left action and no broad directional sweep, implying narrow map coverage.",
+                      "saturation": 0.25,
+                      "theme": "Short-range directional probing"
+                    },
+                    {
+                      "evidence": "Only one explicit craft action appears: make_wood_pickaxe at turn 10; no follow-up crafting or tool-use chain is visible.",
+                      "saturation": 0.05,
+                      "theme": "Minimal crafting progression"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 4.0,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "do-heavy",
+                    "resource-harvesting",
+                    "limited-map-coverage",
+                    "low-action-variety",
+                    "some-crafting",
+                    "no-parse-errors"
+                  ],
+                  "trace_id": "seed-4",
+                  "underexplored_actions": [
+                    "left movement for map coverage symmetry",
+                    "sustained scouting in multiple directions",
+                    "follow-up crafting after make_wood_pickaxe",
+                    "combat or hunting-specific action variation",
+                    "station placement or inventory/tool-use actions"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 4
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[4]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 4
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "behavioral_diversity_score": 0.0,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Trace contents were not inspected because the instruction forbids shell commands and no non-shell file-read tool is available in this turn.",
+                      "saturation": 0.0,
+                      "theme": "minimal trace evidence"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 1.0,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "uninspected",
+                    "insufficient-evidence"
+                  ],
+                  "trace_id": "seed-5",
+                  "underexplored_actions": [
+                    "inspect movement/action sequence with an allowed direct file-read mechanism",
+                    "score noop/idle repetition from trace events",
+                    "measure map coverage from visited positions",
+                    "derive saturation from actual action clusters"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 5
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[5]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 5
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "behavioral_diversity_score": 0.25,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Summary reports only 3 LLM turns, reward 1.0, and 1 achievement, indicating a short completed trace with narrow behavioral evidence available.",
+                      "saturation": 0.8,
+                      "theme": "minimal progression with limited rollout depth"
+                    },
+                    {
+                      "evidence": "The rollout completed with reward 1.0 and achievement_count 1, suggesting at least one productive action sequence rather than pure idle/noop behavior.",
+                      "saturation": 0.55,
+                      "theme": "achievement-oriented early objective completion"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 1,
+                  "severity": "low",
+                  "theme_tags": [
+                    "seed-6",
+                    "short-rollout",
+                    "single-achievement",
+                    "low-diversity",
+                    "early-progression"
+                  ],
+                  "trace_id": "seed-6",
+                  "underexplored_actions": [
+                    "extended map coverage",
+                    "resource collection variety",
+                    "tool crafting progression",
+                    "combat or hazard interaction",
+                    "inventory-driven planning beyond first achievement"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 6
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[6]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 6
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "behavioral_diversity_score": 0.2,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Job summary reports status completed with 3 LLM turns, reward 1.0, and 1 achievement; no additional trace actions were inspected under the no-shell/no-browse constraint.",
+                      "saturation": 0.2,
+                      "theme": "summary-only completed rollout"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 1,
+                  "severity": "low",
+                  "theme_tags": [
+                    "completed",
+                    "low-achievement",
+                    "summary-only"
+                  ],
+                  "trace_id": "seed-7",
+                  "underexplored_actions": [
+                    "Cannot verify action-level diversity, idle/noop frequency, or map coverage from the provided summary alone."
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "annotate_traces"
+                },
+                {
+                  "index": 7
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[7]",
+            "inputs": null,
+            "outputs": null,
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "annotate_traces"
+                    },
+                    {
+                      "index": 7
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:gelo_trace_annotator",
+                "inputs": null,
+                "outputs": {
+                  "achievement_count": 1,
+                  "behavioral_diversity_score": 0.28,
+                  "blocker": false,
+                  "exploration_themes": [
+                    {
+                      "evidence": "Across 20 planned actions, 15 are `do`; each span begins with `do` except the final `left`, and reward remains 1.0 after `collect_wood`.",
+                      "saturation": 0.75,
+                      "theme": "Repeated harvest/use loop"
+                    },
+                    {
+                      "evidence": "First batch alternates repeated `do` with three `right` moves, suggesting narrow local probing rather than broad traversal.",
+                      "saturation": 0.15,
+                      "theme": "Small rightward sweep"
+                    },
+                    {
+                      "evidence": "Only one `up` and one `left` appear after turn 10; no `down` actions and no sustained navigation pattern.",
+                      "saturation": 0.1,
+                      "theme": "Minimal repositioning correction"
+                    }
+                  ],
+                  "optimizer": "gelo",
+                  "reward": 1,
+                  "severity": "medium",
+                  "theme_tags": [
+                    "do-heavy",
+                    "wood-collection",
+                    "low-map-coverage",
+                    "repetitive-local-actions",
+                    "no-idle-noop"
+                  ],
+                  "trace_id": "seed-8",
+                  "underexplored_actions": [
+                    "down",
+                    "sustained multi-direction movement",
+                    "resource search beyond immediate wood collection",
+                    "crafting/inventory actions after collecting wood",
+                    "combat or hazard-response actions"
+                  ]
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed"
+}

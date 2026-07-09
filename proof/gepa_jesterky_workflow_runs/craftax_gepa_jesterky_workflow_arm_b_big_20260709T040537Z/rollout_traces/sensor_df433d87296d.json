@@ -1,0 +1,160 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 16,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:13:34Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block for crafter_interact, and put 1-5 valid actions in actions_list. Do not output prose, markdown, or JSON outside the tool_call.\n\nOpening rule: on every turn, choose a concrete action sequence immediately. If a safe nearby resource is visible, move directly toward it and harvest it now. If no obvious resource is visible, make the shortest safe move that increases information or proximity to wood. Avoid idle loops, repeated noop/sleep, and any action that does not advance resource gathering.\n\nPriority order: wood collection first, then table placement, then wood pickaxe, then stone, then furnace, then higher-tier tools. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava and blocked paths."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_76825c767994",
+    "seed": 16,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_down",
+        "move_left",
+        "do"
+      ],
+      "example_id": "ep_train_16",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 16,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_16"
+      }
+    },
+    "updated_at": "2026-07-09T04:13:34Z",
+    "usage": {
+      "completion_tokens": 277,
+      "cost_usd": 0.0,
+      "prompt_tokens": 6970,
+      "total_tokens": 7247
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block for crafter_interact, and put 1-5 valid actions in actions_list. Do not output prose, markdown, or JSON outside the tool_call.\n\nOpening rule: on every turn, choose a concrete action sequence immediately. If a safe nearby resource is visible, move directly toward it and harvest it now. If no obvious resource is visible, make the shortest safe move that increases information or proximity to wood. Avoid idle loops, repeated noop/sleep, and any action that does not advance resource gathering.\n\nPriority order: wood collection first, then table placement, then wood pickaxe, then stone, then furnace, then higher-tier tools. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava and blocked paths."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent. Each turn you see a compact text observation with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block for crafter_interact, and put 1-5 valid actions in actions_list. Do not output prose, markdown, or JSON outside the tool_call.\n\nOpening rule: on every turn, choose a concrete action sequence immediately. If a safe nearby resource is visible, move directly toward it and harvest it now. If no obvious resource is visible, make the shortest safe move that increases information or proximity to wood. Avoid idle loops, repeated noop/sleep, and any action that does not advance resource gathering.\n\nPriority order: wood collection first, then table placement, then wood pickaxe, then stone, then furnace, then higher-tier tools. Use only valid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword. Avoid lava and blocked paths."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_76825c767994",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_down",
+      "move_left",
+      "do"
+    ],
+    "example_id": "ep_train_16",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_16",
+      "seed": 16,
+      "split": "train",
+      "task_id": "train:16"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 16,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_16"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 277,
+    "cost_usd": 0.0,
+    "prompt_tokens": 6970,
+    "total_tokens": 7247
+  }
+}

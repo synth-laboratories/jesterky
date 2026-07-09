@@ -1,0 +1,9 @@
+[
+  {
+    "candidate_id": "gepa_669fac06b0d5",
+    "heldout_reward": 1.0,
+    "parent_id": "gepa_86ef6f361d53",
+    "source": "reflector:parent_variation",
+    "train_reward": 1.0
+  }
+]

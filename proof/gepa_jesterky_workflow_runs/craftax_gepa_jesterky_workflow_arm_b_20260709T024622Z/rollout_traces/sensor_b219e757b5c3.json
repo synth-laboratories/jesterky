@@ -1,0 +1,172 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T02:51:11Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are the Craftax planner controlling a survival agent. Read the compact observation, then build the next action batch around the single best progress opportunity on the map.\n\nDecision procedure:\n1. Inspect inventory, nearby tiles, and blocked paths.\n2. Choose exactly one mode for this turn: gather, unlock, advance, or recover.\n3. Emit a 1-5 action batch that ends with a meaningful state change.\n\nProgress ladder:\n- If you have no wood, move toward wood and use do on it.\n- If you have wood but no table, place a table as soon as the local tile is safe enough.\n- If you have a table but no wood pickaxe, craft the wood pickaxe as soon as the prerequisites are satisfied.\n- After a wood pickaxe, bias toward stone and coal, then place a furnace, then upgrade to stronger tools.\n- If hunger, health, blocked movement, or missing materials prevent the preferred goal, choose recover: reposition, backtrack, or spend the batch on the nearest prerequisite instead of noop.\n\nRules:\n- Respond only with one <tool_call> block for crafter_interact; no prose or markdown.\n- Use only valid action names and keep the batch within 1-5 actions.\n- Do not repeat noop loops or purposeless backtracking.\n- Combine movement with do, craft, or place actions whenever the local map and inventory allow it.\n- On the first turn, commit to the closest resource target and a backup prerequisite so the batch still makes progress if the primary move is blocked.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_e7d55f4b526b",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "do",
+        "move_left",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do",
+        "move_up",
+        "do"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T02:51:11Z",
+    "usage": {
+      "completion_tokens": 161,
+      "cost_usd": 0.0,
+      "prompt_tokens": 4642,
+      "total_tokens": 4803
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are the Craftax planner controlling a survival agent. Read the compact observation, then build the next action batch around the single best progress opportunity on the map.\n\nDecision procedure:\n1. Inspect inventory, nearby tiles, and blocked paths.\n2. Choose exactly one mode for this turn: gather, unlock, advance, or recover.\n3. Emit a 1-5 action batch that ends with a meaningful state change.\n\nProgress ladder:\n- If you have no wood, move toward wood and use do on it.\n- If you have wood but no table, place a table as soon as the local tile is safe enough.\n- If you have a table but no wood pickaxe, craft the wood pickaxe as soon as the prerequisites are satisfied.\n- After a wood pickaxe, bias toward stone and coal, then place a furnace, then upgrade to stronger tools.\n- If hunger, health, blocked movement, or missing materials prevent the preferred goal, choose recover: reposition, backtrack, or spend the batch on the nearest prerequisite instead of noop.\n\nRules:\n- Respond only with one <tool_call> block for crafter_interact; no prose or markdown.\n- Use only valid action names and keep the batch within 1-5 actions.\n- Do not repeat noop loops or purposeless backtracking.\n- Combine movement with do, craft, or place actions whenever the local map and inventory allow it.\n- On the first turn, commit to the closest resource target and a backup prerequisite so the batch still makes progress if the primary move is blocked.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are the Craftax planner controlling a survival agent. Read the compact observation, then build the next action batch around the single best progress opportunity on the map.\n\nDecision procedure:\n1. Inspect inventory, nearby tiles, and blocked paths.\n2. Choose exactly one mode for this turn: gather, unlock, advance, or recover.\n3. Emit a 1-5 action batch that ends with a meaningful state change.\n\nProgress ladder:\n- If you have no wood, move toward wood and use do on it.\n- If you have wood but no table, place a table as soon as the local tile is safe enough.\n- If you have a table but no wood pickaxe, craft the wood pickaxe as soon as the prerequisites are satisfied.\n- After a wood pickaxe, bias toward stone and coal, then place a furnace, then upgrade to stronger tools.\n- If hunger, health, blocked movement, or missing materials prevent the preferred goal, choose recover: reposition, backtrack, or spend the batch on the nearest prerequisite instead of noop.\n\nRules:\n- Respond only with one <tool_call> block for crafter_interact; no prose or markdown.\n- Use only valid action names and keep the batch within 1-5 actions.\n- Do not repeat noop loops or purposeless backtracking.\n- Combine movement with do, craft, or place actions whenever the local map and inventory allow it.\n- On the first turn, commit to the closest resource target and a backup prerequisite so the batch still makes progress if the primary move is blocked.\n\nValid actions: noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_e7d55f4b526b",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "do",
+      "move_left",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do",
+      "move_up",
+      "do"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 161,
+    "cost_usd": 0.0,
+    "prompt_tokens": 4642,
+    "total_tokens": 4803
+  }
+}

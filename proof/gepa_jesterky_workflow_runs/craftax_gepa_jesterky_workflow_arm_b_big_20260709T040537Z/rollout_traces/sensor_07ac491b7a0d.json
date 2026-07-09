@@ -1,0 +1,174 @@
+{
+  "event_history": [
+    {
+      "achievements": [],
+      "n_steps": 12,
+      "seed": 16,
+      "total_reward": 0.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 0.0,
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "metrics": {},
+      "outcome_reward": 0.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "failed"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T04:27:02Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are an execution-first Craftax planner controlling crafter_interact. Each turn you see compact text with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block and 1-5 valid actions in actions_list. Never emit prose, markdown, or JSON outside the tool_call.\n\nUse this loop every turn:\n1. Sense: identify the nearest visible resource, the main inventory bottleneck, and any hazard or blocked route.\n2. Commit: choose one reachable milestone for this call only.\n3. Execute: choose actions that move directly toward the milestone and harvest, place, or craft immediately when adjacent.\n4. Repair: if the last action pair did not move you closer to a milestone, abandon it and replan before repeating it.\n\nHard rules: do not spend multiple calls on open-ended wandering; do not repeat move/do scripts when reward is still zero; after any blocked path or missing prerequisite, switch to the next best safe objective instead of looping. Early progression should still follow the resource ladder: wood, table, wood pickaxe, stone, furnace, then better tools. Valid actions are noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        0.0
+      ],
+      "outcome_reward": 0.0
+    },
+    "rollout_id": "rollout_bfcb80e03428",
+    "seed": 16,
+    "status": "completed",
+    "success_status": "failed",
+    "summary": {
+      "achievements_unlocked": [],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_right",
+        "move_right",
+        "do",
+        "move_left",
+        "move_left",
+        "move_left",
+        "move_left",
+        "do",
+        "move_up",
+        "move_up"
+      ],
+      "example_id": "ep_train_16",
+      "n_steps": 12,
+      "outcome_reward": 0.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [],
+          "n_steps": 12,
+          "seed": 16,
+          "total_reward": 0.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_16"
+      }
+    },
+    "updated_at": "2026-07-09T04:27:02Z",
+    "usage": {
+      "completion_tokens": 120,
+      "cost_usd": 0.0,
+      "prompt_tokens": 2047,
+      "total_tokens": 2167
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are an execution-first Craftax planner controlling crafter_interact. Each turn you see compact text with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block and 1-5 valid actions in actions_list. Never emit prose, markdown, or JSON outside the tool_call.\n\nUse this loop every turn:\n1. Sense: identify the nearest visible resource, the main inventory bottleneck, and any hazard or blocked route.\n2. Commit: choose one reachable milestone for this call only.\n3. Execute: choose actions that move directly toward the milestone and harvest, place, or craft immediately when adjacent.\n4. Repair: if the last action pair did not move you closer to a milestone, abandon it and replan before repeating it.\n\nHard rules: do not spend multiple calls on open-ended wandering; do not repeat move/do scripts when reward is still zero; after any blocked path or missing prerequisite, switch to the next best safe objective instead of looping. Early progression should still follow the resource ladder: wood, table, wood pickaxe, stone, furnace, then better tools. Valid actions are noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are an execution-first Craftax planner controlling crafter_interact. Each turn you see compact text with player stats, inventory, and a local map. Respond ONLY with a single <tool_call> block and 1-5 valid actions in actions_list. Never emit prose, markdown, or JSON outside the tool_call.\n\nUse this loop every turn:\n1. Sense: identify the nearest visible resource, the main inventory bottleneck, and any hazard or blocked route.\n2. Commit: choose one reachable milestone for this call only.\n3. Execute: choose actions that move directly toward the milestone and harvest, place, or craft immediately when adjacent.\n4. Repair: if the last action pair did not move you closer to a milestone, abandon it and replan before repeating it.\n\nHard rules: do not spend multiple calls on open-ended wandering; do not repeat move/do scripts when reward is still zero; after any blocked path or missing prerequisite, switch to the next best safe objective instead of looping. Early progression should still follow the resource ladder: wood, table, wood pickaxe, stone, furnace, then better tools. Valid actions are noop, move_left, move_right, move_up, move_down, do, sleep, place_stone, place_table, place_furnace, place_plant, make_wood_pickaxe, make_stone_pickaxe, make_iron_pickaxe, make_wood_sword, make_stone_sword, make_iron_sword."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_bfcb80e03428",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_right",
+      "move_right",
+      "do",
+      "move_left",
+      "move_left",
+      "move_left",
+      "move_left",
+      "do",
+      "move_up",
+      "move_up"
+    ],
+    "example_id": "ep_train_16",
+    "n_steps": 12,
+    "outcome_reward": 0.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_16",
+      "seed": 16,
+      "split": "train",
+      "task_id": "train:16"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [],
+        "n_steps": 12,
+        "seed": 16,
+        "total_reward": 0.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_16"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 120,
+    "cost_usd": 0.0,
+    "prompt_tokens": 2047,
+    "total_tokens": 2167
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_sapling"
+      ],
+      "n_steps": 12,
+      "seed": 14,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T01:59:04Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Crafter survival agent. Each turn you receive a compact observation with player stats, inventory, and a local map. Respond ONLY with one <tool_call> block for crafter_interact; the actions_list must contain 1-5 valid action names.\n\nUse a simple progression ladder: if wood is not secured, search for and collect wood; once wood is available and a table is useful, place the table; as soon as prerequisites are satisfied, craft a wood pickaxe; then move to stone, coal, and iron and continue the tool chain. When a target resource is visible, batch movement toward it and end the call with do/place/craft when possible. If movement is blocked, choose a different route instead of repeating the same failed step. If hunger or health is low, recover first. Avoid lava, repeated noop/sleep loops, and actions that do not change the state."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "example_id": "ep_train_14",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_016595a2aa9b",
+    "seed": 14,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_sapling"
+      ],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_up",
+        "do",
+        "move_up"
+      ],
+      "example_id": "ep_train_14",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_sapling"
+          ],
+          "n_steps": 12,
+          "seed": 14,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_14"
+      }
+    },
+    "updated_at": "2026-07-09T01:59:04Z",
+    "usage": {
+      "completion_tokens": 159,
+      "cost_usd": 0.0,
+      "prompt_tokens": 2765,
+      "total_tokens": 2924
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Crafter survival agent. Each turn you receive a compact observation with player stats, inventory, and a local map. Respond ONLY with one <tool_call> block for crafter_interact; the actions_list must contain 1-5 valid action names.\n\nUse a simple progression ladder: if wood is not secured, search for and collect wood; once wood is available and a table is useful, place the table; as soon as prerequisites are satisfied, craft a wood pickaxe; then move to stone, coal, and iron and continue the tool chain. When a target resource is visible, batch movement toward it and end the call with do/place/craft when possible. If movement is blocked, choose a different route instead of repeating the same failed step. If hunger or health is low, recover first. Avoid lava, repeated noop/sleep loops, and actions that do not change the state."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Crafter survival agent. Each turn you receive a compact observation with player stats, inventory, and a local map. Respond ONLY with one <tool_call> block for crafter_interact; the actions_list must contain 1-5 valid action names.\n\nUse a simple progression ladder: if wood is not secured, search for and collect wood; once wood is available and a table is useful, place the table; as soon as prerequisites are satisfied, craft a wood pickaxe; then move to stone, coal, and iron and continue the tool chain. When a target resource is visible, batch movement toward it and end the call with do/place/craft when possible. If movement is blocked, choose a different route instead of repeating the same failed step. If hunger or health is low, recover first. Avoid lava, repeated noop/sleep loops, and actions that do not change the state."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_016595a2aa9b",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_sapling"
+    ],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_up",
+      "do",
+      "move_up"
+    ],
+    "example_id": "ep_train_14",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_14",
+      "seed": 14,
+      "split": "train",
+      "task_id": "train:14"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_sapling"
+        ],
+        "n_steps": 12,
+        "seed": 14,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_14"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 159,
+    "cost_usd": 0.0,
+    "prompt_tokens": 2765,
+    "total_tokens": 2924
+  }
+}

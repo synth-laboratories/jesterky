@@ -1,0 +1,188 @@
+{
+  "event_history": [
+    {
+      "achievements": [
+        "collect_drink"
+      ],
+      "n_steps": 12,
+      "seed": 16,
+      "total_reward": 1.0,
+      "type": "episode_complete"
+    }
+  ],
+  "events": [],
+  "outcome": {
+    "reward": 1.0,
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_drink"
+        ],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "metrics": {},
+      "outcome_reward": 1.0,
+      "score": null
+    },
+    "status": "completed",
+    "status_detail": null,
+    "success_status": "succeeded"
+  },
+  "raw_response": {
+    "created_at": "2026-07-09T03:56:23Z",
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into one of four modes: (1) adjacent target exists, (2) visible target exists but is not adjacent, (3) no useful target is visible, or (4) you are stuck or have just reversed course without progress.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nMode policy:\n- Mode 1: end the batch with the action that consumes the adjacent target, usually `do` or the matching craft/place action.\n- Mode 2: take the shortest movement burst toward the best visible target, then stop; do not append `do` unless adjacency is already satisfied.\n- Mode 3: explore with a fixed sweep pattern instead of bouncing between opposite directions.\n- Mode 4: abandon the failed route immediately and choose a different direction or a broader search pattern on the next turn.\n\nProgression ladder: basic harvestable resource -> table -> wood pickaxe -> stone -> furnace -> better tools. If the next craft is legal now, do it now; do not keep collecting the same resource after the prerequisite is already satisfied. Avoid lava, dead ends, noop loops, and repeated do-only turns."
+      }
+    },
+    "reward_info": {
+      "details": {
+        "achievements": [
+          "collect_drink"
+        ],
+        "example_id": "ep_train_16",
+        "max_turns": 12,
+        "n_steps": 12,
+        "policy_model": "gemini-3.1-flash-lite",
+        "tool_name": "crafter_interact"
+      },
+      "event_rewards": [
+        1.0
+      ],
+      "outcome_reward": 1.0
+    },
+    "rollout_id": "rollout_4660657b6140",
+    "seed": 16,
+    "status": "completed",
+    "success_status": "succeeded",
+    "summary": {
+      "achievements_unlocked": [
+        "collect_drink"
+      ],
+      "actions_taken": [
+        "move_up",
+        "move_up",
+        "move_up",
+        "move_left",
+        "move_left",
+        "move_up",
+        "move_up",
+        "move_right",
+        "move_right",
+        "do",
+        "move_down",
+        "do"
+      ],
+      "example_id": "ep_train_16",
+      "n_steps": 12,
+      "outcome_reward": 1.0
+    },
+    "task_id": "crafter.react_policy",
+    "trace": {
+      "event_history": [
+        {
+          "achievements": [
+            "collect_drink"
+          ],
+          "n_steps": 12,
+          "seed": 16,
+          "total_reward": 1.0,
+          "type": "episode_complete"
+        }
+      ],
+      "metadata": {
+        "call_site_id": "crafter.react_policy",
+        "example_id": "ep_train_16"
+      }
+    },
+    "updated_at": "2026-07-09T03:56:23Z",
+    "usage": {
+      "completion_tokens": 116,
+      "cost_usd": 0.0,
+      "prompt_tokens": 1924,
+      "total_tokens": 2040
+    }
+  },
+  "request": {
+    "candidate": {
+      "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into one of four modes: (1) adjacent target exists, (2) visible target exists but is not adjacent, (3) no useful target is visible, or (4) you are stuck or have just reversed course without progress.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nMode policy:\n- Mode 1: end the batch with the action that consumes the adjacent target, usually `do` or the matching craft/place action.\n- Mode 2: take the shortest movement burst toward the best visible target, then stop; do not append `do` unless adjacency is already satisfied.\n- Mode 3: explore with a fixed sweep pattern instead of bouncing between opposite directions.\n- Mode 4: abandon the failed route immediately and choose a different direction or a broader search pattern on the next turn.\n\nProgression ladder: basic harvestable resource -> table -> wood pickaxe -> stone -> furnace -> better tools. If the next craft is legal now, do it now; do not keep collecting the same resource after the prerequisite is already satisfied. Avoid lava, dead ends, noop loops, and repeated do-only turns."
+    },
+    "metadata": {
+      "candidate": {
+        "react_system_prompt": "You are controlling a Craftax survival agent in a partially observed world. Before acting, classify the observation into one of four modes: (1) adjacent target exists, (2) visible target exists but is not adjacent, (3) no useful target is visible, or (4) you are stuck or have just reversed course without progress.\n\nOutput contract: one <tool_call> block for crafter_interact, 1-5 actions, valid actions only, no prose.\n\nMode policy:\n- Mode 1: end the batch with the action that consumes the adjacent target, usually `do` or the matching craft/place action.\n- Mode 2: take the shortest movement burst toward the best visible target, then stop; do not append `do` unless adjacency is already satisfied.\n- Mode 3: explore with a fixed sweep pattern instead of bouncing between opposite directions.\n- Mode 4: abandon the failed route immediately and choose a different direction or a broader search pattern on the next turn.\n\nProgression ladder: basic harvestable resource -> table -> wood pickaxe -> stone -> furnace -> better tools. If the next craft is legal now, do it now; do not keep collecting the same resource after the prerequisite is already satisfied. Avoid lava, dead ends, noop loops, and repeated do-only turns."
+      }
+    },
+    "source": {}
+  },
+  "rollout_id": "rollout_4660657b6140",
+  "schema_version": "rollout_trace_payload.v1",
+  "substitution_stats": {
+    "applied": 0,
+    "attempted": 0,
+    "warnings": []
+  },
+  "summary": {
+    "achievements_unlocked": [
+      "collect_drink"
+    ],
+    "actions_taken": [
+      "move_up",
+      "move_up",
+      "move_up",
+      "move_left",
+      "move_left",
+      "move_up",
+      "move_up",
+      "move_right",
+      "move_right",
+      "do",
+      "move_down",
+      "do"
+    ],
+    "example_id": "ep_train_16",
+    "n_steps": 12,
+    "outcome_reward": 1.0
+  },
+  "task_id": "crafter.react_policy",
+  "task_payload": {
+    "example": {
+      "example_id": "ep_train_16",
+      "seed": 16,
+      "split": "train",
+      "task_id": "train:16"
+    }
+  },
+  "tool_calls": [],
+  "trace": {
+    "event_history": [
+      {
+        "achievements": [
+          "collect_drink"
+        ],
+        "n_steps": 12,
+        "seed": 16,
+        "total_reward": 1.0,
+        "type": "episode_complete"
+      }
+    ],
+    "metadata": {
+      "call_site_id": "crafter.react_policy",
+      "example_id": "ep_train_16"
+    }
+  },
+  "trace_correlation_id": null,
+  "turns": [],
+  "usage": {
+    "completion_tokens": 116,
+    "cost_usd": 0.0,
+    "prompt_tokens": 1924,
+    "total_tokens": 2040
+  }
+}
