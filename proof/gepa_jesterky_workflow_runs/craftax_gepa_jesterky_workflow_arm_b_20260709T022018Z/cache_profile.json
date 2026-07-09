@@ -4,7 +4,7 @@
   "max_bytes": 4294967296,
   "misses": 15,
   "mode": "readwrite",
-  "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/request_cache.sqlite",
+  "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/request_cache.sqlite",
   "size_bytes": 135168,
   "writes": 14
 }

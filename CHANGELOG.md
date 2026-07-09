@@ -30,6 +30,9 @@ get the full agentic loop. Ships with the launch blog and the proof packet.
 - CLI: `--model`, `--codex-home`, `--cd`, `--args-file`, `--events-out`; replay
   fidelity is addr+kind+payload (wall time is metadata, never identity).
 
+### Breaking changes
+- None. The new crates and CLI flags are additive for existing 0.1.x users.
+
 ## 0.1.0 — 2026-07-08
 
 First public release: the jesterky workflow substrate — a Rust core that
@@ -71,3 +74,6 @@ uv add jesterky                 # Python contract types
 ### Out of scope (post-launch)
 Hosted service, Stack cockpit integration, the workflow optimizer, and the
 GEPA/GELO loop. This release is the substrate.
+
+### Breaking changes
+- Initial public release.

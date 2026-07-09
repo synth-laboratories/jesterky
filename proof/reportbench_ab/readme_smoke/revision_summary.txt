@@ -1,9 +1,0 @@
-Updated [report_b.md](/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_ab/readme_smoke/report_b.md) only.
-
-Changes made:
-- Fixed `## Task Graph` heading casing.
-- Added required `report_workproduct_ok: \`True\`` marker from the provided trace-evaluate verdict.
-- Added rubric-required path references.
-- Preserved non-fabrication by stating `artifacts/run_result.json` was not shown as produced by the run.
-
-Validation: `rg` checks found all required headings, regex markers, and file path strings.

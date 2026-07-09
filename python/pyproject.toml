@@ -16,8 +16,8 @@ classifiers = [
 dependencies = ["pydantic>=2,<3"]
 
 [project.urls]
-Homepage = "https://github.com/jesterky/jesterky"
-Repository = "https://github.com/jesterky/jesterky"
+Homepage = "https://github.com/synth-laboratories/jesterky"
+Repository = "https://github.com/synth-laboratories/jesterky"
 
 [build-system]
 requires = ["hatchling"]

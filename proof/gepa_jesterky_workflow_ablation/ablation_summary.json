@@ -45,11 +45,11 @@
         "elapsed_ms": 103391,
         "enabled": true,
         "generation": 0,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_gepa_annotate.manifest.json",
+        "manifest_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_gepa_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
         "theme_count": 20,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_traces"
+        "trace_dir": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_000/jesterky_traces"
       },
       {
         "actor": "codex",
@@ -59,11 +59,11 @@
         "elapsed_ms": 99426,
         "enabled": true,
         "generation": 1,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_gepa_annotate.manifest.json",
+        "manifest_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_gepa_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
         "theme_count": 23,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_traces"
+        "trace_dir": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_001/jesterky_traces"
       },
       {
         "actor": "codex",
@@ -73,11 +73,11 @@
         "elapsed_ms": 106171,
         "enabled": true,
         "generation": 2,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_gepa_annotate.manifest.json",
+        "manifest_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_gepa_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "run_id": "craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z",
         "theme_count": 22,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_traces"
+        "trace_dir": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_big_20260709T040537Z/proposer_workspaces/generation_002/jesterky_traces"
       }
     ],
     "expect_jesterky": true

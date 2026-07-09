@@ -17,8 +17,8 @@ members = [
 version = "0.1.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/jesterky/jesterky"
-homepage = "https://github.com/jesterky/jesterky"
+repository = "https://github.com/synth-laboratories/jesterky"
+homepage = "https://github.com/synth-laboratories/jesterky"
 authors = ["Synth Laboratories"]
 readme = "README.md"
 

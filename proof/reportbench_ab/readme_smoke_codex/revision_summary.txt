@@ -1,9 +1,0 @@
-Updated `report_b.md` only.
-
-Changes made:
-- Renamed `## Task graph` to `## Task Graph`.
-- Added `sublinear_projection_status: \`ok\`` with basis from existing Sublinear proof.
-- Added `report_workproduct_ok: \`True\`` with basis from the supplied trace-evaluate verdict.
-- Added required WorkProduct path references, including `artifacts/run_result.json`.
-
-Verified the required headings, regex patterns, and file path references with `rg`. The file is currently untracked in git status; unrelated existing changes elsewhere were left untouched.

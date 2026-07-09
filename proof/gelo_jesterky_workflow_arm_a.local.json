@@ -123,7 +123,7 @@
     ],
     "jesterky_workflow": {
       "enabled": false,
-      "spec": "/Users/joshpurtell/Documents/GitHub/jesterky/examples/gelo_trace_annotate.json",
+      "spec": "examples/gelo_trace_annotate.json",
       "command": "jesterky",
       "actor": "codex",
       "model": null,
@@ -433,7 +433,7 @@
   },
   "run": {
     "run_id": "craftax_gelo_jesterky_workflow_arm_a",
-    "output_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs"
+    "output_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs"
   },
   "seed_candidate": {
     "react_system_prompt": "You are playing GameBench Craftax rust gold. Use valid container actions only. Prioritize survival, collect wood and stone, craft basic tools, recover coal and iron, and make measurable achievement progress."

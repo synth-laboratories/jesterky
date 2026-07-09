@@ -1,9 +1,0 @@
-Updated only [report_b.md](/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_ab/readme_smoke_deepseek/report_b.md:1).
-
-What changed:
-- Fixed `## Task Graph` heading casing.
-- Added required rubric path references, including `artifacts/run_result.json`.
-- Added `sublinear_projection_status: \`ok\`` based on the existing completed Sublinear proof.
-- Added `report_workproduct_ok: \`True\`` and kept the report explicit that no runtime artifact inventory or reward measurement was produced by the SMR artifact list.
-
-Verified the required headings and regex patterns with `rg`.

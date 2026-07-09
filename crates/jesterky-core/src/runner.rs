@@ -153,10 +153,10 @@ impl RunCtx {
 /// Resolve the effective goal plan: the spec's `runplan.goals` deep-merged with
 /// a run-time `args.goals` overlay (partial overrides allowed — see
 /// [`GoalPlan::overlay_json`]). Absent/`null` overlay leaves the plan unchanged.
-fn resolve_goal_plan(base: &GoalPlan, args: &serde_json::Value) -> GoalPlan {
+fn resolve_goal_plan(base: &GoalPlan, args: &serde_json::Value) -> Result<GoalPlan, CoreError> {
     match args.get("goals") {
-        Some(overlay) if !overlay.is_null() => base.overlay_json(overlay),
-        _ => base.clone(),
+        Some(overlay) if !overlay.is_null() => Ok(base.overlay_json(overlay)?),
+        _ => Ok(base.clone()),
     }
 }
 
@@ -171,6 +171,7 @@ impl Runner {
         args: serde_json::Value,
     ) -> Result<RunManifest, CoreError> {
         let spec_hash = spec.validate_and_hash()?;
+        let goal_plan = resolve_goal_plan(&spec.runplan.goals, &args)?;
         let ctx = RunCtx::new(run_id, args.clone(), spec);
         self.emit(&ctx, &NodePath::root(), 0, EventKind::WorkflowStarted, args);
 
@@ -184,8 +185,6 @@ impl Runner {
         // unlike budgets, which need host metering of tokens/wall — they are pure
         // predicates over the ledger the core already owns, so the runner
         // evaluates them. `--args.goals` deep-merges onto the declared plan.
-        let goal_plan = resolve_goal_plan(&spec.runplan.goals, &ctx.args);
-
         let mut failure: Option<String> = None;
         let mut goal_terminated = false;
         for id in &spec.entrypoint {
@@ -1361,7 +1360,7 @@ fn collect_map_outputs(
                     .and_then(|object| object.get(field))
                     .cloned()
                     .ok_or_else(|| {
-                        crate::ledger::LedgerError::Unresolved(format!("map result.{field}"))
+                        crate::ledger::LedgerError::MissingSlot(format!("map result.{field}"))
                     })?,
                 Err(_) => serde_json::Value::Null,
             };
@@ -1422,6 +1421,16 @@ fn at_node(err: crate::ledger::LedgerError, path: &NodePath) -> crate::ledger::L
     let ctx = format!(" (resolving inputs of node `{node}`)");
     match err {
         LedgerError::Unresolved(r) => LedgerError::Unresolved(format!("{r}{ctx}")),
+        LedgerError::UnknownSource(r) => LedgerError::UnknownSource(format!("{r}{ctx}")),
+        LedgerError::MissingSlot(r) => LedgerError::MissingSlot(format!("{r}{ctx}")),
+        LedgerError::BadPath { reference, message } => LedgerError::BadPath {
+            reference: format!("{reference}{ctx}"),
+            message,
+        },
+        LedgerError::MalformedLiteral { raw, message } => LedgerError::MalformedLiteral {
+            raw: format!("{raw}{ctx}"),
+            message,
+        },
         LedgerError::TypeMismatch(r) => LedgerError::TypeMismatch(format!("{r}{ctx}")),
     }
 }

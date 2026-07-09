@@ -15,7 +15,7 @@ import json
 import sys
 from pathlib import Path
 
-DEFAULT_LANES_DIR = "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes"
+DEFAULT_LANES_DIR = Path(__file__).resolve().parents[2] / "evals" / "reportbench" / "lanes"
 DEFAULT_OUT_DIR = "proof/reportbench_traces"
 
 COMPANIONS = ["reportbench_output.json", "verifier_review.json", "summary_latest.json"]
@@ -92,11 +92,11 @@ def build_trace(lane: str, artifacts: Path):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lanes-dir", default=DEFAULT_LANES_DIR)
+    parser.add_argument("--lanes-dir", type=Path, default=DEFAULT_LANES_DIR)
     parser.add_argument("--out-dir", default=DEFAULT_OUT_DIR)
     args = parser.parse_args()
 
-    lanes_dir = Path(args.lanes_dir)
+    lanes_dir = args.lanes_dir
     if not lanes_dir.is_dir():
         print(f"lanes dir not found: {lanes_dir}", file=sys.stderr)
         return 1

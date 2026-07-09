@@ -9,9 +9,9 @@
 //!  * [`artifact`] — artifacts + the process-tree trace.
 //!  * replay       — [`artifact::RunManifest`] carries the record needed to replay.
 //!
-//! ADR #1: these Rust types are the source of truth. M0 adds `schemars` to emit
-//! `jesterky.schema.json` (the cross-language interop artifact) and pyo3 Python
-//! types from the same definitions.
+//! ADR #1: these Rust types are the source of truth. The crate emits JSON
+//! schemas from the same definitions so downstream generated artifacts can
+//! detect contract drift.
 
 pub mod artifact;
 pub mod budget;
@@ -22,7 +22,7 @@ pub mod sandbox;
 pub mod topology;
 
 /// The contract version. A major bump is a stack-wide event (ADR #4).
-pub const CONTRACT_VERSION: &str = "0.0.0-dev";
+pub const CONTRACT_VERSION: &str = "0.1.1";
 
 pub use artifact::{
     Artifact, ArtifactRef, CallKind, Checkpoint, InvariantCheck, InvariantReport, Message,

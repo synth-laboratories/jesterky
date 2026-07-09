@@ -34,11 +34,10 @@ Arm B receipts (unique rounds): r0 8/4, r1 32/18, r2 47/29, r3 65/40
 
 ## Artifacts
 
-- Arm A result: `/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_a_20260709T000814Z/artifacts/result_manifest.json`
-- Arm B result: `/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/artifacts/result_manifest.json`
+- Arm A result: external GameBench run `craftax_gelo_jesterky_workflow_arm_a_20260709T000814Z`.
+- Arm B result: external GameBench run `craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z`.
 
 Configs:
 
-- `/Users/joshpurtell/Documents/GitHub/jesterky/proof/gelo_jesterky_workflow_arm_a.json`
-- `/Users/joshpurtell/Documents/GitHub/jesterky/proof/gelo_jesterky_workflow_arm_b.json`
-
+- `proof/gelo_jesterky_workflow_arm_a.json`
+- `proof/gelo_jesterky_workflow_arm_b.json`

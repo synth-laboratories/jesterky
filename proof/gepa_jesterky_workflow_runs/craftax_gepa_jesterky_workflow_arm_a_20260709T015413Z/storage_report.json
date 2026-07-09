@@ -4,61 +4,61 @@
       "bytes": 6828032,
       "kind": "file",
       "name": "workspace",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/workspace.sqlite"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/workspace.sqlite"
     },
     {
       "bytes": 3526910,
       "kind": "directory",
       "name": "proposer_workspaces",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/proposer_workspaces"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/proposer_workspaces"
     },
     {
       "bytes": 569344,
       "kind": "file",
       "name": "request_cache",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/request_cache.sqlite"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/request_cache.sqlite"
     },
     {
       "bytes": 143295,
       "kind": "directory",
       "name": "rollout_traces",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/rollout_traces"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/rollout_traces"
     },
     {
       "bytes": 127253,
       "kind": "file",
       "name": "candidate_registry",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/candidate_registry.json"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/candidate_registry.json"
     },
     {
       "bytes": 123006,
       "kind": "file",
       "name": "events",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/events.jsonl"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/events.jsonl"
     },
     {
       "bytes": 108242,
       "kind": "file",
       "name": "normalized_events",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/events.normalized.jsonl"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/events.normalized.jsonl"
     },
     {
       "bytes": 43120,
       "kind": "file",
       "name": "best_candidate",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/best_candidate.json"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/best_candidate.json"
     },
     {
       "bytes": 4096,
       "kind": "file",
       "name": "transitions",
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/transitions.sqlite"
+      "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/transitions.sqlite"
     }
   ],
   "bytes": 19028424,
   "compaction_manifest": {
     "exists": false,
-    "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/compaction_manifest.json"
+    "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/compaction_manifest.json"
   },
   "exists": true,
   "generated_runtime": {
@@ -75,7 +75,7 @@
   "recorded_at_unix_seconds": 1783562733,
   "request_cache_bytes": 569344,
   "rollout_trace_bytes": 143295,
-  "run_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z",
+  "run_dir": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z",
   "run_id": "craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z",
   "safe_actions": [
     "inspect",
@@ -83,7 +83,7 @@
     "delete"
   ],
   "schema": "synth.optimizer.run_storage_summary.v1",
-  "storage_report_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/storage_report.json",
+  "storage_report_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_a_20260709T015413Z/storage_report.json",
   "terminal": true,
   "terminal_source": "caller",
   "terminal_status": "terminal"

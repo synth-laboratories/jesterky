@@ -251,6 +251,105 @@ class Ref(RootModel[str]):
     )
 
 
+class Kind11(Enum):
+    local = 'local'
+
+
+class SandboxBackend1(BaseModel):
+    """
+    Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).
+    """
+
+    kind: Kind11
+
+
+class Kind12(Enum):
+    docker = 'docker'
+
+
+class SandboxBackend2(BaseModel):
+    """
+    Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).
+    """
+
+    env: list[list[str]] | None = Field(
+        [],
+        description="Env exported to the actor's process inside the container (e.g. `CODEX_HOME=/codex-home`). Overrides the actor's own env for that key.",
+    )
+    image: str
+    kind: Kind12
+    mounts: list[str] | None = Field(
+        [],
+        description='Extra bind mounts as docker `-v` specs, `host:container[:ro]`. `${HOME}` and `$VAR` are expanded. This is how codex auth reaches the container: mount host `~/.codex` to an in-container path, then point `CODEX_HOME` there via [`Self::Docker::env`].',
+    )
+    setup: list[str] | None = Field(
+        [],
+        description='Commands baked/run at container start before the actor (e.g. warm caches).',
+    )
+
+
+class SandboxBackend(RootModel[SandboxBackend1 | SandboxBackend2]):
+    root: SandboxBackend1 | SandboxBackend2 = Field(
+        ...,
+        description='Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).',
+    )
+
+
+class SandboxCapture(BaseModel):
+    """
+    What to read back out of the workspace after the actor finishes, and where to put it in the actor's outputs so downstream nodes can consume it.
+    """
+
+    globs: list[str] = Field(
+        ...,
+        description='Globs relative to the workspace root (e.g. `["Cargo.toml", "src/**/*.rs"]`).',
+    )
+    into: str = Field(
+        ..., description='Output field to hold the captured `{files:[{path,content}]}`.'
+    )
+
+
+class SandboxMode1(Enum):
+    """
+    Read the workspace, run nothing that writes it. Default — least privilege.
+    """
+
+    read_only = 'read-only'
+
+
+class SandboxMode2(Enum):
+    """
+    Create/modify files and run builds/tools in the workspace.
+    """
+
+    workspace_write = 'workspace-write'
+
+
+class SandboxMode(RootModel[SandboxMode1 | SandboxMode2]):
+    root: SandboxMode1 | SandboxMode2 = Field(
+        ...,
+        description='The permission level the actor should self-apply (maps to codex `--sandbox`).',
+    )
+
+
+class SandboxSeed(BaseModel):
+    """
+    How the workspace is populated before the actor runs. All three compose, in order: write `files_input`, copy `copy_from`, run `setup`.
+    """
+
+    copy_from: list[str] | None = Field(
+        [],
+        description='Host dirs copied into the workspace root (paths relative to the spec dir).',
+    )
+    files_input: str | None = Field(
+        None,
+        description='Ledger input field holding `{files:[{path,content}]}` written to the workspace — lets an upstream node produce the workspace contents.',
+    )
+    setup: list[str] | None = Field(
+        [], description='Commands run once after seeding (e.g. `uv sync`).'
+    )
+
+
 class Verbosity(Enum):
     """
     Per-run event verbosity (adapted from `rlm_event_streaming_plan.md`, §11).
@@ -386,25 +485,6 @@ class GoalPlan(BaseModel):
     )
 
 
-class HostConfig(BaseModel):
-    """
-    Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.
-    """
-
-    output_schemas: dict[str, str] | None = Field(
-        {}, description='Actor name → JSON Schema path (relative to the spec dir).'
-    )
-    roles: dict[str, HostRole] | None = Field(
-        {},
-        description='Actor name → role prompt (inline or file path relative to the spec dir).',
-        validate_default=True,
-    )
-    viz: HostVizConfig | None = Field(
-        None,
-        description='Live terminal viz hints (item preseed, matrix field, map node label).',
-    )
-
-
 class Node1(BaseModel):
     """
     Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on replay — NOT recorded (ADR #7). Resolved from the program registry.
@@ -530,6 +610,47 @@ class RunPlan(BaseModel):
         description='Default parallel width for `map` nodes lacking their own `concurrency`. `None`/`1` = serial (ADR #5).',
     )
     verbosity: Verbosity | None = 'standard'
+
+
+class SandboxConfig(BaseModel):
+    """
+    Per-actor sandbox declaration (keyed by actor name in `HostConfig.sandboxes`).
+    """
+
+    backend: SandboxBackend
+    capture: SandboxCapture | None = None
+    mode: SandboxMode | None = Field('read-only', validate_default=True)
+    network: bool | None = Field(
+        False,
+        description="Whether the actor's tools may reach the network. Off by default.",
+    )
+    seed: SandboxSeed | None = Field(
+        {'copy_from': [], 'files_input': None, 'setup': []}, validate_default=True
+    )
+
+
+class HostConfig(BaseModel):
+    """
+    Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.
+    """
+
+    output_schemas: dict[str, str] | None = Field(
+        {}, description='Actor name → JSON Schema path (relative to the spec dir).'
+    )
+    roles: dict[str, HostRole] | None = Field(
+        {},
+        description='Actor name → role prompt (inline or file path relative to the spec dir).',
+        validate_default=True,
+    )
+    sandboxes: dict[str, SandboxConfig] | None = Field(
+        {},
+        description='Actor name → sandbox declaration (seeded workspace the actor runs in). Host-only, like the rest of `HostConfig`; honored by `jesterky-sandbox`.',
+        validate_default=True,
+    )
+    viz: HostVizConfig | None = Field(
+        None,
+        description='Live terminal viz hints (item preseed, matrix field, map node label).',
+    )
 
 
 class WorkflowSpec(BaseModel):

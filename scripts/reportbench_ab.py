@@ -20,8 +20,9 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-EVALS_LANES = Path("/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes")
-GRADER = Path("/Users/joshpurtell/Documents/GitHub/evals/reportbench/validate_report.py")
+DEFAULT_EVALS_ROOT = REPO.parent / "evals" / "reportbench"
+EVALS_LANES = DEFAULT_EVALS_ROOT / "lanes"
+GRADER = DEFAULT_EVALS_ROOT / "validate_report.py"
 DEFAULT_SCORE = REPO / "proof" / "smr_reportbench_score.json"
 DEFAULT_WORKDIR = REPO / "proof" / "reportbench_ab"
 

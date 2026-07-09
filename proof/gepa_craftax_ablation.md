@@ -19,8 +19,8 @@ Honest read: CI excludes 0; headline uplift claim allowed.
 
 ## Provenance
 
-- Arm A prompt: `/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/ablation_summary.json`; `prompts.arm_a_base`; original `/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/containers/react/agent_policy.py` `DEFAULT_SYSTEM_PROMPT`
-- Arm B prompt: `/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_craftax_ablation/ablation_summary.json`; `prompts.arm_b_gepa`; original `/Users/joshpurtell/Documents/GitHub/efforts/craftax-agent-hillclimb-20260705t162228z/findings/proof/20260705T162555Z/artifacts/gepa_runs/gepa_dc6d949fac464ca7b07f2291791081bb/proposer_workspaces/generation_000/proposal/manifest.json` `proposals[0].proposed_payload.payload.react_system_prompt`
+- Arm A prompt: `proof/gepa_craftax_ablation/ablation_summary.json`; `prompts.arm_a_base`; original source was the Craftax ReAct `DEFAULT_SYSTEM_PROMPT`.
+- Arm B prompt: `proof/gepa_craftax_ablation/ablation_summary.json`; `prompts.arm_b_gepa`; original source was the selected GEPA proposal manifest field `proposals[0].proposed_payload.payload.react_system_prompt`.
 - Container: `http://127.0.0.1:18104`; gold lane: `http://127.0.0.1:8098`
 - Env: `gamebench.craftax-singleplayer.rust_gold`
 - Model: `gemini-3.1-flash-lite`, temperature 0.0, max_tokens 512

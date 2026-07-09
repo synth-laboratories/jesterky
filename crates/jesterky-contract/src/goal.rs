@@ -52,6 +52,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::topology::ContractError;
+
 pub const GOAL_ENGINE_VERSION: &str = "goal_engine.v1";
 
 // ───────────────────────────── goals & plan ────────────────────────────────
@@ -192,12 +194,34 @@ impl GoalPlan {
     /// Deep-merge a partial JSON object onto this plan (see
     /// [`crate::budget::BudgetPlan::overlay_json`] for the merge rules). The
     /// `goals` array **replaces** when present.
-    pub fn overlay_json(&self, overlay: &Value) -> Self {
-        let Ok(base) = serde_json::to_value(self) else {
-            return self.clone();
-        };
+    pub fn overlay_json(&self, overlay: &Value) -> Result<Self, ContractError> {
+        if !overlay.is_object() {
+            return Err(ContractError::InvalidOverlay {
+                target: "goal",
+                message: format!("expected JSON object, got {}", json_type(overlay)),
+            });
+        }
+
+        let base = serde_json::to_value(self).map_err(|e| ContractError::InvalidOverlay {
+            target: "goal",
+            message: format!("failed to serialize base plan: {e}"),
+        })?;
         let merged = deep_merge_json(base, overlay);
-        serde_json::from_value(merged).unwrap_or_else(|_| self.clone())
+        serde_json::from_value(merged).map_err(|e| ContractError::InvalidOverlay {
+            target: "goal",
+            message: e.to_string(),
+        })
+    }
+}
+
+fn json_type(value: &Value) -> &'static str {
+    match value {
+        Value::Null => "null",
+        Value::Bool(_) => "boolean",
+        Value::Number(_) => "number",
+        Value::String(_) => "string",
+        Value::Array(_) => "array",
+        Value::Object(_) => "object",
     }
 }
 
@@ -585,7 +609,7 @@ mod tests {
                 { "id": "score", "kind": "metric_threshold", "path": "s", "min": 0.5 }
             ]
         });
-        let merged = base.overlay_json(&overlay);
+        let merged = base.overlay_json(&overlay).expect("valid goal overlay");
         assert_eq!(merged.goals.len(), 1);
         assert_eq!(merged.goals[0].id, "score");
         assert!(!merged.fail_on_unmet);

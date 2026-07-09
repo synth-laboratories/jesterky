@@ -29,7 +29,7 @@
           {
             "bytes": 4853,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_922dad23d681.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_922dad23d681.json",
             "retention": "debug",
             "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
           }
@@ -68,7 +68,7 @@
             {
               "bytes": 4853,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_922dad23d681.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_922dad23d681.json",
               "retention": "debug",
               "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
             }
@@ -129,7 +129,7 @@
           {
             "bytes": 5179,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_6fc110cc94e9.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_6fc110cc94e9.json",
             "retention": "debug",
             "sha256": "ea77bb6bccb1558284b01acd336b1f2caf932be1a0ffc5d2616b702db29fe990"
           }
@@ -170,7 +170,7 @@
             {
               "bytes": 5179,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_6fc110cc94e9.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_6fc110cc94e9.json",
               "retention": "debug",
               "sha256": "ea77bb6bccb1558284b01acd336b1f2caf932be1a0ffc5d2616b702db29fe990"
             }
@@ -231,7 +231,7 @@
           {
             "bytes": 4983,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_598f08248f69.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_598f08248f69.json",
             "retention": "debug",
             "sha256": "e1f98e3b5bd2cd759e0ef8103e1d1f90efc2b098a327a69d8f1fac4933e8e3ad"
           }
@@ -272,7 +272,7 @@
             {
               "bytes": 4983,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_598f08248f69.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_598f08248f69.json",
               "retention": "debug",
               "sha256": "e1f98e3b5bd2cd759e0ef8103e1d1f90efc2b098a327a69d8f1fac4933e8e3ad"
             }
@@ -333,7 +333,7 @@
           {
             "bytes": 4813,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9f37b2e7bfea.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9f37b2e7bfea.json",
             "retention": "debug",
             "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
           }
@@ -372,7 +372,7 @@
             {
               "bytes": 4813,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9f37b2e7bfea.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9f37b2e7bfea.json",
               "retention": "debug",
               "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
             }
@@ -433,7 +433,7 @@
           {
             "bytes": 4813,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
             "retention": "debug",
             "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
           }
@@ -472,7 +472,7 @@
             {
               "bytes": 4813,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
               "retention": "debug",
               "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
             }
@@ -533,7 +533,7 @@
           {
             "bytes": 4983,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_93731ddf951e.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_93731ddf951e.json",
             "retention": "debug",
             "sha256": "e1f98e3b5bd2cd759e0ef8103e1d1f90efc2b098a327a69d8f1fac4933e8e3ad"
           }
@@ -574,7 +574,7 @@
             {
               "bytes": 4983,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_93731ddf951e.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_93731ddf951e.json",
               "retention": "debug",
               "sha256": "e1f98e3b5bd2cd759e0ef8103e1d1f90efc2b098a327a69d8f1fac4933e8e3ad"
             }
@@ -635,7 +635,7 @@
           {
             "bytes": 4813,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
             "retention": "debug",
             "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
           }
@@ -674,7 +674,7 @@
             {
               "bytes": 4813,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7dbb0ae30ea2.json",
               "retention": "debug",
               "sha256": "531b994202561675c07328d58a6c152e9808d0ef6d5473f568f36ffd536f3e54"
             }
@@ -735,7 +735,7 @@
           {
             "bytes": 4853,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
             "retention": "debug",
             "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
           }
@@ -774,7 +774,7 @@
             {
               "bytes": 4853,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
               "retention": "debug",
               "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
             }
@@ -835,7 +835,7 @@
           {
             "bytes": 5179,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9e6fb6fa7bfa.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9e6fb6fa7bfa.json",
             "retention": "debug",
             "sha256": "ea77bb6bccb1558284b01acd336b1f2caf932be1a0ffc5d2616b702db29fe990"
           }
@@ -876,7 +876,7 @@
             {
               "bytes": 5179,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9e6fb6fa7bfa.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_9e6fb6fa7bfa.json",
               "retention": "debug",
               "sha256": "ea77bb6bccb1558284b01acd336b1f2caf932be1a0ffc5d2616b702db29fe990"
             }
@@ -937,7 +937,7 @@
           {
             "bytes": 4853,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
             "retention": "debug",
             "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
           }
@@ -976,7 +976,7 @@
             {
               "bytes": 4853,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4dadd33aa49a.json",
               "retention": "debug",
               "sha256": "01754ac878bc377b66c097b76ae341ee72ca7ce19318b85900050683f2ba5ed3"
             }
@@ -1037,7 +1037,7 @@
           {
             "bytes": 4732,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_40956fee675c.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_40956fee675c.json",
             "retention": "debug",
             "sha256": "efa897e5bf46da26b84ac75a12e74d7704e74fd101ccf40cb4f2a13481d1fddb"
           }
@@ -1076,7 +1076,7 @@
             {
               "bytes": 4732,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_40956fee675c.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_40956fee675c.json",
               "retention": "debug",
               "sha256": "efa897e5bf46da26b84ac75a12e74d7704e74fd101ccf40cb4f2a13481d1fddb"
             }
@@ -1137,7 +1137,7 @@
           {
             "bytes": 4867,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_1fa88ad25a77.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_1fa88ad25a77.json",
             "retention": "debug",
             "sha256": "7717b252bcf0da4e3357dd40d780c8a7332be4d1445f7aef0d0f845b8457d06b"
           }
@@ -1176,7 +1176,7 @@
             {
               "bytes": 4867,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_1fa88ad25a77.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_1fa88ad25a77.json",
               "retention": "debug",
               "sha256": "7717b252bcf0da4e3357dd40d780c8a7332be4d1445f7aef0d0f845b8457d06b"
             }
@@ -1366,7 +1366,7 @@
           {
             "bytes": 6861,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8fbc0c94b291.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8fbc0c94b291.json",
             "retention": "debug",
             "sha256": "183b7895dbae9eada8b57a9b592cf904790833b2a7a2652f195a43902e485a4d"
           }
@@ -1407,7 +1407,7 @@
             {
               "bytes": 6861,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8fbc0c94b291.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8fbc0c94b291.json",
               "retention": "debug",
               "sha256": "183b7895dbae9eada8b57a9b592cf904790833b2a7a2652f195a43902e485a4d"
             }
@@ -1468,7 +1468,7 @@
           {
             "bytes": 6843,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7f44d9c73490.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7f44d9c73490.json",
             "retention": "debug",
             "sha256": "6a233cbd7e3a83e0252a4eddbc1381cdb5037bb45df034eed17fd7771dcd596c"
           }
@@ -1509,7 +1509,7 @@
             {
               "bytes": 6843,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7f44d9c73490.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_7f44d9c73490.json",
               "retention": "debug",
               "sha256": "6a233cbd7e3a83e0252a4eddbc1381cdb5037bb45df034eed17fd7771dcd596c"
             }
@@ -1570,7 +1570,7 @@
           {
             "bytes": 6655,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_0d1b0e11e766.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_0d1b0e11e766.json",
             "retention": "debug",
             "sha256": "73684ed65edf7a168fd363155eb81e63a8fc29eaf0e4aec277bcd2d5cbfc17ac"
           }
@@ -1609,7 +1609,7 @@
             {
               "bytes": 6655,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_0d1b0e11e766.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_0d1b0e11e766.json",
               "retention": "debug",
               "sha256": "73684ed65edf7a168fd363155eb81e63a8fc29eaf0e4aec277bcd2d5cbfc17ac"
             }
@@ -1670,7 +1670,7 @@
           {
             "bytes": 6903,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_b768dcf0138b.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_b768dcf0138b.json",
             "retention": "debug",
             "sha256": "cc309bf023b114ac8fe8cd9e1fc3e03b8fe097ec2629b887ed7c77d0d43a45b9"
           }
@@ -1711,7 +1711,7 @@
             {
               "bytes": 6903,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_b768dcf0138b.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_b768dcf0138b.json",
               "retention": "debug",
               "sha256": "cc309bf023b114ac8fe8cd9e1fc3e03b8fe097ec2629b887ed7c77d0d43a45b9"
             }
@@ -1772,7 +1772,7 @@
           {
             "bytes": 6843,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ad0274258885.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ad0274258885.json",
             "retention": "debug",
             "sha256": "6a233cbd7e3a83e0252a4eddbc1381cdb5037bb45df034eed17fd7771dcd596c"
           }
@@ -1813,7 +1813,7 @@
             {
               "bytes": 6843,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ad0274258885.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ad0274258885.json",
               "retention": "debug",
               "sha256": "6a233cbd7e3a83e0252a4eddbc1381cdb5037bb45df034eed17fd7771dcd596c"
             }
@@ -1874,7 +1874,7 @@
           {
             "bytes": 6861,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_09c68cdab078.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_09c68cdab078.json",
             "retention": "debug",
             "sha256": "183b7895dbae9eada8b57a9b592cf904790833b2a7a2652f195a43902e485a4d"
           }
@@ -1915,7 +1915,7 @@
             {
               "bytes": 6861,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_09c68cdab078.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_09c68cdab078.json",
               "retention": "debug",
               "sha256": "183b7895dbae9eada8b57a9b592cf904790833b2a7a2652f195a43902e485a4d"
             }
@@ -1976,7 +1976,7 @@
           {
             "bytes": 6882,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8bbb42baed4a.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8bbb42baed4a.json",
             "retention": "debug",
             "sha256": "5a3ead5aed0a040b0419f8da68b6bdc41965d91b4b6b8abed1e66bb148e6a13e"
           }
@@ -2017,7 +2017,7 @@
             {
               "bytes": 6882,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8bbb42baed4a.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8bbb42baed4a.json",
               "retention": "debug",
               "sha256": "5a3ead5aed0a040b0419f8da68b6bdc41965d91b4b6b8abed1e66bb148e6a13e"
             }
@@ -2078,7 +2078,7 @@
           {
             "bytes": 6867,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_2812691d7972.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_2812691d7972.json",
             "retention": "debug",
             "sha256": "c5e2004f694ce7b3195381be71f83034ace5e742c0d99d57a76690d9df275580"
           }
@@ -2119,7 +2119,7 @@
             {
               "bytes": 6867,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_2812691d7972.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_2812691d7972.json",
               "retention": "debug",
               "sha256": "c5e2004f694ce7b3195381be71f83034ace5e742c0d99d57a76690d9df275580"
             }
@@ -2309,7 +2309,7 @@
           {
             "bytes": 7724,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4ae30de895ab.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4ae30de895ab.json",
             "retention": "debug",
             "sha256": "211248dbf3b5c88ca7191baaf05a274472703ae4e6a6e1bdd55449ed578ce39f"
           }
@@ -2348,7 +2348,7 @@
             {
               "bytes": 7724,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4ae30de895ab.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_4ae30de895ab.json",
               "retention": "debug",
               "sha256": "211248dbf3b5c88ca7191baaf05a274472703ae4e6a6e1bdd55449ed578ce39f"
             }
@@ -2409,7 +2409,7 @@
           {
             "bytes": 7776,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8ae46d707347.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8ae46d707347.json",
             "retention": "debug",
             "sha256": "d1fdf523e15d5f22c32a2f476c1c70cd70ed6a11e929079d1914ba51785dbacf"
           }
@@ -2448,7 +2448,7 @@
             {
               "bytes": 7776,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8ae46d707347.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8ae46d707347.json",
               "retention": "debug",
               "sha256": "d1fdf523e15d5f22c32a2f476c1c70cd70ed6a11e929079d1914ba51785dbacf"
             }
@@ -2617,7 +2617,7 @@
           {
             "bytes": 9665,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_a1949bd42f48.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_a1949bd42f48.json",
             "retention": "debug",
             "sha256": "4be739efe06408af4af87b8193b623200fb8b5f55b92ec4fa1a250f5e490370e"
           }
@@ -2656,7 +2656,7 @@
             {
               "bytes": 9665,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_a1949bd42f48.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_a1949bd42f48.json",
               "retention": "debug",
               "sha256": "4be739efe06408af4af87b8193b623200fb8b5f55b92ec4fa1a250f5e490370e"
             }
@@ -2717,7 +2717,7 @@
           {
             "bytes": 9853,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8a9d7bb4a795.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8a9d7bb4a795.json",
             "retention": "debug",
             "sha256": "430c9f265489d45ed72538cf123e730a55115ca101bbaac933a4ed0af524b263"
           }
@@ -2758,7 +2758,7 @@
             {
               "bytes": 9853,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8a9d7bb4a795.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8a9d7bb4a795.json",
               "retention": "debug",
               "sha256": "430c9f265489d45ed72538cf123e730a55115ca101bbaac933a4ed0af524b263"
             }
@@ -2927,7 +2927,7 @@
           {
             "bytes": 6493,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_3e2aa8aacec1.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_3e2aa8aacec1.json",
             "retention": "debug",
             "sha256": "1d90e7ee88e9c7619d1db59d36e7c1f8797b3736d559ba78b12a6a313eed993c"
           }
@@ -2968,7 +2968,7 @@
             {
               "bytes": 6493,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_3e2aa8aacec1.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_3e2aa8aacec1.json",
               "retention": "debug",
               "sha256": "1d90e7ee88e9c7619d1db59d36e7c1f8797b3736d559ba78b12a6a313eed993c"
             }
@@ -3029,7 +3029,7 @@
           {
             "bytes": 6307,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_01eef12bb7c4.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_01eef12bb7c4.json",
             "retention": "debug",
             "sha256": "6f1968f4b66ba6f6ecc51884f97b4cb4c8b7f1791eb78ef6aff7c3dd503f397d"
           }
@@ -3068,7 +3068,7 @@
             {
               "bytes": 6307,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_01eef12bb7c4.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_01eef12bb7c4.json",
               "retention": "debug",
               "sha256": "6f1968f4b66ba6f6ecc51884f97b4cb4c8b7f1791eb78ef6aff7c3dd503f397d"
             }
@@ -3237,7 +3237,7 @@
           {
             "bytes": 9825,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8005f02e9773.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8005f02e9773.json",
             "retention": "debug",
             "sha256": "b997c8fa0430fa5a42cafab8a210c684e33a2b23c74ac4ebb2e028b45292ac1b"
           }
@@ -3278,7 +3278,7 @@
             {
               "bytes": 9825,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8005f02e9773.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_8005f02e9773.json",
               "retention": "debug",
               "sha256": "b997c8fa0430fa5a42cafab8a210c684e33a2b23c74ac4ebb2e028b45292ac1b"
             }
@@ -3339,7 +3339,7 @@
           {
             "bytes": 9553,
             "kind": "rollout_trace_payload",
-            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ab96b71b0ee2.json",
+            "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ab96b71b0ee2.json",
             "retention": "debug",
             "sha256": "8ee01a0b1907450ec8c1befbe2892fa3b9cc2b8e17020027c547f87ab5832c10"
           }
@@ -3378,7 +3378,7 @@
             {
               "bytes": 9553,
               "kind": "rollout_trace_payload",
-              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ab96b71b0ee2.json",
+              "path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T020552Z/rollout_traces/sensor_ab96b71b0ee2.json",
               "retention": "debug",
               "sha256": "8ee01a0b1907450ec8c1befbe2892fa3b9cc2b8e17020027c547f87ab5832c10"
             }

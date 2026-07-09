@@ -1,8 +1,8 @@
 {
   "best_candidate_id": "gepa_215b250cf620",
-  "cache_profile_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/cache_profile.json",
+  "cache_profile_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/cache_profile.json",
   "cost_usd": 0.0,
-  "event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/events.jsonl",
+  "event_feed_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/events.jsonl",
   "failure": {
     "error_code": "synth_optimizer_failed",
     "failure": {
@@ -15,7 +15,7 @@
     },
     "message": "GEPA runtime job effect:effect_f077a0963a88d19d failed: jesterky workflow failed (exit None): stderr= stdout="
   },
-  "normalized_event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/events.normalized.jsonl",
+  "normalized_event_feed_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/events.normalized.jsonl",
   "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z",
   "schema_version": "gepa_failure_manifest.v1",
   "state_history": [
@@ -177,7 +177,7 @@
         "proposal_count": 2,
         "rollout_row_count": 8,
         "win_count": 2,
-        "workspace": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/proposer_workspaces/generation_000"
+        "workspace": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/proposer_workspaces/generation_000"
       },
       "from": "ready",
       "message": "Async proposer started",
@@ -389,7 +389,7 @@
         "proposal_count": 2,
         "rollout_row_count": 22,
         "win_count": 8,
-        "workspace": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/proposer_workspaces/generation_001"
+        "workspace": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/proposer_workspaces/generation_001"
       },
       "from": "ready",
       "message": "Async proposer started",
@@ -429,5 +429,5 @@
     "rollout_calls": 12,
     "total_tokens": 98320
   },
-  "workspace_db_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/workspace.sqlite"
+  "workspace_db_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T022018Z/workspace.sqlite"
 }

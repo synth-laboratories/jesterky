@@ -63,6 +63,8 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+use crate::topology::ContractError;
+
 pub const BUDGET_ENGINE_VERSION: &str = "budget_engine.v1";
 
 // ───────────────────────────── kinds & caps ────────────────────────────────
@@ -302,13 +304,35 @@ impl BudgetPlan {
     /// - Object keys in `overlay` replace / deep-merge into the base.
     /// - Nested objects (`eta`, `viz`) merge field-by-field.
     /// - Arrays (`caps`) **replace** when present (not element-wise merge).
-    /// - Non-object overlay (or deserialize failure) leaves `self` unchanged.
-    pub fn overlay_json(&self, overlay: &serde_json::Value) -> Self {
-        let Ok(base) = serde_json::to_value(self) else {
-            return self.clone();
-        };
+    /// - Non-object overlays and deserialize failures return a typed contract error.
+    pub fn overlay_json(&self, overlay: &serde_json::Value) -> Result<Self, ContractError> {
+        if !overlay.is_object() {
+            return Err(ContractError::InvalidOverlay {
+                target: "budget",
+                message: format!("expected JSON object, got {}", json_type(overlay)),
+            });
+        }
+
+        let base = serde_json::to_value(self).map_err(|e| ContractError::InvalidOverlay {
+            target: "budget",
+            message: format!("failed to serialize base plan: {e}"),
+        })?;
         let merged = deep_merge_json(base, overlay);
-        serde_json::from_value(merged).unwrap_or_else(|_| self.clone())
+        serde_json::from_value(merged).map_err(|e| ContractError::InvalidOverlay {
+            target: "budget",
+            message: e.to_string(),
+        })
+    }
+}
+
+fn json_type(value: &serde_json::Value) -> &'static str {
+    match value {
+        serde_json::Value::Null => "null",
+        serde_json::Value::Bool(_) => "boolean",
+        serde_json::Value::Number(_) => "number",
+        serde_json::Value::String(_) => "string",
+        serde_json::Value::Array(_) => "array",
+        serde_json::Value::Object(_) => "object",
     }
 }
 
@@ -848,7 +872,7 @@ mod tests {
             "eta": { "mode": "nearest_only", "min_wall_secs": 3.0 },
             "viz": { "show_nearest_tag": false }
         });
-        let merged = base.overlay_json(&overlay);
+        let merged = base.overlay_json(&overlay).expect("valid budget overlay");
         assert_eq!(merged.caps.len(), 1);
         assert_eq!(merged.caps[0].max, 64.0);
         assert_eq!(merged.warning_percent, 70.0);
@@ -878,7 +902,7 @@ mod tests {
         let overlay = serde_json::json!({
             "caps": [{ "kind": "actor_calls", "max": 8, "hard": true, "label": "turns" }]
         });
-        let merged = base.overlay_json(&overlay);
+        let merged = base.overlay_json(&overlay).expect("valid budget overlay");
         assert_eq!(merged.caps.len(), 1);
         assert_eq!(merged.caps[0].kind, BudgetKind::ActorCalls);
         assert_eq!(merged.caps[0].label.as_deref(), Some("turns"));

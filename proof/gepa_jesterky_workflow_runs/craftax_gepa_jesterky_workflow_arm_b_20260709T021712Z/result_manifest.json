@@ -1,8 +1,8 @@
 {
   "best_candidate_id": "gepa_86ef6f361d53",
-  "cache_profile_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/cache_profile.json",
+  "cache_profile_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/cache_profile.json",
   "cost_usd": 0.0,
-  "event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/events.jsonl",
+  "event_feed_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/events.jsonl",
   "failure": {
     "error_code": "synth_optimizer_failed",
     "failure": {
@@ -15,7 +15,7 @@
     },
     "message": "GEPA runtime job effect:effect_68acb92a5a91a3f3 failed: jesterky trace node missing string field addr"
   },
-  "normalized_event_feed_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/events.normalized.jsonl",
+  "normalized_event_feed_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/events.normalized.jsonl",
   "run_id": "craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z",
   "schema_version": "gepa_failure_manifest.v1",
   "state_history": [
@@ -177,7 +177,7 @@
         "proposal_count": 2,
         "rollout_row_count": 8,
         "win_count": 2,
-        "workspace": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/proposer_workspaces/generation_000"
+        "workspace": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/proposer_workspaces/generation_000"
       },
       "from": "ready",
       "message": "Async proposer started",
@@ -217,5 +217,5 @@
     "rollout_calls": 4,
     "total_tokens": 15008
   },
-  "workspace_db_path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/workspace.sqlite"
+  "workspace_db_path": "proof/gepa_jesterky_workflow_runs/craftax_gepa_jesterky_workflow_arm_b_20260709T021712Z/workspace.sqlite"
 }

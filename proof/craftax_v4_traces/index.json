@@ -1,56 +1,56 @@
 {
   "traces": [
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-1.v4.json",
+      "path": "proof/craftax_v4_traces/seed-1.v4.json",
       "reward": 2.8,
       "rollout_id": "craftax-v4-seed-1-eb244ade",
       "seed": 1,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-2.v4.json",
+      "path": "proof/craftax_v4_traces/seed-2.v4.json",
       "reward": 2.0,
       "rollout_id": "craftax-v4-seed-2-59621e2c",
       "seed": 2,
       "span_count": 2
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-3.v4.json",
+      "path": "proof/craftax_v4_traces/seed-3.v4.json",
       "reward": 2.0,
       "rollout_id": "craftax-v4-seed-3-b30c1456",
       "seed": 3,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-4.v4.json",
+      "path": "proof/craftax_v4_traces/seed-4.v4.json",
       "reward": 4.0,
       "rollout_id": "craftax-v4-seed-4-85bda28a",
       "seed": 4,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-5.v4.json",
+      "path": "proof/craftax_v4_traces/seed-5.v4.json",
       "reward": 1.0,
       "rollout_id": "craftax-v4-seed-5-6e2b87e3",
       "seed": 5,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-6.v4.json",
+      "path": "proof/craftax_v4_traces/seed-6.v4.json",
       "reward": 1.0,
       "rollout_id": "craftax-v4-seed-6-58fed859",
       "seed": 6,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-7.v4.json",
+      "path": "proof/craftax_v4_traces/seed-7.v4.json",
       "reward": 1.0,
       "rollout_id": "craftax-v4-seed-7-75653f02",
       "seed": 7,
       "span_count": 3
     },
     {
-      "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces/seed-8.v4.json",
+      "path": "proof/craftax_v4_traces/seed-8.v4.json",
       "reward": 1.0,
       "rollout_id": "craftax-v4-seed-8-403c9b4e",
       "seed": 8,

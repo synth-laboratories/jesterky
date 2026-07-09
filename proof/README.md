@@ -63,8 +63,9 @@ jesterky reproduces the reference contract.
 
 ## 6 — Live model E2E (M2, requires codex + proxy)
 
-See `HANDOFF_jesterky_round6_live_scan.md`. Runs the real quality scan through
-`codex exec` (DeepSeek proxy), then replays the live manifest.
+Runs the real quality scan through `codex exec` with a configured proxy route,
+then replays the live manifest. This is a live-model proof tier, distinct from
+the deterministic fake/replay proofs above.
 
 ## 7 — Blog quality scan (hero workflow)
 

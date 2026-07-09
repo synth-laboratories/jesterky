@@ -3,7 +3,7 @@
 
 [run]
 run_id = "craftax_gepa_jesterky_workflow_arm_b"
-output_dir = "/Users/joshpurtell/Documents/GitHub/jesterky/proof/gepa_jesterky_workflow_runs"
+output_dir = "proof/gepa_jesterky_workflow_runs"
 seed = 0
 
 [container]
@@ -20,7 +20,7 @@ command = [
   "python", "crafter_container/synth_service_app.py",
   "--host", "127.0.0.1", "--port", "8768",
 ]
-cwd = "/Users/joshpurtell/Documents/GitHub/synth-cookbooks-public/cookbooks/optimizers/gepa"
+cwd = "../synth-cookbooks-public/cookbooks/optimizers/gepa"
 startup_timeout_seconds = 180
 
 [taskset]
@@ -49,7 +49,7 @@ model = "gpt-5.4-mini"
 reasoning_effort = "medium"
 auth_mode = "chatgpt"
 copy_host_auth = true
-codex_home = "/Users/joshpurtell/.codex"
+codex_home = "$CODEX_HOME"
 sandbox_mode = "workspace-write"
 approval_policy = "never"
 
@@ -80,7 +80,7 @@ rollout = 6
 
 [jesterky_workflow]
 enabled = true
-spec = "/Users/joshpurtell/Documents/GitHub/jesterky/examples/gepa_trace_annotate.json"
+spec = "examples/gepa_trace_annotate.json"
 command = "jesterky"
 actor = "codex"
 model = "gpt-5.4-mini"

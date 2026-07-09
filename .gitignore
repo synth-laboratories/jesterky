@@ -10,6 +10,7 @@ proof/**/workspace.sqlite
 proof/**/request_cache.sqlite
 proof/**/transitions.sqlite
 proof/**/proposer_workspaces/
+/proof/reportbench_ab/
 /proof/craftax_gold_target/
 
 # Python package build artifacts

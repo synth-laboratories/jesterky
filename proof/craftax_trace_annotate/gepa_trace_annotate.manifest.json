@@ -3,7 +3,7 @@
   "workflow_name": "gepa_trace_annotate",
   "spec_hash": "82a2f976ec20e75d57df3d2d9546cdcb322df7513f2cac9aaf0b3adb46ab62a3",
   "args": {
-    "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+    "trace_dir": "proof/craftax_v4_traces"
   },
   "events": [
     {
@@ -17,7 +17,7 @@
         "kind": "workflow_started"
       },
       "payload": {
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+        "trace_dir": "proof/craftax_v4_traces"
       },
       "wall_ms": 1783526873096
     },
@@ -1576,7 +1576,7 @@
     },
     "label": "workflow:gepa_trace_annotate",
     "inputs": {
-      "trace_dir": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/craftax_v4_traces"
+      "trace_dir": "proof/craftax_v4_traces"
     },
     "outputs": null,
     "score": null,

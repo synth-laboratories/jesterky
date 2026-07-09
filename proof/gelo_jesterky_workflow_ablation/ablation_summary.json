@@ -3,7 +3,7 @@
   "failures": [],
   "arm_a": {
     "label": "A",
-    "result_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_a_20260709T000814Z/artifacts/result_manifest.json",
+    "result_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_a_20260709T000814Z/artifacts/result_manifest.json",
     "candidate_count": 13,
     "candidate_sources": {
       "seed": 1,
@@ -30,7 +30,7 @@
   },
   "arm_b": {
     "label": "B",
-    "result_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/artifacts/result_manifest.json",
+    "result_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/artifacts/result_manifest.json",
     "candidate_count": 13,
     "candidate_sources": {
       "seed": 1,
@@ -60,12 +60,12 @@
         "command": "jesterky",
         "elapsed_ms": 46165,
         "enabled": true,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_gelo_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "round_index": 0,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "theme_count": 8,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_traces"
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_traces"
       },
       {
         "actor": "codex",
@@ -74,12 +74,12 @@
         "command": "jesterky",
         "elapsed_ms": 123753,
         "enabled": true,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_gelo_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "round_index": 1,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "theme_count": 32,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_traces"
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_traces"
       },
       {
         "actor": "codex",
@@ -88,12 +88,12 @@
         "command": "jesterky",
         "elapsed_ms": 287334,
         "enabled": true,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_gelo_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "round_index": 2,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "theme_count": 47,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_traces"
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_traces"
       },
       {
         "actor": "codex",
@@ -102,67 +102,67 @@
         "command": "jesterky",
         "elapsed_ms": 392526,
         "enabled": true,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_gelo_annotate.manifest.json",
         "model": "gpt-5.4-mini",
         "round_index": 3,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "theme_count": 65,
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_traces"
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_traces"
       },
       {
         "enabled": true,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "round_index": 0,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_gelo_annotate.manifest.json",
         "theme_count": 8,
         "annotated": 4,
         "blockers": 2,
         "command": "jesterky",
         "actor": "codex",
         "model": "gpt-5.4-mini",
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_traces",
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_000/jesterky_traces",
         "elapsed_ms": 46165
       },
       {
         "enabled": true,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "round_index": 1,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_gelo_annotate.manifest.json",
         "theme_count": 32,
         "annotated": 18,
         "blockers": 8,
         "command": "jesterky",
         "actor": "codex",
         "model": "gpt-5.4-mini",
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_traces",
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_001/jesterky_traces",
         "elapsed_ms": 123753
       },
       {
         "enabled": true,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "round_index": 2,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_gelo_annotate.manifest.json",
         "theme_count": 47,
         "annotated": 29,
         "blockers": 4,
         "command": "jesterky",
         "actor": "codex",
         "model": "gpt-5.4-mini",
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_traces",
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_002/jesterky_traces",
         "elapsed_ms": 287334
       },
       {
         "enabled": true,
         "run_id": "craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z",
         "round_index": 3,
-        "manifest_path": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_gelo_annotate.manifest.json",
+        "manifest_path": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_gelo_annotate.manifest.json",
         "theme_count": 65,
         "annotated": 40,
         "blockers": 12,
         "command": "jesterky",
         "actor": "codex",
         "model": "gpt-5.4-mini",
-        "trace_dir": "/Users/joshpurtell/Documents/GitHub/gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_traces",
+        "trace_dir": "../gamebench/tasks/craftax-singleplayer/configs/reports/goex_runs/craftax_gelo_jesterky_workflow_arm_b_20260709T010853Z/workspaces/core_proposer/round_003/jesterky_traces",
         "elapsed_ms": 392526
       }
     ],

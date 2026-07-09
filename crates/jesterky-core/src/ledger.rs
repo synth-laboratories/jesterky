@@ -9,8 +9,8 @@ use jesterky_contract::{Bindings, Ref};
 use std::collections::HashMap;
 
 /// Keyed store of typed values for one run (and, scoped, one map item via the
-/// `item` binding). Values are `serde_json::Value` in the skeleton; M0 tightens
-/// this toward the contract's typed value envelope.
+/// `item` binding). Values are raw JSON at this IO seam; public replay identity
+/// is still carried by typed contract events/manifests.
 #[derive(Debug, Default, Clone)]
 pub struct Ledger {
     slots: HashMap<String, serde_json::Value>,
@@ -90,15 +90,16 @@ impl Ledger {
 
     /// Resolve a single [`Ref`] against ledger state / the current item.
     ///
-    /// TODO(M0): parse the ref into `{source, path}` and walk it. Supported
-    /// sources: `ledger.<key>[.path]`, `item[.path]`, literals. Total and
-    /// checkable — no fallbacks (house rule).
+    /// Supported sources: `ledger.<key>[.path]`, `item[.path]`, named map
+    /// item bindings, and JSON literals. Total and checkable — no fallbacks
+    /// (house rule).
     pub fn resolve(&self, r: &Ref) -> Result<serde_json::Value, LedgerError> {
         let raw = r.0.trim();
         if let Some((source, path)) = item_source_and_path(raw) {
             if let Some(item) = self.current_items.get(source) {
                 return walk_path(item.clone(), &path, &r.0);
             }
+            return Err(LedgerError::UnknownSource(source.to_string()));
         }
 
         if raw.starts_with("ledger.") {
@@ -107,11 +108,14 @@ impl Ledger {
                 .slots
                 .get(key)
                 .cloned()
-                .ok_or_else(|| LedgerError::Unresolved(r.0.clone()))?;
+                .ok_or_else(|| LedgerError::MissingSlot(key.to_string()))?;
             return walk_path(value, &path, &r.0);
         }
 
-        serde_json::from_str(raw).map_err(|_| LedgerError::Unresolved(r.0.clone()))
+        serde_json::from_str(raw).map_err(|e| LedgerError::MalformedLiteral {
+            raw: r.0.clone(),
+            message: e.to_string(),
+        })
     }
 
     /// Resolve every binding into a concrete `{name: value}` inputs object.
@@ -136,7 +140,7 @@ impl Ledger {
                 .as_object()
                 .and_then(|object| object.get(field))
                 .cloned()
-                .ok_or_else(|| LedgerError::Unresolved(format!("result.{field}")))?;
+                .ok_or_else(|| LedgerError::MissingSlot(format!("result.{field}")))?;
             let (key, path) = ledger_key_and_path(dest.0.trim())?;
             store_ledger_path(&mut self.slots, key, &path, value)?;
         }
@@ -147,7 +151,7 @@ impl Ledger {
 fn item_source_and_path(raw: &str) -> Option<(&str, Vec<String>)> {
     let mut parts = raw.split('.');
     let source = parts.next()?;
-    if source.is_empty() || source == "ledger" {
+    if source.is_empty() || source == "ledger" || !is_ref_source(source) {
         return None;
     }
     let path = parts.map(str::to_string).collect::<Vec<_>>();
@@ -157,10 +161,27 @@ fn item_source_and_path(raw: &str) -> Option<(&str, Vec<String>)> {
     Some((source, path))
 }
 
+fn is_ref_source(source: &str) -> bool {
+    let mut chars = source.chars();
+    match chars.next() {
+        Some(first) if first == '_' || first.is_ascii_alphabetic() => {}
+        _ => return false,
+    }
+    chars.all(|ch| ch == '_' || ch.is_ascii_alphanumeric())
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum LedgerError {
     #[error("unresolved reference: {0}")]
     Unresolved(String),
+    #[error("unknown reference source: {0}")]
+    UnknownSource(String),
+    #[error("missing ledger slot: {0}")]
+    MissingSlot(String),
+    #[error("bad path resolving {reference}: {message}")]
+    BadPath { reference: String, message: String },
+    #[error("malformed JSON literal `{raw}`: {message}")]
+    MalformedLiteral { raw: String, message: String },
     #[error("type mismatch resolving {0}")]
     TypeMismatch(String),
 }
@@ -170,17 +191,26 @@ fn ledger_key_and_path(raw: &str) -> Result<(&str, Vec<String>), LedgerError> {
         .strip_prefix("ledger.")
         .ok_or_else(|| LedgerError::TypeMismatch(raw.to_string()))?;
     if rest.is_empty() {
-        return Err(LedgerError::Unresolved(raw.to_string()));
+        return Err(LedgerError::BadPath {
+            reference: raw.to_string(),
+            message: "missing ledger key".to_string(),
+        });
     }
 
     let mut parts = rest.split('.');
     let key = parts.next().unwrap_or_default();
     if key.is_empty() {
-        return Err(LedgerError::Unresolved(raw.to_string()));
+        return Err(LedgerError::BadPath {
+            reference: raw.to_string(),
+            message: "missing ledger key".to_string(),
+        });
     }
     let path = parts.map(str::to_string).collect::<Vec<_>>();
     if path.iter().any(String::is_empty) {
-        return Err(LedgerError::Unresolved(raw.to_string()));
+        return Err(LedgerError::BadPath {
+            reference: raw.to_string(),
+            message: "empty path segment".to_string(),
+        });
     }
     Ok((key, path))
 }
@@ -195,15 +225,24 @@ fn walk_path(
             serde_json::Value::Object(map) => map
                 .get(segment)
                 .cloned()
-                .ok_or_else(|| LedgerError::Unresolved(original.to_string()))?,
+                .ok_or_else(|| LedgerError::BadPath {
+                    reference: original.to_string(),
+                    message: format!("missing object key `{segment}`"),
+                })?,
             serde_json::Value::Array(values) => {
                 let index = segment
                     .parse::<usize>()
-                    .map_err(|_| LedgerError::TypeMismatch(original.to_string()))?;
+                    .map_err(|_| LedgerError::BadPath {
+                        reference: original.to_string(),
+                        message: format!("array segment `{segment}` is not an index"),
+                    })?;
                 values
                     .get(index)
                     .cloned()
-                    .ok_or_else(|| LedgerError::Unresolved(original.to_string()))?
+                    .ok_or_else(|| LedgerError::BadPath {
+                        reference: original.to_string(),
+                        message: format!("array index {index} out of bounds"),
+                    })?
             }
             _ => return Err(LedgerError::TypeMismatch(original.to_string())),
         };

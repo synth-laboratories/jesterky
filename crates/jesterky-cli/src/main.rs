@@ -10,9 +10,9 @@ use jesterky_actor::{
 };
 use jesterky_contract::{
     manifest_schema_json, workflow_schema_json, Artifact, BudgetEngine, BudgetKind,
-    BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind, Event, EventKind, GoalSnapshot,
-    GoalState, HostConfig, HostRole, LiveBus, LiveStream, NodePath, RunManifest, RunStatus,
-    RunStopReason, Severity, ShardProgress, WorkflowSpec,
+    BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind, ContractError, Event, EventKind,
+    GoalSnapshot, GoalState, HostConfig, HostRole, LiveBus, LiveStream, NodePath, RunManifest,
+    RunStatus, RunStopReason, Severity, ShardProgress, WorkflowSpec,
 };
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
@@ -467,7 +467,7 @@ async fn run_spec(
     // The follow thread OWNS the stream consumer and folds it each frame; on join
     // it returns its final folded per-shard state for the settled frame below.
     // Not following: drop the consumer so the model's publishes no-op.
-    let budget_plan = resolve_budget_plan(&spec, &args);
+    let budget_plan = resolve_budget_plan(&spec, &args)?;
     let follow_thread: Option<std::thread::JoinHandle<HashMap<NodePath, ShardProgress>>> = if follow
     {
         let sink = shared_sink.expect("follow enabled implies shared sink");
@@ -1083,11 +1083,14 @@ fn goals_report_line(snap: &GoalSnapshot) -> String {
 
 /// Budgets from the spec's `runplan.budgets`, optionally **deep-merged** with
 /// `--args.budgets` (partial overlays allowed — see [`BudgetPlan::overlay_json`]).
-fn resolve_budget_plan(spec: &WorkflowSpec, args: &serde_json::Value) -> BudgetPlan {
+fn resolve_budget_plan(
+    spec: &WorkflowSpec,
+    args: &serde_json::Value,
+) -> Result<BudgetPlan, ContractError> {
     let base = spec.runplan.budgets.clone();
     match args.get("budgets") {
         Some(raw) if !raw.is_null() => base.overlay_json(raw),
-        _ => base,
+        _ => Ok(base),
     }
 }
 

@@ -272,9 +272,6 @@ impl WorkflowSpec {
     /// Parse + validate (schema, cycle-check) and return a canonical content
     /// hash — the stable graph identity a replay asserts against (ADR #5,
     /// mechanism ported from `graph_ir.rs::hash_graph_ir`, §11).
-    ///
-    /// TODO(M0): implement cycle-DFS, canonicalize (recursive key/edge sort),
-    /// SHA-256 over canonical bytes; return typed `Diagnostic`s on failure.
     pub fn validate_and_hash(&self) -> Result<String, ContractError> {
         let errors = self
             .validate()
@@ -297,8 +294,6 @@ impl WorkflowSpec {
 
     /// Non-fatal validation pass: unknown refs, dangling entrypoints, unresolved
     /// `limit` names, unreachable nodes. Returns diagnostics (empty = clean).
-    /// TODO(M0): implement; `validate_and_hash` calls this and fails on any
-    /// `Severity::Error`.
     pub fn validate(&self) -> Vec<Diagnostic> {
         let mut diagnostics = Vec::new();
 
@@ -344,6 +339,11 @@ impl WorkflowSpec {
 pub enum ContractError {
     #[error("invalid topology: {0}")]
     Invalid(String),
+    #[error("invalid {target} overlay: {message}")]
+    InvalidOverlay {
+        target: &'static str,
+        message: String,
+    },
     #[error("cycle detected at node {0}")]
     Cycle(String),
 }

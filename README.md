@@ -4,11 +4,9 @@ The pinned Rust workflow substrate for the Synth stack — *ještěrky*, "lizard
 (they regrow tails: replay/resume). Fresh core that **supersedes** `workflow-rs`
 and `rust_backend/graph` (mines them for ideas, doesn't fork them).
 
-The core runtime is implemented for the M1 fake-actor surface: it runs the
-closed node taxonomy, emits deterministic `Addr`-ordered events, records actor
-calls, builds a process tree, and replays recorded runs byte-for-byte. Full
-design + ADR: `../mloky/HANDOFF_jesterky_rust_rebuild.md`, roadmap:
-`../mloky/ROADMAP_jesterky.md`.
+The core runtime runs the closed node taxonomy, emits deterministic
+`Addr`-ordered events, records actor/resource calls, builds a process tree, and
+replays recorded runs against the same contract.
 
 ## Crates
 - **`jesterky-contract`** — the four pinned schemas as Rust types (source of
@@ -55,9 +53,9 @@ cargo run -p jesterky-cli -- run examples/quality_scan.json \
   --codex-home /tmp/jesterky_codex_home --cd /path/to/repo \
   --args '{"target":"/path/to/repo"}' --out /tmp/scan.manifest.json
 ```
-See `HANDOFF_jesterky_round6_live_scan.md` for the proxy `config.toml` setup and
-the live-run checklist. A real run records the model outputs, so `replay`
-re-drives it through `ReplayActor` with no model.
+For proxied routes, point `--codex-home` at a directory containing the desired
+Codex `config.toml` and auth material. A real run records the model outputs, so
+`replay` re-drives it through `ReplayActor` with no model.
 
 ## Resource budgets (progress + ETA)
 
@@ -90,7 +88,7 @@ Typed entry points: `BudgetPlan`, `BudgetCap`, `BudgetEtaConfig`,
 `BudgetPlan::overlay_json` / `--args '{"budgets":{...}}'`. Episode-scale ETA
 template: `examples/budgets_episode_scale.json`.
 
-## What's locked vs skeletal
+## What's Locked
 LOCKED: every type in `jesterky-contract`; the five seam traits; `Addr` + its
 `Ord`; `Runner::emit` (per-node logical-clock allocation); `ReplayActor`; the
 `RunManifest` shape. IMPLEMENTED: schema emission, topology validation/hash,
@@ -99,12 +97,11 @@ session limits, trace-tree rendering, CLI run/replay, and starter conformance
 checks.
 
 ## Remaining gates
-1. **M2 live run** — a real DeepSeek-proxy quality scan + replay (deferred to the
-   runner; see `HANDOFF_jesterky_round6_live_scan.md`).
-2. **mloky parity gate** — same topology + recorded outputs → matching event
-   stream under the agreed `seq`→`Addr` mapping.
-3. Seed the conformance suite from mloky's captured event streams.
-4. Publish/package `jesterky-contract` (Rust + schema-generated Python) and the
-   runtime surfaces. (No pyo3 — Python is contract types + a thin HTTP client.)
+1. Keep `proof/README.md` mapped from every public claim to a committed
+   artifact and replay/run command.
+2. Keep the contract schema and generated Python types aligned with the Rust
+   contract version.
+3. Publish/package `jesterky-contract` and the runtime surfaces together. Python
+   remains contract types plus thin integration code; no second runtime.
 
 Read order: `traits.rs` → `runner.rs` → `ledger.rs`.
