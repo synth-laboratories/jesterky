@@ -17,6 +17,8 @@ design + ADR: `../mloky/HANDOFF_jesterky_rust_rebuild.md`, roadmap:
   - `event.rs` — `Addr` (the logical clock, ADR #5) · `Event` · `EventKind`.
   - `topology.rs` — `WorkflowSpec` · `Node` · closed `NodeKind` (ADR #3).
   - `artifact.rs` — `Artifact`/`ArtifactRef` · `ProcessNode` trace · `RunManifest`.
+  - `budget.rs` — formal resource budgets (`BudgetPlan` / `BudgetEngine` /
+    progress + ETA). See **`docs/BUDGETS.md`**.
 - **`jesterky-core`** — pure orchestration (ADR #6), zero IO.
   - `traits.rs` — the seam: `Actor` · `Resource` · `EventSink` · `Clock` · `ArtifactStore`.
   - `runner.rs` — `Runner::run` + the `emit` logical-clock joint + `execute_map` (skeletal).
@@ -56,6 +58,37 @@ cargo run -p jesterky-cli -- run examples/quality_scan.json \
 See `HANDOFF_jesterky_round6_live_scan.md` for the proxy `config.toml` setup and
 the live-run checklist. A real run records the model outputs, so `replay`
 re-drives it through `ReplayActor` with no model.
+
+## Resource budgets (progress + ETA)
+
+Concurrency (`runplan.limits`) is **not** the same as resource budgets
+(`runplan.budgets`). Budgets cap **actor calls / tokens / wall seconds**, meter
+progress, forecast **time-to-exhaust** (not time-to-finish), and render on the
+live panel.
+
+Full JSON schema of knobs, typed API, and semantics: **`docs/BUDGETS.md`**.
+
+```json
+"runplan": {
+  "budgets": {
+    "warning_percent": 80,
+    "fail_on_hard_exhaust": true,
+    "eta": { "enabled": true, "mode": "all", "min_wall_secs": 1.0 },
+    "viz": { "show_progress": true, "show_eta": true, "show_nearest_tag": true },
+    "caps": [
+      { "kind": "actor_calls", "max": 8, "hard": true, "label": "turns" },
+      { "kind": "tokens", "max": 100000, "hard": false },
+      { "kind": "wall_seconds", "max": 120, "hard": false }
+    ]
+  }
+}
+```
+
+Typed entry points: `BudgetPlan`, `BudgetCap`, `BudgetEtaConfig`,
+`BudgetVizConfig`, `BudgetEngine::snapshot`, `RunManifest.budgets`
+(`BudgetSnapshot`). Partial per-run override via
+`BudgetPlan::overlay_json` / `--args '{"budgets":{...}}'`. Episode-scale ETA
+template: `examples/budgets_episode_scale.json`.
 
 ## What's locked vs skeletal
 LOCKED: every type in `jesterky-contract`; the five seam traits; `Addr` + its
