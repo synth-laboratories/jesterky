@@ -19,7 +19,7 @@ manifest = RunManifest.model_validate_json(run_output)
 ## Install
 
 ```bash
-pip install jesterky
+uv add jesterky
 ```
 
 ## Regenerate

@@ -65,7 +65,7 @@ single source of truth, and deterministic record/replay.
 ### Install
 ```bash
 cargo install jesterky-cli      # runtime + CLI
-pip install jesterky            # Python contract types
+uv add jesterky                 # Python contract types
 ```
 
 ### Out of scope (post-launch)
