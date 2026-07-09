@@ -1,0 +1,19 @@
+[package]
+name = "jesterky-proxy"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme.workspace = true
+description = "Native, self-contained Responses↔chat proxy so the codex CLI (Responses-only) can drive chat-only models (DeepSeek, Gemini, any OpenAI-chat-compatible provider)."
+keywords = ["codex", "responses", "proxy", "openai", "llm"]
+categories = ["web-programming", "development-tools", "api-bindings"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { version = "1", features = ["net", "io-util", "rt", "rt-multi-thread", "macros", "sync", "time"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
