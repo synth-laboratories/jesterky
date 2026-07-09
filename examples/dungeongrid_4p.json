@@ -1,0 +1,109 @@
+{
+  "name": "dungeongrid_4p",
+  "entrypoint": ["reset_env", "play_turns", "finalize_episode"],
+  "nodes": {
+    "reset_env": {
+      "kind": "program",
+      "op": "dungeongrid.reset",
+      "inputs": {},
+      "outputs": {
+        "jobs": "ledger.jobs",
+        "episode_done": "ledger.episode_done",
+        "turn_count": "ledger.turn_count",
+        "hero_ids": "ledger.hero_ids"
+      }
+    },
+    "play_turns": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 1,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "hero",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.turns"
+      }
+    },
+    "finalize_episode": {
+      "kind": "program",
+      "op": "dungeongrid.finalize",
+      "inputs": {
+        "turns": "ledger.turns"
+      },
+      "outputs": {
+        "episode_result": "ledger.episode_result"
+      }
+    }
+  },
+  "runplan": {
+    "map_concurrency": 1,
+    "limits": {
+      "env_calls": 1
+    },
+    "budgets": {
+      "warning_percent": 80,
+      "fail_on_hard_exhaust": true,
+      "eta": {
+        "enabled": true,
+        "mode": "all",
+        "min_wall_secs": 1.0,
+        "sample_interval_secs": 0.45
+      },
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "show_eta": true,
+        "show_nearest_tag": true,
+        "short_labels": true
+      },
+      "caps": [
+        {
+          "kind": "actor_calls",
+          "max": 64,
+          "hard": true,
+          "label": "calls",
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "tokens",
+          "max": 500000,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        },
+        {
+          "kind": "wall_seconds",
+          "max": 900,
+          "hard": false,
+          "show_progress": true,
+          "show_eta": true
+        }
+      ]
+    }
+  },
+  "host": {
+    "roles": {
+      "hero": {
+        "prompt": "You control one DungeonGrid hero on a shared grid. Each turn you receive an observation with pos, goal, dist, and legal moves. Choose exactly one action from the legal set. Prefer reducing Manhattan distance to the goal. Never immediately reverse your previous move when another on-goal move exists (anti-oscillation). Reply with ONE JSON object: {\"action\":\"move:east|move:west|move:north|move:south|wait\",\"rationale\":\"one short sentence\"}. No tools, no prose outside the JSON."
+      }
+    },
+    "output_schemas": {
+      "hero": "dungeongrid_action.schema.json"
+    },
+    "viz": {
+      "item_labels_op": "dungeongrid.reset",
+      "item_jobs_field": "hero_ids",
+      "item_label_field": "hero_id",
+      "map_node": "play_turns",
+      "matrix_report_field": "episode_result"
+    }
+  }
+}

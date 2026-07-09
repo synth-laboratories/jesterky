@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "passed", "failed", "blockers", "total", "matrix_report", "headline"],
+  "properties": {
+    "verdict": { "type": "string", "enum": ["pass", "fail"] },
+    "passed": { "type": "integer" },
+    "failed": { "type": "integer" },
+    "blockers": { "type": "integer" },
+    "total": { "type": "integer" },
+    "matrix_report": {
+      "type": "string",
+      "description": "Per-page scores and violation codes table"
+    },
+    "headline": { "type": "string" }
+  }
+}

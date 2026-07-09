@@ -1,0 +1,60 @@
+{
+  "name": "quality_scan_blogs",
+  "entrypoint": [
+    "expand_posts",
+    "audit_posts",
+    "aggregate",
+    "record_matrix"
+  ],
+  "nodes": {
+    "expand_posts": {
+      "kind": "program",
+      "op": "blog.expand",
+      "inputs": {
+        "blog_dir": "ledger.blog_dir"
+      },
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "audit_posts": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 8,
+      "min_success": 0.85,
+      "body": {
+        "kind": "actor",
+        "actor": "blog_auditor",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "blog.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_matrix": {
+      "kind": "actor",
+      "actor": "blog_matrix_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 8
+  }
+}

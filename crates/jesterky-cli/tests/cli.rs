@@ -236,3 +236,83 @@ fn example_path(name: &str) -> std::path::PathBuf {
         .join("examples")
         .join(name)
 }
+
+#[test]
+fn piped_run_skips_live_panel_by_default() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(example_path("quality_scan.json"))
+        .output()
+        .expect("run executes");
+    assert!(
+        run.status.success(),
+        "run failed\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&run.stdout),
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&run.stdout);
+    assert!(
+        stdout.contains("workflow:quality_scan"),
+        "piped run should use skeleton tree; got:\n{stdout}"
+    );
+    assert!(
+        !stdout.contains("╭─┤ quality_scan ├"),
+        "piped run should not render live panel; got:\n{stdout}"
+    );
+}
+
+#[test]
+fn events_out_ndjson_matches_manifest_events() {
+    // `--events-out` streams the canonical event log as NDJSON. Every line must
+    // parse as an Event, and the set must equal `manifest.events` (same events,
+    // one per line) — the durable stream and the manifest cannot diverge.
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let temp = tempfile::tempdir().expect("tempdir");
+    let manifest = temp.path().join("scan.manifest.json");
+    let events = temp.path().join("events.ndjson");
+
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(example_path("quality_scan.json"))
+        .arg("--actor")
+        .arg("fake")
+        .arg("--out")
+        .arg(&manifest)
+        .arg("--events-out")
+        .arg(&events)
+        .output()
+        .expect("run executes");
+    assert!(
+        run.status.success(),
+        "run failed\nstderr:\n{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+
+    let ndjson = std::fs::read_to_string(&events).expect("events file written");
+    let lines: Vec<&str> = ndjson.lines().filter(|l| !l.trim().is_empty()).collect();
+    assert!(!lines.is_empty(), "events NDJSON should be non-empty");
+    for line in &lines {
+        let value: serde_json::Value =
+            serde_json::from_str(line).expect("each NDJSON line parses as JSON");
+        assert!(
+            value.get("addr").is_some() && value.get("kind").is_some(),
+            "each line is an Event with addr + kind: {line}"
+        );
+    }
+
+    let manifest_json: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&manifest).expect("manifest written"))
+            .expect("manifest parses");
+    let event_count = manifest_json["events"]
+        .as_array()
+        .expect("events array")
+        .len();
+    assert_eq!(
+        lines.len(),
+        event_count,
+        "one NDJSON line per manifest event ({} vs {})",
+        lines.len(),
+        event_count
+    );
+}

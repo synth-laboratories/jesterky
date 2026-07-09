@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_id",
+    "optimizer",
+    "failure_modes",
+    "reusable_rules",
+    "prompt_harness_notes",
+    "reward",
+    "achievement_count",
+    "theme_tags",
+    "severity",
+    "blocker"
+  ],
+  "properties": {
+    "trace_id": { "type": "string" },
+    "optimizer": { "type": "string", "enum": ["gepa"] },
+    "failure_modes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "evidence", "fix_hint"],
+        "properties": {
+          "code": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"]
+          },
+          "evidence": { "type": "string" },
+          "fix_hint": { "type": "string" }
+        }
+      }
+    },
+    "reusable_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule_id", "when", "then", "confidence"],
+        "properties": {
+          "rule_id": { "type": "string" },
+          "when": { "type": "string" },
+          "then": { "type": "string" },
+          "confidence": { "type": "number" }
+        }
+      }
+    },
+    "prompt_harness_notes": { "type": "string" },
+    "reward": { "type": "number" },
+    "achievement_count": { "type": "integer" },
+    "theme_tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"]
+    },
+    "blocker": { "type": "boolean" }
+  }
+}

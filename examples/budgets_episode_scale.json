@@ -1,0 +1,37 @@
+{
+  "_comment": "Drop-in budgets block for episode-scale ETA (time-to-end ≈ actor_calls). Merge into runplan.budgets or pass as --args.budgets. See docs/BUDGETS.md.",
+  "warning_percent": 80,
+  "fail_on_hard_exhaust": true,
+  "eta": {
+    "enabled": true,
+    "mode": "all",
+    "min_wall_secs": 1.0,
+    "sample_interval_secs": 0.45
+  },
+  "viz": {
+    "enabled": true,
+    "show_progress": true,
+    "show_eta": true,
+    "show_nearest_tag": true,
+    "short_labels": true
+  },
+  "caps": [
+    {
+      "kind": "actor_calls",
+      "max": 8,
+      "hard": true,
+      "label": "turns",
+      "warning_percent": 90
+    },
+    {
+      "kind": "tokens",
+      "max": 80000,
+      "hard": false
+    },
+    {
+      "kind": "wall_seconds",
+      "max": 180,
+      "hard": false
+    }
+  ]
+}

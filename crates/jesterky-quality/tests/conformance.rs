@@ -68,9 +68,12 @@ fn mloky_outcome(log: &str) -> RunOutcome {
         .map(|a| a.len())
         .expect("run_started declares jobs");
     let jobs_started = rows.iter().filter(|r| kind(r) == "agent_started").count();
-    let completed: Vec<&Value> = rows.iter().filter(|r| kind(r) == "agent_completed").collect();
-    let all_jobs_ok = !completed.is_empty()
-        && completed.iter().all(|r| r["ok"].as_bool() == Some(true));
+    let completed: Vec<&Value> = rows
+        .iter()
+        .filter(|r| kind(r) == "agent_completed")
+        .collect();
+    let all_jobs_ok =
+        !completed.is_empty() && completed.iter().all(|r| r["ok"].as_bool() == Some(true));
     let terminal_completed = rows
         .iter()
         .find(|r| kind(r) == "run_completed")
@@ -122,8 +125,7 @@ fn jesterky_outcome(manifest: &RunManifest) -> RunOutcome {
 }
 
 fn scan_spec() -> WorkflowSpec {
-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../examples/quality_scan.json");
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples/quality_scan.json");
     serde_json::from_str(&std::fs::read_to_string(path).expect("read scan spec")).expect("parse")
 }
 
@@ -137,7 +139,11 @@ async fn run_jesterky_scan() -> RunManifest {
                     .pointer("/job/dimension")
                     .and_then(|v| v.as_str())
                     .unwrap_or("");
-                let verdict = if matches!(dim, "security" | "tests") { "fail" } else { "pass" };
+                let verdict = if matches!(dim, "security" | "tests") {
+                    "fail"
+                } else {
+                    "pass"
+                };
                 Ok(json!({
                     "dimension": dim,
                     "verdict": verdict,
@@ -146,7 +152,12 @@ async fn run_jesterky_scan() -> RunManifest {
                 })
                 .to_string())
             }
-            SUMMARY_ACTOR => Ok(req.inputs.get("summary").cloned().unwrap_or(json!({})).to_string()),
+            SUMMARY_ACTOR => Ok(req
+                .inputs
+                .get("summary")
+                .cloned()
+                .unwrap_or(json!({}))
+                .to_string()),
             other => Ok(json!({ "actor": other }).to_string()),
         }
     });
@@ -179,7 +190,10 @@ fn mloky_reference_run_is_faithful() {
         outcome.is_faithful(),
         "mloky reference log violates conservation/termination: {outcome:?}"
     );
-    assert_eq!(outcome.jobs_completed, 8, "reference scan fanned out to 8 jobs");
+    assert_eq!(
+        outcome.jobs_completed, 8,
+        "reference scan fanned out to 8 jobs"
+    );
 }
 
 /// The gate: jesterky reproduces the reference runtime's contract on the scan

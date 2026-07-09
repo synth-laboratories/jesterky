@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["query_id", "ranked_ids", "rationale"],
+  "properties": {
+    "query_id": { "type": "string" },
+    "ranked_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "rationale": { "type": "string" }
+  }
+}

@@ -14,10 +14,19 @@
 //!
 //! The dimensions are the "8 verdicts" of the mloky scan.
 
+pub mod blog;
+pub mod docs;
+pub mod dungeongrid;
+pub mod host;
+pub mod obliq;
+pub mod trace;
+
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CoreError, ProgramRegistry};
 use serde_json::{json, Value};
 use std::sync::Arc;
+
+pub use dungeongrid::{DungeonGridActor, DungeonGridState};
 
 /// The audit dimensions — one actor verdict is produced per dimension.
 pub const DIMENSIONS: [&str; 8] = [
@@ -36,13 +45,30 @@ pub const SCANNER_ACTOR: &str = "quality_scanner";
 /// The topology's report actor name (emits the aggregated report).
 pub const SUMMARY_ACTOR: &str = "summary_recorder";
 
+pub use host::host_config;
+
 /// The pure programs the scan topology needs: `quality.expand` and
 /// `quality.aggregate`. Register these on any [`Runner`](jesterky_core::Runner)
 /// that runs the scan.
+///
+/// DungeonGrid programs share a process-local env handle so the CLI can also
+/// mount a matching [`DungeonGridActor`]. Prefer [`programs_with_dungeon`] when
+/// you need to pair them yourself.
 pub fn programs() -> ProgramRegistry {
+    programs_with_dungeon(DungeonGridState::new())
+}
+
+/// Like [`programs`], but DungeonGrid reset/finalize close over `state` so a
+/// host can hand the same handle to [`DungeonGridActor`].
+pub fn programs_with_dungeon(state: DungeonGridState) -> ProgramRegistry {
     let mut programs = ProgramRegistry::new();
     programs.register("quality.expand", Arc::new(expand));
     programs.register("quality.aggregate", Arc::new(aggregate));
+    blog::register(&mut programs);
+    docs::register(&mut programs);
+    trace::register(&mut programs);
+    obliq::register(&mut programs);
+    dungeongrid::register(&mut programs, state);
     programs
 }
 

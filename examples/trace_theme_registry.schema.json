@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "total", "annotated", "blockers", "theme_registry", "headline"],
+  "properties": {
+    "verdict": { "type": "string", "enum": ["pass", "fail"] },
+    "total": { "type": "integer" },
+    "annotated": { "type": "integer" },
+    "blockers": { "type": "integer" },
+    "headline": { "type": "string" },
+    "theme_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["optimizer", "themes", "traces"],
+      "properties": {
+        "optimizer": { "type": "string" },
+        "themes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["theme", "count"],
+            "properties": {
+              "theme": { "type": "string" },
+              "count": { "type": "integer" }
+            }
+          }
+        },
+        "traces": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      }
+    }
+  }
+}

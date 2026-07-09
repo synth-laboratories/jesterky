@@ -1,0 +1,80 @@
+{
+  "name": "smr_reportbench_trace_evaluate",
+  "entrypoint": [
+    "expand_traces",
+    "evaluate_traces",
+    "aggregate",
+    "record_verdict"
+  ],
+  "nodes": {
+    "expand_traces": {
+      "kind": "program",
+      "op": "trace.expand",
+      "inputs": {
+        "trace_dir": "ledger.trace_dir"
+      },
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "evaluate_traces": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 4,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "quality.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_verdict": {
+      "kind": "actor",
+      "actor": "reportbench_trace_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 4
+  },
+  "host": {
+    "roles": {
+      "reportbench_trace_evaluator": {
+        "prompt": "You evaluate one SMR ReportBench trace. You receive `job` with `trace_id`, `path`, and `summary`. Read ONLY `job.path` if you need the raw trace. Do not browse, run shell commands, or load external credentials. Grade OUTCOMES only: verifier verdicts, reportbench_output, stale projection evidence, missing artifacts, and terminal run state. Return exactly one JSON object with `dimension` (echo `job.trace_id`), `verdict` (`pass` or `fail`), `severity` (`none`, `low`, `medium`, or `high`), and `rationale` (one sentence citing the outcome evidence). Treat missing or contradictory evidence as `fail` with at least `medium` severity."
+      },
+      "reportbench_trace_recorder": {
+        "prompt": "You receive an aggregate `summary` with `verdict`, `passed`, `failed`, and failing dimensions. Do not run tools. Return exactly one JSON object: echo `verdict`, `passed`, and `failed`; add `headline` as one concise sentence describing the ReportBench trace-evaluate outcome."
+      }
+    },
+    "output_schemas": {
+      "reportbench_trace_evaluator": "quality_verdict.schema.json",
+      "reportbench_trace_recorder": "quality_summary.schema.json"
+    },
+    "viz": {
+      "item_labels_op": "trace.expand",
+      "item_label_field": "trace_id",
+      "map_node": "evaluate_traces",
+      "matrix_report_field": "headline"
+    }
+  }
+}

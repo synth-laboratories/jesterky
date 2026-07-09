@@ -1,0 +1,53 @@
+{
+  "name": "gelo_trace_annotate",
+  "entrypoint": ["expand_traces", "annotate_traces", "aggregate", "record_registry"],
+  "nodes": {
+    "expand_traces": {
+      "kind": "program",
+      "op": "trace.expand",
+      "inputs": {},
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "annotate_traces": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 4,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "gelo_trace_annotator",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "trace.aggregate_gelo",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_registry": {
+      "kind": "program",
+      "op": "trace.record_gelo_registry",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 4
+  }
+}

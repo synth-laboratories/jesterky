@@ -1,0 +1,60 @@
+{
+  "name": "quality_scan_docs",
+  "entrypoint": [
+    "expand_pages",
+    "audit_pages",
+    "aggregate",
+    "record_matrix"
+  ],
+  "nodes": {
+    "expand_pages": {
+      "kind": "program",
+      "op": "docs.expand",
+      "inputs": {
+        "docs_dir": "ledger.docs_dir"
+      },
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "audit_pages": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 20,
+      "min_success": 0.9,
+      "body": {
+        "kind": "actor",
+        "actor": "docs_auditor",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "docs.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_matrix": {
+      "kind": "actor",
+      "actor": "docs_matrix_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 20
+  }
+}

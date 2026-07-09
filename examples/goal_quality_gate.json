@@ -1,0 +1,73 @@
+{
+  "name": "goal_quality_gate",
+  "entrypoint": ["expand_jobs", "scan_jobs", "aggregate", "record_summary"],
+  "nodes": {
+    "expand_jobs": {
+      "kind": "program",
+      "op": "quality.expand",
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "scan_jobs": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 4,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "quality_scanner",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "quality.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_summary": {
+      "kind": "actor",
+      "actor": "summary_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 4,
+    "goals": {
+      "terminate_on_met": false,
+      "fail_on_unmet": true,
+      "goals": [
+        {
+          "id": "all_pass",
+          "label": "no failing dimension",
+          "kind": "ledger_pred",
+          "path": "summary.verdict",
+          "equals": "pass"
+        },
+        {
+          "id": "coverage",
+          "label": "dimensions passed",
+          "kind": "metric_threshold",
+          "path": "summary.passed",
+          "min": 6,
+          "required": false
+        }
+      ]
+    }
+  }
+}

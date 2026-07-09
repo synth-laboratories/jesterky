@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DungeonGridHeroAction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "rationale"],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["move:north", "move:south", "move:east", "move:west", "wait"]
+    },
+    "rationale": {
+      "type": "string"
+    }
+  }
+}

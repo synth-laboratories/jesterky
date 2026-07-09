@@ -1,23 +1,34 @@
 use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use jesterky_actor::{
-    viz::{adapt_manifest, render_run_view, render_tree, RenderOpts},
-    FakeActor, MemArtifactStore, MemEventSink, ReplayActor, ReplayClock, ReplayResource,
-    SystemClock,
+    viz::{
+        adapt_manifest, redraw_lines, render_run_view, render_run_view_lines, render_tree,
+        RenderOpts,
+    },
+    FakeActor, MemArtifactStore, MemEventSink, NdjsonEventSink, ReplayActor, ReplayClock,
+    ReplayResource, SharedEventSink, SystemClock, TeeEventSink,
 };
 use jesterky_contract::{
-    manifest_schema_json, workflow_schema_json, Artifact, Event, RunManifest, Severity,
-    WorkflowSpec,
+    manifest_schema_json, workflow_schema_json, Artifact, BudgetEngine, BudgetKind,
+    BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind, Event, EventKind, GoalSnapshot,
+    GoalState, HostConfig, HostRole, LiveBus, LiveStream, NodePath, RunManifest, RunStatus,
+    RunStopReason, Severity, ShardProgress, WorkflowSpec,
 };
+use jesterky_core::ledger::Ledger;
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
-use jesterky_model::{CodexModel, ModelActor};
-use jesterky_quality::{SCANNER_ACTOR, SUMMARY_ACTOR};
+use jesterky_model::{AdaptiveLimiter, CodexModel, ModelActor};
+use jesterky_quality::{
+    host_config as workload_host_config, programs, programs_with_dungeon, DungeonGridActor,
+    DungeonGridState,
+};
 use std::collections::HashMap;
 use std::error::Error;
-use std::io::IsTerminal;
+use std::io::{self, IsTerminal, Write};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 #[derive(Parser)]
 #[command(name = "jesterky")]
@@ -33,8 +44,16 @@ enum Command {
         spec: PathBuf,
         #[arg(long)]
         args: Option<String>,
+        /// Read the args JSON from a file instead of the command line. Use this
+        /// for large seeded ledgers (`ledger.jobs`) that would blow past the
+        /// shell's `ARG_MAX`. Mutually exclusive with `--args`.
+        #[arg(long, conflicts_with = "args")]
+        args_file: Option<PathBuf>,
         #[arg(long)]
         out: Option<PathBuf>,
+        /// Write canonical run events as NDJSON. Use `-` for stdout.
+        #[arg(long)]
+        events_out: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
         /// Which host actor drives `actor` nodes. `fake` echoes inputs (default,
@@ -51,6 +70,21 @@ enum Command {
         /// Working dir the codex sandbox may read (the repo under audit).
         #[arg(long)]
         cd: Option<PathBuf>,
+        /// Disable the live btop panel (default is on for interactive TTYs).
+        #[arg(long)]
+        no_follow: bool,
+        /// Force the live panel even when stdout is not a TTY.
+        #[arg(long)]
+        follow: bool,
+        /// Redraw interval for the live panel in seconds.
+        #[arg(long, default_value_t = 0.2)]
+        viz_interval: f64,
+        /// Force plain output (also auto-off when not a TTY or NO_COLOR is set).
+        #[arg(long)]
+        no_color: bool,
+        /// Panel width in columns for `--follow`.
+        #[arg(long, default_value_t = 76)]
+        width: usize,
     },
     Replay {
         manifest: PathBuf,
@@ -97,10 +131,95 @@ async fn main() -> ExitCode {
     match run_cli().await {
         Ok(code) => code,
         Err(err) => {
-            eprintln!("error: {err}");
+            print_error_report(err.as_ref());
             ExitCode::FAILURE
         }
     }
+}
+
+/// A LOUD, unmissable failure report on stderr: a bordered header, the primary
+/// message, the full `source()` cause chain (so a wrapped error shows every
+/// layer, not just the outermost line), and a class hint that says what to *do*.
+/// Color only when stderr is a terminal. This is the difference between "it
+/// failed" and knowing why — a run error must never be a single terse line that
+/// scrolls past or gets smeared over the live panel.
+fn print_error_report(err: &(dyn Error + 'static)) {
+    let tty = std::io::stderr().is_terminal();
+    let (red, bold, dim, reset) = if tty {
+        ("\x1b[31m", "\x1b[1m", "\x1b[2m", "\x1b[0m")
+    } else {
+        ("", "", "", "")
+    };
+    let mut stderr = io::stderr();
+    let _ = writeln!(stderr);
+    let _ = writeln!(stderr, "{red}{bold}━━━ jesterky run failed ━━━{reset}");
+    let _ = writeln!(stderr, "{red}{bold}✗{reset} {bold}{err}{reset}");
+    // Walk the cause chain: each wrapped layer on its own `caused by` line.
+    let mut source = err.source();
+    while let Some(cause) = source {
+        let _ = writeln!(stderr, "  {dim}caused by:{reset} {cause}");
+        source = cause.source();
+    }
+    if let Some(hint) = failure_hint(err) {
+        let _ = writeln!(stderr, "{bold}hint:{reset} {hint}");
+    }
+    let _ = writeln!(stderr);
+}
+
+/// Map a failure to an actionable hint, keyed off the message so it covers errors
+/// from any layer (core, ledger, host). Generic — no workload specifics.
+fn failure_hint(err: &(dyn Error + 'static)) -> Option<String> {
+    // Search the whole chain's text so a wrapped cause still triggers the hint.
+    let mut text = err.to_string();
+    let mut source = err.source();
+    while let Some(cause) = source {
+        text.push_str(" | ");
+        text.push_str(&cause.to_string());
+        source = cause.source();
+    }
+    let lower = text.to_lowercase();
+    if lower.contains("unresolved reference") {
+        // e.g. `unresolved reference: ledger.docs_json`
+        let key = text
+            .rsplit("unresolved reference:")
+            .next()
+            .map(|s| s.split(['|', '(']).next().unwrap_or(s).trim().to_string())
+            .filter(|s| !s.is_empty())
+            .unwrap_or_else(|| "that reference".to_string());
+        return Some(format!(
+            "a node input references `{key}`, but nothing seeded or produced it. \
+             Seed it with `--args '{{\"<key>\": ...}}'` (drop the `ledger.` prefix), \
+             or remove the binding from the spec if the program can default it."
+        ));
+    }
+    if lower.contains("min_success gate failed") {
+        return Some(
+            "map shards failed the success gate. Re-run with `--out <file>` and inspect \
+             the manifest, or look at the ✗ rows in `--follow` for each shard's reason."
+                .to_string(),
+        );
+    }
+    if lower.contains("program not registered") || lower.contains("unknown node") {
+        return Some(
+            "the spec references an op/node the host doesn't provide. Check the spec's \
+             `op`/`entrypoint` names against the registered programs."
+                .to_string(),
+        );
+    }
+    if lower.contains("auth") || lower.contains("unauthorized") || lower.contains("401") {
+        return Some(
+            "model auth failed. codex uses the ChatGPT bundle (`~/.codex/auth.json`) or the \
+             proxy config under `--codex-home` — check that, and any `SYNTH_API_KEY` the route needs."
+                .to_string(),
+        );
+    }
+    if lower.contains("quota") || lower.contains("usage limit") || lower.contains("429") {
+        return Some(
+            "the model route is rate-limited or out of quota. Wait and retry, or switch route."
+                .to_string(),
+        );
+    }
+    None
 }
 
 async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
@@ -108,22 +227,44 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
         Command::Run {
             spec,
             args,
+            args_file,
             out,
+            events_out,
             run_id,
             actor,
             model,
             codex_home,
             cd,
+            no_follow,
+            follow,
+            viz_interval,
+            no_color,
+            width,
         } => {
+            // `--args-file` reads the args JSON from disk (large seeded ledgers
+            // that would exceed the shell's ARG_MAX). clap already enforces it is
+            // exclusive with `--args`.
+            let args = match args_file {
+                Some(path) => Some(std::fs::read_to_string(&path).map_err(|e| {
+                    format!("failed to read --args-file `{}`: {e}", path.display())
+                })?),
+                None => args,
+            };
             run_spec(
                 &spec,
                 args.as_deref(),
                 out.as_deref(),
+                events_out.as_deref(),
                 run_id.as_deref(),
                 actor,
                 model.as_deref(),
                 codex_home.as_deref(),
                 cd.as_deref(),
+                no_follow,
+                follow,
+                viz_interval,
+                no_color,
+                width,
             )
             .await
         }
@@ -173,10 +314,22 @@ fn visualize(
         Some(path) => Some(read_json(path)?),
         None => None,
     };
-    let view = adapt_manifest(&manifest, spec.as_ref());
+    let view = adapt_manifest(&manifest, spec.as_ref(), None, None);
     // Color on only for an interactive TTY, unless forced off or NO_COLOR is set.
-    let color = !no_color && std::env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal();
-    print!("{}", render_run_view(&view, &RenderOpts { width, color }));
+    let color =
+        !no_color && std::env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal();
+    print!(
+        "{}",
+        render_run_view(
+            &view,
+            &RenderOpts {
+                width,
+                color,
+                tick: 0,
+                elapsed_secs: None
+            }
+        )
+    );
     Ok(ExitCode::SUCCESS)
 }
 
@@ -193,64 +346,305 @@ async fn run_spec(
     spec_path: &Path,
     args_json: Option<&str>,
     out: Option<&Path>,
+    events_out: Option<&Path>,
     run_id: Option<&str>,
     actor: ActorKind,
     model: Option<&str>,
     codex_home: Option<&Path>,
     cd: Option<&Path>,
+    no_follow: bool,
+    follow_flag: bool,
+    viz_interval: f64,
+    no_color: bool,
+    width: usize,
 ) -> Result<ExitCode, Box<dyn Error>> {
+    let follow = should_follow(no_follow, follow_flag);
     let spec: WorkflowSpec = read_json(spec_path)?;
     let args = parse_args(args_json)?;
+    let is_dungeongrid = spec.name.starts_with("dungeongrid");
+    // DungeonGrid is LLM-only: hero turns must go through a real model policy.
+    if is_dungeongrid && matches!(actor, ActorKind::Fake) {
+        return Err(
+            "dungeongrid is an LLM workflow — use `--actor codex` (no scripted/fake policy). \
+             Example: jesterky run examples/dungeongrid_4p.json --actor codex \
+             --model deepseek/deepseek-v4-pro-direct --codex-home /tmp/jesterky_codex_home \
+             --args '{\"max_turns\":12}' --follow"
+                .into(),
+        );
+    }
+    // Shared env for DungeonGrid programs + hero actor (no-op for other workloads).
+    let dungeon_state = DungeonGridState::new();
+    let program_registry = programs_with_dungeon(dungeon_state.clone());
+    // Host-side live-progress stream: the codex model *publishes* per-shard
+    // tokens / steps / latest action, the follow thread owns the consumer end and
+    // folds it each frame. When not following we drop the consumer, so publishes
+    // become no-ops (nothing buffers). Harmless for the fake actor (nothing sends).
+    let (live, live_stream) = LiveBus::channel();
+    // A chat-proxy route (deepseek/*, gemini/*, …) spawns the native jesterky
+    // Responses↔chat shim; the guard must outlive the whole run (it aborts the
+    // localhost server on drop), so it lives in this scope, not the match arm.
+    let mut _proxy_guard: Option<jesterky_proxy::ChatProxy> = None;
     let actor: Arc<dyn jesterky_core::Actor> = match actor {
         ActorKind::Fake => Arc::new(FakeActor),
         // Real model call via codex. The quality-scan roles give the
         // scanner/report actors their system prompts; unknown actors get the
-        // generic instruction.
+        // generic instruction. DungeonGrid wraps the model as a *policy* and
+        // still steps the in-process env (observe → LLM action → step).
         ActorKind::Codex => {
             let model = model.unwrap_or("gpt-5.5");
+            assert_model_allowed(model)?;
             // ChatGPT models take a reasoning effort; proxy routes generally don't.
-            let effort = if model.starts_with("gpt") { "high" } else { "" };
-            let mut codex = CodexModel::new(model, effort);
+            // DungeonGrid turns are short JSON — keep effort low for gpt routes.
+            let effort = if is_dungeongrid && model.starts_with("gpt") {
+                "low"
+            } else if model.starts_with("gpt") {
+                "high"
+            } else {
+                ""
+            };
+            // AIMD concurrency gate for this model+provider: start at the map's
+            // configured width, drop it on 429s, climb back on clean calls. The
+            // map barrier caps concurrency at the width, so that is also the max.
+            let ceiling = spec.runplan.map_concurrency.unwrap_or(4).max(1) as usize;
+            let limiter = AdaptiveLimiter::new(ceiling, 1, ceiling);
+            let mut codex = CodexModel::new(model, effort).with_limiter(limiter);
             if let Some(home) = codex_home {
+                // An explicit --codex-home always wins (power users / custom proxies).
                 codex = codex.with_codex_home(home);
+            } else if let Some(proxy) = jesterky_proxy::ChatProxy::spawn(model).await? {
+                // A chat-only route: jesterky spawns its own Responses↔chat proxy
+                // (localhost) pointed at the provider's real endpoint, and points
+                // codex at it. gpt-* routes resolve to None here (native codex).
+                eprintln!(
+                    "codex: `{model}` → jesterky Responses↔chat proxy on 127.0.0.1:{} → provider",
+                    proxy.port()
+                );
+                codex = codex.with_codex_home(proxy.codex_home().to_path_buf());
+                _proxy_guard = Some(proxy);
             }
             if let Some(cd) = cd {
                 codex = codex.with_cwd(cd);
             }
-            let mut model_actor = ModelActor::new(codex);
-            for (name, prompt) in jesterky_quality::roles() {
-                model_actor = model_actor.with_role(name, prompt);
+            let mut model_actor = ModelActor::new(codex).with_live(live.clone());
+            let spec_dir = spec_path.parent().unwrap_or(spec_path);
+            if let Some(host) = resolve_host_config(&spec) {
+                model_actor = apply_host_config(model_actor, &host, spec_dir)?;
             }
-            let examples = spec_path.parent().unwrap_or(spec_path);
-            model_actor = model_actor
-                .with_output_schema(
-                    SCANNER_ACTOR,
-                    examples.join("quality_verdict.schema.json"),
-                )
-                .with_output_schema(
-                    SUMMARY_ACTOR,
-                    examples.join("quality_summary.schema.json"),
-                );
-            Arc::new(model_actor)
+            if is_dungeongrid {
+                Arc::new(DungeonGridActor::with_policy(
+                    dungeon_state.clone(),
+                    Arc::new(model_actor),
+                ))
+            } else {
+                Arc::new(model_actor)
+            }
         }
     };
-    let runner = runner(
+    let shared_sink = if follow {
+        Some(Arc::new(SharedEventSink::new()))
+    } else {
+        None
+    };
+    let sink = run_event_sink(shared_sink.clone(), events_out)?;
+    let mut run_runner = runner(
         actor,
         None,
         Arc::new(SystemClock),
         Some(Arc::new(ManifestCheckpointStore::default())),
+        Some(sink),
     );
+    // Pair DungeonGrid programs with the same env state the hero actor holds.
+    run_runner.programs = program_registry.clone();
     let run_id = run_id.unwrap_or("jesterky-cli-run").to_string();
-    let manifest = runner.run(&spec, run_id, args).await?;
+    let item_labels = live_item_labels(&spec, &args, &program_registry);
+    let render_opts = RenderOpts {
+        width,
+        color: follow_color_enabled(follow, no_color),
+        tick: 0,
+        elapsed_secs: None,
+    };
+    let follow_stop = Arc::new(AtomicBool::new(false));
+    // The follow thread OWNS the stream consumer and folds it each frame; on join
+    // it returns its final folded per-shard state for the settled frame below.
+    // Not following: drop the consumer so the model's publishes no-op.
+    let budget_plan = resolve_budget_plan(&spec, &args);
+    let follow_thread: Option<std::thread::JoinHandle<HashMap<NodePath, ShardProgress>>> = if follow
+    {
+        let sink = shared_sink.expect("follow enabled implies shared sink");
+        let spec_for_follow = spec.clone();
+        let model_for_follow = model.map(str::to_string);
+        let interval = Duration::from_secs_f64(viz_interval.max(0.05));
+        let stop = follow_stop.clone();
+        let labels = item_labels.clone();
+        let opts = render_opts;
+        let budget_plan_follow = budget_plan.clone();
+        let run_id_follow = run_id.clone();
+        Some(std::thread::spawn(move || {
+            follow_viz_loop(
+                sink,
+                &spec_for_follow,
+                labels.as_deref(),
+                model_for_follow.as_deref(),
+                live_stream,
+                stop,
+                interval,
+                opts,
+                budget_plan_follow,
+                run_id_follow,
+            )
+        }))
+    } else {
+        drop(live_stream);
+        None
+    };
 
-    print_manifest(&manifest);
+    // Wall-clock start so the settled frame can report final throughput (tps/tpm).
+    let run_started = std::time::Instant::now();
+    // Capture the result WITHOUT `?`: a run error must still stop + join the
+    // follow thread (which restores the cursor and stops redrawing) before we
+    // propagate. Bailing with `?` here would leave the thread drawing over the
+    // error message and the terminal cursor hidden — the corrupted-frame bug.
+    let result = run_runner.run(&spec, run_id.clone(), args).await;
+
+    follow_stop.store(true, Ordering::Relaxed);
+    let final_progress = follow_thread
+        .map(|thread| thread.join().expect("follow thread joins"))
+        .unwrap_or_default();
+
+    let mut manifest = result?;
+    let wall_secs = run_started.elapsed().as_secs_f64();
+    // Attach formal budget projection (progress + ETA) when caps were declared.
+    if let Some(snap) = project_budgets(
+        &run_id,
+        &budget_plan,
+        &manifest,
+        Some(&final_progress),
+        wall_secs,
+        &[],
+    ) {
+        // Hard budget exhaust → fail the run when configured.
+        if budget_plan.fail_on_hard_exhaust
+            && snap.state == jesterky_contract::BudgetState::Exhausted
+            && snap
+                .items
+                .iter()
+                .any(|i| i.hard && i.state == jesterky_contract::BudgetState::Exhausted)
+        {
+            manifest.status = RunStatus::Failed;
+            manifest.stop_reason = RunStopReason::BudgetExhausted;
+        }
+        manifest.budgets = Some(snap);
+    }
+
+    if follow {
+        let mut view = adapt_manifest(&manifest, Some(&spec), None, Some(&final_progress));
+        if let Some(model) = model {
+            view.model = Some(model.to_string());
+        }
+        let final_opts = RenderOpts {
+            elapsed_secs: Some(wall_secs),
+            ..render_opts
+        };
+        let mut stdout = io::stdout();
+        let lines = render_run_view_lines(&view, &final_opts);
+        let mut prev = 0usize;
+        redraw_lines(&mut prev, &lines, &mut stdout)?;
+        if render_opts.color {
+            let _ = write!(stdout, "\x1b[?25h");
+            stdout.flush()?;
+        }
+        print_status_line(&manifest);
+        if let Some(budgets) = &manifest.budgets {
+            println!(
+                "budgets={}",
+                serde_json::to_string_pretty(budgets).unwrap_or_else(|_| "{}".into())
+            );
+        }
+        if let Some(goals) = &manifest.goals {
+            println!("{}", goals_report_line(goals));
+            println!(
+                "goals={}",
+                serde_json::to_string_pretty(goals).unwrap_or_else(|_| "{}".into())
+            );
+        }
+        if is_dungeongrid {
+            println!(
+                "episode_result={}",
+                serde_json::to_string_pretty(&dungeon_state.episode_result())
+                    .unwrap_or_else(|_| "{}".into())
+            );
+        } else if let Some(field) = resolve_host_config(&spec)
+            .and_then(|host| host.viz)
+            .and_then(|viz| viz.matrix_report_field)
+        {
+            if let Some(report) = matrix_report_from_manifest(&manifest, &field) {
+                println!("{report}");
+            }
+        }
+    } else {
+        print_manifest(&manifest);
+        if let Some(budgets) = &manifest.budgets {
+            println!(
+                "budgets={}",
+                serde_json::to_string_pretty(budgets).unwrap_or_else(|_| "{}".into())
+            );
+        }
+        if let Some(goals) = &manifest.goals {
+            println!("{}", goals_report_line(goals));
+            println!(
+                "goals={}",
+                serde_json::to_string_pretty(goals).unwrap_or_else(|_| "{}".into())
+            );
+        }
+        if is_dungeongrid {
+            println!(
+                "episode_result={}",
+                serde_json::to_string_pretty(&dungeon_state.episode_result())
+                    .unwrap_or_else(|_| "{}".into())
+            );
+        }
+    }
+
+    // Persist the manifest ALWAYS — including a failed run, so a scan that blew its
+    // min_success gate (or hit an unresolved binding mid-way) still leaves its
+    // recorded verdicts on disk to inspect instead of throwing the work away.
     if let Some(out) = out {
         write_json(out, &manifest)?;
         write_json(&spec_sidecar_path(out), &spec)?;
     }
 
+    if manifest.status == RunStatus::Failed {
+        let reason = failure_reason(&manifest)
+            .unwrap_or_else(|| "run failed (no reason recorded)".to_string());
+        // Same loud report as a hard error, but the manifest is already written.
+        print_error_report(&RunFailure(reason));
+        return Ok(ExitCode::FAILURE);
+    }
     Ok(ExitCode::SUCCESS)
 }
+
+/// The reason a run finished `Failed`, pulled from its `WorkflowFailed` event.
+fn failure_reason(manifest: &RunManifest) -> Option<String> {
+    manifest
+        .events
+        .iter()
+        .find(|e| matches!(e.kind, EventKind::WorkflowFailed))
+        .and_then(|e| e.payload.get("error").and_then(|v| v.as_str()))
+        .map(str::to_string)
+}
+
+/// A run that executed but finished `Failed` (gate/actor), carrying its reason so
+/// the shared loud-error report + hint logic can render it like any other failure.
+#[derive(Debug)]
+struct RunFailure(String);
+
+impl std::fmt::Display for RunFailure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl Error for RunFailure {}
 
 async fn replay_manifest(
     manifest_path: &Path,
@@ -288,6 +682,7 @@ async fn replay_manifest(
         Some(Arc::new(ReplayResource::from_manifest(&manifest))),
         replay_clock,
         Some(checkpoints),
+        None,
     );
     let replayed = runner
         .run(&spec, manifest.run_id.clone(), manifest.args.clone())
@@ -318,15 +713,40 @@ fn runner(
     resource: Option<Arc<dyn jesterky_core::Resource>>,
     clock: Arc<dyn Clock>,
     checkpoints: Option<Arc<dyn CheckpointStore>>,
+    sink: Option<Arc<dyn jesterky_core::EventSink>>,
 ) -> Runner {
     Runner {
         programs: demo_programs(),
         actor,
         resource,
-        sink: Arc::new(MemEventSink::new()),
+        sink: sink.unwrap_or_else(|| Arc::new(MemEventSink::new())),
         clock,
         store: Arc::new(MemArtifactStore::new()),
         checkpoints,
+    }
+}
+
+fn run_event_sink(
+    shared: Option<Arc<SharedEventSink>>,
+    events_out: Option<&Path>,
+) -> Result<Arc<dyn jesterky_core::EventSink>, Box<dyn Error>> {
+    let collector: Arc<dyn jesterky_core::EventSink> = Arc::new(MemEventSink::new());
+    let mut sinks = vec![collector];
+    if let Some(shared) = shared {
+        sinks.push(shared);
+    }
+    if let Some(path) = events_out {
+        let sink: Arc<dyn jesterky_core::EventSink> = if path.as_os_str() == "-" {
+            Arc::new(NdjsonEventSink::stdout())
+        } else {
+            Arc::new(NdjsonEventSink::file(path)?)
+        };
+        sinks.push(sink);
+    }
+    if sinks.len() == 1 {
+        Ok(sinks.remove(0))
+    } else {
+        Ok(Arc::new(TeeEventSink::new(sinks)))
     }
 }
 
@@ -334,7 +754,34 @@ fn runner(
 /// (`quality.expand` / `quality.aggregate`). A richer CLI would let specs bring
 /// their own; today this is the one built-in workload.
 fn demo_programs() -> ProgramRegistry {
-    jesterky_quality::programs()
+    programs()
+}
+
+/// Environment escape hatch that lifts the Anthropic-model ban for one run.
+const ALLOW_ANTHROPIC_ENV: &str = "JESTERKY_ALLOW_ANTHROPIC";
+
+/// Hard ban on Anthropic model routes. jesterky drives model calls through
+/// codex, and the house policy is: **no Anthropic models on these routes.** This
+/// refuses any model id that names an Anthropic model before a single call goes
+/// out. It is deliberately a manual, per-run override — set
+/// `JESTERKY_ALLOW_ANTHROPIC=1` to turn the ban off when you explicitly mean to.
+fn assert_model_allowed(model: &str) -> Result<(), Box<dyn Error>> {
+    // Manual off-switch. Any value other than "0"/"" lifts the ban for this run.
+    match std::env::var(ALLOW_ANTHROPIC_ENV).ok().as_deref() {
+        Some(v) if !v.is_empty() && v != "0" => return Ok(()),
+        _ => {}
+    }
+    const BANNED: &[&str] = &["claude", "anthropic", "sonnet", "opus", "haiku"];
+    let lower = model.to_ascii_lowercase();
+    if let Some(hit) = BANNED.iter().find(|needle| lower.contains(**needle)) {
+        return Err(format!(
+            "anthropic model route `{model}` is banned (matched `{hit}`). \
+             House policy: no Anthropic models on jesterky routes. If you really \
+             mean to, lift the ban for this run with `{ALLOW_ANTHROPIC_ENV}=1`."
+        )
+        .into());
+    }
+    Ok(())
 }
 
 fn parse_args(args_json: Option<&str>) -> Result<serde_json::Value, serde_json::Error> {
@@ -350,12 +797,418 @@ fn print_manifest(manifest: &RunManifest) {
     } else {
         println!("trace: <empty>");
     }
+    print_status_line(manifest);
+}
+
+fn print_status_line(manifest: &RunManifest) {
     println!(
         "status={} events={} recorded={}",
         format!("{:?}", manifest.status).to_lowercase(),
         manifest.events.len(),
         manifest.recorded.len()
     );
+}
+
+fn resolve_host_config(spec: &WorkflowSpec) -> Option<HostConfig> {
+    spec.host
+        .clone()
+        .or_else(|| workload_host_config(&spec.name))
+}
+
+fn apply_host_config(
+    mut actor: ModelActor<CodexModel>,
+    host: &HostConfig,
+    spec_dir: &Path,
+) -> Result<ModelActor<CodexModel>, Box<dyn Error>> {
+    for (name, role) in &host.roles {
+        let prompt = resolve_role_prompt(role, spec_dir)?;
+        actor = actor.with_role(name, prompt);
+    }
+    for (actor_name, schema) in &host.output_schemas {
+        actor = actor.with_output_schema(actor_name, spec_dir.join(schema));
+    }
+    // Seeded execution workspaces (host-only, honored by jesterky-sandbox).
+    actor = actor.with_spec_dir(spec_dir);
+    for (actor_name, sandbox) in &host.sandboxes {
+        actor = actor.with_sandbox(actor_name, sandbox.clone());
+    }
+    Ok(actor)
+}
+
+fn resolve_role_prompt(role: &HostRole, spec_dir: &Path) -> Result<String, Box<dyn Error>> {
+    if let Some(prompt) = &role.prompt {
+        return Ok(prompt.clone());
+    }
+    if let Some(file) = &role.prompt_file {
+        return Ok(std::fs::read_to_string(spec_dir.join(file))?);
+    }
+    Err(format!(
+        "host role in `{}` needs `prompt` or `prompt_file`",
+        spec_dir.display()
+    )
+    .into())
+}
+
+fn matrix_report_from_manifest(manifest: &RunManifest, field: &str) -> Option<String> {
+    // Prefer recorded actor outputs, then fall back to ledger-shaped program
+    // results that may only appear on the final event payload / latest recorded
+    // outputs (DungeonGrid finalize is a pure program — surface episode_result
+    // from any recorded map of that name if present, else pretty-print JSON).
+    if let Some(text) = manifest.recorded.iter().find_map(|r| {
+        r.outputs
+            .get(field)
+            .and_then(|v| value_as_report(v))
+            .or_else(|| {
+                r.outputs
+                    .get("summary")
+                    .and_then(|s| s.get(field))
+                    .and_then(value_as_report)
+            })
+    }) {
+        return Some(text);
+    }
+    // Last-resort: scan all recorded outputs for a nested field (finalize may
+    // not be recorded — programs aren't — so also check WorkflowCompleted? no).
+    // For program-only finals, the host can re-derive from the last hero scores.
+    manifest.recorded.iter().rev().find_map(|r| {
+        if field == "episode_result" {
+            if let (Some(done), Some(score)) =
+                (r.outputs.get("done").and_then(|v| v.as_bool()), r.score)
+            {
+                if done {
+                    return Some(format!(
+                        "episode_result (from last turn): score={score:.3} done=true"
+                    ));
+                }
+            }
+        }
+        None
+    })
+}
+
+fn value_as_report(v: &serde_json::Value) -> Option<String> {
+    match v {
+        serde_json::Value::String(s) => Some(s.clone()),
+        serde_json::Value::Object(_) | serde_json::Value::Array(_) => {
+            Some(serde_json::to_string_pretty(v).unwrap_or_else(|_| v.to_string()))
+        }
+        serde_json::Value::Number(n) => Some(n.to_string()),
+        serde_json::Value::Bool(b) => Some(b.to_string()),
+        serde_json::Value::Null => None,
+    }
+}
+
+fn should_follow(no_follow: bool, follow_flag: bool) -> bool {
+    if no_follow {
+        false
+    } else if follow_flag {
+        true
+    } else {
+        io::stdout().is_terminal()
+    }
+}
+
+fn follow_color_enabled(follow: bool, no_color: bool) -> bool {
+    follow && !no_color && std::env::var_os("NO_COLOR").is_none() && io::stdout().is_terminal()
+}
+
+fn live_item_labels(
+    spec: &WorkflowSpec,
+    args: &serde_json::Value,
+    program_registry: &ProgramRegistry,
+) -> Option<Vec<String>> {
+    let host = resolve_host_config(spec)?;
+    let viz = host.viz?;
+    let op = viz.item_labels_op.as_ref()?;
+    let expand = program_registry.get(op)?;
+    let mut ledger = Ledger::new();
+    if let Some(fields) = args.as_object() {
+        for (key, value) in fields {
+            ledger.set(key, value.clone());
+        }
+    }
+    let out = expand(&ledger, args).ok()?;
+    // DungeonGrid: one party lane per hero (not one row per scheduled turn).
+    if spec.name.starts_with("dungeongrid") {
+        if let Some(ids) = out.get("hero_ids").and_then(|v| v.as_array()) {
+            let heroes: Vec<String> = ids
+                .iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect();
+            if !heroes.is_empty() {
+                return Some(heroes);
+            }
+        }
+        if let Some(ids) = args.get("hero_ids").and_then(|v| v.as_array()) {
+            let heroes: Vec<String> = ids
+                .iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect();
+            if !heroes.is_empty() {
+                return Some(heroes);
+            }
+        }
+    }
+    let jobs_key = viz.item_jobs_field.as_deref().unwrap_or("jobs");
+    let label_key = viz.item_label_field.as_deref().unwrap_or("slug");
+    let labels: Vec<String> = out
+        .get(jobs_key)?
+        .as_array()?
+        .iter()
+        .filter_map(|job| {
+            job.as_str().map(str::to_string).or_else(|| {
+                job.get(label_key)
+                    .or_else(|| job.get("dimension"))
+                    .and_then(|v| v.as_str())
+                    .map(str::to_string)
+            })
+        })
+        .collect();
+    if labels.is_empty() {
+        None
+    } else {
+        Some(labels)
+    }
+}
+
+fn partial_manifest(spec: &WorkflowSpec, run_id: &str, events: Vec<Event>) -> RunManifest {
+    RunManifest {
+        run_id: run_id.to_string(),
+        workflow_name: spec.name.clone(),
+        spec_hash: String::new(),
+        args: serde_json::Value::Null,
+        events,
+        recorded: Vec::new(),
+        checkpoints: Vec::new(),
+        trace: None,
+        status: RunStatus::Completed,
+        stop_reason: RunStopReason::Completed,
+        budgets: None,
+        goals: None,
+        invariants: None,
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn follow_viz_loop(
+    sink: Arc<SharedEventSink>,
+    spec: &WorkflowSpec,
+    item_labels: Option<&[String]>,
+    model: Option<&str>,
+    mut stream: LiveStream,
+    stop: Arc<AtomicBool>,
+    interval: Duration,
+    mut opts: RenderOpts,
+    budget_plan: BudgetPlan,
+    run_id: String,
+) -> HashMap<NodePath, ShardProgress> {
+    let mut stdout = io::stdout();
+    let mut previous_lines = 0usize;
+    let started = std::time::Instant::now();
+    let mut tick = 0u32;
+    let mut budget_history: Vec<BudgetObservation> = Vec::new();
+    if opts.color {
+        let _ = write!(stdout, "\x1b[?25l");
+        let _ = stdout.flush();
+    }
+
+    loop {
+        opts.tick = tick;
+        let wall = started.elapsed().as_secs_f64();
+        opts.elapsed_secs = Some(wall);
+        let events = sink.snapshot();
+        let snapshot = stream.fold();
+        let mut partial = partial_manifest(spec, "live", events);
+        // Mid-run meter: actor calls from live events; tokens from shard fold.
+        if let Some(snap) = project_budgets(
+            &run_id,
+            &budget_plan,
+            &partial,
+            Some(&snapshot),
+            wall,
+            &budget_history,
+        ) {
+            // Keep a short history so ETA has >1 sample.
+            append_budget_samples(&mut budget_history, &snap, wall);
+            partial.budgets = Some(snap);
+        }
+        let mut view = adapt_manifest(&partial, Some(spec), item_labels, Some(&snapshot));
+        if let Some(model) = model {
+            view.model = Some(model.to_string());
+        }
+        let lines = render_run_view_lines(&view, &opts);
+        let _ = redraw_lines(&mut previous_lines, &lines, &mut stdout);
+
+        tick = tick.wrapping_add(1);
+        if sink.is_terminal() || stop.load(Ordering::Relaxed) {
+            break;
+        }
+        std::thread::sleep(interval);
+    }
+
+    if opts.color {
+        let _ = write!(stdout, "\x1b[?25h");
+        let _ = stdout.flush();
+    }
+    // A final drain so the settled frame the caller renders has every last event.
+    stream.fold()
+}
+
+/// One-line goal summary for the settled panel (dual of the budget progress
+/// line): `goals 1/2 required met [early-stop] · quality ✓ · coverage 0.72`.
+fn goals_report_line(snap: &GoalSnapshot) -> String {
+    let mut parts: Vec<String> = Vec::new();
+    let mut head = format!(
+        "goals {}/{} required met",
+        snap.required_met, snap.required_total
+    );
+    if snap.terminated_early {
+        head.push_str(" [early-stop]");
+    }
+    parts.push(head);
+    for item in &snap.items {
+        if !item.show_progress {
+            continue;
+        }
+        let mark = match item.state {
+            GoalState::Met => "✓".to_string(),
+            GoalState::Unmet => format!("{:.2}", item.progress),
+            GoalState::Unknown => "?".to_string(),
+        };
+        let opt = if item.required { "" } else { " (opt)" };
+        parts.push(format!("{} {}{}", item.label, mark, opt));
+    }
+    parts.join(" · ")
+}
+
+/// Budgets from the spec's `runplan.budgets`, optionally **deep-merged** with
+/// `--args.budgets` (partial overlays allowed — see [`BudgetPlan::overlay_json`]).
+fn resolve_budget_plan(spec: &WorkflowSpec, args: &serde_json::Value) -> BudgetPlan {
+    let base = spec.runplan.budgets.clone();
+    match args.get("budgets") {
+        Some(raw) if !raw.is_null() => base.overlay_json(raw),
+        _ => base,
+    }
+}
+
+/// Project formal budget progress + ETA from events, live shard progress, and
+/// optional history samples (for multi-point burn-rate estimates).
+fn project_budgets(
+    run_id: &str,
+    plan: &BudgetPlan,
+    manifest: &RunManifest,
+    progress: Option<&HashMap<NodePath, ShardProgress>>,
+    wall_secs: f64,
+    history: &[BudgetObservation],
+) -> Option<BudgetSnapshot> {
+    if plan.is_empty() {
+        return None;
+    }
+    let actor_calls = manifest
+        .events
+        .iter()
+        .filter(|e| e.kind == EventKind::ActorInvoked)
+        .count() as f64;
+    // Prefer recorded actor count when available (finished run).
+    let actor_calls = if !manifest.recorded.is_empty() {
+        manifest
+            .recorded
+            .iter()
+            .filter(|r| matches!(r.call, CallKind::Actor { .. }))
+            .count() as f64
+    } else {
+        actor_calls
+    };
+    let tokens = progress
+        .map(|p| {
+            p.values()
+                .map(|s| s.tokens_in.saturating_add(s.tokens_out))
+                .sum::<u64>() as f64
+        })
+        .unwrap_or(0.0);
+    // In-flight map items (started, not yet completed/failed) are RESERVED actor
+    // calls: under a wide parallel map, K calls can be outstanding before any
+    // settles, so `committed = spent + reserved` warns/ETAs against the real load
+    // rather than lagging behind it. Zero on a settled manifest (all items done).
+    let started = manifest
+        .events
+        .iter()
+        .filter(|e| e.kind == EventKind::MapItemStarted)
+        .count();
+    let settled = manifest
+        .events
+        .iter()
+        .filter(|e| {
+            matches!(
+                e.kind,
+                EventKind::MapItemCompleted | EventKind::MapItemFailed
+            )
+        })
+        .count();
+    let in_flight_calls = started.saturating_sub(settled) as f64;
+
+    let mut observations = history.to_vec();
+    // Seed t=0 zeros once so a single live sample still forms a burn-rate pair.
+    if history.is_empty() && wall_secs > 0.05 {
+        for cap in &plan.caps {
+            observations.push(BudgetObservation {
+                kind: cap.kind,
+                t_secs: 0.0,
+                spent: 0.0,
+                reserved: 0.0,
+            });
+        }
+    }
+    // Always append the current sample point so ETA has a fresh endpoint.
+    for cap in &plan.caps {
+        let spent = match cap.kind {
+            BudgetKind::ActorCalls => actor_calls,
+            BudgetKind::Tokens => tokens,
+            BudgetKind::WallSeconds => wall_secs,
+        };
+        let reserved = match cap.kind {
+            BudgetKind::ActorCalls => in_flight_calls,
+            _ => 0.0,
+        };
+        observations.push(BudgetObservation {
+            kind: cap.kind,
+            t_secs: wall_secs,
+            spent,
+            reserved,
+        });
+    }
+    Some(BudgetEngine::snapshot(
+        run_id,
+        plan,
+        &observations,
+        wall_secs,
+    ))
+}
+
+fn append_budget_samples(
+    history: &mut Vec<BudgetObservation>,
+    snap: &BudgetSnapshot,
+    wall_secs: f64,
+) {
+    let interval = snap.plan.eta.sample_interval_secs.max(0.05);
+    if let Some(last) = history.last() {
+        if wall_secs - last.t_secs < interval {
+            return;
+        }
+    }
+    for item in &snap.items {
+        history.push(BudgetObservation {
+            kind: item.kind,
+            t_secs: wall_secs,
+            spent: item.spent,
+            reserved: item.reserved,
+        });
+    }
+    // Cap history length (keep latest ~80 samples).
+    if history.len() > 240 {
+        let drain = history.len() - 180;
+        history.drain(0..drain);
+    }
 }
 
 fn read_json<T: serde::de::DeserializeOwned>(path: &Path) -> Result<T, Box<dyn Error>> {
@@ -415,7 +1268,6 @@ fn diff_summary(expected: &[Event], actual: &[Event]) -> String {
         None => "replay mismatch".to_string(),
     }
 }
-
 
 #[derive(Default)]
 struct ManifestCheckpointStore {

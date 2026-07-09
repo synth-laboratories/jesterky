@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "item",
+    "score",
+    "severity",
+    "blocker",
+    "finding",
+    "fix",
+    "violations",
+    "algorithm_verdict",
+    "page_type",
+    "surface",
+    "claim_tier"
+  ],
+  "properties": {
+    "item": { "type": "string", "description": "Mintlify page slug (path without .mdx)" },
+    "score": { "type": "number", "description": "1-10 family-2 docs quality score" },
+    "severity": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"]
+    },
+    "blocker": { "type": "boolean" },
+    "finding": { "type": "string" },
+    "fix": { "type": "string" },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "note"],
+        "properties": {
+          "code": { "type": "string", "description": "D1-D12 docs audit code" },
+          "severity": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"]
+          },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "algorithm_verdict": {
+      "type": "string",
+      "enum": ["SOUND", "FRAGILE", "bogus-headline", "BOGUS"]
+    },
+    "page_type": { "type": "string" },
+    "surface": { "type": "string" },
+    "claim_tier": { "type": "string" }
+  }
+}

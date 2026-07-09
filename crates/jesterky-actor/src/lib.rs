@@ -15,6 +15,9 @@ use jesterky_core::{
     Resource,
 };
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Write;
+use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
 
@@ -96,7 +99,12 @@ impl Resource for ReplayResource {
     async fn observe(&self, addr: &Addr, _session: &str) -> Result<serde_json::Value, HostError> {
         self.lookup(addr)
     }
-    async fn step(&self, addr: &Addr, _session: &str, _action: serde_json::Value) -> Result<serde_json::Value, HostError> {
+    async fn step(
+        &self,
+        addr: &Addr,
+        _session: &str,
+        _action: serde_json::Value,
+    ) -> Result<serde_json::Value, HostError> {
         self.lookup(addr)
     }
 }
@@ -128,7 +136,11 @@ impl MemCheckpointStore {
 
 #[async_trait]
 impl CheckpointStore for MemCheckpointStore {
-    async fn save(&self, session: &str, state: serde_json::Value) -> Result<ArtifactRef, HostError> {
+    async fn save(
+        &self,
+        session: &str,
+        state: serde_json::Value,
+    ) -> Result<ArtifactRef, HostError> {
         let mut latest = self.latest.lock().unwrap();
         let size_bytes = state.to_string().len() as u64;
         latest.insert(session.to_string(), state);
@@ -179,6 +191,116 @@ impl MemEventSink {
 impl EventSink for MemEventSink {
     fn emit(&self, event: jesterky_contract::Event) {
         self.events.lock().unwrap().push(event);
+    }
+
+    fn snapshot(&self) -> Vec<jesterky_contract::Event> {
+        self.events.lock().unwrap().clone()
+    }
+}
+
+/// Cloneable event sink for live terminal follow: the runner emits into it while
+/// a side thread snapshots events for in-place redraw.
+#[derive(Clone, Default)]
+pub struct SharedEventSink {
+    events: std::sync::Arc<Mutex<Vec<jesterky_contract::Event>>>,
+}
+
+impl SharedEventSink {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn snapshot(&self) -> Vec<jesterky_contract::Event> {
+        self.events.lock().unwrap().clone()
+    }
+
+    pub fn is_terminal(&self) -> bool {
+        self.snapshot().iter().any(|event| {
+            matches!(
+                event.kind,
+                jesterky_contract::EventKind::WorkflowCompleted
+                    | jesterky_contract::EventKind::WorkflowFailed
+            )
+        })
+    }
+}
+
+impl EventSink for SharedEventSink {
+    fn emit(&self, event: jesterky_contract::Event) {
+        self.events.lock().unwrap().push(event);
+    }
+
+    fn snapshot(&self) -> Vec<jesterky_contract::Event> {
+        self.events.lock().unwrap().clone()
+    }
+}
+
+/// Fan events out to several sinks while keeping a stable manifest snapshot
+/// from the first sink. Hosts use this to combine a durable collector with live
+/// follow / file streaming sinks without making the runner dual-write.
+pub struct TeeEventSink {
+    sinks: Vec<std::sync::Arc<dyn EventSink>>,
+}
+
+impl TeeEventSink {
+    pub fn new(sinks: Vec<std::sync::Arc<dyn EventSink>>) -> Self {
+        Self { sinks }
+    }
+}
+
+impl EventSink for TeeEventSink {
+    fn emit(&self, event: jesterky_contract::Event) {
+        for sink in &self.sinks {
+            sink.emit(event.clone());
+        }
+    }
+
+    fn snapshot(&self) -> Vec<jesterky_contract::Event> {
+        self.sinks
+            .first()
+            .map(|sink| sink.snapshot())
+            .unwrap_or_default()
+    }
+}
+
+/// Host-side NDJSON event sink. It writes events as they arrive and also keeps a
+/// memory snapshot so a manifest can compare against the emitted line set.
+pub struct NdjsonEventSink {
+    events: Mutex<Vec<jesterky_contract::Event>>,
+    writer: Mutex<Box<dyn Write + Send>>,
+}
+
+impl NdjsonEventSink {
+    pub fn file(path: &Path) -> Result<Self, HostError> {
+        let file = File::create(path).map_err(|err| {
+            HostError::Store(format!("open events-out `{}`: {err}", path.display()))
+        })?;
+        Ok(Self {
+            events: Mutex::new(Vec::new()),
+            writer: Mutex::new(Box::new(file)),
+        })
+    }
+
+    pub fn stdout() -> Self {
+        Self {
+            events: Mutex::new(Vec::new()),
+            writer: Mutex::new(Box::new(std::io::stdout())),
+        }
+    }
+}
+
+impl EventSink for NdjsonEventSink {
+    fn emit(&self, event: jesterky_contract::Event) {
+        if let Ok(line) = serde_json::to_string(&event) {
+            let mut writer = self.writer.lock().unwrap();
+            let _ = writeln!(writer, "{line}");
+            let _ = writer.flush();
+        }
+        self.events.lock().unwrap().push(event);
+    }
+
+    fn snapshot(&self) -> Vec<jesterky_contract::Event> {
+        self.events.lock().unwrap().clone()
     }
 }
 

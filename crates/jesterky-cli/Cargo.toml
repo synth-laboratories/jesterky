@@ -22,6 +22,7 @@ jesterky-actor = { workspace = true }
 jesterky-contract = { workspace = true }
 jesterky-core = { workspace = true }
 jesterky-model = { workspace = true }
+jesterky-proxy = { workspace = true }
 jesterky-quality = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

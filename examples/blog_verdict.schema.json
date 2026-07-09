@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "item",
+    "score",
+    "severity",
+    "blocker",
+    "finding",
+    "fix",
+    "violations",
+    "algorithm_verdict",
+    "internal_type",
+    "surface",
+    "claim_tier"
+  ],
+  "properties": {
+    "item": { "type": "string", "description": "blog post slug" },
+    "score": { "type": "number", "description": "1-10 family-1 quality score" },
+    "severity": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"]
+    },
+    "blocker": { "type": "boolean" },
+    "finding": { "type": "string" },
+    "fix": { "type": "string" },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "note"],
+        "properties": {
+          "code": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"]
+          },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "algorithm_verdict": {
+      "type": "string",
+      "enum": ["SOUND", "FRAGILE", "bogus-headline", "BOGUS"]
+    },
+    "internal_type": { "type": "string" },
+    "surface": { "type": "string" },
+    "claim_tier": { "type": "string" }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["verdict", "headline", "n_queries", "mean_ndcg_at_k"],
+  "properties": {
+    "verdict": { "type": "string", "enum": ["pass", "fail"] },
+    "headline": { "type": "string" },
+    "task": { "type": "string" },
+    "mode": { "type": "string" },
+    "n_queries": { "type": "integer" },
+    "k": { "type": "integer" },
+    "mean_recall_at_k": { "type": "number" },
+    "mean_ndcg_at_k": { "type": "number" },
+    "recall_at_k": { "type": "number" },
+    "ndcg_at_k": { "type": "number" },
+    "matrix_report": { "type": "array" }
+  }
+}
