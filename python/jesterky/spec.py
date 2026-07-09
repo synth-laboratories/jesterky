@@ -4,67 +4,27 @@
 from __future__ import annotations
 from enum import Enum
 from pydantic import BaseModel, Field, RootModel, conint
-from typing import Any
+from typing import Literal, Optional, Union
 
 
-class BudgetEtaMode1(Enum):
+class BudgetEtaMode(Enum):
     """
-    Do not show or compute ETA forecasts.
+    How ETA lines are composed on the terminal panel.
     """
 
     off = 'off'
-
-
-class BudgetEtaMode2(Enum):
-    """
-    Show only the soonest-to-exhaust cap.
-    """
-
     nearest_only = 'nearest_only'
-
-
-class BudgetEtaMode3(Enum):
-    """
-    Show every cap that has a finite forecast (default).
-    """
-
     all = 'all'
 
 
-class BudgetEtaMode(RootModel[BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3]):
-    root: BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3 = Field(
-        ..., description='How ETA lines are composed on the terminal panel.'
-    )
-
-
-class BudgetKind1(Enum):
+class BudgetKind(Enum):
     """
-    Impure actor invocations (model turns, env-coupled hero acts, …).
+    What resource is being capped.
     """
 
     actor_calls = 'actor_calls'
-
-
-class BudgetKind2(Enum):
-    """
-    Total tokens (in+out) observed on the live bus / recorded usage.
-    """
-
     tokens = 'tokens'
-
-
-class BudgetKind3(Enum):
-    """
-    Wall-clock seconds since the host started the run.
-    """
-
     wall_seconds = 'wall_seconds'
-
-
-class BudgetKind(RootModel[BudgetKind1 | BudgetKind2 | BudgetKind3]):
-    root: BudgetKind1 | BudgetKind2 | BudgetKind3 = Field(
-        ..., description='What resource is being capped.'
-    )
 
 
 class BudgetVizConfig(BaseModel):
@@ -91,37 +51,7 @@ class BudgetVizConfig(BaseModel):
     )
 
 
-class Kind(Enum):
-    ledger_pred = 'ledger_pred'
-
-
-class GoalSpec1(BaseModel):
-    """
-    Met when the ledger value at `path` deep-equals `equals`.
-    """
-
-    id: str = Field(..., description='Stable identifier (unique within a plan).')
-    label: str | None = Field(
-        None,
-        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
-    )
-    required: bool | None = Field(
-        True,
-        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
-    )
-    show_progress: bool | None = Field(
-        True, description='Include this goal on the progress viz line (default true).'
-    )
-    equals: Any
-    kind: Kind
-    path: str
-
-
-class Kind1(Enum):
-    metric_threshold = 'metric_threshold'
-
-
-class GoalSpec2(BaseModel):
+class GoalSpecMetricThreshold(BaseModel):
     """
     Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.
     """
@@ -138,13 +68,9 @@ class GoalSpec2(BaseModel):
     show_progress: bool | None = Field(
         True, description='Include this goal on the progress viz line (default true).'
     )
-    kind: Kind1
+    kind: Literal['metric_threshold']
     min: float
     path: str
-
-
-class GoalSpec(RootModel[GoalSpec1 | GoalSpec2]):
-    root: GoalSpec1 | GoalSpec2 = Field(..., description='One declared goal on a run.')
 
 
 class GoalVizConfig(BaseModel):
@@ -208,42 +134,6 @@ class Limit(BaseModel):
     permits: conint(ge=0)
 
 
-class Kind2(Enum):
-    program = 'program'
-
-
-class Kind3(Enum):
-    reduce = 'reduce'
-
-
-class Kind4(Enum):
-    actor = 'actor'
-
-
-class Kind5(Enum):
-    map = 'map'
-
-
-class Kind6(Enum):
-    for_each = 'for_each'
-
-
-class Kind7(Enum):
-    while_ = 'while'
-
-
-class Kind8(Enum):
-    branch = 'branch'
-
-
-class Kind9(Enum):
-    session_group = 'session_group'
-
-
-class Kind10(Enum):
-    resume_session = 'resume_session'
-
-
 class Ref(RootModel[str]):
     root: str = Field(
         ...,
@@ -251,23 +141,15 @@ class Ref(RootModel[str]):
     )
 
 
-class Kind11(Enum):
-    local = 'local'
-
-
-class SandboxBackend1(BaseModel):
+class SandboxBackendLocal(BaseModel):
     """
     Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).
     """
 
-    kind: Kind11
+    kind: Literal['local']
 
 
-class Kind12(Enum):
-    docker = 'docker'
-
-
-class SandboxBackend2(BaseModel):
+class SandboxBackendDocker(BaseModel):
     """
     Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).
     """
@@ -277,7 +159,7 @@ class SandboxBackend2(BaseModel):
         description="Env exported to the actor's process inside the container (e.g. `CODEX_HOME=/codex-home`). Overrides the actor's own env for that key.",
     )
     image: str
-    kind: Kind12
+    kind: Literal['docker']
     mounts: list[str] | None = Field(
         [],
         description='Extra bind mounts as docker `-v` specs, `host:container[:ro]`. `${HOME}` and `$VAR` are expanded. This is how codex auth reaches the container: mount host `~/.codex` to an in-container path, then point `CODEX_HOME` there via [`Self::Docker::env`].',
@@ -288,8 +170,8 @@ class SandboxBackend2(BaseModel):
     )
 
 
-class SandboxBackend(RootModel[SandboxBackend1 | SandboxBackend2]):
-    root: SandboxBackend1 | SandboxBackend2 = Field(
+class SandboxBackend(RootModel[SandboxBackendLocal | SandboxBackendDocker]):
+    root: SandboxBackendLocal | SandboxBackendDocker = Field(
         ...,
         description='Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).',
     )
@@ -309,27 +191,13 @@ class SandboxCapture(BaseModel):
     )
 
 
-class SandboxMode1(Enum):
+class SandboxMode(Enum):
     """
-    Read the workspace, run nothing that writes it. Default — least privilege.
+    The permission level the actor should self-apply (maps to codex `--sandbox`).
     """
 
     read_only = 'read-only'
-
-
-class SandboxMode2(Enum):
-    """
-    Create/modify files and run builds/tools in the workspace.
-    """
-
     workspace_write = 'workspace-write'
-
-
-class SandboxMode(RootModel[SandboxMode1 | SandboxMode2]):
-    root: SandboxMode1 | SandboxMode2 = Field(
-        ...,
-        description='The permission level the actor should self-apply (maps to codex `--sandbox`).',
-    )
 
 
 class SandboxSeed(BaseModel):
@@ -358,6 +226,32 @@ class Verbosity(Enum):
     minimal = 'minimal'
     standard = 'standard'
     verbose = 'verbose'
+
+
+class JsonValue(
+    RootModel[
+        Optional[
+            Union[
+                bool,
+                int,
+                float,
+                str,
+                list["JsonValue | None"],
+                dict[str, "JsonValue | None"],
+            ]
+        ]
+    ]
+):
+    root: Optional[
+        Union[
+            bool,
+            int,
+            float,
+            str,
+            list["JsonValue | None"],
+            dict[str, "JsonValue | None"],
+        ]
+    ]
 
 
 class BudgetCap(BaseModel):
@@ -401,7 +295,7 @@ class BudgetEtaConfig(BaseModel):
         description='Minimum wall seconds before burn-rate ETA is trusted (default 1.0).',
     )
     mode: BudgetEtaMode | None = Field(
-        'all', description='Which ETAs to surface on the panel.', validate_default=True
+        'all', description='Which ETAs to surface on the panel.'
     )
     sample_interval_secs: float | None = Field(
         0.45, description='Host sampling cadence hint for live follow (default 0.45s).'
@@ -450,6 +344,129 @@ class BudgetPlan(BaseModel):
     )
 
 
+class GoalSpecLedgerPred(BaseModel):
+    """
+    Met when the ledger value at `path` deep-equals `equals`.
+    """
+
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
+    )
+    required: bool | None = Field(
+        True,
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    equals: JsonValue | None
+    kind: Literal['ledger_pred']
+    path: str
+
+
+class GoalSpec(RootModel[GoalSpecLedgerPred | GoalSpecMetricThreshold]):
+    root: GoalSpecLedgerPred | GoalSpecMetricThreshold = Field(
+        ..., description='One declared goal on a run.'
+    )
+
+
+class NodeProgram(BaseModel):
+    """
+    Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on replay — NOT recorded (ADR #7). Resolved from the program registry.
+    """
+
+    inputs: dict[str, Ref] | None = Field(
+        {},
+        description='Inputs the node reads, resolved from the ledger before it runs.',
+        validate_default=True,
+    )
+    outputs: dict[str, Ref] | None = Field(
+        {},
+        description='Outputs the node writes back into the ledger when it completes.',
+        validate_default=True,
+    )
+    kind: Literal['program']
+    op: str
+
+
+class NodeReduce(BaseModel):
+    """
+    Pure aggregation over a collection (a program that folds `results`).
+    """
+
+    inputs: dict[str, Ref] | None = Field(
+        {},
+        description='Inputs the node reads, resolved from the ledger before it runs.',
+        validate_default=True,
+    )
+    outputs: dict[str, Ref] | None = Field(
+        {},
+        description='Outputs the node writes back into the ledger when it completes.',
+        validate_default=True,
+    )
+    kind: Literal['reduce']
+    op: str
+
+
+class NodeActor(BaseModel):
+    """
+    A host actor call (a model, a subprocess). Impure → recorded for replay.
+    """
+
+    inputs: dict[str, Ref] | None = Field(
+        {},
+        description='Inputs the node reads, resolved from the ledger before it runs.',
+        validate_default=True,
+    )
+    outputs: dict[str, Ref] | None = Field(
+        {},
+        description='Outputs the node writes back into the ledger when it completes.',
+        validate_default=True,
+    )
+    actor: str
+    kind: Literal['actor']
+
+
+class NodeBranch(BaseModel):
+    """
+    Take `then` if `cond` is truthy, else `otherwise`.
+    """
+
+    inputs: dict[str, Ref] | None = Field(
+        {},
+        description='Inputs the node reads, resolved from the ledger before it runs.',
+        validate_default=True,
+    )
+    outputs: dict[str, Ref] | None = Field(
+        {},
+        description='Outputs the node writes back into the ledger when it completes.',
+        validate_default=True,
+    )
+    cond: Ref
+    kind: Literal['branch']
+    otherwise: str | None = None
+    then: str
+
+
+class SandboxConfig(BaseModel):
+    """
+    Per-actor sandbox declaration (keyed by actor name in `HostConfig.sandboxes`).
+    """
+
+    backend: SandboxBackend
+    capture: SandboxCapture | None = None
+    mode: SandboxMode | None = 'read-only'
+    network: bool | None = Field(
+        False,
+        description="Whether the actor's tools may reach the network. Off by default.",
+    )
+    seed: SandboxSeed | None = Field(
+        {'copy_from': [], 'files_input': None, 'setup': []}, validate_default=True
+    )
+
+
 class GoalPlan(BaseModel):
     """
     Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).
@@ -485,82 +502,28 @@ class GoalPlan(BaseModel):
     )
 
 
-class Node1(BaseModel):
+class HostConfig(BaseModel):
     """
-    Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on replay — NOT recorded (ADR #7). Resolved from the program registry.
-    """
-
-    inputs: dict[str, Ref] | None = Field(
-        {},
-        description='Inputs the node reads, resolved from the ledger before it runs.',
-        validate_default=True,
-    )
-    outputs: dict[str, Ref] | None = Field(
-        {},
-        description='Outputs the node writes back into the ledger when it completes.',
-        validate_default=True,
-    )
-    kind: Kind2
-    op: str
-
-
-class Node2(BaseModel):
-    """
-    Pure aggregation over a collection (a program that folds `results`).
+    Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.
     """
 
-    inputs: dict[str, Ref] | None = Field(
+    output_schemas: dict[str, str] | None = Field(
+        {}, description='Actor name → JSON Schema path (relative to the spec dir).'
+    )
+    roles: dict[str, HostRole] | None = Field(
         {},
-        description='Inputs the node reads, resolved from the ledger before it runs.',
+        description='Actor name → role prompt (inline or file path relative to the spec dir).',
         validate_default=True,
     )
-    outputs: dict[str, Ref] | None = Field(
+    sandboxes: dict[str, SandboxConfig] | None = Field(
         {},
-        description='Outputs the node writes back into the ledger when it completes.',
+        description='Actor name → sandbox declaration (seeded workspace the actor runs in). Host-only, like the rest of `HostConfig`; honored by `jesterky-sandbox`.',
         validate_default=True,
     )
-    kind: Kind3
-    op: str
-
-
-class Node3(BaseModel):
-    """
-    A host actor call (a model, a subprocess). Impure → recorded for replay.
-    """
-
-    inputs: dict[str, Ref] | None = Field(
-        {},
-        description='Inputs the node reads, resolved from the ledger before it runs.',
-        validate_default=True,
+    viz: HostVizConfig | None = Field(
+        None,
+        description='Live terminal viz hints (item preseed, matrix field, map node label).',
     )
-    outputs: dict[str, Ref] | None = Field(
-        {},
-        description='Outputs the node writes back into the ledger when it completes.',
-        validate_default=True,
-    )
-    actor: str
-    kind: Kind4
-
-
-class Node7(BaseModel):
-    """
-    Take `then` if `cond` is truthy, else `otherwise`.
-    """
-
-    inputs: dict[str, Ref] | None = Field(
-        {},
-        description='Inputs the node reads, resolved from the ledger before it runs.',
-        validate_default=True,
-    )
-    outputs: dict[str, Ref] | None = Field(
-        {},
-        description='Outputs the node writes back into the ledger when it completes.',
-        validate_default=True,
-    )
-    cond: Ref
-    kind: Kind8
-    otherwise: str | None = None
-    then: str
 
 
 class RunPlan(BaseModel):
@@ -612,47 +575,6 @@ class RunPlan(BaseModel):
     verbosity: Verbosity | None = 'standard'
 
 
-class SandboxConfig(BaseModel):
-    """
-    Per-actor sandbox declaration (keyed by actor name in `HostConfig.sandboxes`).
-    """
-
-    backend: SandboxBackend
-    capture: SandboxCapture | None = None
-    mode: SandboxMode | None = Field('read-only', validate_default=True)
-    network: bool | None = Field(
-        False,
-        description="Whether the actor's tools may reach the network. Off by default.",
-    )
-    seed: SandboxSeed | None = Field(
-        {'copy_from': [], 'files_input': None, 'setup': []}, validate_default=True
-    )
-
-
-class HostConfig(BaseModel):
-    """
-    Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.
-    """
-
-    output_schemas: dict[str, str] | None = Field(
-        {}, description='Actor name → JSON Schema path (relative to the spec dir).'
-    )
-    roles: dict[str, HostRole] | None = Field(
-        {},
-        description='Actor name → role prompt (inline or file path relative to the spec dir).',
-        validate_default=True,
-    )
-    sandboxes: dict[str, SandboxConfig] | None = Field(
-        {},
-        description='Actor name → sandbox declaration (seeded workspace the actor runs in). Host-only, like the rest of `HostConfig`; honored by `jesterky-sandbox`.',
-        validate_default=True,
-    )
-    viz: HostVizConfig | None = Field(
-        None,
-        description='Live terminal viz hints (item preseed, matrix field, map node label).',
-    )
-
-
 class WorkflowSpec(BaseModel):
     """
     A whole workflow. `entrypoint` is the ordered list of top-level nodes to run (matches mloky's model). `nodes` is the id → node map.
@@ -701,7 +623,7 @@ class WorkflowSpec(BaseModel):
     )
 
 
-class Node4(BaseModel):
+class NodeMap(BaseModel):
     """
     Fan `body` over `over`, binding each element as `item_as`. `concurrency` opts into parallel execution (ADR #5); `None`/`1` = serial. `min_success` is the reduce-gate (fraction of items that must succeed).
     """
@@ -719,12 +641,12 @@ class Node4(BaseModel):
     body: Node
     concurrency: conint(ge=0) | None = None
     item_as: str
-    kind: Kind5
+    kind: Literal['map']
     min_success: float | None = 1.0
     over: Ref
 
 
-class Node5(BaseModel):
+class NodeForEach(BaseModel):
     """
     Serial iteration with side effects visible across items.
     """
@@ -741,11 +663,11 @@ class Node5(BaseModel):
     )
     body: Node
     item_as: str
-    kind: Kind6
+    kind: Literal['for_each']
     over: Ref
 
 
-class Node6(BaseModel):
+class NodeWhile(BaseModel):
     """
     Loop `body` while `cond` resolves truthy, bounded by `max_iters`. Each pass increments the `Addr::iteration` at this node.
     """
@@ -762,11 +684,11 @@ class Node6(BaseModel):
     )
     body: Node
     cond: Ref
-    kind: Kind7
+    kind: Literal['while']
     max_iters: conint(ge=0)
 
 
-class Node8(BaseModel):
+class NodeSessionGroup(BaseModel):
     """
     Spawn one session per element of `sessions`, each running `body` against the named `actor`. `limit` (permits) serializes shared-resource access — this is the "poll under a center logic" pattern (DungeonGrid): set `permits = 1` on the env resource so sessions take turns.
     """
@@ -783,12 +705,12 @@ class Node8(BaseModel):
     )
     actor: str
     body: Node
-    kind: Kind9
+    kind: Literal['session_group']
     limit: Limit | None = None
     sessions: Ref
 
 
-class Node9(BaseModel):
+class NodeResumeSession(BaseModel):
     """
     Resume a previously-checkpointed session and run `body`.
     """
@@ -804,21 +726,40 @@ class Node9(BaseModel):
         validate_default=True,
     )
     body: Node
-    kind: Kind10
+    kind: Literal['resume_session']
     session: Ref
 
 
 class Node(
-    RootModel[Node1 | Node2 | Node3 | Node4 | Node5 | Node6 | Node7 | Node8 | Node9]
+    RootModel[
+        NodeProgram
+        | NodeReduce
+        | NodeActor
+        | NodeMap
+        | NodeForEach
+        | NodeWhile
+        | NodeBranch
+        | NodeSessionGroup
+        | NodeResumeSession
+    ]
 ):
-    root: Node1 | Node2 | Node3 | Node4 | Node5 | Node6 | Node7 | Node8 | Node9 = Field(
-        ..., description='A node = its kind plus its I/O wiring.'
-    )
+    root: (
+        NodeProgram
+        | NodeReduce
+        | NodeActor
+        | NodeMap
+        | NodeForEach
+        | NodeWhile
+        | NodeBranch
+        | NodeSessionGroup
+        | NodeResumeSession
+    ) = Field(..., description='A node = its kind plus its I/O wiring.')
 
 
+JsonValue.model_rebuild()
 WorkflowSpec.model_rebuild()
-Node4.model_rebuild()
-Node5.model_rebuild()
-Node6.model_rebuild()
-Node8.model_rebuild()
-Node9.model_rebuild()
+NodeMap.model_rebuild()
+NodeForEach.model_rebuild()
+NodeWhile.model_rebuild()
+NodeSessionGroup.model_rebuild()
+NodeResumeSession.model_rebuild()

@@ -23,12 +23,16 @@ get the full agentic loop. Ships with the launch blog and the proof packet.
   contract types (`goal.rs`, `budget.rs`) and enforcement in the run loop.
 - **Quality workloads** in `jesterky-quality` — blog/docs corpus scans, trace
   annotate/evaluate (GEPA, GELO, SMR ReportBench), obliq math verify/retrieve,
-  dungeongrid multiplayer; example specs and output schemas for each.
+  dungeongrid multiplayer, and bounded OSS source quality scans; example specs
+  and output schemas for each.
 - **Terminal viz** — `jesterky visualize` renders a finished run's process tree.
 
 ### Changed
 - CLI: `--model`, `--codex-home`, `--cd`, `--args-file`, `--events-out`; replay
   fidelity is addr+kind+payload (wall time is metadata, never identity).
+- Public scan and proof boundaries now validate typed JSON inputs, classify
+  errors, require explicit repository roots, and avoid machine-specific path
+  discovery.
 
 ### Breaking changes
 - None. The new crates and CLI flags are additive for existing 0.1.x users.

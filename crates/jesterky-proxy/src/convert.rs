@@ -4,200 +4,704 @@
 //! single-turn, no-tool case is handled; a tool-call item is refused loudly
 //! rather than mis-translated.
 
-use serde_json::{json, Map, Value};
+use serde::de::Error as _;
+use serde::{Deserialize, Deserializer, Serialize};
+use serde_json::{Value, json};
 
 /// A request that cannot be translated (e.g. a tool round-trip item). The server
 /// surfaces this as a 400.
 #[derive(Debug, thiserror::Error)]
-#[error("{0}")]
-pub struct ConvertError(pub String);
+pub enum ConvertError {
+    #[error("invalid Responses request shape: {detail}")]
+    InvalidRequest { detail: String },
+    #[error("unable to serialize {target}: {detail}")]
+    Serialization {
+        target: &'static str,
+        detail: String,
+    },
+}
 
-/// Flatten a Responses content value (str, or list of typed parts) to text.
-fn text_from_content(content: &Value) -> String {
-    match content {
-        Value::String(s) => s.clone(),
-        Value::Array(parts) => {
-            let mut out = String::new();
-            for part in parts {
-                match part {
-                    Value::String(s) => out.push_str(s),
-                    Value::Object(map) => {
-                        if let Some(Value::String(t)) = map.get("text") {
-                            out.push_str(t);
-                        }
-                    }
-                    _ => {}
-                }
-            }
-            out
-        }
-        _ => String::new(),
+#[derive(Debug, Clone)]
+struct NonEmptyString(String);
+
+impl NonEmptyString {
+    fn into_inner(self) -> String {
+        self.0
     }
 }
 
-/// Map a Responses role to a chat role. codex emits `developer` for the system
-/// prompt (Responses convention) — map it to `system`.
-fn role_to_chat(role: &str) -> &'static str {
-    match role {
-        "developer" | "system" => "system",
-        "assistant" => "assistant",
-        _ => "user",
+impl<'de> Deserialize<'de> for NonEmptyString {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value = String::deserialize(deserializer)?;
+        if value.trim().is_empty() {
+            return Err(D::Error::custom("must be a non-empty string"));
+        }
+        Ok(Self(value))
+    }
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct ResponsesRequest {
+    model: String,
+    instructions: Option<String>,
+    input: Vec<ResponsesInputItem>,
+    max_output_tokens: Option<i64>,
+    max_tokens: Option<i64>,
+    temperature: Option<f64>,
+    stream: Option<bool>,
+    tools: Vec<ResponsesTool>,
+    tool_choice: Option<ToolChoice>,
+    parallel_tool_calls: Option<bool>,
+    text: Option<ResponsesText>,
+}
+
+impl ResponsesRequest {
+    pub(crate) fn from_value(value: &Value) -> Result<Self, ConvertError> {
+        let raw: RawResponsesRequest =
+            serde_json::from_value(value.clone()).map_err(|err| ConvertError::InvalidRequest {
+                detail: err.to_string(),
+            })?;
+        Ok(Self::from(raw))
+    }
+
+    pub(crate) fn model(&self) -> &str {
+        &self.model
+    }
+
+    pub(crate) fn stream_enabled(&self) -> bool {
+        self.stream != Some(false)
+    }
+}
+
+impl From<RawResponsesRequest> for ResponsesRequest {
+    fn from(raw: RawResponsesRequest) -> Self {
+        let input = raw
+            .input
+            .into_iter()
+            .map(ResponsesInputItem::from_raw)
+            .collect();
+        let tools = raw
+            .tools
+            .unwrap_or_default()
+            .into_iter()
+            .map(ResponsesTool::from_raw)
+            .collect();
+        Self {
+            model: raw.model.into_inner(),
+            instructions: raw.instructions,
+            input,
+            max_output_tokens: raw.max_output_tokens,
+            max_tokens: raw.max_tokens,
+            temperature: raw.temperature,
+            stream: raw.stream,
+            tools,
+            tool_choice: raw.tool_choice,
+            parallel_tool_calls: raw.parallel_tool_calls,
+            text: raw.text,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct RawResponsesRequest {
+    model: NonEmptyString,
+    instructions: Option<String>,
+    input: Vec<RawResponsesInputItem>,
+    max_output_tokens: Option<i64>,
+    max_tokens: Option<i64>,
+    temperature: Option<f64>,
+    stream: Option<bool>,
+    tools: Option<Vec<RawResponsesTool>>,
+    tool_choice: Option<ToolChoice>,
+    parallel_tool_calls: Option<bool>,
+    text: Option<ResponsesText>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(untagged)]
+enum ToolChoice {
+    Mode(ToolChoiceMode),
+    Function(Value),
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum ToolChoiceMode {
+    Auto,
+    None,
+    Required,
+}
+
+#[derive(Debug, Clone)]
+enum RawResponsesInputItem {
+    Text(String),
+    Typed(TypedResponsesInputItem),
+    UntypedMessage(UntypedResponsesMessage),
+}
+
+impl<'de> Deserialize<'de> for RawResponsesInputItem {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        match Value::deserialize(deserializer)? {
+            Value::String(text) => Ok(Self::Text(text)),
+            Value::Object(object) => {
+                let value = Value::Object(object);
+                if value.get("type").is_some() {
+                    serde_json::from_value(value)
+                        .map(Self::Typed)
+                        .map_err(D::Error::custom)
+                } else {
+                    serde_json::from_value(value)
+                        .map(Self::UntypedMessage)
+                        .map_err(D::Error::custom)
+                }
+            }
+            Value::Null => Err(D::Error::custom(
+                "Responses input item must be a string or object, got null",
+            )),
+            Value::Bool(_) => Err(D::Error::custom(
+                "Responses input item must be a string or object, got boolean",
+            )),
+            Value::Number(_) => Err(D::Error::custom(
+                "Responses input item must be a string or object, got number",
+            )),
+            Value::Array(_) => Err(D::Error::custom(
+                "Responses input item must be a string or object, got array",
+            )),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+enum TypedResponsesInputItem {
+    Message {
+        role: ResponsesRole,
+        content: ResponsesContent,
+    },
+    FunctionCall {
+        #[serde(alias = "id")]
+        call_id: NonEmptyString,
+        name: NonEmptyString,
+        arguments: NonEmptyString,
+    },
+    FunctionCallOutput {
+        call_id: NonEmptyString,
+        output: Value,
+    },
+    Reasoning,
+    ReasoningSummary,
+    ComputerCall,
+    ComputerCallOutput,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct UntypedResponsesMessage {
+    role: ResponsesRole,
+    content: ResponsesContent,
+}
+
+#[derive(Debug, Clone)]
+enum ResponsesInputItem {
+    Text(String),
+    Message {
+        role: ResponsesRole,
+        content: ResponsesContent,
+    },
+    FunctionCall {
+        call_id: String,
+        name: String,
+        arguments: String,
+    },
+    FunctionCallOutput {
+        call_id: String,
+        output: Value,
+    },
+    ReasoningOrTrace,
+}
+
+impl ResponsesInputItem {
+    fn from_raw(raw: RawResponsesInputItem) -> Self {
+        match raw {
+            RawResponsesInputItem::Text(text) => Self::Text(text),
+            RawResponsesInputItem::UntypedMessage(message) => Self::Message {
+                role: message.role,
+                content: message.content,
+            },
+            RawResponsesInputItem::Typed(TypedResponsesInputItem::Message { role, content }) => {
+                Self::Message { role, content }
+            }
+            RawResponsesInputItem::Typed(TypedResponsesInputItem::FunctionCall {
+                call_id,
+                name,
+                arguments,
+            }) => Self::FunctionCall {
+                call_id: call_id.into_inner(),
+                name: name.into_inner(),
+                arguments: arguments.into_inner(),
+            },
+            RawResponsesInputItem::Typed(TypedResponsesInputItem::FunctionCallOutput {
+                call_id,
+                output,
+            }) => Self::FunctionCallOutput {
+                call_id: call_id.into_inner(),
+                output,
+            },
+            RawResponsesInputItem::Typed(
+                TypedResponsesInputItem::Reasoning
+                | TypedResponsesInputItem::ReasoningSummary
+                | TypedResponsesInputItem::ComputerCall
+                | TypedResponsesInputItem::ComputerCallOutput,
+            ) => Self::ReasoningOrTrace,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum ResponsesRole {
+    Developer,
+    System,
+    User,
+    Assistant,
+}
+
+impl ResponsesRole {
+    fn chat_role(self) -> ChatRole {
+        match self {
+            Self::Developer | Self::System => ChatRole::System,
+            Self::User => ChatRole::User,
+            Self::Assistant => ChatRole::Assistant,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
+enum ResponsesContent {
+    Text(String),
+    Parts(Vec<ResponsesContentPart>),
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
+enum ResponsesContentPart {
+    Text(String),
+    Object(ResponsesTextContentPart),
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+enum ResponsesTextContentPart {
+    InputText { text: String },
+    OutputText { text: String },
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+enum RawResponsesTool {
+    Function {
+        name: NonEmptyString,
+        description: Option<Value>,
+        parameters: Value,
+        strict: Option<Value>,
+    },
+    Custom {
+        name: NonEmptyString,
+        #[serde(rename = "format")]
+        _format: Option<Value>,
+    },
+    Namespace {
+        name: NonEmptyString,
+        #[serde(rename = "description")]
+        _description: Option<Value>,
+        #[serde(rename = "tools")]
+        _tools: Option<Vec<RawResponsesTool>>,
+    },
+    WebSearch,
+    FileSearch,
+    ImageGeneration,
+    CodeInterpreter,
+    Shell,
+    ApplyPatch,
+    Skill,
+    ComputerUsePreview,
+    Mcp,
+    ToolSearch,
+}
+
+#[derive(Debug, Clone)]
+enum ResponsesTool {
+    Function {
+        name: String,
+        description: Option<Value>,
+        parameters: Value,
+        strict: Option<Value>,
+    },
+    Custom {
+        name: String,
+    },
+    Namespace {
+        name: String,
+    },
+    Builtin {
+        kind: ResponsesBuiltinToolKind,
+    },
+}
+
+#[derive(Debug, Clone, Copy)]
+enum ResponsesBuiltinToolKind {
+    WebSearch,
+    FileSearch,
+    ImageGeneration,
+    CodeInterpreter,
+    Shell,
+    ApplyPatch,
+    Skill,
+    ComputerUsePreview,
+    Mcp,
+    ToolSearch,
+}
+
+impl ResponsesBuiltinToolKind {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::WebSearch => "web_search",
+            Self::FileSearch => "file_search",
+            Self::ImageGeneration => "image_generation",
+            Self::CodeInterpreter => "code_interpreter",
+            Self::Shell => "shell",
+            Self::ApplyPatch => "apply_patch",
+            Self::Skill => "skill",
+            Self::ComputerUsePreview => "computer_use_preview",
+            Self::Mcp => "mcp",
+            Self::ToolSearch => "tool_search",
+        }
+    }
+}
+
+impl ResponsesTool {
+    fn from_raw(raw: RawResponsesTool) -> Self {
+        match raw {
+            RawResponsesTool::Function {
+                name,
+                description,
+                parameters,
+                strict,
+            } => Self::Function {
+                name: name.into_inner(),
+                description,
+                parameters,
+                strict,
+            },
+            RawResponsesTool::Custom { name, _format: _ } => Self::Custom {
+                name: name.into_inner(),
+            },
+            RawResponsesTool::Namespace {
+                name,
+                _description: _,
+                _tools: _,
+            } => Self::Namespace {
+                name: name.into_inner(),
+            },
+            RawResponsesTool::WebSearch => Self::builtin(ResponsesBuiltinToolKind::WebSearch),
+            RawResponsesTool::FileSearch => Self::builtin(ResponsesBuiltinToolKind::FileSearch),
+            RawResponsesTool::ImageGeneration => {
+                Self::builtin(ResponsesBuiltinToolKind::ImageGeneration)
+            }
+            RawResponsesTool::CodeInterpreter => {
+                Self::builtin(ResponsesBuiltinToolKind::CodeInterpreter)
+            }
+            RawResponsesTool::Shell => Self::builtin(ResponsesBuiltinToolKind::Shell),
+            RawResponsesTool::ApplyPatch => Self::builtin(ResponsesBuiltinToolKind::ApplyPatch),
+            RawResponsesTool::Skill => Self::builtin(ResponsesBuiltinToolKind::Skill),
+            RawResponsesTool::ComputerUsePreview => {
+                Self::builtin(ResponsesBuiltinToolKind::ComputerUsePreview)
+            }
+            RawResponsesTool::Mcp => Self::builtin(ResponsesBuiltinToolKind::Mcp),
+            RawResponsesTool::ToolSearch => Self::builtin(ResponsesBuiltinToolKind::ToolSearch),
+        }
+    }
+
+    fn builtin(kind: ResponsesBuiltinToolKind) -> Self {
+        Self::Builtin { kind }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+enum ResponsesTextFormat {
+    Text,
+    JsonObject,
+    JsonSchema {
+        name: String,
+        schema: Value,
+        strict: Option<bool>,
+    },
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ResponsesText {
+    format: Option<ResponsesTextFormat>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatPayload {
+    model: String,
+    messages: Vec<ChatMessage>,
+    stream: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_tokens: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    temperature: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tools: Option<Vec<ChatTool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tool_choice: Option<ToolChoice>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parallel_tool_calls: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    response_format: Option<Value>,
+}
+
+impl ChatPayload {
+    fn new(model: &str) -> Self {
+        Self {
+            model: model.to_string(),
+            messages: Vec::new(),
+            stream: false,
+            max_tokens: None,
+            temperature: None,
+            tools: None,
+            tool_choice: None,
+            parallel_tool_calls: None,
+            response_format: None,
+        }
+    }
+
+    fn into_value(self) -> Result<Value, ConvertError> {
+        serde_json::to_value(self).map_err(|err| ConvertError::Serialization {
+            target: "chat payload",
+            detail: err.to_string(),
+        })
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatMessage {
+    role: ChatRole,
+    content: Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tool_calls: Option<Vec<ChatToolCall>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tool_call_id: Option<String>,
+}
+
+impl ChatMessage {
+    fn system(content: impl Into<String>) -> Self {
+        Self::text(ChatRole::System, content)
+    }
+
+    fn text(role: ChatRole, content: impl Into<String>) -> Self {
+        Self {
+            role,
+            content: Value::String(content.into()),
+            tool_calls: None,
+            tool_call_id: None,
+        }
+    }
+
+    fn assistant_tool_call(call_id: String, name: String, arguments: String) -> Self {
+        Self {
+            role: ChatRole::Assistant,
+            content: Value::Null,
+            tool_calls: Some(vec![ChatToolCall {
+                id: call_id,
+                kind: "function".to_string(),
+                function: ChatToolFunctionCall { name, arguments },
+            }]),
+            tool_call_id: None,
+        }
+    }
+
+    fn tool_result(call_id: String, content: String) -> Self {
+        Self {
+            role: ChatRole::Tool,
+            content: Value::String(content),
+            tool_calls: None,
+            tool_call_id: Some(call_id),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum ChatRole {
+    System,
+    User,
+    Assistant,
+    Tool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatToolCall {
+    id: String,
+    #[serde(rename = "type")]
+    kind: String,
+    function: ChatToolFunctionCall,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatToolFunctionCall {
+    name: String,
+    arguments: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatTool {
+    #[serde(rename = "type")]
+    kind: String,
+    function: ChatToolFunction,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ChatToolFunction {
+    name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<Value>,
+    parameters: Value,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    strict: Option<Value>,
+}
+
+/// Flatten a Responses content value (str, or list of typed parts) to text.
+fn text_from_content(content: &ResponsesContent) -> Result<String, ConvertError> {
+    match content {
+        ResponsesContent::Text(s) => Ok(s.clone()),
+        ResponsesContent::Parts(parts) => {
+            let mut out = String::new();
+            for part in parts {
+                match part {
+                    ResponsesContentPart::Text(s) => out.push_str(s),
+                    ResponsesContentPart::Object(ResponsesTextContentPart::InputText { text })
+                    | ResponsesContentPart::Object(ResponsesTextContentPart::OutputText { text }) => {
+                        out.push_str(text)
+                    }
+                }
+            }
+            Ok(out)
+        }
     }
 }
 
 /// Translate a codex Responses request body into an OpenAI chat/completions
 /// payload. `upstream_model` is the model id sent upstream (may differ from the
 /// codex-facing route id in the request body).
-pub fn responses_request_to_chat(
+#[cfg(test)]
+fn responses_request_to_chat(
     body: &Value,
     upstream_model: &str,
     supports_json_schema: bool,
 ) -> Result<Value, ConvertError> {
-    let mut messages: Vec<Value> = Vec::new();
+    let request = ResponsesRequest::from_value(body)?;
+    responses_request_to_chat_payload(&request, upstream_model, supports_json_schema)
+}
 
-    if let Some(Value::String(instructions)) = body.get("instructions") {
+pub(crate) fn responses_request_to_chat_payload(
+    request: &ResponsesRequest,
+    upstream_model: &str,
+    supports_json_schema: bool,
+) -> Result<Value, ConvertError> {
+    let mut chat = ChatPayload::new(upstream_model);
+
+    if let Some(instructions) = &request.instructions {
         if !instructions.trim().is_empty() {
-            messages.push(json!({"role": "system", "content": instructions}));
+            chat.messages.push(ChatMessage::system(instructions));
         }
     }
 
-    if let Some(Value::Array(items)) = body.get("input") {
-        for item in items {
-            match item {
-                Value::String(s) => {
-                    messages.push(json!({"role": "user", "content": s}));
-                }
-                Value::Object(map) => {
-                    let itype = map.get("type").and_then(Value::as_str);
-                    match itype {
-                        // A plain message (the common case + the system/user turns).
-                        None | Some("message") => {
-                            let text =
-                                text_from_content(map.get("content").unwrap_or(&Value::Null));
-                            let role =
-                                map.get("role").and_then(Value::as_str).unwrap_or("user");
-                            messages.push(json!({"role": role_to_chat(role), "content": text}));
-                        }
-                        // The assistant's prior tool call → a chat assistant message
-                        // carrying one `tool_calls` entry (arguments is already a JSON
-                        // string). One message per call keeps the tool-message pairing
-                        // valid for every provider.
-                        Some("function_call") => {
-                            let call_id = map
-                                .get("call_id")
-                                .or_else(|| map.get("id"))
-                                .and_then(Value::as_str)
-                                .unwrap_or_default();
-                            let name = map.get("name").and_then(Value::as_str).unwrap_or_default();
-                            let arguments = map
-                                .get("arguments")
-                                .and_then(Value::as_str)
-                                .unwrap_or("{}");
-                            messages.push(json!({
-                                "role": "assistant",
-                                "content": Value::Null,
-                                "tool_calls": [{
-                                    "id": call_id,
-                                    "type": "function",
-                                    "function": {"name": name, "arguments": arguments},
-                                }],
-                            }));
-                        }
-                        // The tool's result codex feeds back → a chat `tool` message.
-                        Some("function_call_output") => {
-                            let call_id = map
-                                .get("call_id")
-                                .and_then(Value::as_str)
-                                .unwrap_or_default();
-                            let content = match map.get("output") {
-                                Some(Value::String(s)) => s.clone(),
-                                Some(other) => other.to_string(),
-                                None => String::new(),
-                            };
-                            messages.push(json!({
-                                "role": "tool",
-                                "tool_call_id": call_id,
-                                "content": content,
-                            }));
-                        }
-                        // Reasoning traces and any other item kinds carry no chat
-                        // equivalent — skip rather than refuse (the loop must survive
-                        // a multi-turn agentic transcript).
-                        _ => {}
-                    }
-                }
-                _ => {}
+    for item in &request.input {
+        match item {
+            ResponsesInputItem::Text(s) => {
+                chat.messages.push(ChatMessage::text(ChatRole::User, s));
             }
+            // A plain message (the common case + the system/user turns).
+            ResponsesInputItem::Message { role, content } => {
+                let text = text_from_content(content)?;
+                chat.messages
+                    .push(ChatMessage::text(role.chat_role(), text));
+            }
+            // The assistant's prior tool call → a chat assistant message carrying one
+            // `tool_calls` entry. One message per call keeps the tool-message pairing
+            // valid for every provider.
+            ResponsesInputItem::FunctionCall {
+                call_id,
+                name,
+                arguments,
+            } => {
+                chat.messages.push(ChatMessage::assistant_tool_call(
+                    call_id.clone(),
+                    name.clone(),
+                    arguments.clone(),
+                ));
+            }
+            // The tool's result codex feeds back → a chat `tool` message.
+            ResponsesInputItem::FunctionCallOutput { call_id, output } => {
+                let content = match output {
+                    Value::String(s) => s.clone(),
+                    other => other.to_string(),
+                };
+                chat.messages
+                    .push(ChatMessage::tool_result(call_id.clone(), content));
+            }
+            // Reasoning traces and any other item kinds carry no chat equivalent.
+            // Reasoning is explicitly skipped so an agentic transcript can round-trip
+            // without pretending it was chat.
+            ResponsesInputItem::ReasoningOrTrace => {}
         }
     }
-
-    let mut chat = Map::new();
-    chat.insert("model".to_string(), json!(upstream_model));
-    chat.insert("messages".to_string(), Value::Array(messages));
-    chat.insert("stream".to_string(), json!(false));
 
     // max_output_tokens (or max_tokens) -> chat max_tokens, if a positive int.
-    let max_out = body
-        .get("max_output_tokens")
-        .and_then(Value::as_i64)
-        .or_else(|| body.get("max_tokens").and_then(Value::as_i64));
+    let max_out = request.max_output_tokens.or(request.max_tokens);
     if let Some(n) = max_out {
         if n > 0 {
-            chat.insert("max_tokens".to_string(), json!(n));
+            chat.max_tokens = Some(n);
         }
     }
 
     // temperature passthrough, if numeric.
-    if let Some(t) = body.get("temperature") {
-        if t.is_number() {
-            chat.insert("temperature".to_string(), t.clone());
-        }
+    if let Some(t) = &request.temperature {
+        chat.temperature = Some(*t);
     }
 
     // Tools: Responses `{type:function, name, description, parameters, strict}` ->
     // chat `{type:function, function:{...}}`. This is what makes an AGENTIC codex
     // loop work through the proxy. `strict` is kept only for providers that accept
     // strict schemas (else it can be rejected). Non-function tool types (built-in
-    // Responses tools) have no chat equivalent and are dropped.
-    let has_tools = if let Some(Value::Array(tools)) = body.get("tools") {
-        let chat_tools: Vec<Value> = tools
-            .iter()
-            .filter_map(|t| {
-                let o = t.as_object()?;
-                if o.get("type").and_then(Value::as_str) != Some("function") {
-                    return None;
-                }
-                let mut f = Map::new();
-                f.insert("name".to_string(), o.get("name")?.clone());
-                if let Some(d) = o.get("description") {
-                    f.insert("description".to_string(), d.clone());
-                }
-                f.insert(
-                    "parameters".to_string(),
-                    o.get("parameters").cloned().unwrap_or_else(|| json!({})),
-                );
-                if supports_json_schema {
-                    if let Some(s) = o.get("strict") {
-                        f.insert("strict".to_string(), s.clone());
-                    }
-                }
-                Some(json!({"type": "function", "function": Value::Object(f)}))
-            })
-            .collect();
-        let present = !chat_tools.is_empty();
-        if present {
-            chat.insert("tools".to_string(), Value::Array(chat_tools));
-            if let Some(tc) = body.get("tool_choice") {
-                chat.insert("tool_choice".to_string(), tc.clone());
-            }
-            if let Some(p) = body.get("parallel_tool_calls") {
-                chat.insert("parallel_tool_calls".to_string(), p.clone());
-            }
+    // Responses tools) have no chat equivalent and are rejected at ingestion.
+    let translated_tools = chat_tools(&request.tools, supports_json_schema);
+    if !translated_tools.omitted_custom_names.is_empty() {
+        chat.messages.push(ChatMessage::system(format!(
+            "These Responses custom tools are unavailable through the chat/completions provider route: {}.",
+            translated_tools.omitted_custom_names.join(", ")
+        )));
+    }
+    let has_tools = !translated_tools.tools.is_empty();
+    if has_tools {
+        chat.tools = Some(translated_tools.tools);
+        if let Some(tool_choice) = &request.tool_choice {
+            chat.tool_choice = Some(tool_choice.clone());
         }
-        present
-    } else {
-        false
-    };
+        if let Some(parallel_tool_calls) = &request.parallel_tool_calls {
+            chat.parallel_tool_calls = Some(parallel_tool_calls.clone());
+        }
+    }
 
     // Structured output: Responses `text.format` json_schema -> chat response_format.
     // Providers that accept strict json_schema get it verbatim; those that only
@@ -208,51 +712,92 @@ pub fn responses_request_to_chat(
     // tool call, and forcing `json_object` (esp. the DeepSeek downgrade) would coerce
     // prose-JSON instead. The final answer is validated host-side by `ModelActor`.
     if has_tools {
-        return Ok(Value::Object(chat));
+        return chat.into_value();
     }
-    if let Some(Value::Object(text_obj)) = body.get("text") {
-        if let Some(Value::Object(fmt)) = text_obj.get("format") {
-            if fmt.get("type").and_then(Value::as_str) == Some("json_schema") {
-                let schema = fmt.get("schema").cloned().unwrap_or_else(|| json!({}));
+    if let Some(format) = request.text.as_ref().and_then(|text| text.format.as_ref()) {
+        match format {
+            ResponsesTextFormat::Text => {}
+            ResponsesTextFormat::JsonObject => {
+                chat.response_format = Some(json!({"type": "json_object"}));
+            }
+            ResponsesTextFormat::JsonSchema {
+                name,
+                schema,
+                strict,
+            } => {
                 if supports_json_schema {
-                    let mut js = Map::new();
-                    js.insert(
-                        "name".to_string(),
-                        fmt.get("name").cloned().unwrap_or_else(|| json!("output")),
-                    );
-                    js.insert("schema".to_string(), schema);
-                    if let Some(strict) = fmt.get("strict") {
-                        js.insert("strict".to_string(), strict.clone());
+                    let mut response_format = json!({
+                        "type": "json_schema",
+                        "json_schema": {
+                            "name": name,
+                            "schema": schema,
+                        }
+                    });
+                    if let Some(strict) = strict {
+                        response_format["json_schema"]["strict"] = json!(strict);
                     }
-                    chat.insert(
-                        "response_format".to_string(),
-                        json!({"type": "json_schema", "json_schema": Value::Object(js)}),
-                    );
+                    chat.response_format = Some(response_format);
                 } else {
-                    chat.insert(
-                        "response_format".to_string(),
-                        json!({"type": "json_object"}),
-                    );
+                    chat.response_format = Some(json!({"type": "json_object"}));
                     // Inject the schema so the model knows the exact shape json_object
                     // alone does not constrain. Prepend so later turns can't bury it.
-                    if let Some(Value::Array(msgs)) = chat.get_mut("messages") {
-                        msgs.insert(
-                            0,
-                            json!({
-                                "role": "system",
-                                "content": format!(
-                                    "You MUST reply with a single JSON object conforming exactly to this JSON Schema (no prose, no markdown):\n{}",
-                                    serde_json::to_string(&schema).unwrap_or_default()
-                                ),
-                            }),
-                        );
-                    }
+                    let schema_text = serde_json::to_string(schema).map_err(|err| {
+                        ConvertError::Serialization {
+                            target: "response schema",
+                            detail: err.to_string(),
+                        }
+                    })?;
+                    chat.messages.insert(
+                    0,
+                    ChatMessage::system(format!(
+                        "You MUST reply with a single JSON object conforming exactly to this JSON Schema (no prose, no markdown):\n{schema_text}",
+                    )),
+                );
                 }
             }
         }
     }
 
-    Ok(Value::Object(chat))
+    chat.into_value()
+}
+
+struct ToolTranslation {
+    tools: Vec<ChatTool>,
+    omitted_custom_names: Vec<String>,
+}
+
+fn chat_tools(tools: &[ResponsesTool], supports_json_schema: bool) -> ToolTranslation {
+    let mut out = Vec::new();
+    let mut omitted_custom_names = Vec::new();
+    for tool in tools {
+        match tool {
+            ResponsesTool::Function {
+                name,
+                description,
+                parameters,
+                strict,
+            } => out.push(ChatTool {
+                kind: "function".to_string(),
+                function: ChatToolFunction {
+                    name: name.clone(),
+                    description: description.clone(),
+                    parameters: parameters.clone(),
+                    strict: supports_json_schema.then(|| strict.clone()).flatten(),
+                },
+            }),
+            ResponsesTool::Custom { name } => omitted_custom_names.push(name.clone()),
+            ResponsesTool::Namespace { name } => {
+                omitted_custom_names.push(format!("namespace:{name}"));
+            }
+            ResponsesTool::Builtin { kind } => {
+                omitted_custom_names.push(kind.as_str().to_string());
+            }
+        }
+    }
+    ToolTranslation {
+        tools: out,
+        omitted_custom_names,
+    }
 }
 
 #[cfg(test)]
@@ -351,7 +896,10 @@ mod tests {
         let roles: Vec<&str> = msgs.iter().map(|m| m["role"].as_str().unwrap()).collect();
         assert_eq!(roles, vec!["system", "user", "assistant", "tool"]);
         assert_eq!(msgs[2]["tool_calls"][0]["id"], json!("call_1"));
-        assert_eq!(msgs[2]["tool_calls"][0]["function"]["name"], json!("exec_command"));
+        assert_eq!(
+            msgs[2]["tool_calls"][0]["function"]["name"],
+            json!("exec_command")
+        );
         assert_eq!(msgs[3]["tool_call_id"], json!("call_1"));
         assert_eq!(msgs[3]["content"], json!("ok, built"));
     }
@@ -369,9 +917,11 @@ mod tests {
         let msgs = chat["messages"].as_array().unwrap();
         assert_eq!(msgs[0]["role"], json!("system"));
         assert!(msgs[0]["content"].as_str().unwrap().contains("JSON Schema"));
-        assert!(msgs[0]["content"]
-            .as_str()
-            .unwrap()
-            .contains("\"required\""));
+        assert!(
+            msgs[0]["content"]
+                .as_str()
+                .unwrap()
+                .contains("\"required\"")
+        );
     }
 }

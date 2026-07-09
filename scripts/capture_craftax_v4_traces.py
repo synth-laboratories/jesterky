@@ -8,7 +8,7 @@ under proof/craftax_v4_traces/.
 Prereqs:
   - Rust gold on CRAFTAX_GOLD_URL (default http://127.0.0.1:8098)
   - Craftax ReAct container on CONTAINER_URL (default http://127.0.0.1:18104)
-  - GEMINI_API_KEY in env or --env-file (default ~/Documents/GitHub/synth-ai/.env)
+  - Provider credentials configured in the running ReAct container
 """
 
 from __future__ import annotations
@@ -17,133 +17,268 @@ import argparse
 import json
 import os
 import sys
-import time
 import uuid
+from dataclasses import asdict, dataclass
+from enum import Enum
 from pathlib import Path
-from typing import Any
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+
+from http_contract import HttpMethod, request_json_object, wait_for_json_health
+from json_contract import JsonObject, JsonObjectReader
 
 DEFAULT_GOLD_URL = "http://127.0.0.1:8098"
 DEFAULT_CONTAINER_URL = "http://127.0.0.1:18104"
 DEFAULT_OUT_DIR = Path(__file__).resolve().parents[1] / "proof" / "craftax_v4_traces"
-DEFAULT_ENV_FILE = Path.home() / "Documents" / "GitHub" / "synth-ai" / ".env"
 DEFAULT_SEEDS = [1, 2, 3, 4, 5, 6, 7, 8]
 
 
-def load_env_file(path: Path) -> None:
-    if not path.is_file():
-        return
-    for line in path.read_text().splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        key = key.strip()
-        if key and key not in os.environ:
-            os.environ[key] = value.strip().strip('"').strip("'")
+class HealthField(str, Enum):
+    OK = "ok"
+    HEALTHY = "healthy"
 
 
-def http_json(method: str, url: str, payload: dict[str, Any] | None = None, timeout_s: float = 600.0) -> Any:
-    data = None
-    headers = {"Accept": "application/json"}
-    if payload is not None:
-        data = json.dumps(payload).encode("utf-8")
-        headers["Content-Type"] = "application/json"
-    req = Request(url, data=data, headers=headers, method=method)
-    with urlopen(req, timeout=timeout_s) as resp:
-        body = resp.read().decode("utf-8")
-        return json.loads(body) if body else {}
+class RolloutStatus(str, Enum):
+    COMPLETED = "completed"
 
 
-def wait_for_health(label: str, url: str, timeout_s: float = 120.0) -> None:
-    deadline = time.time() + timeout_s
-    last_err = ""
-    while time.time() < deadline:
-        try:
-            payload = http_json("GET", f"{url.rstrip('/')}/health", timeout_s=10.0)
-            if isinstance(payload, dict) and (
-                payload.get("ok") is True or payload.get("healthy") is True or payload.get("status") == "ok"
-            ):
-                return
-            last_err = f"unexpected health payload: {payload}"
-        except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
-            last_err = str(exc)
-        time.sleep(2.0)
-    raise RuntimeError(f"{label} not healthy at {url}: {last_err}")
+class ArtifactType(str, Enum):
+    TURNS = "turns"
 
 
-def turns_from_record(record: dict[str, Any]) -> list[dict[str, Any]]:
-    for key in ("artifacts", "artifact"):
-        items = record.get(key)
-        if not isinstance(items, list):
-            continue
-        for item in items:
-            if isinstance(item, dict) and item.get("artifact_type") == "turns":
-                turns = item.get("turns")
-                if isinstance(turns, list):
-                    return [t for t in turns if isinstance(t, dict)]
-    return []
+def wait_for_health(
+    label: str,
+    url: str,
+    contract: HealthField,
+    timeout_s: float = 120.0,
+) -> None:
+    wait_for_json_health(
+        label,
+        url,
+        lambda payload: payload.boolean(contract.value),
+        timeout_s,
+    )
 
 
-def build_v4_trace(record: dict[str, Any], *, seed: int, max_steps: int) -> dict[str, Any]:
-    rollout_id = str(record.get("rollout_id") or uuid.uuid4())
-    trace_correlation_id = str(record.get("trace_correlation_id") or rollout_id)
-    turns = turns_from_record(record)
-    reward_info = record.get("reward_info") if isinstance(record.get("reward_info"), dict) else {}
-    details = reward_info.get("details") if isinstance(reward_info.get("details"), dict) else {}
-    outcome_reward = float(reward_info.get("outcome_reward") or details.get("total_reward") or 0.0)
-    achievements = details.get("achievements") or []
-    if not isinstance(achievements, list):
-        achievements = []
-    metadata = record.get("metadata") if isinstance(record.get("metadata"), dict) else {}
-    spans: list[dict[str, Any]] = []
-    events: list[dict[str, Any]] = []
-    llm_call_index = 0
-    for turn in turns:
-        if int(turn.get("batch_index") or 0) != 0:
-            continue
-        llm_call_index += 1
-        assistant_text = str(turn.get("assistant_text") or "")
-        action = str(turn.get("action") or "noop")
-        span_id = f"{rollout_id}-span-{llm_call_index:04d}"
-        user_text = (
-            f"Craftax turn {turn.get('ply', llm_call_index)}; "
-            f"reward_total={turn.get('reward_total', 0.0)}; "
-            f"achievements={turn.get('achievements', [])}"
+@dataclass(frozen=True)
+class CraftaxTurn:
+    batch_index: int
+    action: str
+    ply: int
+    reward_total: float
+    achievements: tuple[str, ...]
+    invalid_parse: bool
+    repaired: bool
+    batch_size: int
+
+
+@dataclass(frozen=True)
+class CraftaxPrimaryTurn(CraftaxTurn):
+    assistant_text: str
+    model: str
+    usage: TokenUsage
+    request_id: str
+
+
+@dataclass(frozen=True)
+class CraftaxContinuationTurn(CraftaxTurn):
+    pass
+
+
+@dataclass(frozen=True)
+class TokenUsage:
+    completion_tokens: int
+    prompt_tokens: int
+    total_tokens: int
+
+    @classmethod
+    def parse(cls, raw: JsonObjectReader) -> "TokenUsage":
+        return cls(
+            completion_tokens=raw.integer("completion_tokens"),
+            prompt_tokens=raw.integer("prompt_tokens"),
+            total_tokens=raw.integer("total_tokens"),
         )
-        llm_request = {
-            "messages": [
-                {"role": "system", "content": "Craftax ReAct policy"},
-                {"role": "user", "content": user_text},
-            ],
-            "model": turn.get("model") or metadata.get("model") or "gemini-3.1-flash-lite",
-        }
-        llm_response = {
-            "message": {"role": "assistant", "content": assistant_text},
-            "usage": turn.get("usage") if isinstance(turn.get("usage"), dict) else {},
-        }
+
+
+class MessageRole(str, Enum):
+    SYSTEM = "system"
+    USER = "user"
+    ASSISTANT = "assistant"
+
+
+@dataclass(frozen=True)
+class TraceMessage:
+    role: MessageRole
+    content: str
+
+
+@dataclass(frozen=True)
+class TraceRequest:
+    messages: tuple[TraceMessage, ...]
+    provider_hint: str
+
+
+@dataclass(frozen=True)
+class LlmRequest:
+    messages: tuple[TraceMessage, ...]
+    model: str
+
+
+@dataclass(frozen=True)
+class TraceResponse:
+    message: TraceMessage
+    usage: TokenUsage
+
+
+def parse_craftax_turn(raw: JsonObjectReader) -> CraftaxTurn:
+    batch_index = raw.integer("batch_index")
+    action = raw.string("action")
+    ply = raw.integer("ply")
+    reward_total = raw.number("reward_total")
+    achievements = raw.strings("achievements")
+    invalid_parse = raw.boolean("invalid_parse")
+    repaired = raw.boolean("repaired")
+    batch_size = raw.integer("batch_size")
+    if batch_index == 0:
+        return CraftaxPrimaryTurn(
+            batch_index=batch_index,
+            action=action,
+            ply=ply,
+            reward_total=reward_total,
+            achievements=achievements,
+            invalid_parse=invalid_parse,
+            repaired=repaired,
+            batch_size=batch_size,
+            assistant_text=raw.string("assistant_text", allow_empty=True),
+            model=raw.string("model"),
+            usage=TokenUsage.parse(raw.object("usage")),
+            request_id=raw.string("request_id"),
+        )
+    raw.null("model")
+    raw.null("request_id")
+    raw.string("assistant_text", allow_empty=True)
+    raw.object("usage")
+    return CraftaxContinuationTurn(
+        batch_index=batch_index,
+        action=action,
+        ply=ply,
+        reward_total=reward_total,
+        achievements=achievements,
+        invalid_parse=invalid_parse,
+        repaired=repaired,
+        batch_size=batch_size,
+    )
+
+
+@dataclass(frozen=True)
+class RolloutMetadata:
+    raw: JsonObject
+
+
+@dataclass(frozen=True)
+class PolicyIdentity:
+    provider: str
+    model: str
+
+
+@dataclass(frozen=True)
+class CraftaxRolloutRecord:
+    raw: JsonObject
+    rollout_id: str
+    trace_correlation_id: str
+    status: RolloutStatus
+    outcome_reward: float
+    achievements: tuple[str, ...]
+    metadata: RolloutMetadata
+    turns: tuple[CraftaxTurn, ...]
+
+    @classmethod
+    def parse(cls, raw: JsonObjectReader) -> "CraftaxRolloutRecord":
+        rollout_id = raw.string("rollout_id")
+        trace_correlation_id = raw.string("trace_correlation_id")
+        status = raw.enum("status", RolloutStatus)
+        reward_info = raw.object("reward_info")
+        details = reward_info.object("details")
+        metadata_reader = raw.object("metadata")
+        metadata = RolloutMetadata(raw=metadata_reader.data)
+        turns = turns_from_record(raw)
+        return cls(
+            raw=raw.data,
+            rollout_id=rollout_id,
+            trace_correlation_id=trace_correlation_id,
+            status=status,
+            outcome_reward=reward_info.number("outcome_reward"),
+            achievements=details.strings("achievements"),
+            metadata=metadata,
+            turns=turns,
+        )
+
+
+def turns_from_record(record: JsonObjectReader) -> tuple[CraftaxTurn, ...]:
+    turns_artifacts = tuple(
+        artifact
+        for artifact in record.objects("artifacts")
+        if artifact.enum("artifact_type", ArtifactType) is ArtifactType.TURNS
+    )
+    if len(turns_artifacts) != 1:
+        raise JsonContractError(
+            "rollout.artifacts must contain exactly one turns artifact; "
+            f"found {len(turns_artifacts)}"
+        )
+    return tuple(
+        parse_craftax_turn(turn) for turn in turns_artifacts[0].objects("turns")
+    )
+
+
+def build_v4_trace(
+    record: CraftaxRolloutRecord,
+    *,
+    seed: int,
+    max_steps: int,
+    policy: PolicyIdentity,
+) -> JsonObject:
+    spans: list[JsonObject] = []
+    events: list[JsonObject] = []
+    llm_call_index = 0
+    for turn in record.turns:
+        match turn:
+            case CraftaxContinuationTurn():
+                continue
+            case CraftaxPrimaryTurn():
+                pass
+        llm_call_index += 1
+        span_id = f"{record.rollout_id}-span-{llm_call_index:04d}"
+        user_text = (
+            f"Craftax turn {turn.ply}; "
+            f"reward_total={turn.reward_total}; "
+            f"achievements={list(turn.achievements)}"
+        )
+        messages = (
+            TraceMessage(MessageRole.SYSTEM, "Craftax ReAct policy"),
+            TraceMessage(MessageRole.USER, user_text),
+        )
+        request = TraceRequest(
+            messages=messages,
+            provider_hint="openai_compat",
+        )
+        llm_request = LlmRequest(messages=messages, model=policy.model)
+        response = TraceResponse(
+            message=TraceMessage(MessageRole.ASSISTANT, turn.assistant_text),
+            usage=turn.usage,
+        )
         span = {
             "span_id": span_id,
             "call_index": llm_call_index,
-            "run_id": rollout_id,
-            "request": {
-                "messages": llm_request["messages"],
-                "provider_hint": "openai_compat",
-            },
-            "response": {
-                "message": llm_response["message"],
-                "usage": llm_response.get("usage"),
-            },
+            "run_id": record.rollout_id,
+            "request": asdict(request),
+            "response": asdict(response),
             "metrics": {
-                "env_action": action,
-                "invalid_parse": bool(turn.get("invalid_parse")),
-                "repaired": bool(turn.get("repaired")),
-                "reward_total": float(turn.get("reward_total") or 0.0),
+                "env_action": turn.action,
+                "invalid_parse": turn.invalid_parse,
+                "repaired": turn.repaired,
+                "reward_total": turn.reward_total,
             },
             "metadata": {
-                "batch_size": turn.get("batch_size"),
-                "request_id": turn.get("request_id"),
+                "batch_size": turn.batch_size,
+                "request_id": turn.request_id,
             },
         }
         spans.append(span)
@@ -152,41 +287,42 @@ def build_v4_trace(record: dict[str, Any], *, seed: int, max_steps: int) -> dict
                 "type": "lm_call",
                 "sequence_index": llm_call_index,
                 "span_id": span_id,
-                "llm_request": llm_request,
-                "llm_response": llm_response,
-                "metadata": {"env_action": action},
+                "llm_request": asdict(llm_request),
+                "llm_response": asdict(response),
+                "metadata": {"env_action": turn.action},
             }
         )
-    status = str(record.get("status") or "completed")
     return {
         "schema_version": "synth_rollout_trace_v4",
         "trace_schema_version": 4,
-        "rollout_id": rollout_id,
-        "trace_correlation_id": trace_correlation_id,
-        "status": status,
+        "rollout_id": record.rollout_id,
+        "trace_correlation_id": record.trace_correlation_id,
+        "status": record.status,
         "spans": spans,
         "events": events,
         "span_count": len(spans),
         "summary": {
             "seed": seed,
             "max_steps": max_steps,
-            "outcome_reward": outcome_reward,
-            "reward": outcome_reward,
-            "achievements": achievements,
+            "outcome_reward": record.outcome_reward,
+            "reward": record.outcome_reward,
+            "achievements": record.achievements,
             "llm_turns": llm_call_index,
-            "invalid_parse_turns": sum(1 for t in turns if t.get("invalid_parse")),
-            "policy_provider": metadata.get("provider") or "gemini",
-            "policy_model": metadata.get("model") or "gemini-3.1-flash-lite",
+            "invalid_parse_turns": sum(1 for t in record.turns if t.invalid_parse),
+            "policy_provider": policy.provider,
+            "policy_model": policy.model,
         },
         "metadata": {
-            **metadata,
+            **record.metadata.raw,
             "source": "capture_craftax_v4_traces.py",
             "env": "gamebench.craftax-singleplayer.rust_gold",
         },
     }
 
 
-def rollout_payload(*, seed: int, max_steps: int, max_llm_turns: int, model: str) -> dict[str, Any]:
+def rollout_payload(
+    *, seed: int, max_steps: int, max_llm_turns: int, policy: PolicyIdentity
+) -> JsonObject:
     rollout_id = f"craftax-v4-seed-{seed}-{uuid.uuid4().hex[:8]}"
     return {
         "rollout_id": rollout_id,
@@ -199,8 +335,8 @@ def rollout_payload(*, seed: int, max_steps: int, max_llm_turns: int, model: str
         "policy": {
             "policy_id": "craftax_react_gemini_v1",
             "config": {
-                "provider": "gemini",
-                "model": model,
+                "provider": policy.provider,
+                "model": policy.model,
                 "use_lm": True,
                 "max_tokens": 512,
                 "max_llm_turns": max_llm_turns,
@@ -211,10 +347,18 @@ def rollout_payload(*, seed: int, max_steps: int, max_llm_turns: int, model: str
         "metadata": {
             "capture_lane": "jesterky_v4_corpus",
             "seed": seed,
-            "model": model,
-            "provider": "gemini",
+            "model": policy.model,
+            "provider": policy.provider,
         },
     }
+
+
+@dataclass(frozen=True)
+class CaptureResult:
+    path: Path
+    rollout_id: str
+    reward: float
+    span_count: int
 
 
 def capture_one(
@@ -225,31 +369,46 @@ def capture_one(
     max_llm_turns: int,
     model: str,
     out_dir: Path,
-) -> Path:
-    payload = rollout_payload(seed=seed, max_steps=max_steps, max_llm_turns=max_llm_turns, model=model)
-    record = http_json("POST", f"{container_url.rstrip('/')}/rollout", payload, timeout_s=600.0)
-    if not isinstance(record, dict):
-        raise RuntimeError(f"rollout seed={seed} returned non-object response")
-    if str(record.get("status", "")).lower() not in {"completed", "succeeded", "success", "done"}:
-        # sync path should return final record; tolerate missing status when reward present.
-        if record.get("reward_info") is None and record.get("artifact") is None:
-            raise RuntimeError(f"rollout seed={seed} incomplete: {record.get('status')}")
-    trace = build_v4_trace(record, seed=seed, max_steps=max_steps)
+) -> CaptureResult:
+    policy = PolicyIdentity(provider="gemini", model=model)
+    payload = rollout_payload(
+        seed=seed, max_steps=max_steps, max_llm_turns=max_llm_turns, policy=policy
+    )
+    raw_record = request_json_object(
+        HttpMethod.POST,
+        f"{container_url.rstrip('/')}/rollout",
+        payload,
+        timeout_s=600.0,
+    )
+    record = CraftaxRolloutRecord.parse(raw_record)
+    trace = build_v4_trace(record, seed=seed, max_steps=max_steps, policy=policy)
     out_path = out_dir / f"seed-{seed}.v4.json"
     out_path.write_text(json.dumps(trace, indent=2, sort_keys=True) + "\n")
     manifest_path = out_dir / f"seed-{seed}.rollout.json"
-    manifest_path.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n")
-    reward = trace["summary"]["outcome_reward"]
-    print(f"captured seed={seed} reward={reward} spans={trace['span_count']} -> {out_path}")
-    return out_path
+    manifest_path.write_text(json.dumps(record.raw, indent=2, sort_keys=True) + "\n")
+    span_count = sum(1 for turn in record.turns if turn.batch_index == 0)
+    print(
+        f"captured seed={seed} reward={record.outcome_reward} "
+        f"spans={span_count} -> {out_path}"
+    )
+    return CaptureResult(
+        path=out_path,
+        rollout_id=record.rollout_id,
+        reward=record.outcome_reward,
+        span_count=span_count,
+    )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--gold-url", default=os.environ.get("CRAFTAX_GOLD_URL", DEFAULT_GOLD_URL))
-    parser.add_argument("--container-url", default=os.environ.get("CONTAINER_URL", DEFAULT_CONTAINER_URL))
+    parser.add_argument(
+        "--gold-url", default=os.environ.get("CRAFTAX_GOLD_URL", DEFAULT_GOLD_URL)
+    )
+    parser.add_argument(
+        "--container-url",
+        default=os.environ.get("CONTAINER_URL", DEFAULT_CONTAINER_URL),
+    )
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
-    parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_FILE)
     parser.add_argument("--seeds", type=int, nargs="+", default=DEFAULT_SEEDS)
     parser.add_argument("--max-steps", type=int, default=20)
     parser.add_argument("--max-llm-turns", type=int, default=4)
@@ -257,16 +416,15 @@ def main() -> int:
     parser.add_argument("--skip-health", action="store_true")
     args = parser.parse_args()
 
-    load_env_file(args.env_file)
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
     if not args.skip_health:
-        wait_for_health("craftax_gold", args.gold_url)
-        wait_for_health("craftax_container", args.container_url)
+        wait_for_health("craftax_gold", args.gold_url, HealthField.OK)
+        wait_for_health("craftax_container", args.container_url, HealthField.HEALTHY)
 
-    index: list[dict[str, Any]] = []
+    index: list[JsonObject] = []
     for seed in args.seeds:
-        path = capture_one(
+        result = capture_one(
             container_url=args.container_url,
             seed=seed,
             max_steps=args.max_steps,
@@ -274,19 +432,20 @@ def main() -> int:
             model=args.model,
             out_dir=args.out_dir,
         )
-        trace = json.loads(path.read_text())
         index.append(
             {
                 "seed": seed,
-                "path": str(path),
-                "rollout_id": trace.get("rollout_id"),
-                "reward": trace.get("summary", {}).get("outcome_reward"),
-                "span_count": trace.get("span_count"),
+                "path": str(result.path),
+                "rollout_id": result.rollout_id,
+                "reward": result.reward,
+                "span_count": result.span_count,
             }
         )
 
     index_path = args.out_dir / "index.json"
-    index_path.write_text(json.dumps({"traces": index}, indent=2, sort_keys=True) + "\n")
+    index_path.write_text(
+        json.dumps({"traces": index}, indent=2, sort_keys=True) + "\n"
+    )
     print(f"wrote index -> {index_path} ({len(index)} traces)")
     return 0
 

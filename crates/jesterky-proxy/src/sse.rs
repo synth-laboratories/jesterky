@@ -5,7 +5,8 @@
 //! `output_item.added` is dropped. So we open the message item + content part
 //! before the delta and close both before `response.completed`.
 
-use serde_json::{json, Value};
+use serde::Deserialize;
+use serde_json::{Value, json};
 use std::hash::{Hash, Hasher};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -22,8 +23,78 @@ impl SseEvent {
         format!(
             "event: {}\ndata: {}\n\n",
             self.event_type,
-            serde_json::to_string(&self.data).unwrap_or_else(|_| "{}".to_string())
+            serde_json::to_string(&self.data)
+                .expect("serde_json::Value event data is serializable")
         )
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub(crate) enum SseError {
+    #[error("provider chat response schema mismatch: {0}")]
+    Schema(#[from] serde_json::Error),
+    #[error("provider chat response contained no choices")]
+    NoChoices,
+    #[error("Responses SSE builder emitted no completed response")]
+    MissingCompletedResponse,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ChatResponse {
+    choices: Vec<ChatChoice>,
+    usage: ChatUsage,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChatChoice {
+    message: ChatMessage,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChatMessage {
+    content: Option<String>,
+    #[serde(default)]
+    tool_calls: Vec<ChatToolCall>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChatToolCall {
+    id: String,
+    function: ChatFunctionCall,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChatFunctionCall {
+    name: String,
+    arguments: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ChatUsage {
+    prompt_tokens: i64,
+    completion_tokens: i64,
+    total_tokens: i64,
+}
+
+impl ChatResponse {
+    pub(crate) fn from_value(value: Value) -> Result<Self, SseError> {
+        let parsed: Self = serde_json::from_value(value)?;
+        if parsed.choices.is_empty() {
+            return Err(SseError::NoChoices);
+        }
+        Ok(parsed)
+    }
+
+    fn primary_message(&self) -> &ChatMessage {
+        &self.choices[0].message
+    }
+
+    fn usage_json(&self) -> Value {
+        json!({
+            "input_tokens": self.usage.prompt_tokens,
+            "output_tokens": self.usage.completion_tokens,
+            "total_tokens": self.usage.total_tokens,
+        })
     }
 }
 
@@ -50,28 +121,20 @@ pub fn hex24(counter: u64, port: u16) -> String {
 ///
 /// `rid` / `msg_id` are the (already-generated) response and message ids;
 /// `model` is the codex-facing model id echoed back in the response object.
-pub fn build_events(chat_response: &Value, model: &str, rid: &str, msg_id: &str) -> Vec<SseEvent> {
+pub(crate) fn build_events_validated(
+    chat_response: &ChatResponse,
+    model: &str,
+    rid: &str,
+    msg_id: &str,
+) -> Result<Vec<SseEvent>, SseError> {
+    let message = chat_response.primary_message();
     let created = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
 
-    let text = chat_response
-        .get("choices")
-        .and_then(Value::as_array)
-        .and_then(|c| c.first())
-        .and_then(|c| c.get("message"))
-        .and_then(|m| m.get("content"))
-        .and_then(Value::as_str)
-        .unwrap_or("")
-        .to_string();
-
-    let usage_src = chat_response.get("usage");
-    let usage = json!({
-        "input_tokens": usage_field(usage_src, "prompt_tokens"),
-        "output_tokens": usage_field(usage_src, "completion_tokens"),
-        "total_tokens": usage_field(usage_src, "total_tokens"),
-    });
+    let text = message.content.clone().unwrap_or_default();
+    let usage = chat_response.usage_json();
 
     let resp_obj = |status: &str, output: Value| -> Value {
         json!({
@@ -89,15 +152,7 @@ pub fn build_events(chat_response: &Value, model: &str, rid: &str, msg_id: &str)
     // The model's tool calls, if any (chat: choices[0].message.tool_calls). An
     // agentic codex turn expects these re-emitted as Responses `function_call`
     // items so it can run the tool and feed the result back.
-    let tool_calls = chat_response
-        .get("choices")
-        .and_then(Value::as_array)
-        .and_then(|c| c.first())
-        .and_then(|c| c.get("message"))
-        .and_then(|m| m.get("tool_calls"))
-        .and_then(Value::as_array)
-        .cloned()
-        .unwrap_or_default();
+    let tool_calls = &message.tool_calls;
 
     let mut seq: u64 = 0;
     let mut nxt = || {
@@ -174,22 +229,11 @@ pub fn build_events(chat_response: &Value, model: &str, rid: &str, msg_id: &str)
     }
 
     for (i, call) in tool_calls.iter().enumerate() {
-        let func = call.get("function");
-        let name = func
-            .and_then(|f| f.get("name"))
-            .and_then(Value::as_str)
-            .unwrap_or_default();
-        let arguments = func
-            .and_then(|f| f.get("arguments"))
-            .and_then(Value::as_str)
-            .unwrap_or("{}");
+        let name = call.function.name.as_str();
+        let arguments = call.function.arguments.as_str();
         // call_id ties the function_call to the function_call_output codex sends
         // back; item id just keys this item's own added/delta/done stream.
-        let call_id = call
-            .get("id")
-            .and_then(Value::as_str)
-            .map(str::to_string)
-            .unwrap_or_else(|| format!("{msg_id}_call{i}"));
+        let call_id = call.id.as_str();
         let fc_id = format!("{msg_id}_fc{i}");
         let item_done = json!({
             "id": fc_id, "type": "function_call", "status": "completed",
@@ -224,23 +268,22 @@ pub fn build_events(chat_response: &Value, model: &str, rid: &str, msg_id: &str)
         json!({"sequence_number": nxt(), "response": resp_obj("completed", Value::Array(output))}),
     );
 
-    events
+    Ok(events)
 }
 
 /// The final `response` object (used for a non-streaming `stream: false` reply).
-pub fn final_response_object(chat_response: &Value, model: &str, rid: &str, msg_id: &str) -> Value {
-    let events = build_events(chat_response, model, rid, msg_id);
-    events
+pub fn final_response_object(
+    chat_response: &ChatResponse,
+    model: &str,
+    rid: &str,
+    msg_id: &str,
+) -> Result<Value, SseError> {
+    let events = build_events_validated(chat_response, model, rid, msg_id)?;
+    let response = events
         .last()
         .and_then(|e| e.data.get("response").cloned())
-        .unwrap_or(Value::Null)
-}
-
-fn usage_field(usage: Option<&Value>, key: &str) -> i64 {
-    usage
-        .and_then(|u| u.get(key))
-        .and_then(Value::as_i64)
-        .unwrap_or(0)
+        .ok_or(SseError::MissingCompletedResponse)?;
+    Ok(response)
 }
 
 /// Inject `"type": <event_type>` as the leading field of the data object.
@@ -253,6 +296,17 @@ fn merge_type(event_type: &str, data: Value) -> Value {
         }
     }
     Value::Object(map)
+}
+
+#[cfg(test)]
+fn build_events(
+    chat_response: &Value,
+    model: &str,
+    rid: &str,
+    msg_id: &str,
+) -> Result<Vec<SseEvent>, SseError> {
+    let validated = ChatResponse::from_value(chat_response.clone())?;
+    build_events_validated(&validated, model, rid, msg_id)
 }
 
 #[cfg(test)]
@@ -280,7 +334,8 @@ mod tests {
 
     #[test]
     fn emits_nine_events_in_order_with_contiguous_sequence() {
-        let events = build_events(&chat_reply("hi there"), "deepseek/x", "resp_abc", "msg_def");
+        let events =
+            build_events(&chat_reply("hi there"), "deepseek/x", "resp_abc", "msg_def").unwrap();
         assert_eq!(events.len(), 9);
         for (i, ev) in events.iter().enumerate() {
             assert_eq!(ev.event_type, EXPECTED[i]);
@@ -317,7 +372,7 @@ mod tests {
 
     #[test]
     fn empty_text_drops_the_delta_event() {
-        let events = build_events(&chat_reply(""), "m", "resp_1", "msg_1");
+        let events = build_events(&chat_reply(""), "m", "resp_1", "msg_1").unwrap();
         assert_eq!(events.len(), 8);
         let types: Vec<&str> = events.iter().map(|e| e.event_type.as_str()).collect();
         assert!(!types.contains(&"response.output_text.delta"));
@@ -338,7 +393,7 @@ mod tests {
                 "finish_reason": "tool_calls"}],
             "usage": {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3},
         });
-        let events = build_events(&reply, "m", "resp_1", "msg_1");
+        let events = build_events(&reply, "m", "resp_1", "msg_1").unwrap();
         let types: Vec<&str> = events.iter().map(|e| e.event_type.as_str()).collect();
         // No message/text events; a full function_call item stream instead.
         assert!(!types.contains(&"response.output_text.delta"));

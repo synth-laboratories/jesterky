@@ -24,8 +24,18 @@ import argparse
 import json
 import sys
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+
+from json_contract import (
+    JsonContractError,
+    JsonObject,
+    JsonObjectReader,
+    JsonValue,
+    read_json_array_objects,
+    read_json_lines,
+    read_json_object,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARM_A = ROOT / "proof" / "gepa_jesterky_workflow_arm_a.toml"
@@ -34,194 +44,148 @@ DEFAULT_OUT = ROOT / "proof" / "gepa_jesterky_workflow_ablation.md"
 DEFAULT_SUMMARY = ROOT / "proof" / "gepa_jesterky_workflow_ablation" / "ablation_summary.json"
 
 
-def load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text())
+@dataclass(frozen=True)
+class Candidate:
+    candidate_id: str
+    source: str
+    heldout_reward: float | None
+
+    @classmethod
+    def parse(cls, raw: JsonObjectReader) -> "Candidate":
+        return cls(
+            candidate_id=raw.string("candidate_id"),
+            source=raw.string("source"),
+            heldout_reward=raw.nullable_number("heldout_reward"),
+        )
 
 
-def candidate_source_counts(run_dir: Path, result: dict[str, Any]) -> Counter[str]:
-    counts: Counter[str] = Counter()
-    for name in ("candidate_registry.json", "candidates.json"):
-        path = run_dir / name
-        if not path.is_file():
-            # also check artifacts/
-            alt = run_dir / "artifacts" / name
-            path = alt if alt.is_file() else path
-        if not path.is_file():
-            continue
-        data = load_json(path)
-        candidates = data.get("candidates") if isinstance(data, dict) else data
-        if isinstance(data, list):
-            candidates = data
-        if not isinstance(candidates, list):
-            continue
-        for cand in candidates:
-            if not isinstance(cand, dict):
-                continue
-            source = str(cand.get("source") or (cand.get("metadata") or {}).get("source") or "unknown")
-            counts[source] += 1
-        if counts:
-            return counts
-    # Fallback: best_candidate alone
-    best = result.get("best_candidate")
-    if isinstance(best, dict):
-        source = str(best.get("source") or "unknown")
-        counts[source] += 1
-    return counts
+@dataclass(frozen=True)
+class WorkflowReceipt:
+    generation: int
+    enabled: bool
+    theme_count: int
+    annotated: int
+    manifest_path: str
+
+    @classmethod
+    def parse(cls, raw: JsonObjectReader) -> "WorkflowReceipt":
+        return cls(
+            generation=raw.integer("generation"),
+            enabled=raw.boolean("enabled"),
+            theme_count=raw.integer("theme_count"),
+            annotated=raw.integer("annotated"),
+            manifest_path=raw.string("manifest_path"),
+        )
+
+    def as_json(self) -> JsonObject:
+        return {
+            "generation": self.generation,
+            "enabled": self.enabled,
+            "theme_count": self.theme_count,
+            "annotated": self.annotated,
+            "manifest_path": self.manifest_path,
+        }
+
+
+@dataclass(frozen=True)
+class HeldoutMeans:
+    baseline: float
+    best: float
+    best_candidate_id: str
+
+    @property
+    def uplift(self) -> float:
+        return self.best - self.baseline
+
+
+def candidate_registry(run_dir: Path) -> tuple[Candidate, ...]:
+    path = run_dir / "candidate_registry.json"
+    candidates = tuple(Candidate.parse(raw) for raw in read_json_array_objects(path))
+    if not candidates:
+        raise ValueError(f"{path} must contain at least one candidate")
+    return candidates
+
+
+def candidate_source_counts(candidates: tuple[Candidate, ...]) -> Counter[str]:
+    return Counter(candidate.source for candidate in candidates)
 
 
 def non_seed_count(counts: Counter[str]) -> int:
     return sum(n for source, n in counts.items() if source != "seed")
 
 
-def jesterky_receipts(result: dict[str, Any], run_dir: Path) -> list[dict[str, Any]]:
-    receipts: list[dict[str, Any]] = []
-    block = result.get("jesterky_workflow")
-    if isinstance(block, dict):
-        raw = block.get("receipts")
-        if isinstance(raw, list):
-            receipts.extend([r for r in raw if isinstance(r, dict)])
+def jesterky_receipts(
+    run_dir: Path, *, required: bool
+) -> tuple[WorkflowReceipt, ...]:
     path = run_dir / "jesterky_workflow_receipts.jsonl"
-    if path.is_file():
-        for line in path.read_text().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(row, dict):
-                receipts.append(row)
-    # Prefer jsonl rows; drop duplicates by (generation, manifest_path).
-    deduped: list[dict[str, Any]] = []
-    seen: set[tuple[Any, Any]] = set()
-    for row in receipts:
-        key = (row.get("generation"), row.get("manifest_path") or row.get("trace_dir"))
+    if not path.exists():
+        if required:
+            raise FileNotFoundError(f"enabled arm missing required receipt artifact: {path}")
+        return ()
+    receipts = tuple(WorkflowReceipt.parse(raw) for raw in read_json_lines(path))
+    deduped: list[WorkflowReceipt] = []
+    seen: set[tuple[int, str]] = set()
+    for receipt in receipts:
+        key = (receipt.generation, receipt.manifest_path)
         if key in seen:
             continue
         seen.add(key)
-        deduped.append(row)
-    return deduped
+        deduped.append(receipt)
+    return tuple(deduped)
 
 
-def heldout_means(result: dict[str, Any], run_dir: Path) -> dict[str, Any]:
-    out: dict[str, Any] = {
-        "baseline_holdout_mean": result.get("baseline_holdout_mean"),
-        "best_holdout_mean": result.get("best_holdout_mean")
-        if result.get("best_holdout_mean") is not None
-        else result.get("best_heldout_mean"),
-        "holdout_uplift": result.get("holdout_uplift"),
-        "seed_holdout_mean": None,
-        "best_candidate_id": None,
-    }
-    best = result.get("best_candidate")
-    if isinstance(best, dict):
-        out["best_candidate_id"] = best.get("candidate_id")
-        if out["best_holdout_mean"] is None and isinstance(
-            best.get("heldout_reward"), (int, float)
-        ):
-            out["best_holdout_mean"] = float(best["heldout_reward"])
-        frames = best.get("sensor_frames") or []
-        if out["best_holdout_mean"] is None and isinstance(frames, list):
-            heldout_frames = [
-                f
-                for f in frames
-                if isinstance(f, dict) and f.get("evaluation_stage") == "heldout"
-            ]
-            if heldout_frames:
-                rewards = [
-                    float(f["reward"])
-                    for f in heldout_frames
-                    if isinstance(f.get("reward"), (int, float))
-                ]
-                if rewards:
-                    out["best_holdout_mean"] = sum(rewards) / len(rewards)
-        scores = best.get("scores") or best.get("heldout_scores") or {}
-        if isinstance(scores, dict) and out["best_holdout_mean"] is None:
-            for key in ("mean_reward", "reward", "heldout_mean", "score"):
-                if isinstance(scores.get(key), (int, float)):
-                    out["best_holdout_mean"] = float(scores[key])
-                    break
-    # score_chart / frontier may carry seed vs best
-    for name in ("score_chart.json", "gepa_summary.json", "frontier.json"):
-        path = run_dir / name
-        if not path.is_file():
-            continue
-        data = load_json(path)
-        if not isinstance(data, dict):
-            continue
-        if out["best_holdout_mean"] is None and isinstance(data.get("best_heldout_mean"), (int, float)):
-            out["best_holdout_mean"] = float(data["best_heldout_mean"])
-        if out["baseline_holdout_mean"] is None and isinstance(
-            data.get("seed_heldout_mean"), (int, float)
-        ):
-            out["baseline_holdout_mean"] = float(data["seed_heldout_mean"])
-            out["seed_holdout_mean"] = out["baseline_holdout_mean"]
-    # Seed baseline from candidate registry when present
-    if out["baseline_holdout_mean"] is None:
-        for name in ("candidate_registry.json", "candidates.json"):
-            path = run_dir / name
-            if not path.is_file():
-                continue
-            data = load_json(path)
-            if isinstance(data, list):
-                candidates = data
-            elif isinstance(data, dict):
-                candidates = data.get("candidates")
-            else:
-                continue
-            if not isinstance(candidates, list):
-                continue
-            for cand in candidates:
-                if not isinstance(cand, dict):
-                    continue
-                if str(cand.get("source") or "") != "seed":
-                    continue
-                if isinstance(cand.get("heldout_reward"), (int, float)):
-                    out["baseline_holdout_mean"] = float(cand["heldout_reward"])
-                    out["seed_holdout_mean"] = out["baseline_holdout_mean"]
-                    break
-            if out["baseline_holdout_mean"] is not None:
-                break
-    if (
-        out["holdout_uplift"] is None
-        and isinstance(out["best_holdout_mean"], (int, float))
-        and isinstance(out["baseline_holdout_mean"], (int, float))
-    ):
-        out["holdout_uplift"] = float(out["best_holdout_mean"]) - float(out["baseline_holdout_mean"])
-    return out
+def heldout_means(
+    result: JsonObjectReader, candidates: tuple[Candidate, ...]
+) -> HeldoutMeans:
+    best_candidate_id = result.object("best_candidate").string("candidate_id")
+    seeds = [candidate for candidate in candidates if candidate.source == "seed"]
+    if len(seeds) != 1 or seeds[0].heldout_reward is None:
+        raise JsonContractError(
+            "candidate registry must contain one scored seed candidate"
+        )
+    best = next(
+        (candidate for candidate in candidates if candidate.candidate_id == best_candidate_id),
+        None,
+    )
+    if best is None or best.heldout_reward is None:
+        raise JsonContractError(
+            f"best candidate {best_candidate_id!r} is absent or unscored"
+        )
+    return HeldoutMeans(seeds[0].heldout_reward, best.heldout_reward, best_candidate_id)
 
 
-def score_arm(*, label: str, result_path: Path, expect_jesterky: bool) -> dict[str, Any]:
-    result = load_json(result_path)
+def score_arm(*, label: str, result_path: Path, expect_jesterky: bool) -> JsonObject:
+    result = read_json_object(result_path)
     run_dir = result_path.parent
-    counts = candidate_source_counts(run_dir, result)
-    receipts = jesterky_receipts(result, run_dir)
-    enabled_receipts = [r for r in receipts if r.get("enabled")]
-    heldout = heldout_means(result, run_dir)
+    candidates = candidate_registry(run_dir)
+    counts = candidate_source_counts(candidates)
+    receipts = jesterky_receipts(run_dir, required=expect_jesterky)
+    enabled_receipts = tuple(receipt for receipt in receipts if receipt.enabled)
+    heldout = heldout_means(result, candidates)
+    configured_enabled = result.object("jesterky_workflow").boolean("enabled")
+    if configured_enabled is not expect_jesterky:
+        raise ValueError(
+            f"{result_path} jesterky_workflow.enabled={configured_enabled} "
+            f"does not match expected arm value {expect_jesterky}"
+        )
     return {
         "label": label,
         "result_path": str(result_path),
-        "candidate_count": int(result.get("candidate_count") or sum(counts.values()) or 0),
+        "candidate_count": len(candidates),
         "candidate_sources": dict(counts),
         "non_seed_candidates": non_seed_count(counts),
-        "baseline_holdout_mean": heldout.get("baseline_holdout_mean"),
-        "best_holdout_mean": heldout.get("best_holdout_mean"),
-        "holdout_uplift": heldout.get("holdout_uplift"),
-        "best_candidate_id": heldout.get("best_candidate_id"),
-        "jesterky_enabled_config": bool(
-            ((result.get("jesterky_workflow") or {}) if isinstance(result.get("jesterky_workflow"), dict) else {}).get(
-                "enabled"
-            )
-        )
-        or expect_jesterky,
+        "baseline_holdout_mean": heldout.baseline,
+        "best_holdout_mean": heldout.best,
+        "holdout_uplift": heldout.uplift,
+        "best_candidate_id": heldout.best_candidate_id,
+        "jesterky_enabled_config": configured_enabled,
         "jesterky_receipt_count": len(enabled_receipts),
-        "jesterky_receipts": enabled_receipts,
+        "jesterky_receipts": [receipt.as_json() for receipt in enabled_receipts],
         "expect_jesterky": expect_jesterky,
     }
 
 
-def evaluate(arm_a: dict[str, Any], arm_b: dict[str, Any], *, min_non_seed: int) -> dict[str, Any]:
+def evaluate(arm_a: JsonObject, arm_b: JsonObject, *, min_non_seed: int) -> JsonObject:
     failures: list[str] = []
     if arm_a["non_seed_candidates"] < min_non_seed:
         failures.append(
@@ -280,7 +244,7 @@ def evaluate(arm_a: dict[str, Any], arm_b: dict[str, Any], *, min_non_seed: int)
     }
 
 
-def write_markdown(path: Path, report: dict[str, Any]) -> None:
+def write_markdown(path: Path, report: JsonObject) -> None:
     a = report["arm_a"]
     b = report["arm_b"]
     hollow_fail = any("hollow" in str(f).lower() for f in report.get("failures") or [])

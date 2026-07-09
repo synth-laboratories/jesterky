@@ -4,7 +4,8 @@
 
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CoreError, ProgramRegistry};
-use serde_json::{json, Value};
+use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
 use std::path::Path;
 use std::sync::Arc;
 
@@ -100,58 +101,221 @@ You receive `summary` with `matrix_report` (per-post scores/violations table), \
 fail), counts, and `matrix_report` unchanged in `matrix_report`. Add a one-sentence \
 `headline` on overall blog corpus quality. No tools.";
 
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct BlogExpandInput {
+    blog_dir: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct BlogJob {
+    slug: String,
+    path: String,
+    blog_dir: String,
+    dimension: String,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum BlogSeverity {
+    None,
+    Low,
+    Medium,
+    High,
+    Critical,
+}
+
+impl BlogSeverity {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::None => "none",
+            Self::Low => "low",
+            Self::Medium => "medium",
+            Self::High => "high",
+            Self::Critical => "critical",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+enum AlgorithmVerdict {
+    #[serde(rename = "SOUND")]
+    Sound,
+    #[serde(rename = "FRAGILE")]
+    Fragile,
+    #[serde(rename = "bogus-headline")]
+    BogusHeadline,
+    #[serde(rename = "BOGUS")]
+    Bogus,
+}
+
+impl AlgorithmVerdict {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Sound => "SOUND",
+            Self::Fragile => "FRAGILE",
+            Self::BogusHeadline => "bogus-headline",
+            Self::Bogus => "BOGUS",
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct BlogViolation {
+    code: String,
+    severity: BlogSeverity,
+    note: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct BlogAudit {
+    item: String,
+    score: f64,
+    severity: BlogSeverity,
+    blocker: bool,
+    finding: String,
+    fix: String,
+    violations: Vec<BlogViolation>,
+    algorithm_verdict: AlgorithmVerdict,
+    internal_type: String,
+    surface: String,
+    claim_tier: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct BlogAggregateInput {
+    scans: Vec<Value>,
+}
+
+#[derive(Debug, Serialize)]
+struct BlogRow {
+    item: String,
+    score: f64,
+    severity: BlogSeverity,
+    blocker: bool,
+    algorithm_verdict: AlgorithmVerdict,
+    violations: Vec<BlogViolation>,
+    violation_codes: String,
+    finding: String,
+    fix: String,
+    internal_type: String,
+    surface: String,
+    claim_tier: String,
+}
+
+impl From<BlogAudit> for BlogRow {
+    fn from(audit: BlogAudit) -> Self {
+        let violation_codes = audit
+            .violations
+            .iter()
+            .map(|violation| violation.code.as_str())
+            .collect::<Vec<_>>()
+            .join(",");
+        Self {
+            item: audit.item,
+            score: audit.score,
+            severity: audit.severity,
+            blocker: audit.blocker,
+            algorithm_verdict: audit.algorithm_verdict,
+            violations: audit.violations,
+            violation_codes,
+            finding: audit.finding,
+            fix: audit.fix,
+            internal_type: audit.internal_type,
+            surface: audit.surface,
+            claim_tier: audit.claim_tier,
+        }
+    }
+}
+
+impl From<BlogJob> for BlogRow {
+    fn from(job: BlogJob) -> Self {
+        let violation = BlogViolation {
+            code: "FAKE_ACTOR".to_string(),
+            severity: BlogSeverity::High,
+            note: "fake actor echo proves workflow plumbing, not blog quality".to_string(),
+        };
+        Self {
+            item: job.slug,
+            score: 0.0,
+            severity: BlogSeverity::High,
+            blocker: true,
+            algorithm_verdict: AlgorithmVerdict::Fragile,
+            violations: vec![violation],
+            violation_codes: "FAKE_ACTOR".to_string(),
+            finding: "fake actor produced no quality verdict".to_string(),
+            fix: "run with a configured judge actor".to_string(),
+            internal_type: "unknown".to_string(),
+            surface: "blog".to_string(),
+            claim_tier: "unknown".to_string(),
+        }
+    }
+}
+
+fn parse_blog_scan(scan: Value) -> Result<BlogRow, CoreError> {
+    if scan.get("item").is_some() {
+        let audit = serde_json::from_value::<BlogAudit>(scan)
+            .map_err(|err| CoreError::Config(format!("invalid blog audit verdict: {err}")))?;
+        return Ok(audit.into());
+    }
+    if scan.get("slug").is_some() {
+        let echo = serde_json::from_value::<BlogJob>(scan)
+            .map_err(|err| CoreError::Config(format!("invalid fake blog job echo: {err}")))?;
+        return Ok(echo.into());
+    }
+    Err(CoreError::Config(
+        "blog scan must be a judge verdict or an exact fake-actor job echo".to_string(),
+    ))
+}
+
 fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
-    let blog_dir = inputs
-        .get("blog_dir")
-        .and_then(Value::as_str)
-        .or_else(|| ledger.get("blog_dir").and_then(Value::as_str))
-        .ok_or_else(|| {
-            CoreError::Config(
-                "blog.expand requires `blog_dir` in node inputs or run args".to_string(),
-            )
-        })?;
-    let posts = discover_published_posts(Path::new(blog_dir))?;
-    let jobs: Vec<Value> = posts
+    let BlogExpandInput { blog_dir } = serde_json::from_value(inputs.clone())
+        .map_err(|err| CoreError::Config(format!("invalid blog.expand input: {err}")))?;
+    let blog_dir = match blog_dir {
+        Some(path) if !path.trim().is_empty() => path,
+        Some(_) => {
+            return Err(CoreError::Config(
+                "blog.expand `blog_dir` must be non-empty".to_string(),
+            ));
+        }
+        None => ledger
+            .get("blog_dir")
+            .and_then(Value::as_str)
+            .filter(|path| !path.trim().is_empty())
+            .map(str::to_string)
+            .ok_or_else(|| {
+                CoreError::Config(
+                    "blog.expand requires `blog_dir` in node inputs or run args".to_string(),
+                )
+            })?,
+    };
+    let posts = discover_published_posts(Path::new(&blog_dir))?;
+    let jobs = posts
         .into_iter()
-        .map(|(slug, path)| {
-            json!({
-                "slug": slug,
-                "path": path,
-                "blog_dir": blog_dir,
-                "dimension": slug,
-            })
+        .map(|(slug, path)| BlogJob {
+            dimension: slug.clone(),
+            slug,
+            path,
+            blog_dir: blog_dir.clone(),
         })
-        .collect();
+        .collect::<Vec<_>>();
     Ok(json!({ "jobs": jobs }))
 }
 
 fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
-    let scans = inputs
-        .get("scans")
-        .and_then(Value::as_array)
-        .cloned()
-        .unwrap_or_default();
-    let mut rows: Vec<Value> = Vec::new();
-    let mut blockers = 0usize;
-    let mut failed = 0usize;
-    for scan in &scans {
-        let Some(row) = normalize_post_verdict(scan) else {
-            continue;
-        };
-        if row.get("blocker").and_then(Value::as_bool).unwrap_or(false) {
-            blockers += 1;
-        }
-        if row.get("score").and_then(Value::as_f64).unwrap_or(10.0) < 6.0 {
-            failed += 1;
-        }
-        rows.push(row);
-    }
-    rows.sort_by(|a, b| {
-        a.get("item")
-            .and_then(Value::as_str)
-            .unwrap_or("")
-            .cmp(b.get("item").and_then(Value::as_str).unwrap_or(""))
-    });
+    let BlogAggregateInput { scans } = serde_json::from_value(inputs.clone())
+        .map_err(|err| CoreError::Config(format!("invalid blog.aggregate input: {err}")))?;
+    let mut rows = scans
+        .into_iter()
+        .map(parse_blog_scan)
+        .collect::<Result<Vec<_>, _>>()?;
+    let blockers = rows.iter().filter(|row| row.blocker).count();
+    let failed = rows.iter().filter(|row| row.score < 6.0).count();
+    rows.sort_by(|a, b| a.item.cmp(&b.item));
     let total = rows.len();
     let passed = total.saturating_sub(failed);
     let matrix_report = render_matrix(&rows);
@@ -169,51 +333,7 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
     }))
 }
 
-fn normalize_post_verdict(scan: &Value) -> Option<Value> {
-    let item = scan
-        .get("item")
-        .or_else(|| scan.get("slug"))
-        .and_then(Value::as_str)?;
-    let score = scan.get("score").and_then(Value::as_f64).unwrap_or(0.0);
-    let severity = scan
-        .get("severity")
-        .and_then(Value::as_str)
-        .unwrap_or("unknown");
-    let blocker = scan
-        .get("blocker")
-        .and_then(Value::as_bool)
-        .unwrap_or(false);
-    let algorithm = scan
-        .get("algorithm_verdict")
-        .and_then(Value::as_str)
-        .unwrap_or("?");
-    let violations = scan.get("violations").cloned().unwrap_or_else(|| json!([]));
-    let violation_codes = violations
-        .as_array()
-        .map(|items| {
-            items
-                .iter()
-                .filter_map(|v| v.get("code").and_then(Value::as_str))
-                .collect::<Vec<_>>()
-                .join(",")
-        })
-        .unwrap_or_default();
-    Some(json!({
-        "item": item,
-        "score": score,
-        "severity": severity,
-        "blocker": blocker,
-        "algorithm_verdict": algorithm,
-        "violations": violations,
-        "violation_codes": violation_codes,
-        "finding": scan.get("finding").cloned().unwrap_or(Value::Null),
-        "internal_type": scan.get("internal_type").cloned().unwrap_or(Value::Null),
-        "surface": scan.get("surface").cloned().unwrap_or(Value::Null),
-        "claim_tier": scan.get("claim_tier").cloned().unwrap_or(Value::Null),
-    }))
-}
-
-fn render_matrix(rows: &[Value]) -> String {
+fn render_matrix(rows: &[BlogRow]) -> String {
     let mut out = String::from("blog matrix — scores & violations per post\n");
     out.push_str(&format!(
         "{:<28} {:>5} {:>8} {:>14} {}\n",
@@ -221,24 +341,13 @@ fn render_matrix(rows: &[Value]) -> String {
     ));
     out.push_str(&format!("{}\n", "─".repeat(76)));
     for row in rows {
-        let item = row.get("item").and_then(Value::as_str).unwrap_or("?");
-        let score = row.get("score").and_then(Value::as_f64).unwrap_or(0.0);
-        let severity = row.get("severity").and_then(Value::as_str).unwrap_or("?");
-        let algorithm = row
-            .get("algorithm_verdict")
-            .and_then(Value::as_str)
-            .unwrap_or("?");
-        let codes = row
-            .get("violation_codes")
-            .and_then(Value::as_str)
-            .unwrap_or("");
         out.push_str(&format!(
             "{:<28} {:>5.1} {:>8} {:>14} {}\n",
-            truncate_slug(item, 28),
-            score,
-            severity,
-            algorithm,
-            codes
+            truncate_slug(&row.item, 28),
+            row.score,
+            row.severity.as_str(),
+            row.algorithm_verdict.as_str(),
+            row.violation_codes,
         ));
     }
     out
