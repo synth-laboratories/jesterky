@@ -1,0 +1,116 @@
+{
+  "name": "smr_reportbench_trace_evaluate",
+  "entrypoint": [
+    "expand_traces",
+    "evaluate_traces",
+    "aggregate",
+    "record_verdict"
+  ],
+  "nodes": {
+    "aggregate": {
+      "kind": "reduce",
+      "op": "quality.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "evaluate_traces": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 4,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "inputs": {},
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "expand_traces": {
+      "kind": "program",
+      "op": "trace.expand",
+      "inputs": {
+        "trace_dir": "ledger.trace_dir"
+      },
+      "outputs": {
+        "jobs": "ledger.jobs"
+      }
+    },
+    "record_verdict": {
+      "kind": "actor",
+      "actor": "reportbench_trace_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "limits": {},
+    "map_concurrency": 4,
+    "budgets": {
+      "caps": [],
+      "warning_percent": 80.0,
+      "fail_on_hard_exhaust": true,
+      "eta": {
+        "enabled": true,
+        "mode": "all",
+        "min_wall_secs": 1.0,
+        "sample_interval_secs": 0.45
+      },
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "show_eta": true,
+        "show_nearest_tag": true,
+        "short_labels": true
+      }
+    },
+    "goals": {
+      "goals": [],
+      "terminate_on_met": true,
+      "fail_on_unmet": true,
+      "cancel_in_flight": false,
+      "viz": {
+        "enabled": true,
+        "show_progress": true,
+        "short_labels": true
+      }
+    },
+    "verbosity": "standard"
+  },
+  "host": {
+    "roles": {
+      "reportbench_trace_evaluator": {
+        "prompt": "You evaluate one SMR ReportBench trace. You receive `job` with `trace_id`, `path`, and `summary`. You MUST read the trace file at `job.path`: its `evidence` object carries the outcome facts to grade — `autograde` (reward, checks_passed/checks_total, fatal_errors, state), `benchmark_verdict`, `verifier` criteria, and `artifacts_present`. Do not browse other files, run shell commands, or load external credentials. Grade OUTCOMES only: pass requires a terminal run state, a passing benchmark verdict or full autograde checks, and verifier evidence present; fail on missing or contradictory evidence. Return exactly one JSON object with `dimension` (echo `job.trace_id`), `verdict` (`pass` or `fail`), `severity` (`none`, `low`, `medium`, or `high`), and `rationale` (one sentence citing the outcome evidence, e.g. checks passed and verifier score).",
+        "prompt_file": null
+      },
+      "reportbench_trace_recorder": {
+        "prompt": "You receive an aggregate `summary` with `verdict`, `passed`, `failed`, and failing dimensions. Do not run tools. Return exactly one JSON object: echo `verdict`, `passed`, and `failed`; add `headline` as one concise sentence describing the ReportBench trace-evaluate outcome.",
+        "prompt_file": null
+      }
+    },
+    "output_schemas": {
+      "reportbench_trace_evaluator": "quality_verdict.schema.json",
+      "reportbench_trace_recorder": "quality_summary.schema.json"
+    },
+    "sandboxes": {},
+    "viz": {
+      "item_labels_op": "trace.expand",
+      "item_jobs_field": null,
+      "item_label_field": "trace_id",
+      "map_node": "evaluate_traces",
+      "matrix_report_field": "headline"
+    }
+  }
+}
