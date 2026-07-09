@@ -1,6 +1,6 @@
 # jesterky (Python)
 
-Python contract types for the [jesterky](https://github.com/jesterky/jesterky)
+Python contract types for the [jesterky](https://github.com/synth-laboratories/jesterky)
 workflow substrate. This package is **client-only**: it gives you typed,
 validated request/response shapes (`WorkflowSpec`, `RunManifest`) for talking to
 a jesterky host. It runs no workflows — orchestration lives in the Rust core.
