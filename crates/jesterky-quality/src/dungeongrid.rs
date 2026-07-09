@@ -16,7 +16,7 @@ use async_trait::async_trait;
 use jesterky_contract::{HostConfig, HostRole, HostVizConfig};
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{Actor, ActorRequest, ActorResult, CoreError, HostError, ProgramRegistry};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, HashMap};
 use std::sync::{Arc, Mutex};
 

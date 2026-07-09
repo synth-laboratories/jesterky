@@ -775,7 +775,8 @@ fn item_detail(manifest: &RunManifest, item_path: &[PathSeg]) -> Option<(String,
         return Some((label, dungeon_tone(outputs)));
     }
     if let Some(score) = outputs.get("score").and_then(|v| v.as_f64()) {
-        let mut label = format!("{score:.0}/10");
+        let score = display_score(score);
+        let mut label = format!("{score:.1}/10");
         if let Some(summary) = violation_summary(outputs) {
             label = format!("{label}  {summary}");
         }
@@ -789,6 +790,16 @@ fn item_detail(manifest: &RunManifest, item_path: &[PathSeg]) -> Option<(String,
         return Some((label, tone));
     }
     Some(("ok".to_string(), Tone::Neutral))
+}
+
+fn display_score(score: f64) -> f64 {
+    if score > 0.0 && score <= 1.0 {
+        score * 10.0
+    } else if score > 10.0 && score <= 100.0 {
+        score / 10.0
+    } else {
+        score
+    }
 }
 
 fn dungeon_tone(outputs: &serde_json::Value) -> Tone {
@@ -921,6 +932,11 @@ fn fail_annotation(err: &str) -> String {
 
 /// The result line: prefer a `summary_recorder`-style report, else empty.
 fn result_note(manifest: &RunManifest) -> String {
+    if let Some(trace) = &manifest.trace {
+        if let Some(report) = matrix_report_from_trace(trace) {
+            return report.to_string();
+        }
+    }
     for r in &manifest.recorded {
         let o = &r.outputs;
         if let Some(report) = o.get("matrix_report").and_then(|v| v.as_str()) {
@@ -937,6 +953,23 @@ fn result_note(manifest: &RunManifest) -> String {
         }
     }
     String::new()
+}
+
+fn matrix_report_from_trace(node: &ProcessNode) -> Option<&str> {
+    node.outputs
+        .get("matrix_report")
+        .and_then(|v| v.as_str())
+        .or_else(|| {
+            node.outputs
+                .get("summary")
+                .and_then(|summary| summary.get("matrix_report"))
+                .and_then(|v| v.as_str())
+        })
+        .or_else(|| {
+            node.children
+                .iter()
+                .find_map(|child| matrix_report_from_trace(child))
+        })
 }
 
 fn split_item(path: &NodePath) -> Option<(Vec<PathSeg>, u32)> {
@@ -965,8 +998,8 @@ struct Rgb(u8, u8, u8);
 
 // A tokyo-night / btop-ish dark palette.
 const FG: Rgb = Rgb(0xc0, 0xca, 0xf5);
-const DIM: Rgb = Rgb(0x56, 0x5f, 0x89);
-const BORDER: Rgb = Rgb(0x3b, 0x42, 0x61);
+const DIM: Rgb = Rgb(0xb2, 0xbb, 0xe8);
+const BORDER: Rgb = Rgb(0x6f, 0x79, 0xb6);
 const CYAN: Rgb = Rgb(0x7d, 0xcf, 0xff);
 const GREEN: Rgb = Rgb(0x9e, 0xce, 0x6a);
 const YELLOW: Rgb = Rgb(0xe0, 0xaf, 0x68);
@@ -1000,7 +1033,7 @@ impl Style {
         Self {
             fg: Some(DIM),
             bold: false,
-            dim: true,
+            dim: false,
         }
     }
 }
@@ -1158,7 +1191,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
             ];
             for c in candidates {
                 if row.width() + c.chars().count() <= inner {
-                    row.push(c, Style::faint());
+                    row.push(c, Style::fg(FG));
                     break;
                 }
             }
@@ -1256,7 +1289,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
             };
             let mut row = Line::default();
             row.push(connector, Style::fg(BORDER));
-            row.push(format!("[{:>2}] ", item.index), Style::faint());
+            row.push(format!("[{:>2}] ", item.index), Style::fg(DIM));
             row.push(format!("{glyph} "), gstyle);
             row.push(item.label.clone(), Style::fg(tone));
             let suffix = item_suffix(item);
@@ -1264,7 +1297,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
                 // Keep the row inside the frame: trim the live suffix to the room
                 // left after the label so the right border never shifts.
                 let room = inner.saturating_sub(row.width());
-                row.push(fit(&suffix, room), Style::faint());
+                row.push(fit(&suffix, room), Style::fg(FG));
             }
             body.push(row);
         }
@@ -1281,7 +1314,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
         Outcome::Failed => ("failed", Style::bold(RED)),
         Outcome::Running => ("running", Style::bold(YELLOW)),
     };
-    result.push("result  ", Style::faint());
+    result.push("result  ", Style::fg(FG));
     result.push(word, style);
     // `result_note` may be a multi-line table (the docs/blog matrix). Rendering it
     // as one span leaks embedded newlines past the border AND makes the panel
@@ -1295,7 +1328,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
         .filter(|l| !l.trim().is_empty())
         .collect();
     if let Some(first) = note_lines.first() {
-        result.push("  ·  ", Style::faint());
+        result.push("  ·  ", Style::fg(DIM));
         result.push(
             fit(first, inner.saturating_sub(result.width() + 2)),
             Style::fg(FG),
@@ -1307,7 +1340,7 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
         let mut row = Line::default();
         row.push(
             format!("  {}", fit(line, inner.saturating_sub(2))),
-            Style::faint(),
+            Style::fg(FG),
         );
         body.push(row);
     }
@@ -1316,8 +1349,14 @@ pub fn render_run_view(view: &RunView, opts: &RenderOpts) -> String {
         let mut row = Line::default();
         row.push(
             format!("  … {hidden} more rows (full table printed below)"),
-            Style::faint(),
+            Style::fg(DIM),
         );
+        body.push(row);
+    }
+    if let Some(summary) = run_usage_summary(view, opts.elapsed_secs) {
+        let mut row = Line::default();
+        row.push("usage  ", Style::bold(CYAN));
+        row.push(fit(&summary, inner.saturating_sub(7)), Style::fg(FG));
         body.push(row);
     }
 
@@ -1566,7 +1605,7 @@ fn window_bounds(items: &[ItemView]) -> (usize, usize) {
 /// A faint `⋮ N <what>` summary standing in for items hidden by the window.
 fn ellipsis_row(n: usize, what: &str) -> Line {
     let mut row = Line::default();
-    row.push(format!("  ⋮ {n} {what}"), Style::faint());
+    row.push(format!("  ⋮ {n} {what}"), Style::fg(DIM));
     row
 }
 
@@ -1591,6 +1630,55 @@ fn token_totals(view: &RunView) -> (u64, u64) {
         }
     }
     (tin, tout)
+}
+
+fn run_usage_summary(view: &RunView, elapsed_secs: Option<f64>) -> Option<String> {
+    let (tok_in, tok_out) = token_totals(view);
+    let total = tok_in + tok_out;
+    if total == 0 && elapsed_secs.is_none() {
+        return None;
+    }
+    let mut parts = Vec::new();
+    if let Some(secs) = elapsed_secs {
+        parts.push(format!("time {}", format_elapsed(Some(secs))));
+    }
+    if total > 0 {
+        parts.push(format!(
+            "{} tok ({} in · {} out)",
+            fmt_tokens(total),
+            fmt_tokens(tok_in),
+            fmt_tokens(tok_out)
+        ));
+    }
+    if let (Some(model), true) = (&view.model, total > 0) {
+        if let Some(cost) = estimated_cost_usd(model, tok_in, tok_out) {
+            parts.push(format!("cost {} est", fmt_usd(cost)));
+        }
+    }
+    Some(parts.join(" · "))
+}
+
+fn estimated_cost_usd(model: &str, input_tokens: u64, output_tokens: u64) -> Option<f64> {
+    let lower = model.to_ascii_lowercase();
+    let (input_per_mtok, output_per_mtok) = if lower.contains("gemini-3.1-flash-lite") {
+        (0.25, 1.50)
+    } else {
+        return None;
+    };
+    Some(
+        (input_tokens as f64 / 1_000_000.0) * input_per_mtok
+            + (output_tokens as f64 / 1_000_000.0) * output_per_mtok,
+    )
+}
+
+fn fmt_usd(cost: f64) -> String {
+    if cost < 0.01 {
+        format!("${cost:.4}")
+    } else if cost < 1.0 {
+        format!("${cost:.3}")
+    } else {
+        format!("${cost:.2}")
+    }
 }
 
 /// The live suffix for an item row: `· elapsed · N steps · Nk tok · action` while
@@ -1705,7 +1793,7 @@ fn top_border(title: &str, meta: &str, width: usize, color: bool) -> String {
     line.push("─".repeat(dashes), Style::fg(BORDER));
     if !meta.is_empty() {
         line.push("┤ ", Style::fg(BORDER));
-        line.push(meta, Style::faint());
+        line.push(meta, Style::fg(FG));
         line.push(" ├─", Style::fg(BORDER));
     }
     line.push("╮", Style::fg(BORDER));

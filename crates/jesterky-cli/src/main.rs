@@ -1,27 +1,28 @@
 use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use jesterky_actor::{
-    viz::{
-        adapt_manifest, redraw_lines, render_run_view, render_run_view_lines, render_tree,
-        RenderOpts,
-    },
     FakeActor, MemArtifactStore, MemEventSink, NdjsonEventSink, ReplayActor, ReplayClock,
     ReplayResource, SharedEventSink, SystemClock, TeeEventSink,
+    viz::{
+        RenderOpts, adapt_manifest, redraw_lines, render_run_view, render_run_view_lines,
+        render_tree,
+    },
 };
 use jesterky_contract::{
-    manifest_schema_json, workflow_schema_json, Artifact, BudgetEngine, BudgetKind,
-    BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind, ContractError, Event, EventKind,
-    GoalSnapshot, GoalState, HostConfig, HostRole, LiveBus, LiveStream, NodePath, RunManifest,
-    RunStatus, RunStopReason, Severity, ShardProgress, WorkflowSpec,
+    Artifact, BudgetEngine, BudgetKind, BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind,
+    ContractError, Event, EventKind, GoalSnapshot, GoalState, HostConfig, HostRole, LiveBus,
+    LiveStream, NodePath, RunManifest, RunStatus, RunStopReason, Severity, ShardProgress,
+    WorkflowSpec, manifest_schema_json, workflow_schema_json,
 };
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use jesterky_model::{AdaptiveLimiter, CodexModel, ModelActor};
 use jesterky_quality::{
-    host_config as workload_host_config, programs, programs_with_dungeon, DungeonGridActor,
-    DungeonGridState,
+    DungeonGridActor, DungeonGridState, host_config as workload_host_config, programs,
+    programs_with_dungeon,
 };
 use std::collections::HashMap;
+use std::env;
 use std::error::Error;
 use std::io::{self, IsTerminal, Write};
 use std::path::{Path, PathBuf};
@@ -64,6 +65,9 @@ enum Command {
         /// `deepseek/deepseek-v4-pro-direct` omits the reasoning-effort flag).
         #[arg(long)]
         model: Option<String>,
+        /// Reasoning effort for native GPT routes. Defaults depend on the workload.
+        #[arg(long, value_enum)]
+        effort: Option<ReasoningEffort>,
         /// Sandboxed `CODEX_HOME` for `--actor codex` (proxy `config.toml` + auth).
         #[arg(long)]
         codex_home: Option<PathBuf>,
@@ -124,6 +128,25 @@ enum ActorKind {
     Fake,
     /// Drives the real model via `codex exec` (ChatGPT-bundle auth, no API key).
     Codex,
+}
+
+#[derive(Clone, clap::ValueEnum)]
+enum ReasoningEffort {
+    Low,
+    Medium,
+    High,
+    Xhigh,
+}
+
+impl ReasoningEffort {
+    fn as_str(&self) -> &'static str {
+        match self {
+            Self::Low => "low",
+            Self::Medium => "medium",
+            Self::High => "high",
+            Self::Xhigh => "xhigh",
+        }
+    }
 }
 
 #[tokio::main]
@@ -233,6 +256,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             run_id,
             actor,
             model,
+            effort,
             codex_home,
             cd,
             no_follow,
@@ -258,6 +282,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
                 run_id.as_deref(),
                 actor,
                 model.as_deref(),
+                effort,
                 codex_home.as_deref(),
                 cd.as_deref(),
                 no_follow,
@@ -350,6 +375,7 @@ async fn run_spec(
     run_id: Option<&str>,
     actor: ActorKind,
     model: Option<&str>,
+    effort: Option<ReasoningEffort>,
     codex_home: Option<&Path>,
     cd: Option<&Path>,
     no_follow: bool,
@@ -393,14 +419,17 @@ async fn run_spec(
         ActorKind::Codex => {
             let model = model.unwrap_or("gpt-5.5");
             assert_model_allowed(model)?;
+            preflight_codex_home_route(model, codex_home).await?;
             // ChatGPT models take a reasoning effort; proxy routes generally don't.
             // DungeonGrid turns are short JSON — keep effort low for gpt routes.
-            let effort = if is_dungeongrid && model.starts_with("gpt") {
-                "low"
-            } else if model.starts_with("gpt") {
-                "high"
-            } else {
-                ""
+            let effort = match (effort, model.starts_with("gpt")) {
+                (Some(value), true) => value.as_str(),
+                (Some(_), false) => {
+                    return Err("--effort is only supported for native GPT routes".into());
+                }
+                (None, true) if is_dungeongrid => "low",
+                (None, true) => "high",
+                (None, false) => "",
             };
             // AIMD concurrency gate for this model+provider: start at the map's
             // configured width, drop it on 429s, climb back on clean calls. The
@@ -554,6 +583,7 @@ async fn run_spec(
             stdout.flush()?;
         }
         print_status_line(&manifest);
+        print_usage_line(model, &final_progress, wall_secs);
         if let Some(budgets) = &manifest.budgets {
             println!(
                 "budgets={}",
@@ -784,6 +814,112 @@ fn assert_model_allowed(model: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+async fn preflight_codex_home_route(
+    model: &str,
+    codex_home: Option<&Path>,
+) -> Result<(), Box<dyn Error>> {
+    let Some(codex_home) = codex_home else {
+        return Ok(());
+    };
+    let config_path = codex_home.join("config.toml");
+    let Ok(config) = std::fs::read_to_string(&config_path) else {
+        return Ok(());
+    };
+    let Some(base_url) = config_string_value(&config, "base_url") else {
+        return Ok(());
+    };
+    let env_key =
+        config_string_value(&config, "env_key").unwrap_or_else(|| "SYNTH_API_KEY".to_string());
+    let api_key = env::var(&env_key).map_err(|_| {
+        format!(
+            "codex route preflight failed before fan-out: `{}` points at `{}`, \
+             but required env var `{}` is not set. Export it before running the scan.",
+            config_path.display(),
+            base_url,
+            env_key
+        )
+    })?;
+    let url = format!("{}/responses", base_url.trim_end_matches('/'));
+    let response = reqwest::Client::new()
+        .post(&url)
+        .bearer_auth(api_key)
+        .json(&serde_json::json!({
+            "model": model,
+            "input": [{
+                "role": "user",
+                "content": [{
+                    "type": "input_text",
+                    "text": "Return exactly this JSON object and nothing else: {\"ok\":true}",
+                }],
+            }],
+            "max_output_tokens": 32,
+        }))
+        .send()
+        .await
+        .map_err(|err| {
+            format!("codex route preflight failed before fan-out: could not reach `{url}`: {err}")
+        })?;
+    let status = response.status();
+    let body = response.text().await.unwrap_or_default();
+    if !status.is_success() || route_body_is_error(&body) {
+        return Err(format!(
+            "codex route preflight failed before fan-out for model `{model}` via `{url}`: \
+             HTTP {status}: {}. Fix the provider route/balance or use a working model, \
+             for example `--model gpt-5.4-mini`.",
+            compact_error_body(&body)
+        )
+        .into());
+    }
+    Ok(())
+}
+
+fn config_string_value(config: &str, key: &str) -> Option<String> {
+    for line in config.lines() {
+        let line = line.trim();
+        if line.starts_with('#') || !line.starts_with(key) {
+            continue;
+        }
+        let Some((left, right)) = line.split_once('=') else {
+            continue;
+        };
+        if left.trim() != key {
+            continue;
+        }
+        let value = right.trim().trim_matches('"').trim();
+        if !value.is_empty() {
+            return Some(value.to_string());
+        }
+    }
+    None
+}
+
+fn route_body_is_error(body: &str) -> bool {
+    let Ok(value) = serde_json::from_str::<serde_json::Value>(body) else {
+        return false;
+    };
+    value.get("error").is_some_and(|error| !error.is_null())
+        || value
+            .get("detail")
+            .and_then(|detail| detail.get("error"))
+            .is_some_and(|error| !error.is_null())
+        || value
+            .get("resource_exhaustion")
+            .is_some_and(|error| !error.is_null())
+        || value
+            .get("detail")
+            .and_then(|detail| detail.get("resource_exhaustion"))
+            .is_some_and(|error| !error.is_null())
+}
+
+fn compact_error_body(body: &str) -> String {
+    let one_line = body.split_whitespace().collect::<Vec<_>>().join(" ");
+    if one_line.chars().count() > 500 {
+        one_line.chars().take(500).collect::<String>() + "…"
+    } else {
+        one_line
+    }
+}
+
 fn parse_args(args_json: Option<&str>) -> Result<serde_json::Value, serde_json::Error> {
     match args_json {
         Some(raw) => serde_json::from_str(raw),
@@ -807,6 +943,94 @@ fn print_status_line(manifest: &RunManifest) {
         manifest.events.len(),
         manifest.recorded.len()
     );
+}
+
+fn print_usage_line(
+    model: Option<&str>,
+    progress: &HashMap<NodePath, ShardProgress>,
+    wall_secs: f64,
+) {
+    let (input_tokens, output_tokens) =
+        progress
+            .values()
+            .fold((0u64, 0u64), |(input, output), shard| {
+                (
+                    input.saturating_add(shard.tokens_in),
+                    output.saturating_add(shard.tokens_out),
+                )
+            });
+    let total_tokens = input_tokens.saturating_add(output_tokens);
+    if total_tokens == 0 && wall_secs <= 0.0 {
+        return;
+    }
+    let tps = if wall_secs > 0.0 {
+        total_tokens as f64 / wall_secs
+    } else {
+        0.0
+    };
+    let mut line = format!(
+        "usage time={} tokens={} input={} output={} tps={}",
+        format_wall(wall_secs),
+        fmt_cli_tokens(total_tokens),
+        fmt_cli_tokens(input_tokens),
+        fmt_cli_tokens(output_tokens),
+        fmt_cli_tokens(tps.round() as u64),
+    );
+    if let Some(model) = model {
+        if let Some(cost) = estimated_cost_usd(model, input_tokens, output_tokens) {
+            line.push_str(&format!(" cost_est={}", fmt_usd(cost)));
+        }
+    }
+    println!("{line}");
+}
+
+fn estimated_cost_usd(model: &str, input_tokens: u64, output_tokens: u64) -> Option<f64> {
+    let lower = model.to_ascii_lowercase();
+    let (input_per_mtok, output_per_mtok) = if lower.contains("gemini-3.1-flash-lite") {
+        (0.25, 1.50)
+    } else {
+        return None;
+    };
+    Some(
+        (input_tokens as f64 / 1_000_000.0) * input_per_mtok
+            + (output_tokens as f64 / 1_000_000.0) * output_per_mtok,
+    )
+}
+
+fn fmt_usd(cost: f64) -> String {
+    if cost < 0.01 {
+        format!("${cost:.4}")
+    } else if cost < 1.0 {
+        format!("${cost:.3}")
+    } else {
+        format!("${cost:.2}")
+    }
+}
+
+fn fmt_cli_tokens(n: u64) -> String {
+    if n < 1_000 {
+        n.to_string()
+    } else if n < 1_000_000 {
+        let k = n as f64 / 1_000.0;
+        if k < 10.0 {
+            format!("{k:.1}k")
+        } else {
+            format!("{}k", k.round() as u64)
+        }
+    } else {
+        format!("{:.1}M", n as f64 / 1_000_000.0)
+    }
+}
+
+fn format_wall(secs: f64) -> String {
+    let total = secs.max(0.0).round() as u64;
+    let minutes = total / 60;
+    let seconds = total % 60;
+    if minutes > 0 {
+        format!("{minutes}:{seconds:02}")
+    } else {
+        format!("0:{seconds:02}")
+    }
 }
 
 fn resolve_host_config(spec: &WorkflowSpec) -> Option<HostConfig> {

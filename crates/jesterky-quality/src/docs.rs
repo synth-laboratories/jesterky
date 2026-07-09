@@ -4,7 +4,7 @@
 
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CoreError, ProgramRegistry};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
@@ -133,8 +133,9 @@ cite evidence as `/absolute/path:L<n>`. Stop after the JSON object.";
 
 const DOCS_MATRIX_RECORDER_PROMPT: &str = "\
 You receive `summary` with `matrix_report` (per-page scores/violations table), \
-`blockers`, `total`, `passed`, `failed`. Echo `verdict` (pass if blockers==0 else \
-fail), counts, and `matrix_report` unchanged in `matrix_report`. Add a one-sentence \
+`blockers`, `total`, `passed`, `failed`, and `violation_stats`. Echo `verdict` \
+(pass if blockers==0 else fail), counts, `violation_stats`, and `matrix_report` \
+unchanged in `matrix_report`. Add a one-sentence \
 `headline` on overall Mintlify docs corpus quality. No tools.";
 
 fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
@@ -157,10 +158,10 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
         .map(PathBuf::from)
         .unwrap_or_else(|| Path::new(docs_dir).join("docs.json"));
     let docs_path = Path::new(docs_dir);
-    let sdk_roots = path_list_arg(inputs, ledger, "sdk_roots")
-        .unwrap_or_else(|| default_sdk_roots(docs_path));
-    let api_roots = path_list_arg(inputs, ledger, "api_roots")
-        .unwrap_or_else(|| default_api_roots(docs_path));
+    let sdk_roots =
+        path_list_arg(inputs, ledger, "sdk_roots").unwrap_or_else(|| default_sdk_roots(docs_path));
+    let api_roots =
+        path_list_arg(inputs, ledger, "api_roots").unwrap_or_else(|| default_api_roots(docs_path));
     let reference_roots = path_list_arg(inputs, ledger, "reference_roots")
         .unwrap_or_else(|| default_reference_roots(docs_path));
     let quality_standard_roots = path_list_arg(inputs, ledger, "quality_standard_roots")
@@ -168,13 +169,20 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
     let product_spec_roots = path_list_arg(inputs, ledger, "product_spec_roots")
         .unwrap_or_else(|| default_product_spec_roots(docs_path));
     let audit_mode = string_arg(inputs, ledger, "audit_mode").unwrap_or_else(|| "fast".to_string());
-    let allow_source_tools = bool_arg(inputs, ledger, "allow_source_tools")
-        .unwrap_or_else(|| audit_mode == "full");
-    let limit = usize_arg(inputs, ledger, "limit").or_else(|| usize_arg(inputs, ledger, "max_pages"));
-    let standards_context =
-        context_from_files(&quality_standard_roots, CONTEXT_FILE_BYTES, STANDARDS_CONTEXT_BYTES);
-    let product_context =
-        context_from_files(&product_spec_roots, CONTEXT_FILE_BYTES, PRODUCT_CONTEXT_BYTES);
+    let allow_source_tools =
+        bool_arg(inputs, ledger, "allow_source_tools").unwrap_or_else(|| audit_mode == "full");
+    let limit =
+        usize_arg(inputs, ledger, "limit").or_else(|| usize_arg(inputs, ledger, "max_pages"));
+    let standards_context = context_from_files(
+        &quality_standard_roots,
+        CONTEXT_FILE_BYTES,
+        STANDARDS_CONTEXT_BYTES,
+    );
+    let product_context = context_from_files(
+        &product_spec_roots,
+        CONTEXT_FILE_BYTES,
+        PRODUCT_CONTEXT_BYTES,
+    );
     let pages = discover_pages(Path::new(docs_dir), Some(&docs_json))?;
     let jobs: Vec<Value> = pages
         .into_iter()
@@ -404,9 +412,18 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
         .and_then(Value::as_array)
         .cloned()
         .unwrap_or_default();
+    let job_count = inputs
+        .get("jobs")
+        .and_then(Value::as_array)
+        .map(Vec::len)
+        .unwrap_or(scans.len());
     let mut rows: Vec<Value> = Vec::new();
     let mut blockers = 0usize;
     let mut failed = 0usize;
+    let mut total_score = 0.0f64;
+    let mut violation_codes: BTreeMap<String, usize> = BTreeMap::new();
+    let mut violation_severities: BTreeMap<String, usize> = BTreeMap::new();
+    let mut low_score_pages: Vec<Value> = Vec::new();
     for scan in &scans {
         let Some(row) = normalize_page_verdict(scan) else {
             continue;
@@ -414,9 +431,21 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
         if row.get("blocker").and_then(Value::as_bool).unwrap_or(false) {
             blockers += 1;
         }
-        if row.get("score").and_then(Value::as_f64).unwrap_or(10.0) < 6.0 {
+        let score = row
+            .get("score")
+            .and_then(Value::as_f64)
+            .map(normalize_score)
+            .unwrap_or(10.0);
+        total_score += score;
+        if score < 6.0 {
             failed += 1;
+            low_score_pages.push(json!({
+                "item": row.get("item").cloned().unwrap_or(Value::Null),
+                "score": score,
+                "finding": row.get("finding").cloned().unwrap_or(Value::Null),
+            }));
         }
+        count_violations(&row, &mut violation_codes, &mut violation_severities);
         rows.push(row);
     }
     rows.sort_by(|a, b| {
@@ -427,7 +456,37 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
     });
     let total = rows.len();
     let passed = total.saturating_sub(failed);
-    let matrix_report = render_matrix(&rows);
+    low_score_pages.sort_by(|a, b| {
+        let a_score = a.get("score").and_then(Value::as_f64).unwrap_or(0.0);
+        let b_score = b.get("score").and_then(Value::as_f64).unwrap_or(0.0);
+        a_score
+            .partial_cmp(&b_score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| {
+                a.get("item")
+                    .and_then(Value::as_str)
+                    .unwrap_or("")
+                    .cmp(b.get("item").and_then(Value::as_str).unwrap_or(""))
+            })
+    });
+    low_score_pages.truncate(10);
+    let total_violations = violation_codes.values().sum::<usize>();
+    let average_score = if total == 0 {
+        0.0
+    } else {
+        total_score / total as f64
+    };
+    let stats = json!({
+        "total_pages": job_count,
+        "scanned_pages": total,
+        "shard_failures": job_count.saturating_sub(total),
+        "total_violations": total_violations,
+        "average_score": (average_score * 10.0).round() / 10.0,
+        "by_code": violation_codes,
+        "by_severity": violation_severities,
+        "low_score_pages": low_score_pages,
+    });
+    let matrix_report = render_matrix(&rows, &stats);
     let verdict = if blockers == 0 { "pass" } else { "fail" };
     Ok(json!({
         "summary": {
@@ -436,10 +495,45 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
             "passed": passed,
             "failed": failed,
             "blockers": blockers,
+            "violation_stats": stats,
             "pages": rows,
             "matrix_report": matrix_report,
         }
     }))
+}
+
+fn count_violations(
+    row: &Value,
+    by_code: &mut BTreeMap<String, usize>,
+    by_severity: &mut BTreeMap<String, usize>,
+) {
+    let Some(violations) = row.get("violations").and_then(Value::as_array) else {
+        return;
+    };
+    for violation in violations {
+        if let Some(code) = violation.get("code").and_then(Value::as_str) {
+            let code = code.trim();
+            if !code.is_empty() {
+                *by_code.entry(code.to_string()).or_default() += 1;
+            }
+        }
+        if let Some(severity) = violation.get("severity").and_then(Value::as_str) {
+            let severity = normalize_severity(severity);
+            if severity != "none" {
+                *by_severity.entry(severity).or_default() += 1;
+            }
+        }
+    }
+}
+
+fn normalize_severity(raw: &str) -> String {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "crit" | "critical" | "blocker" => "critical".to_string(),
+        "hi" | "high" | "error" => "high".to_string(),
+        "med" | "medium" | "warn" | "warning" => "medium".to_string(),
+        "lo" | "low" => "low".to_string(),
+        _ => "none".to_string(),
+    }
 }
 
 fn normalize_page_verdict(scan: &Value) -> Option<Value> {
@@ -447,11 +541,14 @@ fn normalize_page_verdict(scan: &Value) -> Option<Value> {
         .get("item")
         .or_else(|| scan.get("slug"))
         .and_then(Value::as_str)?;
-    let score = scan.get("score").and_then(Value::as_f64).unwrap_or(0.0);
+    let score = numeric_value(scan.get("score"))
+        .map(normalize_score)
+        .unwrap_or(0.0);
     let severity = scan
         .get("severity")
         .and_then(Value::as_str)
-        .unwrap_or("unknown");
+        .map(normalize_severity)
+        .unwrap_or_else(|| "none".to_string());
     let blocker = scan
         .get("blocker")
         .and_then(Value::as_bool)
@@ -494,7 +591,25 @@ fn normalize_page_verdict(scan: &Value) -> Option<Value> {
     }))
 }
 
-fn render_matrix(rows: &[Value]) -> String {
+fn numeric_value(value: Option<&Value>) -> Option<f64> {
+    match value? {
+        Value::Number(number) => number.as_f64(),
+        Value::String(text) => text.trim().parse::<f64>().ok(),
+        _ => None,
+    }
+}
+
+fn normalize_score(score: f64) -> f64 {
+    if score > 0.0 && score <= 1.0 {
+        score * 10.0
+    } else if score > 10.0 && score <= 100.0 {
+        score / 10.0
+    } else {
+        score
+    }
+}
+
+fn render_matrix(rows: &[Value], stats: &Value) -> String {
     let mut out = String::from("docs matrix — scores & violations per page\n");
     out.push_str(&format!(
         "{:<36} {:>5} {:>8} {:>14} {:>4} {:>4} {:>4} {:>4} {}\n",
@@ -542,7 +657,80 @@ fn render_matrix(rows: &[Value]) -> String {
             codes
         ));
     }
+    out.push('\n');
+    out.push_str("violation stats\n");
+    out.push_str(&format!(
+        "pages scanned: {}/{} · shard failures: {} · avg score: {:.1} · total violations: {}\n",
+        stats
+            .get("scanned_pages")
+            .and_then(Value::as_u64)
+            .unwrap_or(0),
+        stats
+            .get("total_pages")
+            .and_then(Value::as_u64)
+            .unwrap_or(0),
+        stats
+            .get("shard_failures")
+            .and_then(Value::as_u64)
+            .unwrap_or(0),
+        stats
+            .get("average_score")
+            .and_then(Value::as_f64)
+            .unwrap_or(0.0),
+        stats
+            .get("total_violations")
+            .and_then(Value::as_u64)
+            .unwrap_or(0),
+    ));
+    out.push_str("by code: ");
+    out.push_str(&render_counts(
+        stats.get("by_code").and_then(Value::as_object),
+        16,
+    ));
+    out.push('\n');
+    out.push_str("by severity: ");
+    out.push_str(&render_counts(
+        stats.get("by_severity").and_then(Value::as_object),
+        8,
+    ));
+    out.push('\n');
+    if let Some(pages) = stats.get("low_score_pages").and_then(Value::as_array) {
+        if !pages.is_empty() {
+            out.push_str("lowest scores: ");
+            let parts = pages
+                .iter()
+                .filter_map(|page| {
+                    let item = page.get("item").and_then(Value::as_str)?;
+                    let score = page.get("score").and_then(Value::as_f64)?;
+                    Some(format!("{} {:.1}", truncate_slug(item, 28), score))
+                })
+                .collect::<Vec<_>>();
+            out.push_str(&parts.join(" · "));
+            out.push('\n');
+        }
+    }
     out
+}
+
+fn render_counts(map: Option<&serde_json::Map<String, Value>>, limit: usize) -> String {
+    let Some(map) = map else {
+        return "none".to_string();
+    };
+    let mut counts = map
+        .iter()
+        .filter_map(|(key, value)| value.as_u64().map(|count| (key.as_str(), count)))
+        .collect::<Vec<_>>();
+    counts.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(b.0)));
+    let parts = counts
+        .into_iter()
+        .take(limit)
+        .map(|(key, count)| format!("{key}={count}"))
+        .collect::<Vec<_>>();
+    if parts.is_empty() {
+        "none".to_string()
+    } else {
+        parts.join(", ")
+    }
 }
 
 fn truncate_slug(slug: &str, max: usize) -> String {

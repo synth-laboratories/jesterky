@@ -9,65 +9,48 @@ record per seed/arm plus an ``ablation_summary.json`` with paired statistics.
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import math
 import os
 import statistics
 import sys
-import time
 import uuid
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from enum import Enum
 from functools import reduce
 from math import gcd
 from pathlib import Path
-from typing import Any
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+
+from http_contract import HttpMethod, request_json_object, wait_for_json_health
+from json_contract import (
+    JsonObject,
+    JsonObjectReader,
+    JsonValue,
+    read_json_object,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GOLD_URL = "http://127.0.0.1:8098"
 DEFAULT_CONTAINER_URL = "http://127.0.0.1:18104"
-DEFAULT_ENV_FILE = Path.home() / "Documents" / "GitHub" / "synth-ai" / ".env"
-DEFAULT_SMOKE_SUMMARY = REPO_ROOT / "proof" / "gepa_craftax_ablation" / "ablation_summary.json"
+DEFAULT_SMOKE_SUMMARY = (
+    REPO_ROOT / "proof" / "gepa_craftax_ablation" / "ablation_summary.json"
+)
 DEFAULT_OUT_ROOT = REPO_ROOT / "proof"
-DEFAULT_BASE_PROMPT_SOURCE = (
-    Path.home()
-    / "Documents"
-    / "GitHub"
-    / "gamebench"
-    / "tasks"
-    / "craftax-singleplayer"
-    / "containers"
-    / "react"
-    / "agent_policy.py"
-)
-DEFAULT_GEPA_MANIFEST_SOURCE = (
-    Path.home()
-    / "Documents"
-    / "GitHub"
-    / "efforts"
-    / "craftax-agent-hillclimb-20260705t162228z"
-    / "findings"
-    / "proof"
-    / "20260705T162555Z"
-    / "artifacts"
-    / "gepa_runs"
-    / "gepa_dc6d949fac464ca7b07f2291791081bb"
-    / "proposer_workspaces"
-    / "generation_000"
-    / "proposal"
-    / "manifest.json"
-)
+BASE_PROMPT_ORIGIN = "gamebench:craftax-singleplayer/react#DEFAULT_SYSTEM_PROMPT"
+GEPA_PROMPT_ORIGIN = "gepa:craftax-agent-hillclimb/generation_000/proposal"
 DEFAULT_SEED_START = 501
 DEFAULT_N = 64
 DEFAULT_MODEL = "gemini-3.1-flash-lite"
 ENV_NAME = "gamebench.craftax-singleplayer.rust_gold"
 TARGET_METRIC = "craftax_outcome_reward_mean"
+
+
+class ArtifactType(str, Enum):
+    TURNS = "turns"
 COMPLETED_STATUS = "completed"
 DEFAULT_TIE_EPSILON = 1e-9
 VALID_ACTIONS = [
@@ -93,28 +76,10 @@ OUTPUT_CONTRACT = (
     'Reply with JSON only, for example {"actions":["do","right","do","left","do"]}. '
     f"Use valid actions: {', '.join(VALID_ACTIONS)}."
 )
-DEFAULT_GELO_RUN_GLOB = (
-    Path.home()
-    / "Documents"
-    / "GitHub"
-    / "efforts"
-    / "*"
-    / "lane-*"
-    / "workspace"
-    / "gamebench"
-    / "tasks"
-    / "craftax-singleplayer"
-    / "configs"
-    / "reports"
-    / "goex_runs"
-    / "craftax_gamebench_rust_gelo_20260626T1915Z"
-)
-
-
 @dataclass(frozen=True)
 class PromptSpec:
     text: str
-    provenance: dict[str, Any]
+    provenance: JsonObject
 
 
 @dataclass(frozen=True)
@@ -123,7 +88,7 @@ class ArmSpec:
     arm: str
     label: str
     prompt: str
-    prompt_provenance: dict[str, Any]
+    prompt_provenance: JsonObject
 
 
 @dataclass(frozen=True)
@@ -142,56 +107,27 @@ def utc_now() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def load_json(path: Path) -> Any:
-    return json.loads(path.read_text())
+def load_json(path: Path) -> JsonObject:
+    return read_json_object(path).data
 
 
-def write_json(path: Path, payload: Any) -> None:
+def write_json(path: Path, payload: JsonValue) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def load_env_file(path: Path) -> None:
-    if not path.is_file():
-        return
-    for line in path.read_text().splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#") or "=" not in stripped:
-            continue
-        key, _, value = stripped.partition("=")
-        key = key.strip()
-        if key and key not in os.environ:
-            os.environ[key] = value.strip().strip('"').strip("'")
-
-
-def request_json(method: str, url: str, payload: dict[str, Any] | None = None, timeout_s: float = 600.0) -> Any:
-    data = None
-    headers = {"Accept": "application/json"}
-    if payload is not None:
-        data = json.dumps(payload).encode("utf-8")
-        headers["Content-Type"] = "application/json"
-    request = Request(url, data=data, headers=headers, method=method)
-    try:
-        with urlopen(request, timeout=timeout_s) as response:
-            body = response.read().decode("utf-8")
-            return json.loads(body) if body else {}
-    except HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"{method} {url} failed status={exc.code}: {body[:500]}") from exc
+def request_json(
+    method: HttpMethod,
+    url: str,
+    payload: JsonObject | None = None,
+    timeout_s: float = 600.0,
+) -> JsonObject:
+    return request_json_object(method, url, payload, timeout_s).data
 
 
 def wait_for_health(label: str, url: str, timeout_s: float = 120.0) -> None:
-    deadline = time.time() + timeout_s
-    last_error = ""
-    while time.time() < deadline:
-        try:
-            request_json("GET", f"{url.rstrip('/')}/health", timeout_s=10.0)
-            log(f"[ablation] {label} healthy at {url}")
-            return
-        except (RuntimeError, URLError, TimeoutError, json.JSONDecodeError) as exc:
-            last_error = str(exc)
-        time.sleep(2.0)
-    raise RuntimeError(f"{label} not healthy at {url}: {last_error}")
+    wait_for_json_health(label, url, lambda _: True, timeout_s)
+    log(f"[ablation] {label} healthy at {url}")
 
 
 def parse_seeds(raw: str) -> list[int]:
@@ -218,21 +154,16 @@ def seeds_from_args(args: argparse.Namespace) -> list[int]:
 
 
 def load_default_prompts(summary_path: Path) -> dict[str, PromptSpec]:
-    summary = load_json(summary_path)
-    prompts = summary.get("prompts") if isinstance(summary.get("prompts"), dict) else {}
-    base = prompts.get("arm_a_base")
-    gepa = prompts.get("arm_b_gepa")
-    if not isinstance(base, str) or not base.strip():
-        raise RuntimeError(f"missing prompts.arm_a_base in {summary_path}")
-    if not isinstance(gepa, str) or not gepa.strip():
-        raise RuntimeError(f"missing prompts.arm_b_gepa in {summary_path}")
+    prompts = read_json_object(summary_path).object("prompts")
+    base = prompts.string("arm_a_base")
+    gepa = prompts.string("arm_b_gepa")
     return {
         "base": PromptSpec(
             text=base,
             provenance={
                 "source": str(summary_path),
                 "json_path": "prompts.arm_a_base",
-                "original_source": str(DEFAULT_BASE_PROMPT_SOURCE),
+                "original_source": BASE_PROMPT_ORIGIN,
                 "original_symbol": "DEFAULT_SYSTEM_PROMPT",
                 "description": "Base ReAct prompt from smoke-run summary; output contract normalized.",
             },
@@ -242,7 +173,7 @@ def load_default_prompts(summary_path: Path) -> dict[str, PromptSpec]:
             provenance={
                 "source": str(summary_path),
                 "json_path": "prompts.arm_b_gepa",
-                "original_source": str(DEFAULT_GEPA_MANIFEST_SOURCE),
+                "original_source": GEPA_PROMPT_ORIGIN,
                 "original_json_path": "proposals[0].proposed_payload.payload.react_system_prompt",
                 "description": "GEPA proposer prompt from smoke-run summary; output contract normalized.",
             },
@@ -271,39 +202,49 @@ def prompt_from_text_file(path: Path, *, normalize: bool) -> PromptSpec:
     )
 
 
-def candidate_prompt(candidate: dict[str, Any]) -> str | None:
-    direct = candidate.get("react_system_prompt")
-    if isinstance(direct, str) and direct.strip():
+def candidate_prompt(candidate: JsonObjectReader) -> str | None:
+    direct = candidate.optional_string("react_system_prompt")
+    if direct:
         return direct.strip()
-    bundle = candidate.get("lever_bundle") if isinstance(candidate.get("lever_bundle"), dict) else {}
-    values = bundle.get("values") if isinstance(bundle.get("values"), dict) else {}
-    prompt = values.get("react_system_prompt")
-    if isinstance(prompt, str) and prompt.strip():
+    bundle = candidate.optional_object("lever_bundle")
+    if bundle is None:
+        return None
+    values = bundle.optional_object("values")
+    if values is None:
+        return None
+    prompt = values.optional_string("react_system_prompt")
+    if prompt:
         return prompt.strip()
     return None
 
 
-def discover_gelo_prompt(run_dirs: list[Path], *, allow_seed: bool, normalize: bool) -> PromptSpec:
-    searched: list[dict[str, Any]] = []
+def discover_gelo_prompt(
+    run_dirs: list[Path], *, allow_seed: bool, normalize: bool
+) -> PromptSpec:
+    searched: list[JsonObject] = []
     for run_dir in run_dirs:
         registry_path = run_dir / "artifacts" / "candidate_registry.json"
         if not registry_path.is_file():
-            searched.append({"run_dir": str(run_dir), "status": "missing_candidate_registry"})
+            searched.append(
+                {"run_dir": str(run_dir), "status": "missing_candidate_registry"}
+            )
             continue
-        registry = load_json(registry_path)
-        candidates = registry.get("candidates") if isinstance(registry.get("candidates"), list) else []
-        champion_id = registry.get("champion_candidate_id")
+        registry = read_json_object(registry_path)
+        candidates = registry.objects("candidates")
+        champion_id = registry.string("champion_candidate_id")
         ordered = sorted(
-            [candidate for candidate in candidates if isinstance(candidate, dict)],
-            key=lambda item: 0 if item.get("candidate_id") == champion_id else 1,
+            candidates,
+            key=lambda item: 0
+            if item.optional_string("candidate_id") == champion_id
+            else 1,
         )
         for candidate in ordered:
             prompt = candidate_prompt(candidate)
             if not prompt:
                 continue
-            source = str(candidate.get("source") or "")
-            status = str(candidate.get("status") or "")
-            candidate_id = str(candidate.get("candidate_id") or "")
+            source = candidate.string("source")
+            status = candidate.string("status")
+            candidate_id = candidate.string("candidate_id")
             searched.append(
                 {
                     "run_dir": str(run_dir),
@@ -333,14 +274,11 @@ def discover_gelo_prompt(run_dirs: list[Path], *, allow_seed: bool, normalize: b
         f"or seed/non-accepted prompt candidates: {json.dumps(searched, sort_keys=True)}"
     )
 
-
-def default_gelo_run_dirs() -> list[Path]:
-    return sorted(Path(path) for path in glob.glob(str(DEFAULT_GELO_RUN_GLOB)) if Path(path).is_dir())
-
-
-def rollout_payload(job: RolloutJob) -> dict[str, Any]:
+def rollout_payload(job: RolloutJob) -> JsonObject:
     args = job.args
-    rollout_id = f"{job.arm.optimizer}-{job.arm.arm}-seed-{job.seed}-{uuid.uuid4().hex[:8]}"
+    rollout_id = (
+        f"{job.arm.optimizer}-{job.arm.arm}-seed-{job.seed}-{uuid.uuid4().hex[:8]}"
+    )
     return {
         "rollout_id": rollout_id,
         "trace_correlation_id": rollout_id,
@@ -380,39 +318,44 @@ def rollout_payload(job: RolloutJob) -> dict[str, Any]:
     }
 
 
-def run_rollout(job: RolloutJob) -> tuple[RolloutJob, dict[str, Any], bool]:
+def run_rollout(job: RolloutJob) -> tuple[RolloutJob, JsonObject, bool]:
     if job.out_path.is_file() and not job.args.overwrite:
         return job, load_json(job.out_path), True
     payload = rollout_payload(job)
     record = request_json(
-        "POST",
+        HttpMethod.POST,
         f"{job.args.container_url.rstrip('/')}/rollout",
         payload,
         timeout_s=job.args.rollout_timeout_s,
     )
-    if not isinstance(record, dict):
-        raise RuntimeError(f"rollout seed={job.seed} arm={job.arm.arm} returned non-object response")
-    status = str(record.get("status") or "")
+    record_reader = JsonObjectReader(
+        record, f"rollout seed={job.seed} arm={job.arm.arm}"
+    )
+    status = record_reader.string("status")
     if status != COMPLETED_STATUS:
-        raise RuntimeError(f"rollout seed={job.seed} arm={job.arm.arm} returned status={status!r}")
+        raise RuntimeError(
+            f"rollout seed={job.seed} arm={job.arm.arm} returned status={status!r}"
+        )
     write_json(job.out_path, record)
     return job, record, False
 
 
-def turns_from_record(record: dict[str, Any]) -> list[dict[str, Any]]:
-    for key in ("artifacts", "artifact"):
-        items = record.get(key)
-        if not isinstance(items, list):
-            continue
-        for item in items:
-            if isinstance(item, dict) and item.get("artifact_type") == "turns":
-                turns = item.get("turns")
-                if isinstance(turns, list):
-                    return [turn for turn in turns if isinstance(turn, dict)]
-    return []
+def turns_from_record(record: JsonObject) -> list[JsonObject]:
+    reader = JsonObjectReader(record, "rollout")
+    turn_artifacts = tuple(
+        artifact
+        for artifact in reader.objects("artifacts")
+        if artifact.enum("artifact_type", ArtifactType) is ArtifactType.TURNS
+    )
+    if len(turn_artifacts) != 1:
+        raise JsonContractError(
+            "rollout.artifacts must contain exactly one turns artifact; "
+            f"found {len(turn_artifacts)}"
+        )
+    return [turn.data for turn in turn_artifacts[0].objects("turns")]
 
 
-def token_sum(turns: list[dict[str, Any]], key: str) -> int:
+def token_sum(turns: list[JsonObject], key: str) -> int:
     total = 0
     for turn in turns:
         usage = turn.get("usage") if isinstance(turn.get("usage"), dict) else {}
@@ -422,13 +365,25 @@ def token_sum(turns: list[dict[str, Any]], key: str) -> int:
     return total
 
 
-def summarize_record(record: dict[str, Any], *, arm: str, seed: int, path: Path) -> dict[str, Any]:
-    reward_info = record.get("reward_info") if isinstance(record.get("reward_info"), dict) else {}
-    details = reward_info.get("details") if isinstance(reward_info.get("details"), dict) else {}
+def summarize_record(
+    record: JsonObject, *, arm: str, seed: int, path: Path
+) -> JsonObject:
+    reward_info = (
+        record.get("reward_info") if isinstance(record.get("reward_info"), dict) else {}
+    )
+    details = (
+        reward_info.get("details")
+        if isinstance(reward_info.get("details"), dict)
+        else {}
+    )
     if "outcome_reward" not in reward_info:
         raise RuntimeError(f"missing reward_info.outcome_reward in {path}")
     turns = turns_from_record(record)
-    achievements = details.get("achievements") if isinstance(details.get("achievements"), list) else []
+    achievements = (
+        details.get("achievements")
+        if isinstance(details.get("achievements"), list)
+        else []
+    )
     return {
         "arm": arm,
         "seed": seed,
@@ -449,7 +404,7 @@ def mean_or_none(values: list[float]) -> float | None:
     return statistics.mean(values) if values else None
 
 
-def reward_block(items: list[dict[str, Any]]) -> dict[str, Any]:
+def reward_block(items: list[JsonObject]) -> JsonObject:
     rewards = [float(item["reward"]) for item in items]
     return {
         "mean_reward": mean_or_none(rewards),
@@ -460,9 +415,14 @@ def reward_block(items: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def normal_ci_95(values: list[float]) -> dict[str, Any]:
+def normal_ci_95(values: list[float]) -> JsonObject:
     if len(values) < 2:
-        return {"method": "normal_approx_z_1.96", "low": None, "high": None, "standard_error": None}
+        return {
+            "method": "normal_approx_z_1.96",
+            "low": None,
+            "high": None,
+            "standard_error": None,
+        }
     sd = statistics.stdev(values)
     se = sd / math.sqrt(len(values))
     margin = 1.96 * se
@@ -476,7 +436,9 @@ def normal_ci_95(values: list[float]) -> dict[str, Any]:
     }
 
 
-def exact_sign_flip_p(deltas: list[float], *, scale: int, max_states: int) -> dict[str, Any]:
+def exact_sign_flip_p(
+    deltas: list[float], *, scale: int, max_states: int
+) -> JsonObject:
     if not deltas:
         return {
             "method": "exact_scaled_dp",
@@ -501,7 +463,9 @@ def exact_sign_flip_p(deltas: list[float], *, scale: int, max_states: int) -> di
             next_counts[current_sum - weight] += count
         counts = next_counts
     observed = abs(sum(weights))
-    extreme = sum(count for signed_sum, count in counts.items() if abs(signed_sum) >= observed)
+    extreme = sum(
+        count for signed_sum, count in counts.items() if abs(signed_sum) >= observed
+    )
     total = 2 ** len(weights)
     return {
         "method": "exact_scaled_dp",
@@ -518,29 +482,43 @@ def paired_summary(
     *,
     optimizer: str,
     arms: tuple[ArmSpec, ArmSpec],
-    records_by_arm: dict[str, dict[int, tuple[dict[str, Any], Path]]],
+    records_by_arm: dict[str, dict[int, tuple[JsonObject, Path]]],
     requested_seeds: list[int],
     args: argparse.Namespace,
-) -> dict[str, Any]:
+) -> JsonObject:
     base_arm, candidate_arm = arms
-    per_arm: dict[str, list[dict[str, Any]]] = {base_arm.arm: [], candidate_arm.arm: []}
+    per_arm: dict[str, list[JsonObject]] = {base_arm.arm: [], candidate_arm.arm: []}
     for arm in arms:
         for seed in requested_seeds:
             item = records_by_arm.get(arm.arm, {}).get(seed)
             if item is None:
                 continue
             record, path = item
-            per_arm[arm.arm].append(summarize_record(record, arm=arm.arm, seed=seed, path=path))
+            per_arm[arm.arm].append(
+                summarize_record(record, arm=arm.arm, seed=seed, path=path)
+            )
 
-    base_seeds = {int(item["seed"]) for item in per_arm[base_arm.arm] if item["status"] == COMPLETED_STATUS}
-    candidate_seeds = {int(item["seed"]) for item in per_arm[candidate_arm.arm] if item["status"] == COMPLETED_STATUS}
-    paired_seeds = [seed for seed in requested_seeds if seed in base_seeds and seed in candidate_seeds]
+    base_seeds = {
+        int(item["seed"])
+        for item in per_arm[base_arm.arm]
+        if item["status"] == COMPLETED_STATUS
+    }
+    candidate_seeds = {
+        int(item["seed"])
+        for item in per_arm[candidate_arm.arm]
+        if item["status"] == COMPLETED_STATUS
+    }
+    paired_seeds = [
+        seed
+        for seed in requested_seeds
+        if seed in base_seeds and seed in candidate_seeds
+    ]
 
     by_arm_seed = {
         arm_name: {int(item["seed"]): item for item in items}
         for arm_name, items in per_arm.items()
     }
-    paired_rows: list[dict[str, Any]] = []
+    paired_rows: list[JsonObject] = []
     deltas: list[float] = []
     for seed in paired_seeds:
         base_reward = float(by_arm_seed[base_arm.arm][seed]["reward"])
@@ -563,16 +541,21 @@ def paired_summary(
 
     mean_delta = statistics.mean(deltas) if deltas else None
     ci = normal_ci_95(deltas)
-    permutation = exact_sign_flip_p(deltas, scale=args.permutation_scale, max_states=args.max_permutation_states)
+    permutation = exact_sign_flip_p(
+        deltas, scale=args.permutation_scale, max_states=args.max_permutation_states
+    )
     p_two_sided = permutation.get("p_two_sided")
     ci_low = ci.get("low")
     ci_high = ci.get("high")
-    ci_excludes_zero = bool(ci_low is not None and ci_high is not None and (ci_low > 0 or ci_high < 0))
+    ci_excludes_zero = bool(
+        ci_low is not None and ci_high is not None and (ci_low > 0 or ci_high < 0)
+    )
     p_lt_0_05 = bool(p_two_sided is not None and p_two_sided < 0.05)
     significance = {
         "ci_excludes_zero": ci_excludes_zero,
         "p_lt_0_05": p_lt_0_05,
-        "headline_claim_allowed": len(paired_seeds) >= args.min_paired_n and (ci_excludes_zero or p_lt_0_05),
+        "headline_claim_allowed": len(paired_seeds) >= args.min_paired_n
+        and (ci_excludes_zero or p_lt_0_05),
     }
 
     return {
@@ -590,8 +573,12 @@ def paired_summary(
         "paired_seeds": paired_seeds,
         "n": len(paired_seeds),
         "min_paired_n": args.min_paired_n,
-        f"arm_a_{base_arm.arm}": reward_block([by_arm_seed[base_arm.arm][seed] for seed in paired_seeds]),
-        f"arm_b_{candidate_arm.arm}": reward_block([by_arm_seed[candidate_arm.arm][seed] for seed in paired_seeds]),
+        f"arm_a_{base_arm.arm}": reward_block(
+            [by_arm_seed[base_arm.arm][seed] for seed in paired_seeds]
+        ),
+        f"arm_b_{candidate_arm.arm}": reward_block(
+            [by_arm_seed[candidate_arm.arm][seed] for seed in paired_seeds]
+        ),
         "uplift_mean": mean_delta,
         "paired_deltas": deltas,
         "paired_mean_delta": mean_delta,
@@ -630,8 +617,12 @@ def paired_summary(
         },
         "incomplete": {
             base_arm.arm: [seed for seed in requested_seeds if seed not in base_seeds],
-            candidate_arm.arm: [seed for seed in requested_seeds if seed not in candidate_seeds],
-            "dropped_unpaired": [seed for seed in requested_seeds if seed not in paired_seeds],
+            candidate_arm.arm: [
+                seed for seed in requested_seeds if seed not in candidate_seeds
+            ],
+            "dropped_unpaired": [
+                seed for seed in requested_seeds if seed not in paired_seeds
+            ],
         },
     }
 
@@ -642,8 +633,11 @@ def fmt(value: float | None, digits: int = 3) -> str:
     return f"{value:.{digits}f}"
 
 
-def provenance_md(provenance: dict[str, Any]) -> str:
-    parts = [f"`{provenance.get('source', 'unknown')}`"]
+def provenance_md(provenance: JsonObject) -> str:
+    source = provenance.get("source")
+    if not isinstance(source, str) or not source.strip():
+        raise RuntimeError("prompt provenance missing non-empty `source`")
+    parts = [f"`{source}`"]
     json_path = provenance.get("json_path")
     if json_path:
         parts.append(f"`{json_path}`")
@@ -660,7 +654,9 @@ def provenance_md(provenance: dict[str, Any]) -> str:
     return "; ".join(parts)
 
 
-def render_markdown(summary: dict[str, Any], *, optimizer: str, candidate_label: str) -> str:
+def render_markdown(
+    summary: JsonObject, *, optimizer: str, candidate_label: str
+) -> str:
     arm_a_key = "arm_a_base"
     arm_b_key = f"arm_b_{candidate_label}"
     arm_a = summary[arm_a_key]
@@ -721,9 +717,13 @@ both arms to preserve pairing.
 """
 
 
-def write_markdown(summary: dict[str, Any], *, optimizer: str, candidate_label: str, out_dir: Path) -> None:
+def write_markdown(
+    summary: JsonObject, *, optimizer: str, candidate_label: str, out_dir: Path
+) -> None:
     path = out_dir.parent / f"{optimizer}_craftax_ablation.md"
-    path.write_text(render_markdown(summary, optimizer=optimizer, candidate_label=candidate_label))
+    path.write_text(
+        render_markdown(summary, optimizer=optimizer, candidate_label=candidate_label)
+    )
 
 
 def build_arm_specs(args: argparse.Namespace) -> dict[str, tuple[ArmSpec, ArmSpec]]:
@@ -733,27 +733,43 @@ def build_arm_specs(args: argparse.Namespace) -> dict[str, tuple[ArmSpec, ArmSpe
     specs: dict[str, tuple[ArmSpec, ArmSpec]] = {}
     if args.optimizer in {"gepa", "both"}:
         specs["gepa"] = (
-            ArmSpec("gepa", "base", "base ReAct", base_prompt.text, base_prompt.provenance),
-            ArmSpec("gepa", "gepa", "GEPA prompt", gepa_prompt.text, gepa_prompt.provenance),
+            ArmSpec(
+                "gepa", "base", "base ReAct", base_prompt.text, base_prompt.provenance
+            ),
+            ArmSpec(
+                "gepa", "gepa", "GEPA prompt", gepa_prompt.text, gepa_prompt.provenance
+            ),
         )
     if args.optimizer in {"gelo", "both"}:
         if args.gelo_prompt_file:
-            gelo_prompt = prompt_from_text_file(args.gelo_prompt_file, normalize=not args.no_normalize_gelo_output_contract)
+            gelo_prompt = prompt_from_text_file(
+                args.gelo_prompt_file,
+                normalize=not args.no_normalize_gelo_output_contract,
+            )
         else:
-            run_dirs = args.gelo_run_dir or default_gelo_run_dirs()
+            run_dirs = args.gelo_run_dir
             gelo_prompt = discover_gelo_prompt(
                 run_dirs,
                 allow_seed=args.allow_seed_gelo_prompt,
                 normalize=not args.no_normalize_gelo_output_contract,
             )
         specs["gelo"] = (
-            ArmSpec("gelo", "base", "base ReAct", base_prompt.text, base_prompt.provenance),
-            ArmSpec("gelo", "gelo", "GELO prompt", gelo_prompt.text, gelo_prompt.provenance),
+            ArmSpec(
+                "gelo", "base", "base ReAct", base_prompt.text, base_prompt.provenance
+            ),
+            ArmSpec(
+                "gelo", "gelo", "GELO prompt", gelo_prompt.text, gelo_prompt.provenance
+            ),
         )
     return specs
 
 
-def run_optimizer(args: argparse.Namespace, optimizer: str, arms: tuple[ArmSpec, ArmSpec], seeds: list[int]) -> dict[str, Any]:
+def run_optimizer(
+    args: argparse.Namespace,
+    optimizer: str,
+    arms: tuple[ArmSpec, ArmSpec],
+    seeds: list[int],
+) -> JsonObject:
     out_dir = args.out_root / f"{optimizer}_craftax_ablation"
     out_dir.mkdir(parents=True, exist_ok=True)
     jobs: list[RolloutJob] = []
@@ -768,7 +784,9 @@ def run_optimizer(args: argparse.Namespace, optimizer: str, arms: tuple[ArmSpec,
                 )
             )
 
-    records_by_arm: dict[str, dict[int, tuple[dict[str, Any], Path]]] = {arm.arm: {} for arm in arms}
+    records_by_arm: dict[str, dict[int, tuple[JsonObject, Path]]] = {
+        arm.arm: {} for arm in arms
+    }
     started = time.time()
     completed = 0
     if args.workers == 1:
@@ -778,7 +796,9 @@ def run_optimizer(args: argparse.Namespace, optimizer: str, arms: tuple[ArmSpec,
             records_by_arm[job.arm.arm][job.seed] = (record, job.out_path)
             reward = float(record["reward_info"]["outcome_reward"])
             source = "reused" if reused else "ran"
-            log(f"[{optimizer}] {source} {job.arm.arm} seed={job.seed} reward={reward:.3f} ({completed}/{len(jobs)})")
+            log(
+                f"[{optimizer}] {source} {job.arm.arm} seed={job.seed} reward={reward:.3f} ({completed}/{len(jobs)})"
+            )
     else:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
             futures = {pool.submit(run_rollout, job): job for job in jobs}
@@ -788,7 +808,9 @@ def run_optimizer(args: argparse.Namespace, optimizer: str, arms: tuple[ArmSpec,
                 records_by_arm[job.arm.arm][job.seed] = (record, job.out_path)
                 reward = float(record["reward_info"]["outcome_reward"])
                 source = "reused" if reused else "ran"
-                log(f"[{optimizer}] {source} {job.arm.arm} seed={job.seed} reward={reward:.3f} ({completed}/{len(jobs)})")
+                log(
+                    f"[{optimizer}] {source} {job.arm.arm} seed={job.seed} reward={reward:.3f} ({completed}/{len(jobs)})"
+                )
 
     summary = paired_summary(
         optimizer=optimizer,
@@ -800,17 +822,23 @@ def run_optimizer(args: argparse.Namespace, optimizer: str, arms: tuple[ArmSpec,
     summary["elapsed_s"] = round(time.time() - started, 3)
     write_json(out_dir / "ablation_summary.json", summary)
     if args.write_markdown:
-        write_markdown(summary, optimizer=optimizer, candidate_label=arms[1].arm, out_dir=out_dir)
+        write_markdown(
+            summary, optimizer=optimizer, candidate_label=arms[1].arm, out_dir=out_dir
+        )
     return summary
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--optimizer", choices=["gepa", "gelo", "both"], default="gepa")
-    parser.add_argument("--container-url", default=os.environ.get("CONTAINER_URL", DEFAULT_CONTAINER_URL))
-    parser.add_argument("--gold-url", default=os.environ.get("CRAFTAX_GOLD_URL", DEFAULT_GOLD_URL))
+    parser.add_argument(
+        "--container-url",
+        default=os.environ.get("CONTAINER_URL", DEFAULT_CONTAINER_URL),
+    )
+    parser.add_argument(
+        "--gold-url", default=os.environ.get("CRAFTAX_GOLD_URL", DEFAULT_GOLD_URL)
+    )
     parser.add_argument("--out-root", type=Path, default=DEFAULT_OUT_ROOT)
-    parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_FILE)
     parser.add_argument("--prompt-summary", type=Path, default=DEFAULT_SMOKE_SUMMARY)
     parser.add_argument("--gelo-prompt-file", type=Path)
     parser.add_argument("--gelo-run-dir", type=Path, nargs="*")
@@ -839,6 +867,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--no-markdown", dest="write_markdown", action="store_false")
     parser.set_defaults(write_markdown=True)
     args = parser.parse_args(argv)
+    if args.optimizer in {"gelo", "both"} and not (
+        args.gelo_prompt_file or args.gelo_run_dir
+    ):
+        parser.error("GELO scans require --gelo-prompt-file or --gelo-run-dir")
     if args.n <= 0:
         parser.error("--n must be positive")
     if args.workers <= 0:
@@ -850,18 +882,23 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
-    load_env_file(args.env_file)
     seeds = seeds_from_args(args)
     specs = build_arm_specs(args)
     if args.dry_run:
-        log(f"[ablation] dry run optimizer={args.optimizer} seeds={seeds[0]}-{seeds[-1]} n={len(seeds)}")
+        log(
+            f"[ablation] dry run optimizer={args.optimizer} seeds={seeds[0]}-{seeds[-1]} n={len(seeds)}"
+        )
         for optimizer, arms in specs.items():
             log(f"[ablation] {optimizer}: {arms[0].arm} vs {arms[1].arm}")
-            log(f"[ablation] {optimizer} prompt provenance: {arms[1].prompt_provenance}")
+            log(
+                f"[ablation] {optimizer} prompt provenance: {arms[1].prompt_provenance}"
+            )
         return 0
     if not args.skip_health:
         wait_for_health("craftax_gold", args.gold_url, timeout_s=args.health_timeout_s)
-        wait_for_health("craftax_container", args.container_url, timeout_s=args.health_timeout_s)
+        wait_for_health(
+            "craftax_container", args.container_url, timeout_s=args.health_timeout_s
+        )
 
     exit_code = 0
     for optimizer, arms in specs.items():
@@ -874,7 +911,9 @@ def main(argv: list[str] | None = None) -> int:
             f"ci=[{fmt(ci.get('low'))}, {fmt(ci.get('high'))}] p={fmt(p_value, 6)}"
         )
         if n < args.min_paired_n:
-            log(f"[{optimizer}] paired n below requested minimum {args.min_paired_n}; table is audit-only")
+            log(
+                f"[{optimizer}] paired n below requested minimum {args.min_paired_n}; table is audit-only"
+            )
             exit_code = max(exit_code, 2)
     return exit_code
 

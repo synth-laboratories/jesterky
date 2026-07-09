@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "item",
+    "repo",
+    "module_id",
+    "score",
+    "severity",
+    "hold",
+    "role_tier",
+    "role_rationale",
+    "finding",
+    "fix",
+    "criteria",
+    "violations",
+    "red_flags"
+  ],
+  "properties": {
+    "item": { "type": "string" },
+    "repo": { "type": "string" },
+    "module_id": { "type": "string" },
+    "score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "1-10 Synth engineering-soundness score"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"]
+    },
+    "hold": { "type": "boolean" },
+    "role_tier": {
+      "type": "string",
+      "enum": ["standard", "strict"]
+    },
+    "role_rationale": { "type": "string" },
+    "finding": { "type": "string" },
+    "fix": { "type": "string" },
+    "criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "typed_seams",
+        "no_fallbacks",
+        "error_legibility",
+        "exhaustive_enums",
+        "unique_nouns",
+        "earned_abstraction",
+        "explicit_over_implicit",
+        "organization",
+        "docstrings_comments"
+      ],
+      "properties": {
+        "typed_seams": { "$ref": "#/$defs/criterionScore" },
+        "no_fallbacks": { "$ref": "#/$defs/criterionScore" },
+        "error_legibility": { "$ref": "#/$defs/criterionScore" },
+        "exhaustive_enums": { "$ref": "#/$defs/criterionScore" },
+        "unique_nouns": { "$ref": "#/$defs/criterionScore" },
+        "earned_abstraction": { "$ref": "#/$defs/criterionScore" },
+        "explicit_over_implicit": { "$ref": "#/$defs/criterionScore" },
+        "organization": { "$ref": "#/$defs/criterionScore" },
+        "docstrings_comments": { "$ref": "#/$defs/criterionScore" }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "path", "line", "description", "severity"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10"]
+          },
+          "path": { "type": "string" },
+          "line": {
+            "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }]
+          },
+          "description": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high", "critical"]
+          }
+        }
+      }
+    },
+    "red_flags": {
+      "type": "array",
+      "maxItems": 6,
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "criterionScore": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10
+    }
+  }
+}

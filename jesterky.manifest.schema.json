@@ -13,7 +13,9 @@
     "workflow_name"
   ],
   "properties": {
-    "args": true,
+    "args": {
+      "$ref": "#/definitions/JsonValue"
+    },
     "budgets": {
       "description": "Formal resource-budget projection (progress + ETA) when the run declared [`crate::topology::RunPlan::budgets`]. Host-metered; optional for back-compat.",
       "anyOf": [
@@ -142,7 +144,9 @@
     "Artifact": {
       "description": "Either an inline small value or a reference to an offloaded one. The runner applies the inline/offload split at a size cap.",
       "anyOf": [
-        true,
+        {
+          "$ref": "#/definitions/JsonValue"
+        },
         {
           "$ref": "#/definitions/ArtifactRef"
         }
@@ -252,30 +256,13 @@
       }
     },
     "BudgetEtaMode": {
-      "description": "How ETA lines are composed on the terminal panel.",
-      "oneOf": [
-        {
-          "description": "Do not show or compute ETA forecasts.",
-          "type": "string",
-          "enum": [
-            "off"
-          ]
-        },
-        {
-          "description": "Show only the soonest-to-exhaust cap.",
-          "type": "string",
-          "enum": [
-            "nearest_only"
-          ]
-        },
-        {
-          "description": "Show every cap that has a finite forecast (default).",
-          "type": "string",
-          "enum": [
-            "all"
-          ]
-        }
-      ]
+      "type": "string",
+      "enum": [
+        "off",
+        "nearest_only",
+        "all"
+      ],
+      "description": "How ETA lines are composed on the terminal panel."
     },
     "BudgetForecast": {
       "description": "ETA to exhaust one budget from observed burn rate.\n\n**Not** “time until the workflow finishes” — see module docs.",
@@ -332,30 +319,13 @@
       }
     },
     "BudgetKind": {
-      "description": "What resource is being capped.",
-      "oneOf": [
-        {
-          "description": "Impure actor invocations (model turns, env-coupled hero acts, …).",
-          "type": "string",
-          "enum": [
-            "actor_calls"
-          ]
-        },
-        {
-          "description": "Total tokens (in+out) observed on the live bus / recorded usage.",
-          "type": "string",
-          "enum": [
-            "tokens"
-          ]
-        },
-        {
-          "description": "Wall-clock seconds since the host started the run.",
-          "type": "string",
-          "enum": [
-            "wall_seconds"
-          ]
-        }
-      ]
+      "type": "string",
+      "enum": [
+        "actor_calls",
+        "tokens",
+        "wall_seconds"
+      ],
+      "description": "What resource is being capped."
     },
     "BudgetPlan": {
       "description": "Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.",
@@ -680,7 +650,9 @@
         "kind": {
           "$ref": "#/definitions/EventKind"
         },
-        "payload": true,
+        "payload": {
+          "$ref": "#/definitions/JsonValue"
+        },
         "wall_ms": {
           "type": "integer",
           "format": "uint64",
@@ -689,276 +661,37 @@
       }
     },
     "EventKind": {
-      "description": "The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)",
-      "oneOf": [
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "workflow_started"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "node_started"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "node_completed"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "map_item_started"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "map_item_completed"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "map_item_failed"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "map_completed"
-              ]
-            }
-          }
-        },
-        {
-          "description": "An actor/resource call was recorded (see replay manifest).",
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "actor_invoked"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "resource_invoked"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "session_started"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "session_resumed"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "checkpoint_created"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "semaphore_acquired"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "semaphore_released"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "message_published"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "message_available"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "artifact_emitted"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "workflow_completed"
-              ]
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": [
-                "workflow_failed"
-              ]
-            }
-          }
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "workflow_started",
+            "node_started",
+            "node_completed",
+            "map_item_started",
+            "map_item_completed",
+            "map_item_failed",
+            "map_completed",
+            "actor_invoked",
+            "resource_invoked",
+            "session_started",
+            "session_resumed",
+            "checkpoint_created",
+            "semaphore_acquired",
+            "semaphore_released",
+            "message_published",
+            "message_available",
+            "artifact_emitted",
+            "workflow_completed",
+            "workflow_failed"
+          ]
         }
-      ]
+      },
+      "description": "The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)"
     },
     "ForecastConfidence": {
       "description": "Forecast confidence (interval width).",
@@ -1090,7 +823,9 @@
             "path"
           ],
           "properties": {
-            "equals": true,
+            "equals": {
+              "$ref": "#/definitions/JsonValue"
+            },
             "kind": {
               "type": "string",
               "enum": [
@@ -1155,30 +890,13 @@
       }
     },
     "GoalState": {
-      "description": "Whether a goal (or the whole run) is satisfied.",
-      "oneOf": [
-        {
-          "description": "Predicate satisfied.",
-          "type": "string",
-          "enum": [
-            "met"
-          ]
-        },
-        {
-          "description": "Predicate evaluated but not satisfied.",
-          "type": "string",
-          "enum": [
-            "unmet"
-          ]
-        },
-        {
-          "description": "Path missing or wrong type — cannot evaluate.",
-          "type": "string",
-          "enum": [
-            "unknown"
-          ]
-        }
-      ]
+      "type": "string",
+      "enum": [
+        "met",
+        "unmet",
+        "unknown"
+      ],
+      "description": "Whether a goal (or the whole run) is satisfied."
     },
     "GoalStatus": {
       "description": "Result of evaluating one goal against the ledger.",
@@ -1209,6 +927,7 @@
           "type": "string"
         },
         "observed": {
+          "$ref": "#/definitions/JsonValue",
           "description": "The observed ledger value at the goal's path (echoed for consumers)."
         },
         "progress": {
@@ -1356,6 +1075,7 @@
           }
         },
         "inputs": {
+          "$ref": "#/definitions/JsonValue",
           "description": "Typed inputs the node received (post-binding-resolution)."
         },
         "label": {
@@ -1363,6 +1083,7 @@
           "type": "string"
         },
         "outputs": {
+          "$ref": "#/definitions/JsonValue",
           "description": "Typed outputs the node produced."
         },
         "score": {
@@ -1374,6 +1095,7 @@
           "format": "double"
         },
         "signal": {
+          "$ref": "#/definitions/JsonValue",
           "description": "Optimizer slot: a wall-safe verifier signal, if any."
         }
       }
@@ -1400,7 +1122,9 @@
         "call": {
           "$ref": "#/definitions/CallKind"
         },
-        "outputs": true,
+        "outputs": {
+          "$ref": "#/definitions/JsonValue"
+        },
         "score": {
           "type": [
             "number",
@@ -1408,7 +1132,9 @@
           ],
           "format": "double"
         },
-        "signal": true
+        "signal": {
+          "$ref": "#/definitions/JsonValue"
+        }
       }
     },
     "RunStatus": {
@@ -1425,6 +1151,37 @@
         "node_failed",
         "goal_unmet",
         "budget_exhausted"
+      ]
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/JsonValue"
+          }
+        }
       ]
     }
   }

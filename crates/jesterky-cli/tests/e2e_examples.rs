@@ -19,20 +19,30 @@ const RUNNABLE_EXAMPLES: &[&str] = &[
 const INVALID_EXAMPLES: &[(&str, &str)] =
     &[("invalid_dangling_entrypoint.json", "error entrypoint[0]")];
 
-const SKIPPED_EXAMPLES: &[SkippedExample] = &[SkippedExample {
-    file: "dungeongrid_4p.json",
-    reason: "LLM-only workflow; the CLI rejects --actor fake for DungeonGrid hero policy turns",
-}];
+const SKIPPED_EXAMPLES: &[SkippedExample] = &[
+    SkippedExample {
+        file: "dungeongrid_4p.json",
+        reason: "LLM-only workflow; the CLI rejects --actor fake for DungeonGrid hero policy turns",
+        expected_error: "LLM workflow",
+    },
+    SkippedExample {
+        file: "quality_scan_oss_code.json",
+        reason: "repository-content audit requires explicit repo_roots and a judge actor",
+        expected_error: "repo_roots",
+    },
+];
 
 struct SkippedExample {
     file: &'static str,
     reason: &'static str,
+    expected_error: &'static str,
 }
 
 struct ExampleFixtures {
     _temp: tempfile::TempDir,
     blog_dir: PathBuf,
     docs_dir: PathBuf,
+    obliq_dir: PathBuf,
 }
 
 #[test]
@@ -185,7 +195,7 @@ fn skipped_examples_are_explicit_and_still_validate() {
         );
         let stderr = String::from_utf8_lossy(&run.stderr);
         assert!(
-            stderr.contains("LLM workflow") && stderr.contains("--actor codex"),
+            stderr.contains(skipped.expected_error),
             "{} should fail loudly with the fake-incompatible class; got:\n{stderr}",
             skipped.file
         );
@@ -253,6 +263,16 @@ fn args_for_example(example: &str, fixtures: &ExampleFixtures) -> Option<String>
             })
             .to_string(),
         ),
+        "obliq_math_verify.json" => Some(
+            json!({
+                "data_dir": fixtures.obliq_dir.display().to_string(),
+                "max_queries": 1,
+                "pool_size": 2,
+                "k": 1,
+                "mode": "verify",
+            })
+            .to_string(),
+        ),
         "smr_reportbench_trace_evaluate.json" => Some(
             json!({
                 "trace_dir": "proof/reportbench_traces",
@@ -267,8 +287,10 @@ fn example_fixtures() -> ExampleFixtures {
     let temp = tempfile::tempdir().expect("tempdir");
     let blog_dir = temp.path().join("blog");
     let docs_dir = temp.path().join("docs");
+    let obliq_dir = temp.path().join("obliq");
     std::fs::create_dir_all(&blog_dir).expect("blog fixture dir");
     std::fs::create_dir_all(&docs_dir).expect("docs fixture dir");
+    std::fs::create_dir_all(&obliq_dir).expect("obliq fixture dir");
     std::fs::write(
         blog_dir.join("launch.mdx"),
         "---\ntitle: Launch proof\nstatus: published\n---\n\n# Launch proof\n\nEvidence path is committed.\n",
@@ -284,10 +306,26 @@ fn example_fixtures() -> ExampleFixtures {
         r#"{"navigation":{"groups":[{"group":"Guide","pages":["quickstart"]}]}}"#,
     )
     .expect("docs nav writes");
+    std::fs::write(
+        obliq_dir.join("corpus.jsonl"),
+        "{\"_id\":\"d1\",\"text\":\"prime factorization theorem\"}\n{\"_id\":\"d2\",\"text\":\"triangle area formula\"}\n",
+    )
+    .expect("obliq corpus writes");
+    std::fs::write(
+        obliq_dir.join("queries.jsonl"),
+        "{\"_id\":\"q1\",\"text\":\"find the multiplicative decomposition result\"}\n",
+    )
+    .expect("obliq queries write");
+    std::fs::write(
+        obliq_dir.join("qrels.tsv"),
+        "query-id\tcorpus-id\tscore\nq1\td1\t1\n",
+    )
+    .expect("obliq qrels write");
     ExampleFixtures {
         _temp: temp,
         blog_dir,
         docs_dir,
+        obliq_dir,
     }
 }
 

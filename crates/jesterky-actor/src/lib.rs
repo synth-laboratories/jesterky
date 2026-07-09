@@ -18,8 +18,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 pub mod viz;
 
@@ -67,7 +67,18 @@ impl Actor for ReplayActor {
 /// replays without a live env. `observe` and `step` share the recorded stream;
 /// the [`Addr`] disambiguates which call this is.
 pub struct ReplayResource {
-    by_addr: HashMap<Addr, serde_json::Value>,
+    by_addr: HashMap<Addr, ResourceReplayOutput>,
+}
+
+#[derive(Clone, Debug)]
+struct ResourceReplayOutput {
+    value: serde_json::Value,
+}
+
+impl ResourceReplayOutput {
+    fn into_value(self) -> serde_json::Value {
+        self.value
+    }
 }
 
 impl ReplayResource {
@@ -81,7 +92,14 @@ impl ReplayResource {
                     CallKind::ResourceObserve { .. } | CallKind::ResourceStep { .. }
                 )
             })
-            .map(|r| (r.addr.clone(), r.outputs.clone()))
+            .map(|r| {
+                (
+                    r.addr.clone(),
+                    ResourceReplayOutput {
+                        value: r.outputs.clone(),
+                    },
+                )
+            })
             .collect();
         Self { by_addr }
     }
@@ -90,6 +108,7 @@ impl ReplayResource {
         self.by_addr
             .get(addr)
             .cloned()
+            .map(ResourceReplayOutput::into_value)
             .ok_or_else(|| HostError::ReplayMiss(addr.clone()))
     }
 }
@@ -125,7 +144,34 @@ impl Clock for ReplayClock {
 /// In-memory checkpoint store for tests.
 #[derive(Default)]
 pub struct MemCheckpointStore {
-    latest: Mutex<HashMap<String, serde_json::Value>>,
+    latest: Mutex<HashMap<String, CheckpointState>>,
+}
+
+#[derive(Clone, Debug)]
+struct CheckpointState {
+    session: String,
+    value: serde_json::Value,
+}
+
+impl CheckpointState {
+    fn new(session: &str, value: serde_json::Value) -> Self {
+        Self {
+            session: session.to_string(),
+            value,
+        }
+    }
+
+    fn artifact_ref(&self) -> ArtifactRef {
+        ArtifactRef {
+            key: format!("ckpt/{}", self.session),
+            size_bytes: self.value.to_string().len() as u64,
+            content_type: "application/json".to_string(),
+        }
+    }
+
+    fn into_value(self) -> serde_json::Value {
+        self.value
+    }
 }
 
 impl MemCheckpointStore {
@@ -142,16 +188,19 @@ impl CheckpointStore for MemCheckpointStore {
         state: serde_json::Value,
     ) -> Result<ArtifactRef, HostError> {
         let mut latest = self.latest.lock().unwrap();
-        let size_bytes = state.to_string().len() as u64;
-        latest.insert(session.to_string(), state);
-        Ok(ArtifactRef {
-            key: format!("ckpt/{session}"),
-            size_bytes,
-            content_type: "application/json".to_string(),
-        })
+        let checkpoint = CheckpointState::new(session, state);
+        let artifact_ref = checkpoint.artifact_ref();
+        latest.insert(session.to_string(), checkpoint);
+        Ok(artifact_ref)
     }
     async fn load(&self, session: &str) -> Result<Option<serde_json::Value>, HostError> {
-        Ok(self.latest.lock().unwrap().get(session).cloned())
+        Ok(self
+            .latest
+            .lock()
+            .unwrap()
+            .get(session)
+            .cloned()
+            .map(CheckpointState::into_value))
     }
 }
 

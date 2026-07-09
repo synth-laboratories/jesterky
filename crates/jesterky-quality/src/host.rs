@@ -1,6 +1,6 @@
 //! Default host wiring for reference quality workloads (prompts, schemas, viz).
 
-use crate::{blog, docs, dungeongrid, obliq, roles, trace, SCANNER_ACTOR, SUMMARY_ACTOR};
+use crate::{SCANNER_ACTOR, SUMMARY_ACTOR, blog, docs, dungeongrid, obliq, oss_code, roles, trace};
 use jesterky_contract::{HostConfig, HostRole, HostVizConfig};
 use std::collections::BTreeMap;
 
@@ -11,6 +11,7 @@ pub fn host_config(name: &str) -> Option<HostConfig> {
         "quality_scan" => Some(code_scan_host()),
         "quality_scan_blogs" => Some(blog::host_config()),
         "quality_scan_docs" => Some(docs::host_config()),
+        "quality_scan_oss_code" => Some(oss_code::host_config()),
         "gepa_trace_annotate" => Some(trace::gepa_host_config()),
         "gelo_trace_annotate" => Some(trace::gelo_host_config()),
         "dungeongrid_4p" | "dungeongrid" => Some(dungeongrid::host_config()),

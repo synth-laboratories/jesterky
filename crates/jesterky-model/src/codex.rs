@@ -6,12 +6,12 @@
 //! without touching [`ModelActor`](crate::ModelActor).
 
 use crate::limiter::AdaptiveLimiter;
-use crate::{build_prompt, Model, ModelError, ModelRequest};
+use crate::{Model, ModelError, ModelRequest, build_prompt};
 use async_trait::async_trait;
 use std::path::PathBuf;
 use std::process::Stdio;
-use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::process::Command;
@@ -140,17 +140,15 @@ impl CodexModel {
         let sandbox_flag = if in_container {
             "danger-full-access"
         } else {
-            sandbox.map(|s| s.mode().codex_flag()).unwrap_or("read-only")
+            sandbox
+                .map(|s| s.mode().codex_flag())
+                .unwrap_or("read-only")
         };
         let workdir = sandbox
             .map(|s| s.workdir().to_path_buf())
             .or_else(|| self.cwd.clone());
 
-        let mut args: Vec<String> = vec![
-            "exec".into(),
-            "-m".into(),
-            self.model.clone(),
-        ];
+        let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
             args.push("-c".into());
@@ -162,9 +160,13 @@ impl CodexModel {
         // codex's workspace-write sandbox denies it by default. Only relevant when
         // codex self-sandboxes (local) — in a container, network is the container's.
         if let Some(sb) = sandbox {
-            if !in_container && sb.mode() == jesterky_contract::sandbox::SandboxMode::WorkspaceWrite {
+            if !in_container && sb.mode() == jesterky_contract::sandbox::SandboxMode::WorkspaceWrite
+            {
                 args.push("-c".into());
-                args.push(format!("sandbox_workspace_write.network_access={}", sb.network()));
+                args.push(format!(
+                    "sandbox_workspace_write.network_access={}",
+                    sb.network()
+                ));
             }
         }
         args.push("--skip-git-repo-check".into());
@@ -176,8 +178,12 @@ impl CodexModel {
         // The host-side `ModelActor` validates the reply against the same schema on
         // every backend, so in a container we rely on that + the prompt's shape spec
         // and skip the flag (dropping only codex's in-process steer, not the gate).
+        let proxy_codex_home = self
+            .codex_home
+            .as_deref()
+            .is_some_and(codex_home_uses_proxy_provider);
         if let Some(schema) = &req.output_schema {
-            if !in_container {
+            if !in_container && !proxy_codex_home {
                 args.push("--output-schema".into());
                 args.push(schema.to_string_lossy().into_owned());
             }
@@ -192,7 +198,10 @@ impl CodexModel {
         // CODEX_HOME) — intentionally NOT OPENAI_API_KEY.
         let mut env: Vec<(String, String)> = Vec::new();
         if let Some(codex_home) = &self.codex_home {
-            env.push(("CODEX_HOME".into(), codex_home.to_string_lossy().into_owned()));
+            env.push((
+                "CODEX_HOME".into(),
+                codex_home.to_string_lossy().into_owned(),
+            ));
         }
         // Sandbox-provided env wins (e.g. an in-container CODEX_HOME pointing at
         // mounted auth): drop any key the sandbox overrides, then append its env.
@@ -279,9 +288,13 @@ impl CodexModel {
 
         if status.success() {
             if reply.trim().is_empty() {
-                return Err(ModelError::Parse(
-                    "codex stream carried no agent_message text".to_string(),
-                ));
+                let tail_str: String = tail.iter().cloned().collect::<Vec<_>>().join("\n");
+                let detail = if tail_str.trim().is_empty() {
+                    "codex stream carried no agent_message text".to_string()
+                } else {
+                    format!("codex stream carried no agent_message text; stdout tail:\n{tail_str}")
+                };
+                return Err(ModelError::Parse(detail));
             }
             Ok(reply)
         } else {
@@ -386,6 +399,13 @@ fn truncate_action(text: &str) -> String {
     } else {
         one_line.chars().take(31).collect::<String>() + "…"
     }
+}
+
+fn codex_home_uses_proxy_provider(codex_home: &std::path::Path) -> bool {
+    let Ok(config) = std::fs::read_to_string(codex_home.join("config.toml")) else {
+        return false;
+    };
+    config.contains("[model_providers.") || config.contains("base_url =")
 }
 
 #[cfg(test)]

@@ -27,12 +27,12 @@ mod server;
 mod sse;
 
 pub use convert::ConvertError;
-pub use route::{resolve_route, ProviderRoute};
+pub use route::{ProviderKind, ProviderRoute, resolve_route, resolve_route_checked};
 
 use server::ServerState;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::AtomicU64;
 use std::sync::Arc;
+use std::sync::atomic::AtomicU64;
 use tokio::net::TcpListener;
 use tokio::task::JoinHandle;
 
@@ -48,6 +48,12 @@ pub enum ProxyError {
     /// Failed to bind an ephemeral localhost port.
     #[error("failed to bind localhost port: {0}")]
     Bind(String),
+    /// A stable per-user cache cannot be selected without a home directory.
+    #[error("unable to materialize proxy CODEX_HOME: user home directory is unavailable")]
+    MissingHome,
+    /// A custom provider route is incomplete or invalid.
+    #[error(transparent)]
+    Route(#[from] route::RouteError),
 }
 
 /// A running proxy. Aborts its server task on drop. Keep it alive for the whole run.
@@ -64,7 +70,7 @@ impl ChatProxy {
     /// model has no proxy mapping (native codex route). Errors if the provider's
     /// `api_key_env` is unset.
     pub async fn spawn(model: &str) -> Result<Option<ChatProxy>, ProxyError> {
-        let route = match resolve_route(model) {
+        let route = match resolve_route_checked(model)? {
             Some(r) => r,
             None => return Ok(None),
         };
@@ -131,9 +137,8 @@ fn materialize_codex_home(
     // NOT under $TMPDIR: codex refuses to create its PATH-alias helper binaries
     // inside a temp dir (and then the model exec silently degrades). Use a stable
     // per-user cache dir instead.
-    let base = home_dir()
-        .map(|h| h.join(".cache").join("jesterky"))
-        .unwrap_or_else(std::env::temp_dir);
+    let user_home = home_dir().ok_or(ProxyError::MissingHome)?;
+    let base = user_home.join(".cache").join("jesterky");
     let home = base.join(format!("proxy_{port}"));
     std::fs::create_dir_all(&home)?;
 
@@ -151,11 +156,9 @@ fn materialize_codex_home(
     std::fs::write(home.join("config.toml"), config)?;
 
     // codex may still want a session auth file; copy it if the user has one.
-    if let Some(user_home) = home_dir() {
-        let auth = user_home.join(".codex").join("auth.json");
-        if auth.is_file() {
-            let _ = std::fs::copy(&auth, home.join("auth.json"));
-        }
+    let auth = user_home.join(".codex").join("auth.json");
+    if auth.is_file() {
+        std::fs::copy(&auth, home.join("auth.json"))?;
     }
 
     Ok(home)

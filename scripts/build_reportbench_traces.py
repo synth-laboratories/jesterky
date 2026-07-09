@@ -2,7 +2,7 @@
 """Build v4 traces from real SMR ReportBench lane artifacts.
 
 Scans an evals ReportBench lanes directory and, for each lane whose
-artifacts/ contains a parseable autograde_latest.json, emits
+artifacts/ contains an autograde_latest.json, validates the producer contract, and emits
 <out-dir>/<lane>.v4.json shaped for the jesterky `trace.expand` op
 (top-level *.v4.json files; summary carries reward/outcome_reward).
 The `evidence` object embeds the outcome facts an evaluator grades:
@@ -13,81 +13,185 @@ artifact files are present. Source lanes are read-only.
 import argparse
 import json
 import sys
+from dataclasses import asdict, dataclass
+from enum import Enum
 from pathlib import Path
 
-DEFAULT_LANES_DIR = Path(__file__).resolve().parents[2] / "evals" / "reportbench" / "lanes"
+from json_contract import JsonValue, read_json_object
+
+DEFAULT_LANES_DIR = (
+    Path(__file__).resolve().parents[2] / "evals" / "reportbench" / "lanes"
+)
 DEFAULT_OUT_DIR = "proof/reportbench_traces"
 
-COMPANIONS = ["reportbench_output.json", "verifier_review.json", "summary_latest.json"]
+REQUIRED_ARTIFACTS = (
+    "autograde_latest.json",
+    "reportbench_output.json",
+    "summary_latest.json",
+    "verifier_review.json",
+)
 
 
-def load_json(path: Path):
-    try:
-        with open(path) as fh:
-            return json.load(fh)
-    except (OSError, json.JSONDecodeError):
-        return None
+class RunState(str, Enum):
+    DONE = "done"
+    SUCCEEDED = "succeeded"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    ERROR = "error"
+    CANCELLED = "cancelled"
+
+    @property
+    def trace_status(self) -> "TraceStatus":
+        if self in {RunState.DONE, RunState.SUCCEEDED, RunState.COMPLETED}:
+            return TraceStatus.COMPLETED
+        return TraceStatus(self.value)
 
 
-def build_trace(lane: str, artifacts: Path):
-    autograde = load_json(artifacts / "autograde_latest.json")
-    if not isinstance(autograde, dict) or "reward" not in autograde:
-        return None
-    grade = autograde.get("grade") if isinstance(autograde.get("grade"), dict) else {}
-    reward = autograde.get("reward")
-    state = autograde.get("state")
+class TraceStatus(str, Enum):
+    COMPLETED = "completed"
+    FAILED = "failed"
+    ERROR = "error"
+    CANCELLED = "cancelled"
 
-    reportbench_output = load_json(artifacts / "reportbench_output.json")
-    verifier_review = load_json(artifacts / "verifier_review.json")
 
-    benchmark_verdict = None
-    if isinstance(reportbench_output, dict):
-        benchmark_verdict = reportbench_output.get("benchmark_verdict")
+@dataclass(frozen=True)
+class AutogradeGrade:
+    checks_passed: int
+    checks_total: int
+    checks_failed: int
+    fatal_errors: tuple[str, ...]
 
-    verifier = None
-    if isinstance(verifier_review, dict):
-        verifier = {
-            "score": verifier_review.get("score"),
-            "summary": verifier_review.get("summary"),
-            "criteria": [
-                {"id": c.get("id"), "score": c.get("score"), "reason": c.get("reason")}
-                for c in (verifier_review.get("run_verifier") or {}).get("criteria", [])
-                if isinstance(c, dict)
-            ],
-        }
 
-    artifacts_present = sorted(
-        name for name in COMPANIONS + ["autograde_latest.json"] if (artifacts / name).is_file()
+@dataclass(frozen=True)
+class Autograde:
+    reward: float
+    state: RunState
+    run_id: str
+    grade: AutogradeGrade
+
+
+@dataclass(frozen=True)
+class VerifierCriterion:
+    id: str
+    score: float
+    reason: str
+
+
+@dataclass(frozen=True)
+class VerifierEvidence:
+    score: float
+    summary: str
+    criteria: tuple[VerifierCriterion, ...]
+
+
+@dataclass(frozen=True)
+class ReportBenchSummary:
+    reward: float
+    outcome_reward: float
+    run_id: str
+    state: RunState
+
+
+@dataclass(frozen=True)
+class ReportBenchMetadata:
+    source: str
+    lane: str
+
+
+@dataclass(frozen=True)
+class AutogradeEvidence:
+    reward: float
+    checks_passed: int
+    checks_total: int
+    checks_failed: int
+    fatal_errors: tuple[str, ...]
+    state: RunState
+
+
+@dataclass(frozen=True)
+class TraceEvidence:
+    autograde: AutogradeEvidence
+    benchmark_verdict: JsonValue
+    verifier: VerifierEvidence
+    artifacts_present: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ReportBenchTrace:
+    schema_version: str
+    rollout_id: str
+    status: TraceStatus
+    summary: ReportBenchSummary
+    metadata: ReportBenchMetadata
+    evidence: TraceEvidence
+
+
+def parse_autograde(path: Path) -> Autograde:
+    raw = read_json_object(path)
+    grade = raw.object("grade")
+    state = raw.enum("state", RunState)
+    return Autograde(
+        reward=raw.number("reward"),
+        state=state,
+        run_id=raw.string("run_id"),
+        grade=AutogradeGrade(
+            checks_passed=grade.integer("checks_passed"),
+            checks_total=grade.integer("checks_total"),
+            checks_failed=grade.integer("checks_failed"),
+            fatal_errors=grade.strings("fatal_errors"),
+        ),
     )
 
-    return {
-        "schema_version": "synth_rollout_trace_v4",
-        "rollout_id": f"reportbench-{lane}",
-        "status": "completed" if state in ("done", "succeeded") else str(state),
-        "summary": {
-            "reward": reward,
-            "outcome_reward": reward,
-            "run_id": autograde.get("run_id"),
-            "state": state,
-        },
-        "metadata": {
-            "source": "evals/reportbench",
-            "lane": lane,
-        },
-        "evidence": {
-            "autograde": {
-                "reward": reward,
-                "checks_passed": grade.get("checks_passed"),
-                "checks_total": grade.get("checks_total"),
-                "checks_failed": grade.get("checks_failed"),
-                "fatal_errors": grade.get("fatal_errors", []),
-                "state": state,
-            },
-            "benchmark_verdict": benchmark_verdict,
-            "verifier": verifier,
-            "artifacts_present": artifacts_present,
-        },
-    }
+
+def parse_verifier(path: Path) -> VerifierEvidence:
+    raw = read_json_object(path)
+    criteria = tuple(
+        VerifierCriterion(
+            id=criterion.string("id"),
+            score=criterion.number("score"),
+            reason=criterion.string("reason"),
+        )
+        for criterion in raw.object("run_verifier").objects("criteria")
+    )
+    return VerifierEvidence(
+        score=raw.number("score"),
+        summary=raw.string("summary"),
+        criteria=criteria,
+    )
+
+
+def build_trace(lane: str, artifacts: Path) -> ReportBenchTrace:
+    autograde = parse_autograde(artifacts / "autograde_latest.json")
+    reportbench_output = read_json_object(artifacts / "reportbench_output.json")
+    read_json_object(artifacts / "summary_latest.json")
+    benchmark_verdict: JsonValue = reportbench_output.value("benchmark_verdict")
+    verifier = parse_verifier(artifacts / "verifier_review.json")
+
+    return ReportBenchTrace(
+        schema_version="synth_rollout_trace_v4",
+        rollout_id=f"reportbench-{lane}",
+        status=autograde.state.trace_status,
+        summary=ReportBenchSummary(
+            reward=autograde.reward,
+            outcome_reward=autograde.reward,
+            run_id=autograde.run_id,
+            state=autograde.state,
+        ),
+        metadata=ReportBenchMetadata(source="evals/reportbench", lane=lane),
+        evidence=TraceEvidence(
+            autograde=AutogradeEvidence(
+                reward=autograde.reward,
+                checks_passed=autograde.grade.checks_passed,
+                checks_total=autograde.grade.checks_total,
+                checks_failed=autograde.grade.checks_failed,
+                fatal_errors=autograde.grade.fatal_errors,
+                state=autograde.state,
+            ),
+            benchmark_verdict=benchmark_verdict,
+            verifier=verifier,
+            artifacts_present=REQUIRED_ARTIFACTS,
+        ),
+    )
 
 
 def main() -> int:
@@ -103,22 +207,18 @@ def main() -> int:
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    built, skipped = 0, 0
+    built = 0
     for lane_dir in sorted(p for p in lanes_dir.iterdir() if p.is_dir()):
         artifacts = lane_dir / "artifacts"
         if not (artifacts / "autograde_latest.json").is_file():
             continue
         trace = build_trace(lane_dir.name, artifacts)
-        if trace is None:
-            skipped += 1
-            continue
         out_path = out_dir / f"{lane_dir.name}.v4.json"
         with open(out_path, "w") as fh:
-            json.dump(trace, fh, indent=2)
+            json.dump(asdict(trace), fh, indent=2)
             fh.write("\n")
         built += 1
 
-    print(f"skipped {skipped} lanes without parseable autograde_latest.json")
     print(f"built {built} traces -> {out_dir}")
     return 0 if built else 1
 

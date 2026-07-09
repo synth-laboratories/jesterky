@@ -1,12 +1,13 @@
 //! Hand-rolled minimal HTTP/1.1 server. codex is the only client: one request
 //! per connection, `Connection: close`, ephemeral localhost bind.
 
-use crate::convert::responses_request_to_chat;
+use crate::convert::{ResponsesRequest, responses_request_to_chat_payload};
 use crate::route::ProviderRoute;
-use crate::sse::{build_events, final_response_object, hex24};
-use serde_json::{json, Value};
-use std::sync::atomic::{AtomicU64, Ordering};
+use crate::sse::{ChatResponse, build_events_validated, final_response_object, hex24};
+use serde::Serialize;
+use serde_json::{Value, json};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 
@@ -38,8 +39,8 @@ pub(crate) async fn serve(listener: TcpListener, state: Arc<ServerState>) {
                     let _ = handle_connection(stream, state).await;
                 });
             }
-            Err(_) => {
-                // Transient accept error; keep serving.
+            Err(err) => {
+                eprintln!("jesterky proxy accept error: {err}");
                 continue;
             }
         }
@@ -47,42 +48,157 @@ pub(crate) async fn serve(listener: TcpListener, state: Arc<ServerState>) {
 }
 
 struct Request {
-    method: String,
+    method: HttpMethod,
     path: String,
     body: Vec<u8>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum HttpMethod {
+    Get,
+    Post,
+}
+
+impl HttpMethod {
+    fn parse(raw: &str) -> std::io::Result<Self> {
+        match raw {
+            "GET" => Ok(Self::Get),
+            "POST" => Ok(Self::Post),
+            other => Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("unsupported HTTP method `{other}`"),
+            )),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ProxyEndpoint {
+    Health,
+    Models,
+    Responses,
+    NotFound,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum ProxyErrorCode {
+    MalformedRequest,
+    NotFound,
+    InvalidJson,
+    InvalidResponsesRequest,
+    ConversionFailed,
+    UpstreamTransport,
+    UpstreamStatus,
+    UpstreamJson,
+    UpstreamSchema,
+}
+
+#[derive(Debug, Serialize)]
+struct ProxyErrorBody<'a> {
+    error: ProxyErrorDetail<'a>,
+}
+
+#[derive(Debug, Serialize)]
+struct ProxyErrorDetail<'a> {
+    code: ProxyErrorCode,
+    message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    upstream_status: Option<u16>,
+}
+
+impl<'a> ProxyErrorBody<'a> {
+    fn new(code: ProxyErrorCode, message: impl Into<String>) -> Self {
+        Self {
+            error: ProxyErrorDetail {
+                code,
+                message: message.into(),
+                provider: None,
+                upstream_status: None,
+            },
+        }
+    }
+
+    fn provider(
+        code: ProxyErrorCode,
+        route: &'a ProviderRoute,
+        message: impl Into<String>,
+    ) -> Self {
+        Self {
+            error: ProxyErrorDetail {
+                code,
+                message: message.into(),
+                provider: Some(route.provider.as_str()),
+                upstream_status: None,
+            },
+        }
+    }
+
+    fn upstream_status(route: &'a ProviderRoute, status: u16, message: impl Into<String>) -> Self {
+        Self {
+            error: ProxyErrorDetail {
+                code: ProxyErrorCode::UpstreamStatus,
+                message: message.into(),
+                provider: Some(route.provider.as_str()),
+                upstream_status: Some(status),
+            },
+        }
+    }
+}
+
+fn classify_endpoint(method: HttpMethod, path: &str) -> ProxyEndpoint {
+    let route = path.trim_end_matches('/');
+    match method {
+        HttpMethod::Get if route.ends_with("/health") => ProxyEndpoint::Health,
+        HttpMethod::Get if route.ends_with("/models") => ProxyEndpoint::Models,
+        HttpMethod::Post if route.ends_with("/responses") => ProxyEndpoint::Responses,
+        _ => ProxyEndpoint::NotFound,
+    }
 }
 
 async fn handle_connection(mut stream: TcpStream, state: Arc<ServerState>) -> std::io::Result<()> {
     let request = match read_request(&mut stream).await {
         Ok(Some(req)) => req,
         Ok(None) => return Ok(()),
-        Err(_) => {
-            write_json(&mut stream, 400, &json!({"error": "malformed request"})).await?;
+        Err(err) => {
+            write_error(
+                &mut stream,
+                400,
+                ProxyErrorBody::new(ProxyErrorCode::MalformedRequest, err.to_string()),
+            )
+            .await?;
             return Ok(());
         }
     };
 
-    let path = request.path.split('?').next().unwrap_or("").to_string();
+    let path = request
+        .path
+        .split_once('?')
+        .map(|(path, _query)| path)
+        .unwrap_or(request.path.as_str())
+        .to_string();
 
-    if request.method == "GET" && path.trim_end_matches('/').ends_with("/health") {
-        write_json(&mut stream, 200, &json!({"status": "ok"})).await?;
-        return Ok(());
+    match classify_endpoint(request.method, &path) {
+        ProxyEndpoint::Health => write_json(&mut stream, 200, &json!({"status": "ok"})).await,
+        // codex refreshes its model catalog before an agentic session and decodes the
+        // response into its OWN rich catalog schema — a 404 or a lean OpenAI-style
+        // `{data:[...]}` both abort the run. Serve one entry in codex's catalog shape
+        // (cloned from its built-in schema) for the model this proxy serves.
+        ProxyEndpoint::Models => {
+            write_json(&mut stream, 200, &models_catalog(&state.codex_model)).await
+        }
+        ProxyEndpoint::Responses => handle_responses(&mut stream, state, &request.body).await,
+        ProxyEndpoint::NotFound => {
+            write_error(
+                &mut stream,
+                404,
+                ProxyErrorBody::new(ProxyErrorCode::NotFound, "proxy endpoint not found"),
+            )
+            .await
+        }
     }
-
-    // codex refreshes its model catalog before an agentic session and decodes the
-    // response into its OWN rich catalog schema — a 404 or a lean OpenAI-style
-    // `{data:[...]}` both abort the run. Serve one entry in codex's catalog shape
-    // (cloned from its built-in schema) for the model this proxy serves.
-    if request.method == "GET" && path.ends_with("/models") {
-        write_json(&mut stream, 200, &models_catalog(&state.codex_model)).await?;
-        return Ok(());
-    }
-
-    if request.method == "POST" && path.ends_with("/responses") {
-        return handle_responses(&mut stream, state, &request.body).await;
-    }
-
-    write_json(&mut stream, 404, &json!({"error": "not found"})).await
 }
 
 async fn handle_responses(
@@ -96,31 +212,45 @@ async fn handle_responses(
         match serde_json::from_slice(body_bytes) {
             Ok(v) => v,
             Err(e) => {
-                return write_json(
+                return write_error(
                     stream,
                     400,
-                    &json!({"error": format!("bad request body: {e}")}),
+                    ProxyErrorBody::new(
+                        ProxyErrorCode::InvalidJson,
+                        format!("bad request body: {e}"),
+                    ),
                 )
                 .await;
             }
         }
     };
+    let request = match ResponsesRequest::from_value(&body) {
+        Ok(request) => request,
+        Err(err) => {
+            return write_error(
+                stream,
+                400,
+                ProxyErrorBody::new(ProxyErrorCode::InvalidResponsesRequest, err.to_string()),
+            )
+            .await;
+        }
+    };
+    let model = request.model().to_string();
+    let is_streaming = request.stream_enabled();
 
-    // The codex-facing model id echoed back in the Responses object.
-    let model = body
-        .get("model")
-        .and_then(Value::as_str)
-        .unwrap_or("")
-        .to_string();
-
-    let mut chat_payload = match responses_request_to_chat(
-        &body,
+    let mut chat_payload = match responses_request_to_chat_payload(
+        &request,
         &state.route.upstream_model,
         state.route.supports_json_schema,
     ) {
         Ok(p) => p,
         Err(e) => {
-            return write_json(stream, 400, &json!({"error": e.to_string()})).await;
+            return write_error(
+                stream,
+                400,
+                ProxyErrorBody::new(ProxyErrorCode::ConversionFailed, e.to_string()),
+            )
+            .await;
         }
     };
 
@@ -142,11 +272,14 @@ async fn handle_responses(
     let resp = match upstream {
         Ok(r) => r,
         Err(e) => {
-            return write_json(
+            return write_error(
                 stream,
                 502,
-                &json!({"error": {"provider": provider_name(&state.route),
-                    "message": format!("chat upstream error: {e}")}}),
+                ProxyErrorBody::provider(
+                    ProxyErrorCode::UpstreamTransport,
+                    &state.route,
+                    format!("chat upstream error: {e}"),
+                ),
             )
             .await;
         }
@@ -155,25 +288,34 @@ async fn handle_responses(
     let status = resp.status();
     if !status.is_success() {
         let code = status.as_u16();
-        let detail = resp.text().await.unwrap_or_default();
+        let detail = match resp.text().await {
+            Ok(text) => text,
+            Err(err) => format!("unable to read upstream error body: {err}"),
+        };
         let detail: String = detail.chars().take(2000).collect();
-        return write_json(
+        return write_error(
             stream,
             code,
-            &json!({"error": {"code": code, "provider": provider_name(&state.route),
-                "message": format!("chat upstream failed: {detail}")}}),
+            ProxyErrorBody::upstream_status(
+                &state.route,
+                code,
+                format!("chat upstream failed: {detail}"),
+            ),
         )
         .await;
     }
 
-    let chat_response: Value = match resp.json().await {
+    let chat_response_json: Value = match resp.json().await {
         Ok(v) => v,
         Err(e) => {
-            return write_json(
+            return write_error(
                 stream,
                 502,
-                &json!({"error": {"provider": provider_name(&state.route),
-                    "message": format!("chat upstream returned non-JSON: {e}")}}),
+                ProxyErrorBody::provider(
+                    ProxyErrorCode::UpstreamJson,
+                    &state.route,
+                    format!("chat upstream returned non-JSON: {e}"),
+                ),
             )
             .await;
         }
@@ -181,21 +323,62 @@ async fn handle_responses(
 
     // Harvest `thought_signature`s from this response's tool calls so we can
     // re-attach them when codex echoes the same tool calls back next turn.
-    harvest_signatures(&chat_response, &state.signatures);
+    harvest_signatures(&chat_response_json, &state.signatures);
+
+    let chat_response = match ChatResponse::from_value(chat_response_json) {
+        Ok(response) => response,
+        Err(err) => {
+            return write_error(
+                stream,
+                502,
+                ProxyErrorBody::provider(
+                    ProxyErrorCode::UpstreamSchema,
+                    &state.route,
+                    err.to_string(),
+                ),
+            )
+            .await;
+        }
+    };
 
     let n = state.counter.fetch_add(1, Ordering::Relaxed);
     let rid = format!("resp_{}", hex24(n, state.port));
     let msg_id = format!("msg_{}", hex24(n.wrapping_add(1), state.port));
 
-    // stream: false (present AND false) -> single JSON response object, no SSE.
-    let is_streaming = !matches!(body.get("stream"), Some(Value::Bool(false)));
-
     if !is_streaming {
-        let obj = final_response_object(&chat_response, &model, &rid, &msg_id);
+        let obj = match final_response_object(&chat_response, &model, &rid, &msg_id) {
+            Ok(obj) => obj,
+            Err(err) => {
+                return write_error(
+                    stream,
+                    502,
+                    ProxyErrorBody::provider(
+                        ProxyErrorCode::UpstreamSchema,
+                        &state.route,
+                        err.to_string(),
+                    ),
+                )
+                .await;
+            }
+        };
         return write_json(stream, 200, &obj).await;
     }
 
-    let events = build_events(&chat_response, &model, &rid, &msg_id);
+    let events = match build_events_validated(&chat_response, &model, &rid, &msg_id) {
+        Ok(events) => events,
+        Err(err) => {
+            return write_error(
+                stream,
+                502,
+                ProxyErrorBody::provider(
+                    ProxyErrorCode::UpstreamSchema,
+                    &state.route,
+                    err.to_string(),
+                ),
+            )
+            .await;
+        }
+    };
     let mut payload = String::new();
     for ev in &events {
         payload.push_str(&ev.frame());
@@ -250,7 +433,10 @@ fn reattach_signatures(
         Ok(m) if !m.is_empty() => m,
         _ => return,
     };
-    let Some(messages) = chat_payload.get_mut("messages").and_then(Value::as_array_mut) else {
+    let Some(messages) = chat_payload
+        .get_mut("messages")
+        .and_then(Value::as_array_mut)
+    else {
         return;
     };
     for msg in messages {
@@ -317,16 +503,6 @@ fn models_catalog(model: &str) -> Value {
     })
 }
 
-fn provider_name(route: &ProviderRoute) -> String {
-    if route.chat_url.contains("deepseek") {
-        "deepseek".to_string()
-    } else if route.chat_url.contains("googleapis") {
-        "gemini".to_string()
-    } else {
-        "provider".to_string()
-    }
-}
-
 /// Read the request line + headers (until CRLFCRLF), then the body per
 /// Content-Length. Returns Ok(None) on a cleanly closed empty connection.
 async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>> {
@@ -359,16 +535,35 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
 
     let header_text = String::from_utf8_lossy(&buf[..header_end]).to_string();
     let mut lines = header_text.split("\r\n");
-    let request_line = lines.next().unwrap_or("");
+    let request_line = lines.next().ok_or_else(|| {
+        std::io::Error::new(std::io::ErrorKind::InvalidData, "missing HTTP request line")
+    })?;
     let mut parts = request_line.split_whitespace();
-    let method = parts.next().unwrap_or("").to_string();
-    let path = parts.next().unwrap_or("").to_string();
+    let method_raw = parts
+        .next()
+        .filter(|part| !part.is_empty())
+        .ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, "missing HTTP method")
+        })?;
+    let method = HttpMethod::parse(method_raw)?;
+    let path = parts
+        .next()
+        .filter(|part| !part.is_empty())
+        .ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, "missing HTTP request path")
+        })?
+        .to_string();
 
     let mut content_length: usize = 0;
     for line in lines {
         if let Some((name, value)) = line.split_once(':') {
             if name.trim().eq_ignore_ascii_case("content-length") {
-                content_length = value.trim().parse().unwrap_or(0);
+                content_length = value.trim().parse().map_err(|err| {
+                    std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!("invalid Content-Length `{}`: {err}", value.trim()),
+                    )
+                })?;
             }
         }
     }
@@ -378,7 +573,13 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
     while body.len() < content_length {
         let n = stream.read(&mut tmp).await?;
         if n == 0 {
-            break;
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::UnexpectedEof,
+                format!(
+                    "connection closed after {} body bytes, expected {content_length}",
+                    body.len()
+                ),
+            ));
         }
         body.extend_from_slice(&tmp[..n]);
     }
@@ -390,8 +591,27 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
 }
 
 async fn write_json(stream: &mut TcpStream, code: u16, value: &Value) -> std::io::Result<()> {
-    let body = serde_json::to_vec(value).unwrap_or_else(|_| b"{}".to_vec());
+    let body = serde_json::to_vec(value).map_err(|err| {
+        std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("unable to serialize JSON response: {err}"),
+        )
+    })?;
     write_raw(stream, code, "application/json", &[], &body).await
+}
+
+async fn write_error(
+    stream: &mut TcpStream,
+    http_status: u16,
+    body: ProxyErrorBody<'_>,
+) -> std::io::Result<()> {
+    let value = serde_json::to_value(body).map_err(|err| {
+        std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("unable to serialize JSON error response: {err}"),
+        )
+    })?;
+    write_json(stream, http_status, &value).await
 }
 
 async fn write_raw(

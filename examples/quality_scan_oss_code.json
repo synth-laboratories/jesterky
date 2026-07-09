@@ -1,45 +1,43 @@
 {
-  "name": "quality_scan_docs",
+  "name": "quality_scan_oss_code",
   "entrypoint": [
-    "expand_pages",
-    "audit_pages",
+    "expand_modules",
+    "audit_modules",
     "aggregate"
   ],
   "nodes": {
-    "expand_pages": {
+    "expand_modules": {
       "kind": "program",
-      "op": "docs.expand",
-      "inputs": {
-        "docs_dir": "ledger.docs_dir"
-      },
+      "op": "oss_code.expand",
+      "inputs": {},
       "outputs": {
         "jobs": "ledger.jobs"
       }
     },
-    "audit_pages": {
+    "audit_modules": {
       "kind": "map",
       "over": "ledger.jobs",
-      "item_as": "item",
+      "item_as": "module",
       "concurrency": 8,
-      "min_success": 0.8,
+      "min_success": 0.0,
       "body": {
         "kind": "actor",
-        "actor": "docs_auditor",
+        "actor": "oss_code_auditor",
         "inputs": {
-          "job": "item"
+          "module": "module"
         },
         "outputs": {}
       },
       "outputs": {
-        "job": "ledger.scans"
+        "audit": "ledger.audits"
       }
     },
     "aggregate": {
       "kind": "reduce",
-      "op": "docs.aggregate",
+      "op": "oss_code.aggregate",
       "inputs": {
         "jobs": "ledger.jobs",
-        "scans": "ledger.scans"
+        "audits": "ledger.audits"
       },
       "outputs": {
         "summary": "ledger.summary"

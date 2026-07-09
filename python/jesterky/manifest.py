@@ -4,7 +4,7 @@
 from __future__ import annotations
 from pydantic import BaseModel, ConfigDict, Field, RootModel, conint
 from enum import Enum
-from typing import Any
+from typing import Literal, Optional, Union
 
 
 class ArtifactRef(BaseModel):
@@ -20,64 +20,24 @@ class ArtifactRef(BaseModel):
     size_bytes: conint(ge=0)
 
 
-class BudgetEtaMode1(Enum):
+class BudgetEtaMode(Enum):
     """
-    Do not show or compute ETA forecasts.
+    How ETA lines are composed on the terminal panel.
     """
 
     off = 'off'
-
-
-class BudgetEtaMode2(Enum):
-    """
-    Show only the soonest-to-exhaust cap.
-    """
-
     nearest_only = 'nearest_only'
-
-
-class BudgetEtaMode3(Enum):
-    """
-    Show every cap that has a finite forecast (default).
-    """
-
     all = 'all'
 
 
-class BudgetEtaMode(RootModel[BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3]):
-    root: BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3 = Field(
-        ..., description='How ETA lines are composed on the terminal panel.'
-    )
-
-
-class BudgetKind1(Enum):
+class BudgetKind(Enum):
     """
-    Impure actor invocations (model turns, env-coupled hero acts, …).
+    What resource is being capped.
     """
 
     actor_calls = 'actor_calls'
-
-
-class BudgetKind2(Enum):
-    """
-    Total tokens (in+out) observed on the live bus / recorded usage.
-    """
-
     tokens = 'tokens'
-
-
-class BudgetKind3(Enum):
-    """
-    Wall-clock seconds since the host started the run.
-    """
-
     wall_seconds = 'wall_seconds'
-
-
-class BudgetKind(RootModel[BudgetKind1 | BudgetKind2 | BudgetKind3]):
-    root: BudgetKind1 | BudgetKind2 | BudgetKind3 = Field(
-        ..., description='What resource is being capped.'
-    )
 
 
 class BudgetState(Enum):
@@ -116,47 +76,37 @@ class BudgetVizConfig(BaseModel):
     )
 
 
-class Call(Enum):
-    actor = 'actor'
-
-
-class CallKind1(BaseModel):
+class CallKindActor(BaseModel):
     """
     Which impure call produced a [`RecordedOutput`]. Lets a single recorded stream serve both [`crate`]-level actor replay AND resource (env) replay: the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].
     """
 
     actor: str
-    call: Call
+    call: Literal['actor']
 
 
-class Call1(Enum):
-    resource_observe = 'resource_observe'
-
-
-class CallKind2(BaseModel):
+class CallKindResourceObserve(BaseModel):
     """
     Which impure call produced a [`RecordedOutput`]. Lets a single recorded stream serve both [`crate`]-level actor replay AND resource (env) replay: the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].
     """
 
-    call: Call1
+    call: Literal['resource_observe']
     session: str
 
 
-class Call2(Enum):
-    resource_step = 'resource_step'
-
-
-class CallKind3(BaseModel):
+class CallKindResourceStep(BaseModel):
     """
     Which impure call produced a [`RecordedOutput`]. Lets a single recorded stream serve both [`crate`]-level actor replay AND resource (env) replay: the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].
     """
 
-    call: Call2
+    call: Literal['resource_step']
     session: str
 
 
-class CallKind(RootModel[CallKind1 | CallKind2 | CallKind3]):
-    root: CallKind1 | CallKind2 | CallKind3 = Field(
+class CallKind(
+    RootModel[CallKindActor | CallKindResourceObserve | CallKindResourceStep]
+):
+    root: CallKindActor | CallKindResourceObserve | CallKindResourceStep = Field(
         ...,
         description='Which impure call produced a [`RecordedOutput`]. Lets a single recorded stream serve both [`crate`]-level actor replay AND resource (env) replay: the `ReplayActor` matches `Actor` entries, the `ReplayResource` matches `ResourceObserve`/`ResourceStep` entries, both keyed by [`Addr`].',
     )
@@ -164,279 +114,32 @@ class CallKind(RootModel[CallKind1 | CallKind2 | CallKind3]):
 
 class Kind(Enum):
     workflow_started = 'workflow_started'
+    node_started = 'node_started'
+    node_completed = 'node_completed'
+    map_item_started = 'map_item_started'
+    map_item_completed = 'map_item_completed'
+    map_item_failed = 'map_item_failed'
+    map_completed = 'map_completed'
+    actor_invoked = 'actor_invoked'
+    resource_invoked = 'resource_invoked'
+    session_started = 'session_started'
+    session_resumed = 'session_resumed'
+    checkpoint_created = 'checkpoint_created'
+    semaphore_acquired = 'semaphore_acquired'
+    semaphore_released = 'semaphore_released'
+    message_published = 'message_published'
+    message_available = 'message_available'
+    artifact_emitted = 'artifact_emitted'
+    workflow_completed = 'workflow_completed'
+    workflow_failed = 'workflow_failed'
 
 
-class EventKind1(BaseModel):
+class EventKind(BaseModel):
     """
     The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
     """
 
     kind: Kind
-
-
-class Kind1(Enum):
-    node_started = 'node_started'
-
-
-class EventKind2(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind1
-
-
-class Kind2(Enum):
-    node_completed = 'node_completed'
-
-
-class EventKind3(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind2
-
-
-class Kind3(Enum):
-    map_item_started = 'map_item_started'
-
-
-class EventKind4(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind3
-
-
-class Kind4(Enum):
-    map_item_completed = 'map_item_completed'
-
-
-class EventKind5(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind4
-
-
-class Kind5(Enum):
-    map_item_failed = 'map_item_failed'
-
-
-class EventKind6(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind5
-
-
-class Kind6(Enum):
-    map_completed = 'map_completed'
-
-
-class EventKind7(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind6
-
-
-class Kind7(Enum):
-    actor_invoked = 'actor_invoked'
-
-
-class EventKind8(BaseModel):
-    """
-    An actor/resource call was recorded (see replay manifest).
-    """
-
-    kind: Kind7
-
-
-class Kind8(Enum):
-    resource_invoked = 'resource_invoked'
-
-
-class EventKind9(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind8
-
-
-class Kind9(Enum):
-    session_started = 'session_started'
-
-
-class EventKind10(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind9
-
-
-class Kind10(Enum):
-    session_resumed = 'session_resumed'
-
-
-class EventKind11(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind10
-
-
-class Kind11(Enum):
-    checkpoint_created = 'checkpoint_created'
-
-
-class EventKind12(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind11
-
-
-class Kind12(Enum):
-    semaphore_acquired = 'semaphore_acquired'
-
-
-class EventKind13(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind12
-
-
-class Kind13(Enum):
-    semaphore_released = 'semaphore_released'
-
-
-class EventKind14(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind13
-
-
-class Kind14(Enum):
-    message_published = 'message_published'
-
-
-class EventKind15(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind14
-
-
-class Kind15(Enum):
-    message_available = 'message_available'
-
-
-class EventKind16(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind15
-
-
-class Kind16(Enum):
-    artifact_emitted = 'artifact_emitted'
-
-
-class EventKind17(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind16
-
-
-class Kind17(Enum):
-    workflow_completed = 'workflow_completed'
-
-
-class EventKind18(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind17
-
-
-class Kind18(Enum):
-    workflow_failed = 'workflow_failed'
-
-
-class EventKind19(BaseModel):
-    """
-    The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)
-    """
-
-    kind: Kind18
-
-
-class EventKind(
-    RootModel[
-        EventKind1
-        | EventKind2
-        | EventKind3
-        | EventKind4
-        | EventKind5
-        | EventKind6
-        | EventKind7
-        | EventKind8
-        | EventKind9
-        | EventKind10
-        | EventKind11
-        | EventKind12
-        | EventKind13
-        | EventKind14
-        | EventKind15
-        | EventKind16
-        | EventKind17
-        | EventKind18
-        | EventKind19
-    ]
-):
-    root: (
-        EventKind1
-        | EventKind2
-        | EventKind3
-        | EventKind4
-        | EventKind5
-        | EventKind6
-        | EventKind7
-        | EventKind8
-        | EventKind9
-        | EventKind10
-        | EventKind11
-        | EventKind12
-        | EventKind13
-        | EventKind14
-        | EventKind15
-        | EventKind16
-        | EventKind17
-        | EventKind18
-        | EventKind19
-    ) = Field(
-        ...,
-        description='The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)',
-    )
 
 
 class ForecastConfidence(Enum):
@@ -450,37 +153,7 @@ class ForecastConfidence(Enum):
     unknown = 'unknown'
 
 
-class Kind19(Enum):
-    ledger_pred = 'ledger_pred'
-
-
-class GoalSpec1(BaseModel):
-    """
-    Met when the ledger value at `path` deep-equals `equals`.
-    """
-
-    id: str = Field(..., description='Stable identifier (unique within a plan).')
-    label: str | None = Field(
-        None,
-        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
-    )
-    required: bool | None = Field(
-        True,
-        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
-    )
-    show_progress: bool | None = Field(
-        True, description='Include this goal on the progress viz line (default true).'
-    )
-    equals: Any
-    kind: Kind19
-    path: str
-
-
-class Kind20(Enum):
-    metric_threshold = 'metric_threshold'
-
-
-class GoalSpec2(BaseModel):
+class GoalSpecMetricThreshold(BaseModel):
     """
     Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.
     """
@@ -497,67 +170,19 @@ class GoalSpec2(BaseModel):
     show_progress: bool | None = Field(
         True, description='Include this goal on the progress viz line (default true).'
     )
-    kind: Kind20
+    kind: Literal['metric_threshold']
     min: float
     path: str
 
 
-class GoalSpec(RootModel[GoalSpec1 | GoalSpec2]):
-    root: GoalSpec1 | GoalSpec2 = Field(..., description='One declared goal on a run.')
-
-
-class GoalState1(Enum):
+class GoalState(Enum):
     """
-    Predicate satisfied.
+    Whether a goal (or the whole run) is satisfied.
     """
 
     met = 'met'
-
-
-class GoalState2(Enum):
-    """
-    Predicate evaluated but not satisfied.
-    """
-
     unmet = 'unmet'
-
-
-class GoalState3(Enum):
-    """
-    Path missing or wrong type — cannot evaluate.
-    """
-
     unknown = 'unknown'
-
-
-class GoalState(RootModel[GoalState1 | GoalState2 | GoalState3]):
-    root: GoalState1 | GoalState2 | GoalState3 = Field(
-        ..., description='Whether a goal (or the whole run) is satisfied.'
-    )
-
-
-class GoalStatus(BaseModel):
-    """
-    Result of evaluating one goal against the ledger.
-    """
-
-    detail: str = Field(
-        ..., description='Human-readable evaluation (`summary.score 0.72 < min 0.80`).'
-    )
-    id: str
-    kind: str = Field(..., description='`ledger_pred` / `metric_threshold`.')
-    label: str
-    observed: Any | None = Field(
-        None,
-        description="The observed ledger value at the goal's path (echoed for consumers).",
-    )
-    progress: float = Field(
-        ...,
-        description='Partial credit in `[0, 1]`: `1.0` when met, `value/min` for a threshold, `0.0` for an unmet predicate, `0.0` when unknown.',
-    )
-    required: bool
-    show_progress: bool
-    state: GoalState
 
 
 class GoalVizConfig(BaseModel):
@@ -643,8 +268,34 @@ class RunStopReason(Enum):
     budget_exhausted = 'budget_exhausted'
 
 
-class Artifact(RootModel[Any | ArtifactRef]):
-    root: Any | ArtifactRef = Field(
+class JsonValue(
+    RootModel[
+        Optional[
+            Union[
+                bool,
+                int,
+                float,
+                str,
+                list["JsonValue | None"],
+                dict[str, "JsonValue | None"],
+            ]
+        ]
+    ]
+):
+    root: Optional[
+        Union[
+            bool,
+            int,
+            float,
+            str,
+            list["JsonValue | None"],
+            dict[str, "JsonValue | None"],
+        ]
+    ]
+
+
+class Artifact(RootModel[JsonValue | ArtifactRef | None]):
+    root: JsonValue | ArtifactRef | None = Field(
         ...,
         description='Either an inline small value or a reference to an offloaded one. The runner applies the inline/offload split at a size cap.',
     )
@@ -691,7 +342,7 @@ class BudgetEtaConfig(BaseModel):
         description='Minimum wall seconds before burn-rate ETA is trusted (default 1.0).',
     )
     mode: BudgetEtaMode | None = Field(
-        'all', description='Which ETAs to surface on the panel.', validate_default=True
+        'all', description='Which ETAs to surface on the panel.'
     )
     sample_interval_secs: float | None = Field(
         0.45, description='Host sampling cadence hint for live follow (default 0.45s).'
@@ -779,62 +430,56 @@ class BudgetStatus(BaseModel):
     )
 
 
-class GoalPlan(BaseModel):
+class GoalSpecLedgerPred(BaseModel):
     """
-    Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).
-
-    This is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.
+    Met when the ledger value at `path` deep-equals `equals`.
     """
 
-    cancel_in_flight: bool | None = Field(
-        False,
-        description='Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.',
-    )
-    fail_on_unmet: bool | None = Field(
-        True,
-        description='Fail the run when a `required` goal is still unmet at run end. Default true.',
-    )
-    finalize: str | None = Field(
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
         None,
-        description='Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).',
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
     )
-    goals: list[GoalSpec] | None = Field(
-        [],
-        description='Declared goals. Empty plan ⇒ no evaluation / no panel line.',
-        validate_default=True,
-    )
-    terminate_on_met: bool | None = Field(
+    required: bool | None = Field(
         True,
-        description='When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.',
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
     )
-    viz: GoalVizConfig | None = Field(
-        {'enabled': True, 'short_labels': True, 'show_progress': True},
-        description='Terminal panel configuration.',
-        validate_default=True,
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    equals: JsonValue | None
+    kind: Literal['ledger_pred']
+    path: str
+
+
+class GoalSpec(RootModel[GoalSpecLedgerPred | GoalSpecMetricThreshold]):
+    root: GoalSpecLedgerPred | GoalSpecMetricThreshold = Field(
+        ..., description='One declared goal on a run.'
     )
 
 
-class GoalSnapshot(BaseModel):
+class GoalStatus(BaseModel):
     """
-    Full goal projection for a run (live follow + final manifest).
+    Result of evaluating one goal against the ledger.
     """
 
-    items: list[GoalStatus]
-    plan: GoalPlan = Field(
+    detail: str = Field(
+        ..., description='Human-readable evaluation (`summary.score 0.72 < min 0.80`).'
+    )
+    id: str
+    kind: str = Field(..., description='`ledger_pred` / `metric_threshold`.')
+    label: str
+    observed: JsonValue | None = Field(
+        None,
+        description="The observed ledger value at the goal's path (echoed for consumers).",
+    )
+    progress: float = Field(
         ...,
-        description='Plan knobs used for this projection (echoed for consumers / viz).',
+        description='Partial credit in `[0, 1]`: `1.0` when met, `value/min` for a threshold, `0.0` for an unmet predicate, `0.0` when unknown.',
     )
-    required_met: conint(ge=0)
-    required_total: conint(ge=0)
-    run_id: str
-    schema_version: str
-    state: GoalState = Field(
-        ..., description='`met` iff every required goal is met; else `unmet`.'
-    )
-    terminated_early: bool | None = Field(
-        False,
-        description='Set by the host/runner when it stopped remaining work because the goals were met. The pure engine always emits `false`.',
-    )
+    required: bool
+    show_progress: bool
+    state: GoalState
 
 
 class NodePath(RootModel[list[PathSeg]]):
@@ -909,8 +554,66 @@ class Event(BaseModel):
 
     addr: Addr
     kind: EventKind
-    payload: Any
+    payload: JsonValue | None
     wall_ms: conint(ge=0)
+
+
+class GoalPlan(BaseModel):
+    """
+    Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).
+
+    This is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.
+    """
+
+    cancel_in_flight: bool | None = Field(
+        False,
+        description='Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.',
+    )
+    fail_on_unmet: bool | None = Field(
+        True,
+        description='Fail the run when a `required` goal is still unmet at run end. Default true.',
+    )
+    finalize: str | None = Field(
+        None,
+        description='Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).',
+    )
+    goals: list[GoalSpec] | None = Field(
+        [],
+        description='Declared goals. Empty plan ⇒ no evaluation / no panel line.',
+        validate_default=True,
+    )
+    terminate_on_met: bool | None = Field(
+        True,
+        description='When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.',
+    )
+    viz: GoalVizConfig | None = Field(
+        {'enabled': True, 'short_labels': True, 'show_progress': True},
+        description='Terminal panel configuration.',
+        validate_default=True,
+    )
+
+
+class GoalSnapshot(BaseModel):
+    """
+    Full goal projection for a run (live follow + final manifest).
+    """
+
+    items: list[GoalStatus]
+    plan: GoalPlan = Field(
+        ...,
+        description='Plan knobs used for this projection (echoed for consumers / viz).',
+    )
+    required_met: conint(ge=0)
+    required_total: conint(ge=0)
+    run_id: str
+    schema_version: str
+    state: GoalState = Field(
+        ..., description='`met` iff every required goal is met; else `unmet`.'
+    )
+    terminated_early: bool | None = Field(
+        False,
+        description='Set by the host/runner when it stopped remaining work because the goals were met. The pure engine always emits `false`.',
+    )
 
 
 class ProcessNode(BaseModel):
@@ -923,18 +626,20 @@ class ProcessNode(BaseModel):
         ..., description='Large outputs offloaded to the store.'
     )
     children: list[ProcessNode]
-    inputs: Any = Field(
+    inputs: JsonValue | None = Field(
         ..., description='Typed inputs the node received (post-binding-resolution).'
     )
     label: str = Field(
         ..., description='e.g. "map:audit_jobs", "actor:quality_auditor".'
     )
-    outputs: Any = Field(..., description='Typed outputs the node produced.')
+    outputs: JsonValue | None = Field(
+        ..., description='Typed outputs the node produced.'
+    )
     score: float | None = Field(
         None,
         description='Optimizer slot: an outcome score, if the actor supplied one. Grades OUTCOMES only.',
     )
-    signal: Any | None = Field(
+    signal: JsonValue | None = Field(
         None, description='Optimizer slot: a wall-safe verifier signal, if any.'
     )
 
@@ -947,9 +652,9 @@ class RecordedOutput(BaseModel):
     addr: Addr
     artifacts: list[ArtifactRef]
     call: CallKind
-    outputs: Any
+    outputs: JsonValue | None
     score: float | None = None
-    signal: Any | None = None
+    signal: JsonValue | None = None
 
 
 class RunManifest(BaseModel):
@@ -957,7 +662,7 @@ class RunManifest(BaseModel):
     The full record of a run: enough to replay it and to hand an optimizer a structured process object. Produced by the runner; consumed by the CLI/Stack visualizer, the replay engine, and the optimizers.
     """
 
-    args: Any
+    args: JsonValue | None
     budgets: BudgetSnapshot | None = Field(
         None,
         description='Formal resource-budget projection (progress + ETA) when the run declared [`crate::topology::RunPlan::budgets`]. Host-metered; optional for back-compat.',
@@ -998,4 +703,5 @@ class RunManifest(BaseModel):
     workflow_name: str
 
 
+JsonValue.model_rebuild()
 ProcessNode.model_rebuild()

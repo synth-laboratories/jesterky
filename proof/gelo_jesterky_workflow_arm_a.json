@@ -126,7 +126,7 @@
       "spec": "examples/gelo_trace_annotate.json",
       "command": "jesterky",
       "actor": "codex",
-      "model": null,
+      "model": "gpt-5.4-mini",
       "concurrency": 4,
       "timeout_seconds": 600,
       "fail_closed": true

@@ -8,6 +8,29 @@
     "failed": { "type": "integer" },
     "blockers": { "type": "integer" },
     "total": { "type": "integer" },
+    "violation_stats": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "total_pages": { "type": "integer" },
+        "scanned_pages": { "type": "integer" },
+        "shard_failures": { "type": "integer" },
+        "total_violations": { "type": "integer" },
+        "average_score": { "type": "number" },
+        "by_code": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "by_severity": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "low_score_pages": {
+          "type": "array",
+          "items": { "type": "object", "additionalProperties": true }
+        }
+      }
+    },
     "matrix_report": {
       "type": "string",
       "description": "Per-page scores and violation codes table"

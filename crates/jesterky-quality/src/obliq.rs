@@ -22,7 +22,7 @@
 
 use jesterky_core::ledger::{Ledger, LedgerError};
 use jesterky_core::{CoreError, ProgramRegistry};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -664,11 +664,7 @@ fn ndcg_at_k(ranked: &[String], golds: &BTreeSet<String>, k: usize) -> f64 {
     for i in 0..ideal_hits {
         idcg += (2f64.powf(1.0) - 1.0) / ((i as f64 + 2.0).log2());
     }
-    if idcg == 0.0 {
-        0.0
-    } else {
-        dcg / idcg
-    }
+    if idcg == 0.0 { 0.0 } else { dcg / idcg }
 }
 
 // ── IO ─────────────────────────────────────────────────────────────────────
