@@ -1,0 +1,61 @@
+{
+  "task_id": "readme_smoke",
+  "report_file": "report_b.md",
+  "required_headings": [
+    "Goal",
+    "Command",
+    "Worker Proof",
+    "Repo Bundle",
+    "Task Graph",
+    "Artifacts"
+  ],
+  "required_file_paths": [
+    "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes/readme_smoke_deepseek/RUBRIC.json",
+    "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes/readme_smoke_deepseek/GOLD_REPORT.md",
+    "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes/readme_smoke_deepseek/README.md",
+    "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes/readme_smoke_deepseek/eval_runthrough.md",
+    "/Users/joshpurtell/Documents/GitHub/evals/reportbench/lanes/readme_smoke_deepseek/artifacts/run_result.json"
+  ],
+  "required_regex": [
+    {
+      "id": "state_done",
+      "pattern": "state:\\s*`done`",
+      "description": "Report records terminal SMR run state done"
+    },
+    {
+      "id": "verification_passed",
+      "pattern": "verification_state:\\s*`passed`",
+      "description": "Report records E2E verification_state passed"
+    },
+    {
+      "id": "readme_marker_present",
+      "pattern": "readme_marker_present=`True`",
+      "description": "Report records worker README proof marker validated"
+    },
+    {
+      "id": "post_bootstrap_commit_present",
+      "pattern": "post_bootstrap_commit_present=`True`",
+      "description": "Report records post-bootstrap commit present"
+    },
+    {
+      "id": "repo_git_proof_ok",
+      "pattern": "proof_ok=`True`",
+      "description": "Report records worker git/repo proof ok"
+    },
+    {
+      "id": "report_workproduct",
+      "pattern": "report_workproduct_ok:\\s*`True`",
+      "description": "Report records required report WorkProduct proof ok"
+    },
+    {
+      "id": "sublinear_projection_recorded",
+      "pattern": "sublinear_projection_status:\\s*`(ok|warning)`",
+      "description": "Report records Sublinear projection status as advisory evidence"
+    },
+    {
+      "id": "artifact_reference",
+      "pattern": "artifacts/[^\\s`]+\\.json",
+      "description": "Report cites a concrete JSON artifact under artifacts/"
+    }
+  ]
+}

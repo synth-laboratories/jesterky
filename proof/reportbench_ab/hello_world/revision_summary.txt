@@ -1,0 +1,5 @@
+Updated `report_b.md` only.
+
+It now has all required headings, required path references, GEPA and `gpt-4.1-nano` mentions, and a concrete JSON artifact path. For missing validation and held-out accuracies, I kept the report explicit that the run did not produce those metrics, rather than claiming fabricated Banking77 results.
+
+Validation: local rubric-style check against `rubric_b.json` passed. Git reports `report_b.md` as untracked in this checkout, with unrelated pre-existing changes elsewhere.
