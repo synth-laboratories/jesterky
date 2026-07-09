@@ -1,0 +1,1637 @@
+{
+  "run_id": "jesterky-cli-run",
+  "workflow_name": "smr_reportbench_trace_evaluate",
+  "spec_hash": "2569da49c2098cbaea3b77cf748cde2f24126689418808ce0b22d956f1865d9f",
+  "args": {
+    "trace_dir": "proof/reportbench_traces"
+  },
+  "events": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "workflow_started"
+      },
+      "payload": {
+        "trace_dir": "proof/reportbench_traces"
+      },
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "expand_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270162
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "map_item_started"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605270164
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": {
+            "dimension": "hello_world",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+            "summary": {
+              "achievement_count": 0,
+              "llm_turns": null,
+              "reward": 0.7059,
+              "seed": null,
+              "status": "None"
+            },
+            "trace_dir": "proof/reportbench_traces",
+            "trace_id": "hello_world"
+          }
+        }
+      },
+      "wall_ms": 1783605284903
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605284903
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 0
+      },
+      "wall_ms": 1783605284903
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": {
+            "dimension": "readme_smoke_codex",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+            "summary": {
+              "achievement_count": 0,
+              "llm_turns": null,
+              "reward": 1.0,
+              "seed": null,
+              "status": "completed"
+            },
+            "trace_dir": "proof/reportbench_traces",
+            "trace_id": "readme_smoke_codex"
+          }
+        }
+      },
+      "wall_ms": 1783605285398
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605285398
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 2
+      },
+      "wall_ms": 1783605285398
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": {
+            "dimension": "readme_smoke_deepseek",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+            "summary": {
+              "achievement_count": 0,
+              "llm_turns": null,
+              "reward": 1.0,
+              "seed": null,
+              "status": "completed"
+            },
+            "trace_dir": "proof/reportbench_traces",
+            "trace_id": "readme_smoke_deepseek"
+          }
+        }
+      },
+      "wall_ms": 1783605286864
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605286864
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 3
+      },
+      "wall_ms": 1783605286864
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "reportbench_trace_evaluator",
+        "inputs": {
+          "job": {
+            "dimension": "readme_smoke",
+            "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+            "summary": {
+              "achievement_count": 0,
+              "llm_turns": null,
+              "reward": 1.0,
+              "seed": null,
+              "status": "completed"
+            },
+            "trace_dir": "proof/reportbench_traces",
+            "trace_id": "readme_smoke"
+          }
+        }
+      },
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 3
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 4
+      },
+      "kind": {
+        "kind": "map_item_completed"
+      },
+      "payload": {
+        "index": 1
+      },
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "map_completed"
+      },
+      "payload": {
+        "successes": 4,
+        "total": 4
+      },
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605295662
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "aggregate"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605295663
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_verdict"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 0
+      },
+      "kind": {
+        "kind": "node_started"
+      },
+      "payload": null,
+      "wall_ms": 1783605295663
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_verdict"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "actor_invoked"
+      },
+      "payload": {
+        "actor": "reportbench_trace_recorder",
+        "inputs": {
+          "summary": {
+            "failed": 1,
+            "failing_dimensions": [
+              "hello_world"
+            ],
+            "passed": 3,
+            "total": 4,
+            "verdict": "fail"
+          }
+        }
+      },
+      "wall_ms": 1783605301288
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_verdict"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "kind": {
+        "kind": "node_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605301288
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "kind": {
+        "kind": "workflow_completed"
+      },
+      "payload": null,
+      "wall_ms": 1783605301288
+    }
+  ],
+  "recorded": [
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 0
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "reportbench_trace_evaluator"
+      },
+      "outputs": {
+        "dimension": "hello_world",
+        "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+        "severity": "high",
+        "verdict": "fail"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 2
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "reportbench_trace_evaluator"
+      },
+      "outputs": {
+        "dimension": "readme_smoke_codex",
+        "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+        "severity": "none",
+        "verdict": "pass"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 3
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "reportbench_trace_evaluator"
+      },
+      "outputs": {
+        "dimension": "readme_smoke_deepseek",
+        "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+        "severity": "none",
+        "verdict": "pass"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "evaluate_traces"
+          },
+          {
+            "index": 1
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 2
+      },
+      "call": {
+        "call": "actor",
+        "actor": "reportbench_trace_evaluator"
+      },
+      "outputs": {
+        "dimension": "readme_smoke",
+        "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+        "severity": "none",
+        "verdict": "pass"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    },
+    {
+      "addr": {
+        "run_id": "jesterky-cli-run",
+        "node_path": [
+          {
+            "node": "record_verdict"
+          }
+        ],
+        "iteration": 0,
+        "local_seq": 1
+      },
+      "call": {
+        "call": "actor",
+        "actor": "reportbench_trace_recorder"
+      },
+      "outputs": {
+        "failed": 1,
+        "headline": "ReportBench trace evaluation failed with 3 passing dimensions and 1 failing dimension: hello_world.",
+        "passed": 3,
+        "verdict": "fail"
+      },
+      "score": null,
+      "signal": null,
+      "artifacts": []
+    }
+  ],
+  "checkpoints": [],
+  "trace": {
+    "addr": {
+      "run_id": "jesterky-cli-run",
+      "node_path": [],
+      "iteration": 0,
+      "local_seq": 0
+    },
+    "label": "workflow:smr_reportbench_trace_evaluate",
+    "inputs": {
+      "trace_dir": "proof/reportbench_traces"
+    },
+    "outputs": {
+      "jobs": [
+        {
+          "dimension": "hello_world",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+          "summary": {
+            "achievement_count": 0,
+            "llm_turns": null,
+            "reward": 0.7059,
+            "seed": null,
+            "status": "None"
+          },
+          "trace_dir": "proof/reportbench_traces",
+          "trace_id": "hello_world"
+        },
+        {
+          "dimension": "readme_smoke",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+          "summary": {
+            "achievement_count": 0,
+            "llm_turns": null,
+            "reward": 1.0,
+            "seed": null,
+            "status": "completed"
+          },
+          "trace_dir": "proof/reportbench_traces",
+          "trace_id": "readme_smoke"
+        },
+        {
+          "dimension": "readme_smoke_codex",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+          "summary": {
+            "achievement_count": 0,
+            "llm_turns": null,
+            "reward": 1.0,
+            "seed": null,
+            "status": "completed"
+          },
+          "trace_dir": "proof/reportbench_traces",
+          "trace_id": "readme_smoke_codex"
+        },
+        {
+          "dimension": "readme_smoke_deepseek",
+          "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+          "summary": {
+            "achievement_count": 0,
+            "llm_turns": null,
+            "reward": 1.0,
+            "seed": null,
+            "status": "completed"
+          },
+          "trace_dir": "proof/reportbench_traces",
+          "trace_id": "readme_smoke_deepseek"
+        }
+      ],
+      "scans": [
+        {
+          "dimension": "hello_world",
+          "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+          "severity": "high",
+          "verdict": "fail"
+        },
+        {
+          "dimension": "readme_smoke",
+          "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+          "severity": "none",
+          "verdict": "pass"
+        },
+        {
+          "dimension": "readme_smoke_codex",
+          "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+          "severity": "none",
+          "verdict": "pass"
+        },
+        {
+          "dimension": "readme_smoke_deepseek",
+          "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+          "severity": "none",
+          "verdict": "pass"
+        }
+      ],
+      "summary": {
+        "failed": 1,
+        "failing_dimensions": [
+          "hello_world"
+        ],
+        "passed": 3,
+        "total": 4,
+        "verdict": "fail"
+      },
+      "trace_dir": "proof/reportbench_traces"
+    },
+    "score": null,
+    "signal": null,
+    "artifacts": [],
+    "children": [
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "aggregate"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "aggregate",
+        "inputs": {
+          "scans": [
+            {
+              "dimension": "hello_world",
+              "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+              "severity": "high",
+              "verdict": "fail"
+            },
+            {
+              "dimension": "readme_smoke",
+              "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            {
+              "dimension": "readme_smoke_codex",
+              "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            {
+              "dimension": "readme_smoke_deepseek",
+              "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+              "severity": "none",
+              "verdict": "pass"
+            }
+          ]
+        },
+        "outputs": {
+          "summary": {
+            "failed": 1,
+            "failing_dimensions": [
+              "hello_world"
+            ],
+            "passed": 3,
+            "total": 4,
+            "verdict": "fail"
+          }
+        },
+        "score": 0.75,
+        "signal": {
+          "failed": 1,
+          "passed": 3,
+          "total": 4,
+          "verdict": "fail"
+        },
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "evaluate_traces"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "evaluate_traces",
+        "inputs": {
+          "concurrency": 4,
+          "item_as": "item",
+          "min_success": 1.0,
+          "over": [
+            {
+              "dimension": "hello_world",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 0.7059,
+                "seed": null,
+                "status": "None"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "hello_world"
+            },
+            {
+              "dimension": "readme_smoke",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke"
+            },
+            {
+              "dimension": "readme_smoke_codex",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke_codex"
+            },
+            {
+              "dimension": "readme_smoke_deepseek",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke_deepseek"
+            }
+          ]
+        },
+        "outputs": {
+          "job": [
+            {
+              "dimension": "hello_world",
+              "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+              "severity": "high",
+              "verdict": "fail"
+            },
+            {
+              "dimension": "readme_smoke",
+              "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            {
+              "dimension": "readme_smoke_codex",
+              "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            {
+              "dimension": "readme_smoke_deepseek",
+              "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+              "severity": "none",
+              "verdict": "pass"
+            }
+          ]
+        },
+        "score": null,
+        "signal": {
+          "attempted": 4,
+          "cancelled": false,
+          "successes": 4,
+          "total": 4
+        },
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "evaluate_traces"
+                },
+                {
+                  "index": 0
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[0]",
+            "inputs": {
+              "job": {
+                "dimension": "hello_world",
+                "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+                "summary": {
+                  "achievement_count": 0,
+                  "llm_turns": null,
+                  "reward": 0.7059,
+                  "seed": null,
+                  "status": "None"
+                },
+                "trace_dir": "proof/reportbench_traces",
+                "trace_id": "hello_world"
+              }
+            },
+            "outputs": {
+              "dimension": "hello_world",
+              "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+              "severity": "high",
+              "verdict": "fail"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "evaluate_traces"
+                    },
+                    {
+                      "index": 0
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:reportbench_trace_evaluator",
+                "inputs": {
+                  "job": {
+                    "dimension": "hello_world",
+                    "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+                    "summary": {
+                      "achievement_count": 0,
+                      "llm_turns": null,
+                      "reward": 0.7059,
+                      "seed": null,
+                      "status": "None"
+                    },
+                    "trace_dir": "proof/reportbench_traces",
+                    "trace_id": "hello_world"
+                  }
+                },
+                "outputs": {
+                  "dimension": "hello_world",
+                  "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present.",
+                  "severity": "high",
+                  "verdict": "fail"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "evaluate_traces"
+                },
+                {
+                  "index": 1
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[1]",
+            "inputs": {
+              "job": {
+                "dimension": "readme_smoke",
+                "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+                "summary": {
+                  "achievement_count": 0,
+                  "llm_turns": null,
+                  "reward": 1.0,
+                  "seed": null,
+                  "status": "completed"
+                },
+                "trace_dir": "proof/reportbench_traces",
+                "trace_id": "readme_smoke"
+              }
+            },
+            "outputs": {
+              "dimension": "readme_smoke",
+              "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "evaluate_traces"
+                    },
+                    {
+                      "index": 1
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:reportbench_trace_evaluator",
+                "inputs": {
+                  "job": {
+                    "dimension": "readme_smoke",
+                    "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+                    "summary": {
+                      "achievement_count": 0,
+                      "llm_turns": null,
+                      "reward": 1.0,
+                      "seed": null,
+                      "status": "completed"
+                    },
+                    "trace_dir": "proof/reportbench_traces",
+                    "trace_id": "readme_smoke"
+                  }
+                },
+                "outputs": {
+                  "dimension": "readme_smoke",
+                  "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed.",
+                  "severity": "none",
+                  "verdict": "pass"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "evaluate_traces"
+                },
+                {
+                  "index": 2
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[2]",
+            "inputs": {
+              "job": {
+                "dimension": "readme_smoke_codex",
+                "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+                "summary": {
+                  "achievement_count": 0,
+                  "llm_turns": null,
+                  "reward": 1.0,
+                  "seed": null,
+                  "status": "completed"
+                },
+                "trace_dir": "proof/reportbench_traces",
+                "trace_id": "readme_smoke_codex"
+              }
+            },
+            "outputs": {
+              "dimension": "readme_smoke_codex",
+              "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "evaluate_traces"
+                    },
+                    {
+                      "index": 2
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:reportbench_trace_evaluator",
+                "inputs": {
+                  "job": {
+                    "dimension": "readme_smoke_codex",
+                    "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+                    "summary": {
+                      "achievement_count": 0,
+                      "llm_turns": null,
+                      "reward": 1.0,
+                      "seed": null,
+                      "status": "completed"
+                    },
+                    "trace_dir": "proof/reportbench_traces",
+                    "trace_id": "readme_smoke_codex"
+                  }
+                },
+                "outputs": {
+                  "dimension": "readme_smoke_codex",
+                  "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present.",
+                  "severity": "none",
+                  "verdict": "pass"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          },
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "evaluate_traces"
+                },
+                {
+                  "index": 3
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 0
+            },
+            "label": "[3]",
+            "inputs": {
+              "job": {
+                "dimension": "readme_smoke_deepseek",
+                "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+                "summary": {
+                  "achievement_count": 0,
+                  "llm_turns": null,
+                  "reward": 1.0,
+                  "seed": null,
+                  "status": "completed"
+                },
+                "trace_dir": "proof/reportbench_traces",
+                "trace_id": "readme_smoke_deepseek"
+              }
+            },
+            "outputs": {
+              "dimension": "readme_smoke_deepseek",
+              "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+              "severity": "none",
+              "verdict": "pass"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": [
+              {
+                "addr": {
+                  "run_id": "jesterky-cli-run",
+                  "node_path": [
+                    {
+                      "node": "evaluate_traces"
+                    },
+                    {
+                      "index": 3
+                    }
+                  ],
+                  "iteration": 0,
+                  "local_seq": 2
+                },
+                "label": "actor:reportbench_trace_evaluator",
+                "inputs": {
+                  "job": {
+                    "dimension": "readme_smoke_deepseek",
+                    "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+                    "summary": {
+                      "achievement_count": 0,
+                      "llm_turns": null,
+                      "reward": 1.0,
+                      "seed": null,
+                      "status": "completed"
+                    },
+                    "trace_dir": "proof/reportbench_traces",
+                    "trace_id": "readme_smoke_deepseek"
+                  }
+                },
+                "outputs": {
+                  "dimension": "readme_smoke_deepseek",
+                  "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present.",
+                  "severity": "none",
+                  "verdict": "pass"
+                },
+                "score": null,
+                "signal": null,
+                "artifacts": [],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "expand_traces"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "expand_traces",
+        "inputs": {
+          "trace_dir": "proof/reportbench_traces"
+        },
+        "outputs": {
+          "jobs": [
+            {
+              "dimension": "hello_world",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/hello_world.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 0.7059,
+                "seed": null,
+                "status": "None"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "hello_world"
+            },
+            {
+              "dimension": "readme_smoke",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke"
+            },
+            {
+              "dimension": "readme_smoke_codex",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_codex.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke_codex"
+            },
+            {
+              "dimension": "readme_smoke_deepseek",
+              "path": "/Users/joshpurtell/Documents/GitHub/jesterky/proof/reportbench_traces/readme_smoke_deepseek.v4.json",
+              "summary": {
+                "achievement_count": 0,
+                "llm_turns": null,
+                "reward": 1.0,
+                "seed": null,
+                "status": "completed"
+              },
+              "trace_dir": "proof/reportbench_traces",
+              "trace_id": "readme_smoke_deepseek"
+            }
+          ]
+        },
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "addr": {
+          "run_id": "jesterky-cli-run",
+          "node_path": [
+            {
+              "node": "record_verdict"
+            }
+          ],
+          "iteration": 0,
+          "local_seq": 0
+        },
+        "label": "record_verdict",
+        "inputs": {
+          "summary": {
+            "failed": 1,
+            "failing_dimensions": [
+              "hello_world"
+            ],
+            "passed": 3,
+            "total": 4,
+            "verdict": "fail"
+          }
+        },
+        "outputs": {
+          "failed": 1,
+          "headline": "ReportBench trace evaluation failed with 3 passing dimensions and 1 failing dimension: hello_world.",
+          "passed": 3,
+          "verdict": "fail"
+        },
+        "score": null,
+        "signal": null,
+        "artifacts": [],
+        "children": [
+          {
+            "addr": {
+              "run_id": "jesterky-cli-run",
+              "node_path": [
+                {
+                  "node": "record_verdict"
+                }
+              ],
+              "iteration": 0,
+              "local_seq": 1
+            },
+            "label": "actor:reportbench_trace_recorder",
+            "inputs": {
+              "summary": {
+                "failed": 1,
+                "failing_dimensions": [
+                  "hello_world"
+                ],
+                "passed": 3,
+                "total": 4,
+                "verdict": "fail"
+              }
+            },
+            "outputs": {
+              "failed": 1,
+              "headline": "ReportBench trace evaluation failed with 3 passing dimensions and 1 failing dimension: hello_world.",
+              "passed": 3,
+              "verdict": "fail"
+            },
+            "score": null,
+            "signal": null,
+            "artifacts": [],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "status": "completed",
+  "stop_reason": "completed",
+  "invariants": {
+    "all_ok": true,
+    "checks": [
+      {
+        "name": "unique_event_addrs",
+        "ok": true,
+        "detail": "32 events, all addrs distinct"
+      },
+      {
+        "name": "no_orphaned_records",
+        "ok": true,
+        "detail": "5 recorded outputs all present in trace"
+      },
+      {
+        "name": "map:evaluate_traces.over_matches_total",
+        "ok": true,
+        "detail": "fanned over 4 items, recorded total 4"
+      },
+      {
+        "name": "map:evaluate_traces.min_success_honored",
+        "ok": true,
+        "detail": "4/4 succeeded (>= min_success 1)"
+      },
+      {
+        "name": "map:evaluate_traces.children_within_total",
+        "ok": true,
+        "detail": "4 item children <= 4 attempted"
+      }
+    ]
+  }
+}

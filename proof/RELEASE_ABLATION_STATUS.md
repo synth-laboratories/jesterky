@@ -39,7 +39,7 @@ Target quantities and arms per use case:
 | 2 | Craftax mean reward | base ReAct prompt | GEPA-proposed prompt | `proof/gepa_craftax_ablation.md` | done — +0.678 mean reward, 95% CI [0.205, 1.151], exact two-sided p=0.007010, n=64 |
 | 3 | Craftax uplift over baseline (GELO) | GELO, `jesterky_workflow.enabled=false` | GELO, annotate→materialize before core propose | `proof/gelo_jesterky_workflow_ablation.md` | PASS — A +0.339 vs B +0.977 (best non-seed search − baseline); B receipts non-empty (r0–r3 themes 8/32/47/65). Hollow `…003418Z` INVALID audit-only. Old prompt A/B drop in `proof/gelo_craftax_ablation.md` |
 | 3b | Craftax best_heldout_mean (GEPA ± workflows) | GEPA, `jesterky_workflow.enabled=false` | GEPA, annotate→materialize before propose | `proof/gepa_jesterky_workflow_ablation.md` | FAIL — bigger budget A `…033652Z` heldout 1.5 > B `…040537Z` 1.0; B themes 20/23/22; A zero receipts. Prior small-budget tie audit-only. Hook ok; M5a primary not cleared. Separate from n=64 prompt A/B |
-| 4 | ReportBench score | baseline report | trace-evaluate-guided | (owed) | scorer unwired; needs real report-trace dir |
+| 4 | ReportBench score | baseline report | trace-evaluate-guided | (A/B owed) | scorer WIRED + live-proven (07-09): real lane artifacts → `scripts/build_reportbench_traces.py` → 4 traces; gpt-5.5 evaluate live, agreement 1.0 vs autograde (fails 12/17 lane, passes 3× 18/18), report score 0.926, replay ok — `proof/smr_reportbench_trace_evaluate.md`. A/B uplift number itself still owed |
 
 ## MCP worker exposure — DONE (verified by running, Jul 8)
 
@@ -59,8 +59,8 @@ workers can install it.
 - [x] AT-3 headline: GEPA-Craftax uplift at **n=64, paired, CI-backed**: base 2.328 → GEPA 3.006, delta +0.678, 95% CI [0.205, 1.151], exact two-sided p=0.007010. Prior n=8 smoke (+0.85, p=0.137) is INVALID as a headline and kept only as audit trail.
 - [x] AT-3: GELO ± jesterky workflows Craftax A/B — uplift over baseline PASS (A +0.339 → B +0.977; B receipts non-empty themes). See `proof/gelo_jesterky_workflow_ablation.md`. Hollow `…003418Z` INVALID audit-only. Old prompt A/B remains a documented drop in `proof/gelo_craftax_ablation.md`.
 - [x] AT-3: GEPA ± jesterky workflows Craftax A/B — RESOLVED AS REFRAME (07-09): scored FAIL at bigger budget (A heldout 1.5 > B 1.0 on `…033652Z`/`…040537Z`; B themes non-empty). Hook works; M5a primary not cleared. Release ships it as **wired, no measured uplift**; the workflow-uplift case is GELO. See `proof/gepa_jesterky_workflow_ablation.md` § Disposition. Do not conflate with n=64 prompt A/B.
-- [ ] AT-3: SMR-ReportBench uplift (wire the scorer to a trace-evaluate manifest).
-- [ ] Live quality-scan manifest (example 1, `--actor codex`).
+- [x] AT-2: SMR-ReportBench scorer wired to a LIVE trace-evaluate manifest over real lane artifacts (agreement 1.0, report score 0.926, replay ok — 07-09). AT-3 A/B uplift is post-launch.
+- [x] Live quality-scan manifest (example 1, `--actor codex`): 2 SOUND / 6 FRAGILE over 8 published posts, replay ok — `proof/quality_scan_blogs.live.manifest.json` (07-09).
 - [x] Green tree gate (no CI, Josh 07-08): `cargo test --workspace` + `cargo build --all-targets` pass locally — run before each landing.
 - [ ] Proof packet section per example cites its committed table/manifest.
 - [x] MCP `workflows` tools live for gepa/gelo/stack/smr (worker-invocable) — verified running.

@@ -1,0 +1,141 @@
+{
+  "schema_version": "synth_rollout_trace_v4",
+  "rollout_id": "reportbench-readme_smoke",
+  "status": "completed",
+  "summary": {
+    "reward": 1.0,
+    "outcome_reward": 1.0,
+    "run_id": "003dfe99-59e3-4270-93ce-ed5fb9d29321",
+    "state": "done"
+  },
+  "metadata": {
+    "source": "evals/reportbench",
+    "lane": "readme_smoke"
+  },
+  "evidence": {
+    "autograde": {
+      "reward": 1.0,
+      "checks_passed": 18,
+      "checks_total": 18,
+      "checks_failed": 0,
+      "fatal_errors": [],
+      "state": "done"
+    },
+    "benchmark_verdict": {
+      "schema_version": "benchmark_verdict.v1",
+      "status": "passed",
+      "decision": "passed",
+      "authority": "reportbench",
+      "score": 1.0,
+      "primary_score": 1.0,
+      "pass_threshold": null,
+      "failure_reasons": [],
+      "gates": [
+        {
+          "id": "runtime_done",
+          "ok": true,
+          "required": true,
+          "reason": "runtime_not_done",
+          "runtime_state": "done"
+        },
+        {
+          "id": "task_plan_validation",
+          "ok": true,
+          "required": true,
+          "reason": "failed_task_plan_validation"
+        },
+        {
+          "id": "worker_git_proof",
+          "ok": true,
+          "required": true,
+          "reason": "failed_worker_git_proof"
+        },
+        {
+          "id": "sublinear_task_proof",
+          "ok": true,
+          "required": true,
+          "reason": "failed_sublinear_task_proof"
+        },
+        {
+          "id": "actor_topology_proof",
+          "ok": true,
+          "required": true,
+          "reason": "failed_actor_topology_proof"
+        },
+        {
+          "id": "requested_host_kind",
+          "ok": true,
+          "required": true,
+          "reason": "requested_host_kind_mismatch",
+          "expected_host_kind": "docker",
+          "requested_host_kind": "docker"
+        },
+        {
+          "id": "resolved_host_kind",
+          "ok": true,
+          "required": true,
+          "reason": "resolved_host_kind_mismatch",
+          "expected_host_kind": "docker",
+          "resolved_host_kinds": [
+            "docker"
+          ]
+        },
+        {
+          "id": "checkpoint_proof",
+          "ok": true,
+          "required": false,
+          "reason": "failed_checkpoint_proof"
+        },
+        {
+          "id": "sentinel_file_proof",
+          "ok": true,
+          "required": false,
+          "reason": "failed_sentinel_file_proof"
+        }
+      ],
+      "timestamp_utc": "2026-04-20T02:53:05.214017Z"
+    },
+    "verifier": {
+      "score": 1.0,
+      "summary": "Fallback run-wide verifier used deterministic README-smoke proof checks.",
+      "criteria": [
+        {
+          "id": "run_completion",
+          "score": 1.0,
+          "reason": "state=done"
+        },
+        {
+          "id": "worker_repo_proof",
+          "score": 1.0,
+          "reason": "worker_git_proof.ok=True"
+        },
+        {
+          "id": "sublinear_task_completion",
+          "score": 1.0,
+          "reason": "sublinear_task_proof.ok=True"
+        },
+        {
+          "id": "actor_topology",
+          "score": 1.0,
+          "reason": "actor_topology_proof.ok=True"
+        },
+        {
+          "id": "task_plan_quality",
+          "score": 1.0,
+          "reason": "task_plan_validation.ok=True"
+        },
+        {
+          "id": "artifact_consistency",
+          "score": 1.0,
+          "reason": "results_artifacts_present=True"
+        }
+      ]
+    },
+    "artifacts_present": [
+      "autograde_latest.json",
+      "reportbench_output.json",
+      "summary_latest.json",
+      "verifier_review.json"
+    ]
+  }
+}

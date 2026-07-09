@@ -1,0 +1,37 @@
+{
+  "schema_version": "synth_rollout_trace_v4",
+  "rollout_id": "reportbench-hello_world",
+  "status": "None",
+  "summary": {
+    "reward": 0.7059,
+    "outcome_reward": 0.7059,
+    "run_id": "c8fe59f8-425d-43f2-8985-788cb2470ec1",
+    "state": null
+  },
+  "metadata": {
+    "source": "evals/reportbench",
+    "lane": "hello_world"
+  },
+  "evidence": {
+    "autograde": {
+      "reward": 0.7059,
+      "checks_passed": 12,
+      "checks_total": 17,
+      "checks_failed": 5,
+      "fatal_errors": [],
+      "state": null
+    },
+    "benchmark_verdict": null,
+    "verifier": {
+      "score": 0.0,
+      "summary": "Derived from the hello-world JSON rubric autograde and latest run artifact.",
+      "criteria": []
+    },
+    "artifacts_present": [
+      "autograde_latest.json",
+      "reportbench_output.json",
+      "summary_latest.json",
+      "verifier_review.json"
+    ]
+  }
+}

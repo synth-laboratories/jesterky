@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "trace_id": "hello_world",
+      "autograde_reward": 0.7059,
+      "checks_passed": 12,
+      "checks_total": 17,
+      "workflow_verdict": "fail",
+      "severity": "high",
+      "rationale": "Run state is not terminal (state null/status None), benchmark_verdict is missing, autograde passed only 12/17 checks with reward 0.7059, and verifier evidence has score 0.0 with empty criteria despite artifacts being present."
+    },
+    {
+      "trace_id": "readme_smoke",
+      "autograde_reward": 1.0,
+      "checks_passed": 18,
+      "checks_total": 18,
+      "workflow_verdict": "pass",
+      "severity": "none",
+      "rationale": "Trace completed with autograde state=done, reward 1.0 and 18/18 checks passed, benchmark_verdict passed, verifier score 1.0 with criteria present, and required artifacts listed."
+    },
+    {
+      "trace_id": "readme_smoke_codex",
+      "autograde_reward": 1.0,
+      "checks_passed": 18,
+      "checks_total": 18,
+      "workflow_verdict": "pass",
+      "severity": "none",
+      "rationale": "Trace is terminal with state=done, benchmark verdict passed, autograde passed 18/18 checks with reward 1.0 and no fatal errors, verifier score is 1.0 with criteria present, and required artifacts are present."
+    },
+    {
+      "trace_id": "readme_smoke_deepseek",
+      "autograde_reward": 1.0,
+      "checks_passed": 18,
+      "checks_total": 18,
+      "workflow_verdict": "pass",
+      "severity": "none",
+      "rationale": "Trace state is completed/done with autograde 18/18 checks passed, reward 1.0, no fatal errors, benchmark verdict passed, verifier score 1.0 with criteria present, and expected artifacts present."
+    }
+  ],
+  "aggregates": {
+    "n": 4,
+    "mean_autograde_reward": 0.9264749999999999,
+    "workflow_pass_rate": 0.75,
+    "agreement_rate": 1.0
+  }
+}
