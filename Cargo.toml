@@ -7,6 +7,8 @@ members = [
     "crates/jesterky-model",
     "crates/jesterky-quality",
     "crates/jesterky-cli",
+    "crates/jesterky-proxy",
+    "crates/jesterky-sandbox",
 ]
 
 # Shared package metadata (inherited via `<field>.workspace = true`). Single
@@ -33,3 +35,5 @@ jesterky-core = { path = "crates/jesterky-core", version = "0.1.0" }
 jesterky-actor = { path = "crates/jesterky-actor", version = "0.1.0" }
 jesterky-model = { path = "crates/jesterky-model", version = "0.1.0" }
 jesterky-quality = { path = "crates/jesterky-quality", version = "0.1.0" }
+jesterky-proxy = { path = "crates/jesterky-proxy", version = "0.1.0" }
+jesterky-sandbox = { path = "crates/jesterky-sandbox", version = "0.1.0" }

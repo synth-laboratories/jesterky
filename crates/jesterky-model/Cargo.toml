@@ -14,10 +14,11 @@ categories = ["asynchronous", "development-tools"]
 [dependencies]
 jesterky-contract = { workspace = true }
 jesterky-core = { workspace = true }
+jesterky-sandbox = { workspace = true }
 async-trait = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
-tokio = { version = "1", features = ["process", "rt", "io-util", "macros"] }
+tokio = { version = "1", features = ["process", "rt", "io-util", "macros", "sync", "time"] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }

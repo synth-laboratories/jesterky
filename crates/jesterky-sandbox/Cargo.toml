@@ -1,0 +1,16 @@
+[package]
+name = "jesterky-sandbox"
+version = "0.1.0"
+edition = "2021"
+description = "Seeded execution workspaces for jesterky agentic actors (local + docker)."
+
+[dependencies]
+jesterky-contract = { workspace = true }
+async-trait = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { version = "1", features = ["process", "rt", "fs", "io-util", "macros"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
