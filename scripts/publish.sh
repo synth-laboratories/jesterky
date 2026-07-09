@@ -18,7 +18,8 @@ cd "$(dirname "$0")/.."
 
 CONFIRM="${1:-}"
 # Dependency order: a crate must be indexed before anything that depends on it.
-ORDER=(jesterky-contract jesterky-core jesterky-actor jesterky-model jesterky-quality jesterky-cli)
+ORDER=(jesterky-contract jesterky-core jesterky-actor jesterky-sandbox jesterky-proxy jesterky-model jesterky-quality jesterky-cli)
+VERSION="0.1.1"
 
 echo "== preflight =="
 cargo test --workspace
@@ -38,11 +39,11 @@ fi
 wait_indexed() {  # poll crates.io until the just-published version is queryable (<=60s)
   local crate="$1" tries=0
   until curl -s -A "jesterky-publish (jmvpurtell@gmail.com)" \
-        "https://crates.io/api/v1/crates/$crate/0.1.0" | grep -q '"num":"0.1.0"'; do
+        "https://crates.io/api/v1/crates/$crate/$VERSION" | grep -q "\"num\":\"$VERSION\""; do
     tries=$((tries + 1)); [ "$tries" -ge 12 ] && { echo "timeout waiting for $crate to index"; exit 1; }
-    echo "  waiting for $crate@0.1.0 to index ($((tries * 5))s)…"; sleep 5
+    echo "  waiting for $crate@$VERSION to index ($((tries * 5))s)…"; sleep 5
   done
-  echo "  $crate@0.1.0 indexed"
+  echo "  $crate@$VERSION indexed"
 }
 
 echo "== publishing crates =="
@@ -56,5 +57,5 @@ echo "== publishing python (PyPI) =="
 ( cd python && uv build && uv publish )
 
 echo
-echo "DONE. Crates + PyPI published at 0.1.0."
+echo "DONE. Crates + PyPI published at $VERSION."
 echo "Finish line remaining (manual): make github.com/jesterky public; flip blog status: draft -> live."

@@ -4,6 +4,32 @@ All notable changes to jesterky are recorded here. Versions follow the three
 independent trains (contract / runtime / CLI); this release pins them together at
 `0.1.0`.
 
+## 0.1.1 — 2026-07-09
+
+The launch release: agentic actors get real environments, and chat-only models
+get the full agentic loop. Ships with the launch blog and the proof packet.
+
+### Added
+- **`jesterky-sandbox` 0.1.1** (new crate) — seeded execution workspaces for
+  agentic actors: a `Sandbox` trait with Local and Docker providers,
+  `SandboxConfig` (backend / mode / seed / capture) on the contract,
+  `HostConfig.sandboxes`, and per-call wiring in `ModelActor`. Capture globs
+  pull built artifacts back into the run manifest.
+- **`jesterky-proxy` 0.1.1** (new crate) — the agentic loop for chat-only
+  routes: Responses⇄chat tool-call translation, a `/v1/models` catalog for
+  codex, and Gemini `thought_signature` round-trip. `jesterky run --actor codex
+  --model <provider>/<model>` spawns it automatically.
+- **Goals engine v1** in `jesterky-core` — goals as the dual of budgets, with
+  contract types (`goal.rs`, `budget.rs`) and enforcement in the run loop.
+- **Quality workloads** in `jesterky-quality` — blog/docs corpus scans, trace
+  annotate/evaluate (GEPA, GELO, SMR ReportBench), obliq math verify/retrieve,
+  dungeongrid multiplayer; example specs and output schemas for each.
+- **Terminal viz** — `jesterky visualize` renders a finished run's process tree.
+
+### Changed
+- CLI: `--model`, `--codex-home`, `--cd`, `--args-file`, `--events-out`; replay
+  fidelity is addr+kind+payload (wall time is metadata, never identity).
+
 ## 0.1.0 — 2026-07-08
 
 First public release: the jesterky workflow substrate — a Rust core that
