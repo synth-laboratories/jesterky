@@ -137,9 +137,10 @@ crafter 4/34 — a runnable crate that reproduces only what it can diff, with
 zero held-out generalization. Gemini's failure mode is the under-port: crates
 that build and then panic or mismatch at runtime. DeepSeek finishes small
 regular engines faithfully and is killed mid-port on the hard ones. Mid-ladder
-cells swing between runs (sokoban flipped for two models across two sessions);
-the packet reports single-run cells as indicative and holds per-model ranking
-claims for multi-seed runs.
+cells swing between runs — a partial multi-seed sweep (committed alongside)
+has gpt-5.5's sokoban at 1.0, 0.333, 0.333 across three attempts — so the
+packet treats single-run cells as indicative and makes no per-model ranking
+claims there; the cliff is the stable result.
 
 Every cell cites a committed score artifact
 (`gamebench/tasks/dev-port-singleplayer/score.sandbox.<model>.<engine>.json`),

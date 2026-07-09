@@ -51,18 +51,24 @@ NEV oracle (`score_port.py`).
    subset.** Minihack 4/27 and crafter 4/34 are precisely the 4 seeded train
    scenarios — a runnable crate that reproduces only what it can diff, and
    zero held-out generalization. Where the engine is within reach (tictactoe,
-   sokoban, earthborne) it ports faithfully at 1.0.
+   sokoban, earthborne) its best runs port faithfully at 1.0, but repeats land
+   lower (see finding 5) — the overfit signature on hard engines is the stable
+   half of this finding.
 3. **Gemini's failure mode is the under-port.** Its lean crates build and then
    panic or mismatch at runtime (earthborne: builds ok, `scenario` bin exits
    101 on every scenario; crafter 0/34 on a successful build).
 4. **DeepSeek is cap-bound.** It finishes small regular engines faithfully
    (earthborne 1.0) and is killed mid-port on the hard ones; its scores are
    statements about throughput under the 10-minute cap as much as ability.
-5. **Single-run cells swing.** Across two sessions one day apart: gpt-5.5
-   sokoban 0.267 → 1.0, gemini sokoban 1.0 → 0.333, gemini earthborne
-   1.0 → 0.0, deepseek tictactoe 1.0 → 0.8. The cliff (findings 1–2) is stable
-   across both sessions; mid-ladder cells are indicative, not point estimates.
-   Multi-seed runs are the next rung before any per-model ranking claim.
+5. **Single-run cells swing — confirmed by a partial multi-seed sweep
+   (07-09, attempts r2/r3, committed as `score.sandbox.<model>.<env>.rN.json`).**
+   gpt-5.5 sokoban: base 1.0 → r2 0.333 → r3 0.333. gpt-5.5 tictactoe: base
+   1.0 → 0.8/0.8. deepseek sokoban: base 0.333 → r2 1.0; deepseek tictactoe
+   0.8 → 0.8/1.0. gemini held (tictactoe 0.8/0.8/0.8, sokoban 0.333/0.267).
+   Mid-ladder cells are NOT point estimates and per-model rankings there are
+   not claimable; the cliff (findings 1–2) remains the stable result. The
+   sweep was stopped before the hard-engine repeats (minihack/crafter/
+   earthborne r2+r3 outstanding).
 
 ## Env inventory for future rungs
 
