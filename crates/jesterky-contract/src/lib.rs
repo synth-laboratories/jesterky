@@ -14,20 +14,37 @@
 //! types from the same definitions.
 
 pub mod artifact;
+pub mod budget;
 pub mod event;
+pub mod goal;
+pub mod live;
+pub mod sandbox;
 pub mod topology;
 
 /// The contract version. A major bump is a stack-wide event (ADR #4).
 pub const CONTRACT_VERSION: &str = "0.0.0-dev";
 
 pub use artifact::{
-    Artifact, ArtifactRef, CallKind, Checkpoint, Message, ProcessNode, RecordedOutput, RunManifest,
-    RunStatus,
+    Artifact, ArtifactRef, CallKind, Checkpoint, InvariantCheck, InvariantReport, Message,
+    ProcessNode, RecordedOutput, RunManifest, RunStatus, RunStopReason,
+};
+pub use budget::{
+    BudgetCap, BudgetEngine, BudgetEtaConfig, BudgetEtaMode, BudgetForecast, BudgetKind,
+    BudgetObservation, BudgetPlan, BudgetSnapshot, BudgetState, BudgetStatus, BudgetVizConfig,
+    ForecastConfidence, BUDGET_ENGINE_VERSION,
 };
 pub use event::{Addr, Event, EventKind, NodePath, PathSeg};
+pub use goal::{
+    GoalEngine, GoalKind, GoalPlan, GoalSnapshot, GoalSpec, GoalState, GoalStatus, GoalVizConfig,
+    GOAL_ENGINE_VERSION,
+};
+pub use live::{LiveBus, LiveEvent, LiveStream, ShardProgress};
+pub use sandbox::{
+    SandboxBackend, SandboxCapture, SandboxConfig, SandboxMode, SandboxSeed,
+};
 pub use topology::{
-    Bindings, ContractError, Diagnostic, Limit, Node, NodeId, NodeKind, Ref, RunPlan, Severity,
-    Verbosity, WorkflowSpec,
+    Bindings, ContractError, Diagnostic, HostConfig, HostRole, HostVizConfig, Limit, Node, NodeId,
+    NodeKind, Ref, RunPlan, Severity, Verbosity, WorkflowSpec,
 };
 
 /// Emit the JSON Schema for workflow topology documents.

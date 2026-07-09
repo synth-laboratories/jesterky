@@ -100,7 +100,7 @@ pub enum EventKind {
     // Limits / semaphores (the central-serialization joint).
     SemaphoreAcquired,
     SemaphoreReleased,
-    // Mailbox (multi-agent coordination).
+    // Reserved mailbox vocabulary (multi-agent coordination).
     MessagePublished,
     MessageAvailable,
     ArtifactEmitted,

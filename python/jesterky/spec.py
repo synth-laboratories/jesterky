@@ -2,8 +2,201 @@
 #   filename:  jesterky.schema.json
 
 from __future__ import annotations
-from pydantic import BaseModel, Field, RootModel, conint
 from enum import Enum
+from pydantic import BaseModel, Field, RootModel, conint
+from typing import Any
+
+
+class BudgetEtaMode1(Enum):
+    """
+    Do not show or compute ETA forecasts.
+    """
+
+    off = 'off'
+
+
+class BudgetEtaMode2(Enum):
+    """
+    Show only the soonest-to-exhaust cap.
+    """
+
+    nearest_only = 'nearest_only'
+
+
+class BudgetEtaMode3(Enum):
+    """
+    Show every cap that has a finite forecast (default).
+    """
+
+    all = 'all'
+
+
+class BudgetEtaMode(RootModel[BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3]):
+    root: BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3 = Field(
+        ..., description='How ETA lines are composed on the terminal panel.'
+    )
+
+
+class BudgetKind1(Enum):
+    """
+    Impure actor invocations (model turns, env-coupled hero acts, …).
+    """
+
+    actor_calls = 'actor_calls'
+
+
+class BudgetKind2(Enum):
+    """
+    Total tokens (in+out) observed on the live bus / recorded usage.
+    """
+
+    tokens = 'tokens'
+
+
+class BudgetKind3(Enum):
+    """
+    Wall-clock seconds since the host started the run.
+    """
+
+    wall_seconds = 'wall_seconds'
+
+
+class BudgetKind(RootModel[BudgetKind1 | BudgetKind2 | BudgetKind3]):
+    root: BudgetKind1 | BudgetKind2 | BudgetKind3 = Field(
+        ..., description='What resource is being capped.'
+    )
+
+
+class BudgetVizConfig(BaseModel):
+    """
+    Terminal / panel rendering knobs for budgets.
+    """
+
+    enabled: bool | None = Field(
+        True,
+        description='Master switch (default true). When false, no budget lines are drawn.',
+    )
+    short_labels: bool | None = Field(
+        True,
+        description='Use short labels (`calls`/`tok`/`wall`) instead of full kind names.',
+    )
+    show_eta: bool | None = Field(
+        True, description='Show the ETA line (`ETA calls 3m24s · …`).'
+    )
+    show_nearest_tag: bool | None = Field(
+        True, description='Append `nearest <kind>` on the ETA line.'
+    )
+    show_progress: bool | None = Field(
+        True, description='Show the progress line (`calls 4/64 (6%) · …`).'
+    )
+
+
+class Kind(Enum):
+    ledger_pred = 'ledger_pred'
+
+
+class GoalSpec1(BaseModel):
+    """
+    Met when the ledger value at `path` deep-equals `equals`.
+    """
+
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
+    )
+    required: bool | None = Field(
+        True,
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    equals: Any
+    kind: Kind
+    path: str
+
+
+class Kind1(Enum):
+    metric_threshold = 'metric_threshold'
+
+
+class GoalSpec2(BaseModel):
+    """
+    Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.
+    """
+
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
+    )
+    required: bool | None = Field(
+        True,
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    kind: Kind1
+    min: float
+    path: str
+
+
+class GoalSpec(RootModel[GoalSpec1 | GoalSpec2]):
+    root: GoalSpec1 | GoalSpec2 = Field(..., description='One declared goal on a run.')
+
+
+class GoalVizConfig(BaseModel):
+    """
+    Terminal / panel rendering knobs for goals.
+    """
+
+    enabled: bool | None = Field(
+        True,
+        description='Master switch (default true). When false, no goal line is drawn.',
+    )
+    short_labels: bool | None = Field(
+        True, description='Use short labels (goal id) instead of the full label.'
+    )
+    show_progress: bool | None = Field(
+        True,
+        description='Show the per-goal progress line (`goals 1/2 met · quality 0.72/0.80`).',
+    )
+
+
+class HostRole(BaseModel):
+    """
+    How the host configures one actor's system prompt.
+    """
+
+    prompt: str | None = None
+    prompt_file: str | None = Field(
+        None, description="Path relative to the workflow spec file's directory."
+    )
+
+
+class HostVizConfig(BaseModel):
+    """
+    Host hints for live follow / post-run matrix display.
+    """
+
+    item_jobs_field: str | None = Field(
+        None, description="Array field on that program's output (default `jobs`)."
+    )
+    item_label_field: str | None = Field(
+        None, description='Per-job label field (default `slug`, then `dimension`).'
+    )
+    item_labels_op: str | None = Field(
+        None,
+        description='Program op whose output supplies item labels before the map starts.',
+    )
+    map_node: str | None = Field(
+        None, description='Map node id for viz preseed when no events have arrived yet.'
+    )
+    matrix_report_field: str | None = Field(
+        None, description='Recorded-output field to print after a completed follow run.'
+    )
 
 
 class Limit(BaseModel):
@@ -15,39 +208,39 @@ class Limit(BaseModel):
     permits: conint(ge=0)
 
 
-class Kind(Enum):
+class Kind2(Enum):
     program = 'program'
 
 
-class Kind1(Enum):
+class Kind3(Enum):
     reduce = 'reduce'
 
 
-class Kind2(Enum):
+class Kind4(Enum):
     actor = 'actor'
 
 
-class Kind3(Enum):
+class Kind5(Enum):
     map = 'map'
 
 
-class Kind4(Enum):
+class Kind6(Enum):
     for_each = 'for_each'
 
 
-class Kind5(Enum):
+class Kind7(Enum):
     while_ = 'while'
 
 
-class Kind6(Enum):
+class Kind8(Enum):
     branch = 'branch'
 
 
-class Kind7(Enum):
+class Kind9(Enum):
     session_group = 'session_group'
 
 
-class Kind8(Enum):
+class Kind10(Enum):
     resume_session = 'resume_session'
 
 
@@ -68,6 +261,150 @@ class Verbosity(Enum):
     verbose = 'verbose'
 
 
+class BudgetCap(BaseModel):
+    """
+    One declared cap on a run.
+    """
+
+    hard: bool | None = Field(
+        False,
+        description='When true, exceeding the cap fails the run if [`BudgetPlan::fail_on_hard_exhaust`].',
+    )
+    kind: BudgetKind
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`BudgetKind::as_str`].',
+    )
+    max: float = Field(..., description='Hard ceiling; must be > 0.')
+    show_eta: bool | None = Field(
+        True,
+        description='Include this cap on the ETA viz line when a forecast exists (default true).',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this cap on the progress viz line (default true).'
+    )
+    warning_percent: float | None = Field(
+        None,
+        description='Per-cap warning threshold override (percent of cap). Falls back to plan default.',
+    )
+
+
+class BudgetEtaConfig(BaseModel):
+    """
+    ETA / burn-rate forecast knobs (host metering + engine).
+    """
+
+    enabled: bool | None = Field(
+        True, description='Master switch for ETA forecasting (default true).'
+    )
+    min_wall_secs: float | None = Field(
+        1.0,
+        description='Minimum wall seconds before burn-rate ETA is trusted (default 1.0).',
+    )
+    mode: BudgetEtaMode | None = Field(
+        'all', description='Which ETAs to surface on the panel.', validate_default=True
+    )
+    sample_interval_secs: float | None = Field(
+        0.45, description='Host sampling cadence hint for live follow (default 0.45s).'
+    )
+
+
+class BudgetPlan(BaseModel):
+    """
+    Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).
+
+    This is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.
+    """
+
+    caps: list[BudgetCap] | None = Field(
+        [],
+        description='Caps by dimension. Empty plan ⇒ no metering / no panel lines.',
+        validate_default=True,
+    )
+    eta: BudgetEtaConfig | None = Field(
+        {
+            'enabled': True,
+            'min_wall_secs': 1.0,
+            'mode': 'all',
+            'sample_interval_secs': 0.45,
+        },
+        description='ETA forecast configuration.',
+        validate_default=True,
+    )
+    fail_on_hard_exhaust: bool | None = Field(
+        True, description='Fail the run when a `hard` cap is exhausted (default true).'
+    )
+    viz: BudgetVizConfig | None = Field(
+        {
+            'enabled': True,
+            'short_labels': True,
+            'show_eta': True,
+            'show_nearest_tag': True,
+            'show_progress': True,
+        },
+        description='Terminal panel configuration.',
+        validate_default=True,
+    )
+    warning_percent: float | None = Field(
+        80.0,
+        description='Default warning threshold as percent of cap (0–100). Default 80.',
+    )
+
+
+class GoalPlan(BaseModel):
+    """
+    Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).
+
+    This is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.
+    """
+
+    cancel_in_flight: bool | None = Field(
+        False,
+        description='Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.',
+    )
+    fail_on_unmet: bool | None = Field(
+        True,
+        description='Fail the run when a `required` goal is still unmet at run end. Default true.',
+    )
+    finalize: str | None = Field(
+        None,
+        description='Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).',
+    )
+    goals: list[GoalSpec] | None = Field(
+        [],
+        description='Declared goals. Empty plan ⇒ no evaluation / no panel line.',
+        validate_default=True,
+    )
+    terminate_on_met: bool | None = Field(
+        True,
+        description='When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.',
+    )
+    viz: GoalVizConfig | None = Field(
+        {'enabled': True, 'short_labels': True, 'show_progress': True},
+        description='Terminal panel configuration.',
+        validate_default=True,
+    )
+
+
+class HostConfig(BaseModel):
+    """
+    Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.
+    """
+
+    output_schemas: dict[str, str] | None = Field(
+        {}, description='Actor name → JSON Schema path (relative to the spec dir).'
+    )
+    roles: dict[str, HostRole] | None = Field(
+        {},
+        description='Actor name → role prompt (inline or file path relative to the spec dir).',
+        validate_default=True,
+    )
+    viz: HostVizConfig | None = Field(
+        None,
+        description='Live terminal viz hints (item preseed, matrix field, map node label).',
+    )
+
+
 class Node1(BaseModel):
     """
     Pure, deterministic, in-process op (e.g. `quality.expand`). Re-run on replay — NOT recorded (ADR #7). Resolved from the program registry.
@@ -83,7 +420,7 @@ class Node1(BaseModel):
         description='Outputs the node writes back into the ledger when it completes.',
         validate_default=True,
     )
-    kind: Kind
+    kind: Kind2
     op: str
 
 
@@ -102,7 +439,7 @@ class Node2(BaseModel):
         description='Outputs the node writes back into the ledger when it completes.',
         validate_default=True,
     )
-    kind: Kind1
+    kind: Kind3
     op: str
 
 
@@ -122,7 +459,7 @@ class Node3(BaseModel):
         validate_default=True,
     )
     actor: str
-    kind: Kind2
+    kind: Kind4
 
 
 class Node7(BaseModel):
@@ -141,19 +478,52 @@ class Node7(BaseModel):
         validate_default=True,
     )
     cond: Ref
-    kind: Kind6
+    kind: Kind8
     otherwise: str | None = None
     then: str
 
 
 class RunPlan(BaseModel):
     """
-    Run-level configuration: concurrency budgets and event verbosity. A run may override these via args.runplan (merged by the runner).
+    Run-level configuration: concurrency budgets, resource budgets, and event verbosity. A run may override these via args.runplan (merged by the runner).
     """
 
+    budgets: BudgetPlan | None = Field(
+        {
+            'caps': [],
+            'eta': {
+                'enabled': True,
+                'min_wall_secs': 1.0,
+                'mode': 'all',
+                'sample_interval_secs': 0.45,
+            },
+            'fail_on_hard_exhaust': True,
+            'viz': {
+                'enabled': True,
+                'short_labels': True,
+                'show_eta': True,
+                'show_nearest_tag': True,
+                'show_progress': True,
+            },
+            'warning_percent': 80.0,
+        },
+        description='Formal **resource** budgets (actor calls / tokens / wall seconds) with progress + ETA. See [`crate::budget`].',
+        validate_default=True,
+    )
+    goals: GoalPlan | None = Field(
+        {
+            'cancel_in_flight': False,
+            'fail_on_unmet': True,
+            'goals': [],
+            'terminate_on_met': True,
+            'viz': {'enabled': True, 'short_labels': True, 'show_progress': True},
+        },
+        description='Formal **goals / work products** (semantic termination targets) — the dual of [`Self::budgets`]. See [`crate::goal`].',
+        validate_default=True,
+    )
     limits: dict[str, conint(ge=0)] | None = Field(
         {},
-        description='Named limits → permits. A `map`/`session_group` `limit` names one of these.',
+        description='Named **concurrency** limits → permits (semaphores). A `map` / `session_group` `limit` names one of these. Distinct from [`Self::budgets`].',
     )
     map_concurrency: conint(ge=0) | None = Field(
         None,
@@ -168,10 +538,43 @@ class WorkflowSpec(BaseModel):
     """
 
     entrypoint: list[str]
+    host: HostConfig | None = Field(
+        None,
+        description='Optional host wiring (prompts, schemas, viz). Not part of replay identity.',
+    )
     name: str
     nodes: dict[str, Node]
     runplan: RunPlan | None = Field(
-        {'limits': {}, 'map_concurrency': None, 'verbosity': 'standard'},
+        {
+            'budgets': {
+                'caps': [],
+                'eta': {
+                    'enabled': True,
+                    'min_wall_secs': 1.0,
+                    'mode': 'all',
+                    'sample_interval_secs': 0.45,
+                },
+                'fail_on_hard_exhaust': True,
+                'viz': {
+                    'enabled': True,
+                    'short_labels': True,
+                    'show_eta': True,
+                    'show_nearest_tag': True,
+                    'show_progress': True,
+                },
+                'warning_percent': 80.0,
+            },
+            'goals': {
+                'cancel_in_flight': False,
+                'fail_on_unmet': True,
+                'goals': [],
+                'terminate_on_met': True,
+                'viz': {'enabled': True, 'short_labels': True, 'show_progress': True},
+            },
+            'limits': {},
+            'map_concurrency': None,
+            'verbosity': 'standard',
+        },
         description='Execution budgets/defaults for this workflow.',
         validate_default=True,
     )
@@ -195,7 +598,7 @@ class Node4(BaseModel):
     body: Node
     concurrency: conint(ge=0) | None = None
     item_as: str
-    kind: Kind3
+    kind: Kind5
     min_success: float | None = 1.0
     over: Ref
 
@@ -217,7 +620,7 @@ class Node5(BaseModel):
     )
     body: Node
     item_as: str
-    kind: Kind4
+    kind: Kind6
     over: Ref
 
 
@@ -238,7 +641,7 @@ class Node6(BaseModel):
     )
     body: Node
     cond: Ref
-    kind: Kind5
+    kind: Kind7
     max_iters: conint(ge=0)
 
 
@@ -259,7 +662,7 @@ class Node8(BaseModel):
     )
     actor: str
     body: Node
-    kind: Kind7
+    kind: Kind9
     limit: Limit | None = None
     sessions: Ref
 
@@ -280,7 +683,7 @@ class Node9(BaseModel):
         validate_default=True,
     )
     body: Node
-    kind: Kind8
+    kind: Kind10
     session: Ref
 
 

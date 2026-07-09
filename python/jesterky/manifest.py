@@ -20,6 +20,102 @@ class ArtifactRef(BaseModel):
     size_bytes: conint(ge=0)
 
 
+class BudgetEtaMode1(Enum):
+    """
+    Do not show or compute ETA forecasts.
+    """
+
+    off = 'off'
+
+
+class BudgetEtaMode2(Enum):
+    """
+    Show only the soonest-to-exhaust cap.
+    """
+
+    nearest_only = 'nearest_only'
+
+
+class BudgetEtaMode3(Enum):
+    """
+    Show every cap that has a finite forecast (default).
+    """
+
+    all = 'all'
+
+
+class BudgetEtaMode(RootModel[BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3]):
+    root: BudgetEtaMode1 | BudgetEtaMode2 | BudgetEtaMode3 = Field(
+        ..., description='How ETA lines are composed on the terminal panel.'
+    )
+
+
+class BudgetKind1(Enum):
+    """
+    Impure actor invocations (model turns, env-coupled hero acts, …).
+    """
+
+    actor_calls = 'actor_calls'
+
+
+class BudgetKind2(Enum):
+    """
+    Total tokens (in+out) observed on the live bus / recorded usage.
+    """
+
+    tokens = 'tokens'
+
+
+class BudgetKind3(Enum):
+    """
+    Wall-clock seconds since the host started the run.
+    """
+
+    wall_seconds = 'wall_seconds'
+
+
+class BudgetKind(RootModel[BudgetKind1 | BudgetKind2 | BudgetKind3]):
+    root: BudgetKind1 | BudgetKind2 | BudgetKind3 = Field(
+        ..., description='What resource is being capped.'
+    )
+
+
+class BudgetState(Enum):
+    """
+    How close a budget is to its cap.
+    """
+
+    ok = 'ok'
+    warning = 'warning'
+    exhausted = 'exhausted'
+    unlimited = 'unlimited'
+    unknown = 'unknown'
+
+
+class BudgetVizConfig(BaseModel):
+    """
+    Terminal / panel rendering knobs for budgets.
+    """
+
+    enabled: bool | None = Field(
+        True,
+        description='Master switch (default true). When false, no budget lines are drawn.',
+    )
+    short_labels: bool | None = Field(
+        True,
+        description='Use short labels (`calls`/`tok`/`wall`) instead of full kind names.',
+    )
+    show_eta: bool | None = Field(
+        True, description='Show the ETA line (`ETA calls 3m24s · …`).'
+    )
+    show_nearest_tag: bool | None = Field(
+        True, description='Append `nearest <kind>` on the ETA line.'
+    )
+    show_progress: bool | None = Field(
+        True, description='Show the progress line (`calls 4/64 (6%) · …`).'
+    )
+
+
 class Call(Enum):
     actor = 'actor'
 
@@ -343,6 +439,169 @@ class EventKind(
     )
 
 
+class ForecastConfidence(Enum):
+    """
+    Forecast confidence (interval width).
+    """
+
+    high = 'high'
+    medium = 'medium'
+    low = 'low'
+    unknown = 'unknown'
+
+
+class Kind19(Enum):
+    ledger_pred = 'ledger_pred'
+
+
+class GoalSpec1(BaseModel):
+    """
+    Met when the ledger value at `path` deep-equals `equals`.
+    """
+
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
+    )
+    required: bool | None = Field(
+        True,
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    equals: Any
+    kind: Kind19
+    path: str
+
+
+class Kind20(Enum):
+    metric_threshold = 'metric_threshold'
+
+
+class GoalSpec2(BaseModel):
+    """
+    Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.
+    """
+
+    id: str = Field(..., description='Stable identifier (unique within a plan).')
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`Self::id`].',
+    )
+    required: bool | None = Field(
+        True,
+        description='Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this goal on the progress viz line (default true).'
+    )
+    kind: Kind20
+    min: float
+    path: str
+
+
+class GoalSpec(RootModel[GoalSpec1 | GoalSpec2]):
+    root: GoalSpec1 | GoalSpec2 = Field(..., description='One declared goal on a run.')
+
+
+class GoalState1(Enum):
+    """
+    Predicate satisfied.
+    """
+
+    met = 'met'
+
+
+class GoalState2(Enum):
+    """
+    Predicate evaluated but not satisfied.
+    """
+
+    unmet = 'unmet'
+
+
+class GoalState3(Enum):
+    """
+    Path missing or wrong type — cannot evaluate.
+    """
+
+    unknown = 'unknown'
+
+
+class GoalState(RootModel[GoalState1 | GoalState2 | GoalState3]):
+    root: GoalState1 | GoalState2 | GoalState3 = Field(
+        ..., description='Whether a goal (or the whole run) is satisfied.'
+    )
+
+
+class GoalStatus(BaseModel):
+    """
+    Result of evaluating one goal against the ledger.
+    """
+
+    detail: str = Field(
+        ..., description='Human-readable evaluation (`summary.score 0.72 < min 0.80`).'
+    )
+    id: str
+    kind: str = Field(..., description='`ledger_pred` / `metric_threshold`.')
+    label: str
+    observed: Any | None = Field(
+        None,
+        description="The observed ledger value at the goal's path (echoed for consumers).",
+    )
+    progress: float = Field(
+        ...,
+        description='Partial credit in `[0, 1]`: `1.0` when met, `value/min` for a threshold, `0.0` for an unmet predicate, `0.0` when unknown.',
+    )
+    required: bool
+    show_progress: bool
+    state: GoalState
+
+
+class GoalVizConfig(BaseModel):
+    """
+    Terminal / panel rendering knobs for goals.
+    """
+
+    enabled: bool | None = Field(
+        True,
+        description='Master switch (default true). When false, no goal line is drawn.',
+    )
+    short_labels: bool | None = Field(
+        True, description='Use short labels (goal id) instead of the full label.'
+    )
+    show_progress: bool | None = Field(
+        True,
+        description='Show the per-goal progress line (`goals 1/2 met · quality 0.72/0.80`).',
+    )
+
+
+class InvariantCheck(BaseModel):
+    """
+    One structural invariant checked over a finished [`RunManifest`].
+    """
+
+    detail: str = Field(
+        ..., description='Human-readable evidence (counts, the offending addr, …).'
+    )
+    name: str = Field(
+        ...,
+        description='Stable check id (e.g. `unique_event_addrs`, `map:scan_jobs.over_matches_total`).',
+    )
+    ok: bool
+
+
+class InvariantReport(BaseModel):
+    """
+    The manifest self-check report. `all_ok` is the AND of every check.
+    """
+
+    all_ok: bool
+    checks: list[InvariantCheck]
+
+
 class PathSeg1(BaseModel):
     """
     One segment of a node path. A path alternates named nodes and numeric indices, e.g. `audit_jobs` → `[3]` for the 4th map item. Kept typed (not a string) so that `Index(2) < Index(10)` orders numerically, not lexically.
@@ -377,10 +636,204 @@ class RunStatus(Enum):
     failed = 'failed'
 
 
+class RunStopReason(Enum):
+    completed = 'completed'
+    node_failed = 'node_failed'
+    goal_unmet = 'goal_unmet'
+    budget_exhausted = 'budget_exhausted'
+
+
 class Artifact(RootModel[Any | ArtifactRef]):
     root: Any | ArtifactRef = Field(
         ...,
         description='Either an inline small value or a reference to an offloaded one. The runner applies the inline/offload split at a size cap.',
+    )
+
+
+class BudgetCap(BaseModel):
+    """
+    One declared cap on a run.
+    """
+
+    hard: bool | None = Field(
+        False,
+        description='When true, exceeding the cap fails the run if [`BudgetPlan::fail_on_hard_exhaust`].',
+    )
+    kind: BudgetKind
+    label: str | None = Field(
+        None,
+        description='Optional display name (panel + snapshot). Defaults to [`BudgetKind::as_str`].',
+    )
+    max: float = Field(..., description='Hard ceiling; must be > 0.')
+    show_eta: bool | None = Field(
+        True,
+        description='Include this cap on the ETA viz line when a forecast exists (default true).',
+    )
+    show_progress: bool | None = Field(
+        True, description='Include this cap on the progress viz line (default true).'
+    )
+    warning_percent: float | None = Field(
+        None,
+        description='Per-cap warning threshold override (percent of cap). Falls back to plan default.',
+    )
+
+
+class BudgetEtaConfig(BaseModel):
+    """
+    ETA / burn-rate forecast knobs (host metering + engine).
+    """
+
+    enabled: bool | None = Field(
+        True, description='Master switch for ETA forecasting (default true).'
+    )
+    min_wall_secs: float | None = Field(
+        1.0,
+        description='Minimum wall seconds before burn-rate ETA is trusted (default 1.0).',
+    )
+    mode: BudgetEtaMode | None = Field(
+        'all', description='Which ETAs to surface on the panel.', validate_default=True
+    )
+    sample_interval_secs: float | None = Field(
+        0.45, description='Host sampling cadence hint for live follow (default 0.45s).'
+    )
+
+
+class BudgetForecast(BaseModel):
+    """
+    ETA to exhaust one budget from observed burn rate.
+
+    **Not** “time until the workflow finishes” — see module docs.
+    """
+
+    confidence: ForecastConfidence
+    model: str
+    rate_per_second: float | None = None
+    sample_count: conint(ge=0)
+    seconds_to_limit: float | None = None
+    seconds_to_limit_high: float | None = None
+    seconds_to_limit_low: float | None = None
+
+
+class BudgetPlan(BaseModel):
+    """
+    Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).
+
+    This is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.
+    """
+
+    caps: list[BudgetCap] | None = Field(
+        [],
+        description='Caps by dimension. Empty plan ⇒ no metering / no panel lines.',
+        validate_default=True,
+    )
+    eta: BudgetEtaConfig | None = Field(
+        {
+            'enabled': True,
+            'min_wall_secs': 1.0,
+            'mode': 'all',
+            'sample_interval_secs': 0.45,
+        },
+        description='ETA forecast configuration.',
+        validate_default=True,
+    )
+    fail_on_hard_exhaust: bool | None = Field(
+        True, description='Fail the run when a `hard` cap is exhausted (default true).'
+    )
+    viz: BudgetVizConfig | None = Field(
+        {
+            'enabled': True,
+            'short_labels': True,
+            'show_eta': True,
+            'show_nearest_tag': True,
+            'show_progress': True,
+        },
+        description='Terminal panel configuration.',
+        validate_default=True,
+    )
+    warning_percent: float | None = Field(
+        80.0,
+        description='Default warning threshold as percent of cap (0–100). Default 80.',
+    )
+
+
+class BudgetStatus(BaseModel):
+    """
+    Progress + forecast for one declared cap.
+    """
+
+    forecast: BudgetForecast
+    hard: bool
+    kind: BudgetKind
+    label: str = Field(..., description='Effective display label (from cap or kind).')
+    max: float
+    remaining: float
+    reserved: float | None = 0.0
+    show_eta: bool
+    show_progress: bool
+    spent: float
+    state: BudgetState
+    unit: str
+    used_percent: float = Field(..., description='Percent of cap used.')
+    utilization: float = Field(
+        ..., description='`spent / max` in \\[0, ∞); values ≥ 1 mean exhausted.'
+    )
+
+
+class GoalPlan(BaseModel):
+    """
+    Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).
+
+    This is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.
+    """
+
+    cancel_in_flight: bool | None = Field(
+        False,
+        description='Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.',
+    )
+    fail_on_unmet: bool | None = Field(
+        True,
+        description='Fail the run when a `required` goal is still unmet at run end. Default true.',
+    )
+    finalize: str | None = Field(
+        None,
+        description='Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).',
+    )
+    goals: list[GoalSpec] | None = Field(
+        [],
+        description='Declared goals. Empty plan ⇒ no evaluation / no panel line.',
+        validate_default=True,
+    )
+    terminate_on_met: bool | None = Field(
+        True,
+        description='When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.',
+    )
+    viz: GoalVizConfig | None = Field(
+        {'enabled': True, 'short_labels': True, 'show_progress': True},
+        description='Terminal panel configuration.',
+        validate_default=True,
+    )
+
+
+class GoalSnapshot(BaseModel):
+    """
+    Full goal projection for a run (live follow + final manifest).
+    """
+
+    items: list[GoalStatus]
+    plan: GoalPlan = Field(
+        ...,
+        description='Plan knobs used for this projection (echoed for consumers / viz).',
+    )
+    required_met: conint(ge=0)
+    required_total: conint(ge=0)
+    run_id: str
+    schema_version: str
+    state: GoalState = Field(
+        ..., description='`met` iff every required goal is met; else `unmet`.'
+    )
+    terminated_early: bool | None = Field(
+        False,
+        description='Set by the host/runner when it stopped remaining work because the goals were met. The pure engine always emits `false`.',
     )
 
 
@@ -414,6 +867,29 @@ class Addr(BaseModel):
         ..., description='Where in the execution tree this event was produced.'
     )
     run_id: str
+
+
+class BudgetSnapshot(BaseModel):
+    """
+    Full budget projection for a run (live follow + final manifest).
+    """
+
+    items: list[BudgetStatus]
+    nearest: BudgetStatus | None = Field(
+        None,
+        description='Soonest ETA among items that have a finite forecast (when ETA enabled).',
+    )
+    plan: BudgetPlan = Field(
+        ...,
+        description='Plan knobs used for this projection (echoed for consumers / viz).',
+    )
+    run_id: str
+    schema_version: str
+    state: BudgetState = Field(
+        ...,
+        description='Aggregate run state: exhausted if any hard item is exhausted, else warning, else ok.',
+    )
+    wall_secs: float = Field(..., description='Wall seconds used for this snapshot.')
 
 
 class Checkpoint(BaseModel):
@@ -482,6 +958,10 @@ class RunManifest(BaseModel):
     """
 
     args: Any
+    budgets: BudgetSnapshot | None = Field(
+        None,
+        description='Formal resource-budget projection (progress + ETA) when the run declared [`crate::topology::RunPlan::budgets`]. Host-metered; optional for back-compat.',
+    )
     checkpoints: list[Checkpoint] | None = Field(
         [],
         description='Session state snapshots taken during the run.',
@@ -490,6 +970,14 @@ class RunManifest(BaseModel):
     events: list[Event] = Field(
         ...,
         description='The event stream, in emission order. Sort by `event.addr` for the canonical order (replay compares against that).',
+    )
+    goals: GoalSnapshot | None = Field(
+        None,
+        description='Formal goal / work-product projection when the run declared [`crate::topology::RunPlan::goals`]. Evaluated from the final ledger; optional for back-compat.',
+    )
+    invariants: InvariantReport | None = Field(
+        None,
+        description='Structural self-checks over this manifest (event-addr identity, no orphaned records, per-map fan/gate consistency). Attached when a trace exists. A failing check indicates a runner/manifest bug, not a workload failure.',
     )
     recorded: list[RecordedOutput] = Field(
         ..., description='Recorded impure outputs, one per actor/resource invocation.'
@@ -500,6 +988,10 @@ class RunManifest(BaseModel):
         description='The canonical graph hash this run was produced from (ADR #5). A replay asserts it re-drives the SAME topology.',
     )
     status: RunStatus
+    stop_reason: RunStopReason | None = Field(
+        'completed',
+        description='Machine-readable terminal reason; consumers should not parse `WorkflowFailed.payload.error`.',
+    )
     trace: ProcessNode | None = Field(
         None, description='The process tree for optimizer consumption.'
     )

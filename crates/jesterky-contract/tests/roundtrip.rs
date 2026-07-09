@@ -1,10 +1,58 @@
 use jesterky_contract::{
     manifest_schema_json, workflow_schema_json, Addr, Artifact, ArtifactRef, Bindings, CallKind,
-    Checkpoint, Event, EventKind, Limit, Node, NodeKind, NodePath, PathSeg, ProcessNode,
-    RecordedOutput, Ref, RunManifest, RunPlan, RunStatus, WorkflowSpec,
+    Checkpoint, Event, EventKind, InvariantReport, Limit, Node, NodeKind, NodePath, PathSeg,
+    ProcessNode, RecordedOutput, Ref, RunManifest, RunPlan, RunStatus, RunStopReason, WorkflowSpec,
 };
 use serde_json::json;
 use std::collections::BTreeMap;
+
+#[test]
+fn invariants_check_event_addr_identity() {
+    // The synthetic fixture has distinct event addrs; assert the identity check
+    // passes on it. (All-pass on a real map/reduce run is covered in scan.rs,
+    // where the trace actually contains every recorded call.)
+    let manifest = run_manifest(&workflow_spec());
+    let report = InvariantReport::compute(&manifest);
+    let addr_check = report
+        .checks
+        .iter()
+        .find(|c| c.name == "unique_event_addrs")
+        .expect("addr check present");
+    assert!(addr_check.ok, "fixture has distinct event addrs");
+}
+
+#[test]
+fn invariants_flag_a_duplicate_event_addr() {
+    // Corrupt the manifest: two events sharing one Addr (the ADR #5 §11 bug the
+    // check exists to catch). `all_ok` must go false with the addr named.
+    let mut manifest = run_manifest(&workflow_spec());
+    let dup = manifest.events[0].clone();
+    manifest.events.push(dup);
+    let report = InvariantReport::compute(&manifest);
+    assert!(!report.all_ok);
+    let addr_check = report
+        .checks
+        .iter()
+        .find(|c| c.name == "unique_event_addrs")
+        .expect("addr check present");
+    assert!(!addr_check.ok, "duplicate addr must fail the check");
+}
+
+#[test]
+fn invariants_flag_an_orphaned_record() {
+    // A recorded output whose Addr appears nowhere in the trace → orphan.
+    let mut manifest = run_manifest(&workflow_spec());
+    let mut orphan = manifest.recorded[0].clone();
+    orphan.addr.local_seq = 999;
+    manifest.recorded.push(orphan);
+    let report = InvariantReport::compute(&manifest);
+    let orphan_check = report
+        .checks
+        .iter()
+        .find(|c| c.name == "no_orphaned_records")
+        .expect("orphan check present");
+    assert!(!orphan_check.ok, "orphaned record must fail the check");
+}
 
 #[test]
 fn workflow_and_manifest_round_trip_through_json() {
@@ -147,6 +195,7 @@ fn workflow_spec() -> WorkflowSpec {
             map_concurrency: Some(2),
             ..RunPlan::default()
         },
+        host: None,
     }
 }
 
@@ -214,6 +263,10 @@ fn run_manifest(spec: &WorkflowSpec) -> RunManifest {
             children: Vec::new(),
         }),
         status: RunStatus::Completed,
+        stop_reason: RunStopReason::Completed,
+        budgets: None,
+        goals: None,
+        invariants: None,
     }
 }
 

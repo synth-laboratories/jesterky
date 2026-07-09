@@ -15,6 +15,18 @@
         "type": "string"
       }
     },
+    "host": {
+      "description": "Optional host wiring (prompts, schemas, viz). Not part of replay identity.",
+      "default": null,
+      "anyOf": [
+        {
+          "$ref": "#/definitions/HostConfig"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "name": {
       "type": "string"
     },
@@ -27,6 +39,35 @@
     "runplan": {
       "description": "Execution budgets/defaults for this workflow.",
       "default": {
+        "budgets": {
+          "caps": [],
+          "eta": {
+            "enabled": true,
+            "min_wall_secs": 1.0,
+            "mode": "all",
+            "sample_interval_secs": 0.45
+          },
+          "fail_on_hard_exhaust": true,
+          "viz": {
+            "enabled": true,
+            "short_labels": true,
+            "show_eta": true,
+            "show_nearest_tag": true,
+            "show_progress": true
+          },
+          "warning_percent": 80.0
+        },
+        "goals": {
+          "cancel_in_flight": false,
+          "fail_on_unmet": true,
+          "goals": [],
+          "terminate_on_met": true,
+          "viz": {
+            "enabled": true,
+            "short_labels": true,
+            "show_progress": true
+          }
+        },
         "limits": {},
         "map_concurrency": null,
         "verbosity": "standard"
@@ -39,6 +80,478 @@
     }
   },
   "definitions": {
+    "BudgetCap": {
+      "description": "One declared cap on a run.",
+      "type": "object",
+      "required": [
+        "kind",
+        "max"
+      ],
+      "properties": {
+        "hard": {
+          "description": "When true, exceeding the cap fails the run if [`BudgetPlan::fail_on_hard_exhaust`].",
+          "default": false,
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/definitions/BudgetKind"
+        },
+        "label": {
+          "description": "Optional display name (panel + snapshot). Defaults to [`BudgetKind::as_str`].",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "max": {
+          "description": "Hard ceiling; must be > 0.",
+          "type": "number",
+          "format": "double"
+        },
+        "show_eta": {
+          "description": "Include this cap on the ETA viz line when a forecast exists (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Include this cap on the progress viz line (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "warning_percent": {
+          "description": "Per-cap warning threshold override (percent of cap). Falls back to plan default.",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        }
+      }
+    },
+    "BudgetEtaConfig": {
+      "description": "ETA / burn-rate forecast knobs (host metering + engine).",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch for ETA forecasting (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "min_wall_secs": {
+          "description": "Minimum wall seconds before burn-rate ETA is trusted (default 1.0).",
+          "default": 1.0,
+          "type": "number",
+          "format": "double"
+        },
+        "mode": {
+          "description": "Which ETAs to surface on the panel.",
+          "default": "all",
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetEtaMode"
+            }
+          ]
+        },
+        "sample_interval_secs": {
+          "description": "Host sampling cadence hint for live follow (default 0.45s).",
+          "default": 0.45,
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetEtaMode": {
+      "description": "How ETA lines are composed on the terminal panel.",
+      "oneOf": [
+        {
+          "description": "Do not show or compute ETA forecasts.",
+          "type": "string",
+          "enum": [
+            "off"
+          ]
+        },
+        {
+          "description": "Show only the soonest-to-exhaust cap.",
+          "type": "string",
+          "enum": [
+            "nearest_only"
+          ]
+        },
+        {
+          "description": "Show every cap that has a finite forecast (default).",
+          "type": "string",
+          "enum": [
+            "all"
+          ]
+        }
+      ]
+    },
+    "BudgetKind": {
+      "description": "What resource is being capped.",
+      "oneOf": [
+        {
+          "description": "Impure actor invocations (model turns, env-coupled hero acts, …).",
+          "type": "string",
+          "enum": [
+            "actor_calls"
+          ]
+        },
+        {
+          "description": "Total tokens (in+out) observed on the live bus / recorded usage.",
+          "type": "string",
+          "enum": [
+            "tokens"
+          ]
+        },
+        {
+          "description": "Wall-clock seconds since the host started the run.",
+          "type": "string",
+          "enum": [
+            "wall_seconds"
+          ]
+        }
+      ]
+    },
+    "BudgetPlan": {
+      "description": "Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.",
+      "type": "object",
+      "properties": {
+        "caps": {
+          "description": "Caps by dimension. Empty plan ⇒ no metering / no panel lines.",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BudgetCap"
+          }
+        },
+        "eta": {
+          "description": "ETA forecast configuration.",
+          "default": {
+            "enabled": true,
+            "min_wall_secs": 1.0,
+            "mode": "all",
+            "sample_interval_secs": 0.45
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetEtaConfig"
+            }
+          ]
+        },
+        "fail_on_hard_exhaust": {
+          "description": "Fail the run when a `hard` cap is exhausted (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "viz": {
+          "description": "Terminal panel configuration.",
+          "default": {
+            "enabled": true,
+            "short_labels": true,
+            "show_eta": true,
+            "show_nearest_tag": true,
+            "show_progress": true
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetVizConfig"
+            }
+          ]
+        },
+        "warning_percent": {
+          "description": "Default warning threshold as percent of cap (0–100). Default 80.",
+          "default": 80.0,
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetVizConfig": {
+      "description": "Terminal / panel rendering knobs for budgets.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch (default true). When false, no budget lines are drawn.",
+          "default": true,
+          "type": "boolean"
+        },
+        "short_labels": {
+          "description": "Use short labels (`calls`/`tok`/`wall`) instead of full kind names.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_eta": {
+          "description": "Show the ETA line (`ETA calls 3m24s · …`).",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_nearest_tag": {
+          "description": "Append `nearest <kind>` on the ETA line.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Show the progress line (`calls 4/64 (6%) · …`).",
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "GoalPlan": {
+      "description": "Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.",
+      "type": "object",
+      "properties": {
+        "cancel_in_flight": {
+          "description": "Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.",
+          "default": false,
+          "type": "boolean"
+        },
+        "fail_on_unmet": {
+          "description": "Fail the run when a `required` goal is still unmet at run end. Default true.",
+          "default": true,
+          "type": "boolean"
+        },
+        "finalize": {
+          "description": "Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "goals": {
+          "description": "Declared goals. Empty plan ⇒ no evaluation / no panel line.",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoalSpec"
+          }
+        },
+        "terminate_on_met": {
+          "description": "When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.",
+          "default": true,
+          "type": "boolean"
+        },
+        "viz": {
+          "description": "Terminal panel configuration.",
+          "default": {
+            "enabled": true,
+            "short_labels": true,
+            "show_progress": true
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/GoalVizConfig"
+            }
+          ]
+        }
+      }
+    },
+    "GoalSpec": {
+      "description": "One declared goal on a run.",
+      "type": "object",
+      "oneOf": [
+        {
+          "description": "Met when the ledger value at `path` deep-equals `equals`.",
+          "type": "object",
+          "required": [
+            "equals",
+            "kind",
+            "path"
+          ],
+          "properties": {
+            "equals": true,
+            "kind": {
+              "type": "string",
+              "enum": [
+                "ledger_pred"
+              ]
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.",
+          "type": "object",
+          "required": [
+            "kind",
+            "min",
+            "path"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "metric_threshold"
+              ]
+            },
+            "min": {
+              "type": "number",
+              "format": "double"
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "Stable identifier (unique within a plan).",
+          "type": "string"
+        },
+        "label": {
+          "description": "Optional display name (panel + snapshot). Defaults to [`Self::id`].",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "required": {
+          "description": "Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Include this goal on the progress viz line (default true).",
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "GoalVizConfig": {
+      "description": "Terminal / panel rendering knobs for goals.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch (default true). When false, no goal line is drawn.",
+          "default": true,
+          "type": "boolean"
+        },
+        "short_labels": {
+          "description": "Use short labels (goal id) instead of the full label.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Show the per-goal progress line (`goals 1/2 met · quality 0.72/0.80`).",
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "HostConfig": {
+      "description": "Host-side wiring for a workflow: actor prompts, output schemas, and viz hints. Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via the linked workload crate. The core runner never reads this — only the host.",
+      "type": "object",
+      "properties": {
+        "output_schemas": {
+          "description": "Actor name → JSON Schema path (relative to the spec dir).",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "roles": {
+          "description": "Actor name → role prompt (inline or file path relative to the spec dir).",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/HostRole"
+          }
+        },
+        "sandboxes": {
+          "description": "Actor name → sandbox declaration (seeded workspace the actor runs in). Host-only, like the rest of `HostConfig`; honored by `jesterky-sandbox`.",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/SandboxConfig"
+          }
+        },
+        "viz": {
+          "description": "Live terminal viz hints (item preseed, matrix field, map node label).",
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/HostVizConfig"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "HostRole": {
+      "description": "How the host configures one actor's system prompt.",
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "prompt_file": {
+          "description": "Path relative to the workflow spec file's directory.",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "HostVizConfig": {
+      "description": "Host hints for live follow / post-run matrix display.",
+      "type": "object",
+      "properties": {
+        "item_jobs_field": {
+          "description": "Array field on that program's output (default `jobs`).",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "item_label_field": {
+          "description": "Per-job label field (default `slug`, then `dimension`).",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "item_labels_op": {
+          "description": "Program op whose output supplies item labels before the map starts.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "map_node": {
+          "description": "Map node id for viz preseed when no events have arrived yet.",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "matrix_report_field": {
+          "description": "Recorded-output field to print after a completed follow run.",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
     "Limit": {
       "description": "A named concurrency budget. Enforced by the runner; `permits` bounds how many holders may hold it at once.",
       "type": "object",
@@ -328,11 +841,56 @@
       "type": "string"
     },
     "RunPlan": {
-      "description": "Run-level configuration: concurrency budgets and event verbosity. A run may override these via args.runplan (merged by the runner).",
+      "description": "Run-level configuration: concurrency budgets, resource budgets, and event verbosity. A run may override these via args.runplan (merged by the runner).",
       "type": "object",
       "properties": {
+        "budgets": {
+          "description": "Formal **resource** budgets (actor calls / tokens / wall seconds) with progress + ETA. See [`crate::budget`].",
+          "default": {
+            "caps": [],
+            "eta": {
+              "enabled": true,
+              "min_wall_secs": 1.0,
+              "mode": "all",
+              "sample_interval_secs": 0.45
+            },
+            "fail_on_hard_exhaust": true,
+            "viz": {
+              "enabled": true,
+              "short_labels": true,
+              "show_eta": true,
+              "show_nearest_tag": true,
+              "show_progress": true
+            },
+            "warning_percent": 80.0
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetPlan"
+            }
+          ]
+        },
+        "goals": {
+          "description": "Formal **goals / work products** (semantic termination targets) — the dual of [`Self::budgets`]. See [`crate::goal`].",
+          "default": {
+            "cancel_in_flight": false,
+            "fail_on_unmet": true,
+            "goals": [],
+            "terminate_on_met": true,
+            "viz": {
+              "enabled": true,
+              "short_labels": true,
+              "show_progress": true
+            }
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/GoalPlan"
+            }
+          ]
+        },
         "limits": {
-          "description": "Named limits → permits. A `map`/`session_group` `limit` names one of these.",
+          "description": "Named **concurrency** limits → permits (semaphores). A `map` / `session_group` `limit` names one of these. Distinct from [`Self::budgets`].",
           "default": {},
           "type": "object",
           "additionalProperties": {
@@ -358,6 +916,195 @@
               "$ref": "#/definitions/Verbosity"
             }
           ]
+        }
+      }
+    },
+    "SandboxBackend": {
+      "description": "Where the actor executes. `Local` = a host temp dir with the host toolchain; `Docker` = codex runs INSIDE the named container (image toolchain, isolated).",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "local"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "image",
+            "kind"
+          ],
+          "properties": {
+            "env": {
+              "description": "Env exported to the actor's process inside the container (e.g. `CODEX_HOME=/codex-home`). Overrides the actor's own env for that key.",
+              "default": [],
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "maxItems": 2,
+                "minItems": 2
+              }
+            },
+            "image": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "docker"
+              ]
+            },
+            "mounts": {
+              "description": "Extra bind mounts as docker `-v` specs, `host:container[:ro]`. `${HOME}` and `$VAR` are expanded. This is how codex auth reaches the container: mount host `~/.codex` to an in-container path, then point `CODEX_HOME` there via [`Self::Docker::env`].",
+              "default": [],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "setup": {
+              "description": "Commands baked/run at container start before the actor (e.g. warm caches).",
+              "default": [],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SandboxCapture": {
+      "description": "What to read back out of the workspace after the actor finishes, and where to put it in the actor's outputs so downstream nodes can consume it.",
+      "type": "object",
+      "required": [
+        "globs",
+        "into"
+      ],
+      "properties": {
+        "globs": {
+          "description": "Globs relative to the workspace root (e.g. `[\"Cargo.toml\", \"src/**/*.rs\"]`).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "into": {
+          "description": "Output field to hold the captured `{files:[{path,content}]}`.",
+          "type": "string"
+        }
+      }
+    },
+    "SandboxConfig": {
+      "description": "Per-actor sandbox declaration (keyed by actor name in `HostConfig.sandboxes`).",
+      "type": "object",
+      "required": [
+        "backend"
+      ],
+      "properties": {
+        "backend": {
+          "$ref": "#/definitions/SandboxBackend"
+        },
+        "capture": {
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SandboxCapture"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "default": "read-only",
+          "allOf": [
+            {
+              "$ref": "#/definitions/SandboxMode"
+            }
+          ]
+        },
+        "network": {
+          "description": "Whether the actor's tools may reach the network. Off by default.",
+          "default": false,
+          "type": "boolean"
+        },
+        "seed": {
+          "default": {
+            "copy_from": [],
+            "files_input": null,
+            "setup": []
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/SandboxSeed"
+            }
+          ]
+        }
+      }
+    },
+    "SandboxMode": {
+      "description": "The permission level the actor should self-apply (maps to codex `--sandbox`).",
+      "oneOf": [
+        {
+          "description": "Read the workspace, run nothing that writes it. Default — least privilege.",
+          "type": "string",
+          "enum": [
+            "read-only"
+          ]
+        },
+        {
+          "description": "Create/modify files and run builds/tools in the workspace.",
+          "type": "string",
+          "enum": [
+            "workspace-write"
+          ]
+        }
+      ]
+    },
+    "SandboxSeed": {
+      "description": "How the workspace is populated before the actor runs. All three compose, in order: write `files_input`, copy `copy_from`, run `setup`.",
+      "type": "object",
+      "properties": {
+        "copy_from": {
+          "description": "Host dirs copied into the workspace root (paths relative to the spec dir).",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "files_input": {
+          "description": "Ledger input field holding `{files:[{path,content}]}` written to the workspace — lets an upstream node produce the workspace contents.",
+          "default": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "setup": {
+          "description": "Commands run once after seeding (e.g. `uv sync`).",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

@@ -18,6 +18,42 @@ pub type NodeId = String;
 #[derive(Clone, Debug, PartialEq, Eq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct Ref(pub String);
 
+impl Ref {
+    pub fn validate_syntax(&self) -> Result<(), String> {
+        let raw = self.0.trim();
+        if raw.is_empty() {
+            return Err("reference is empty".to_string());
+        }
+        if serde_json::from_str::<serde_json::Value>(raw).is_ok() {
+            return Ok(());
+        }
+        let mut parts = raw.split('.');
+        let source = parts.next().unwrap_or_default();
+        if source.is_empty() {
+            return Err(format!("reference `{raw}` has an empty source"));
+        }
+        let path = parts.collect::<Vec<_>>();
+        if path.iter().any(|part| part.is_empty()) {
+            return Err(format!("reference `{raw}` contains an empty path segment"));
+        }
+        if source == "ledger" && path.is_empty() {
+            return Err(format!("reference `{raw}` must name a ledger key"));
+        }
+        Ok(())
+    }
+
+    pub fn validate_output_destination(&self) -> Result<(), String> {
+        self.validate_syntax()?;
+        let raw = self.0.trim();
+        if !raw.starts_with("ledger.") {
+            return Err(format!(
+                "output destination `{raw}` must be a ledger reference"
+            ));
+        }
+        Ok(())
+    }
+}
+
 /// `in`/`out` bindings: local name inside the node ⇄ a ledger [`Ref`].
 pub type Bindings = BTreeMap<String, Ref>;
 
@@ -101,6 +137,55 @@ pub struct Node {
     pub outputs: Bindings,
 }
 
+/// Host-side wiring for a workflow: actor prompts, output schemas, and viz hints.
+/// Optional on [`WorkflowSpec`]; reference workloads may also supply defaults via
+/// the linked workload crate. The core runner never reads this — only the host.
+#[derive(Clone, Debug, PartialEq, Default, schemars::JsonSchema, Serialize, Deserialize)]
+pub struct HostConfig {
+    /// Actor name → role prompt (inline or file path relative to the spec dir).
+    #[serde(default)]
+    pub roles: BTreeMap<String, HostRole>,
+    /// Actor name → JSON Schema path (relative to the spec dir).
+    #[serde(default)]
+    pub output_schemas: BTreeMap<String, String>,
+    /// Actor name → sandbox declaration (seeded workspace the actor runs in).
+    /// Host-only, like the rest of `HostConfig`; honored by `jesterky-sandbox`.
+    #[serde(default)]
+    pub sandboxes: BTreeMap<String, crate::sandbox::SandboxConfig>,
+    /// Live terminal viz hints (item preseed, matrix field, map node label).
+    #[serde(default)]
+    pub viz: Option<HostVizConfig>,
+}
+
+/// How the host configures one actor's system prompt.
+#[derive(Clone, Debug, PartialEq, Default, schemars::JsonSchema, Serialize, Deserialize)]
+pub struct HostRole {
+    #[serde(default)]
+    pub prompt: Option<String>,
+    /// Path relative to the workflow spec file's directory.
+    #[serde(default)]
+    pub prompt_file: Option<String>,
+}
+
+/// Host hints for live follow / post-run matrix display.
+#[derive(Clone, Debug, PartialEq, Default, schemars::JsonSchema, Serialize, Deserialize)]
+pub struct HostVizConfig {
+    /// Program op whose output supplies item labels before the map starts.
+    pub item_labels_op: Option<String>,
+    /// Array field on that program's output (default `jobs`).
+    #[serde(default)]
+    pub item_jobs_field: Option<String>,
+    /// Per-job label field (default `slug`, then `dimension`).
+    #[serde(default)]
+    pub item_label_field: Option<String>,
+    /// Map node id for viz preseed when no events have arrived yet.
+    #[serde(default)]
+    pub map_node: Option<String>,
+    /// Recorded-output field to print after a completed follow run.
+    #[serde(default)]
+    pub matrix_report_field: Option<String>,
+}
+
 /// A whole workflow. `entrypoint` is the ordered list of top-level nodes to run
 /// (matches mloky's model). `nodes` is the id → node map.
 #[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
@@ -111,19 +196,31 @@ pub struct WorkflowSpec {
     /// Execution budgets/defaults for this workflow.
     #[serde(default)]
     pub runplan: RunPlan,
+    /// Optional host wiring (prompts, schemas, viz). Not part of replay identity.
+    #[serde(default)]
+    pub host: Option<HostConfig>,
 }
 
-/// Run-level configuration: concurrency budgets and event verbosity. A run may
-/// override these via args.runplan (merged by the runner).
+/// Run-level configuration: concurrency budgets, resource budgets, and event
+/// verbosity. A run may override these via args.runplan (merged by the runner).
 #[derive(Clone, Debug, PartialEq, schemars::JsonSchema, Serialize, Deserialize)]
 pub struct RunPlan {
-    /// Named limits → permits. A `map`/`session_group` `limit` names one of these.
+    /// Named **concurrency** limits → permits (semaphores). A `map` /
+    /// `session_group` `limit` names one of these. Distinct from [`Self::budgets`].
     #[serde(default)]
     pub limits: BTreeMap<String, u32>,
     /// Default parallel width for `map` nodes lacking their own `concurrency`.
     /// `None`/`1` = serial (ADR #5).
     #[serde(default)]
     pub map_concurrency: Option<u32>,
+    /// Formal **resource** budgets (actor calls / tokens / wall seconds) with
+    /// progress + ETA. See [`crate::budget`].
+    #[serde(default)]
+    pub budgets: crate::budget::BudgetPlan,
+    /// Formal **goals / work products** (semantic termination targets) — the
+    /// dual of [`Self::budgets`]. See [`crate::goal`].
+    #[serde(default)]
+    pub goals: crate::goal::GoalPlan,
     #[serde(default)]
     pub verbosity: Verbosity,
 }
@@ -133,6 +230,8 @@ impl Default for RunPlan {
         Self {
             limits: BTreeMap::new(),
             map_concurrency: None,
+            budgets: crate::budget::BudgetPlan::default(),
+            goals: crate::goal::GoalPlan::default(),
             verbosity: Verbosity::Standard,
         }
     }
@@ -256,11 +355,17 @@ fn validate_node(
     limits: &BTreeMap<String, u32>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
+    validate_bindings(&node.inputs, &format!("{path}.inputs"), false, diagnostics);
+    validate_bindings(&node.outputs, &format!("{path}.outputs"), true, diagnostics);
     match &node.kind {
         NodeKind::Program { .. } | NodeKind::Reduce { .. } | NodeKind::Actor { .. } => {}
         NodeKind::Map {
-            min_success, body, ..
+            over,
+            min_success,
+            body,
+            ..
         } => {
+            validate_ref(over, &format!("{path}.over"), false, diagnostics);
             if !(0.0..=1.0).contains(min_success) {
                 diagnostics.push(Diagnostic {
                     severity: Severity::Error,
@@ -270,12 +375,16 @@ fn validate_node(
             }
             validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
         }
-        NodeKind::ForEach { body, .. } => {
+        NodeKind::ForEach { over, body, .. } => {
+            validate_ref(over, &format!("{path}.over"), false, diagnostics);
             validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
         }
         NodeKind::While {
-            body, max_iters, ..
+            cond,
+            body,
+            max_iters,
         } => {
+            validate_ref(cond, &format!("{path}.cond"), false, diagnostics);
             if *max_iters == 0 {
                 diagnostics.push(Diagnostic {
                     severity: Severity::Error,
@@ -286,8 +395,11 @@ fn validate_node(
             validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
         }
         NodeKind::Branch {
-            then, otherwise, ..
+            cond,
+            then,
+            otherwise,
         } => {
+            validate_ref(cond, &format!("{path}.cond"), false, diagnostics);
             if !nodes.contains_key(then) {
                 diagnostics.push(Diagnostic {
                     severity: Severity::Error,
@@ -305,7 +417,13 @@ fn validate_node(
                 }
             }
         }
-        NodeKind::SessionGroup { body, limit, .. } => {
+        NodeKind::SessionGroup {
+            sessions,
+            body,
+            limit,
+            ..
+        } => {
+            validate_ref(sessions, &format!("{path}.sessions"), false, diagnostics);
             if let Some(limit) = limit {
                 if !limits.contains_key(&limit.name) {
                     diagnostics.push(Diagnostic {
@@ -320,9 +438,36 @@ fn validate_node(
             }
             validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
         }
-        NodeKind::ResumeSession { body, .. } => {
+        NodeKind::ResumeSession { session, body } => {
+            validate_ref(session, &format!("{path}.session"), false, diagnostics);
             validate_node(body, &format!("{path}.body"), nodes, limits, diagnostics);
         }
+    }
+}
+
+fn validate_bindings(
+    bindings: &Bindings,
+    path: &str,
+    output: bool,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    for (name, reference) in bindings {
+        validate_ref(reference, &format!("{path}.{name}"), output, diagnostics);
+    }
+}
+
+fn validate_ref(reference: &Ref, path: &str, output: bool, diagnostics: &mut Vec<Diagnostic>) {
+    let result = if output {
+        reference.validate_output_destination()
+    } else {
+        reference.validate_syntax()
+    };
+    if let Err(message) = result {
+        diagnostics.push(Diagnostic {
+            severity: Severity::Error,
+            path: path.to_string(),
+            message,
+        });
     }
 }
 

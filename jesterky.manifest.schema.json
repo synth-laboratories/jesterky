@@ -14,6 +14,17 @@
   ],
   "properties": {
     "args": true,
+    "budgets": {
+      "description": "Formal resource-budget projection (progress + ETA) when the run declared [`crate::topology::RunPlan::budgets`]. Host-metered; optional for back-compat.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/BudgetSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "checkpoints": {
       "description": "Session state snapshots taken during the run.",
       "default": [],
@@ -28,6 +39,28 @@
       "items": {
         "$ref": "#/definitions/Event"
       }
+    },
+    "goals": {
+      "description": "Formal goal / work-product projection when the run declared [`crate::topology::RunPlan::goals`]. Evaluated from the final ledger; optional for back-compat.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/GoalSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "invariants": {
+      "description": "Structural self-checks over this manifest (event-addr identity, no orphaned records, per-map fan/gate consistency). Attached when a trace exists. A failing check indicates a runner/manifest bug, not a workload failure.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/InvariantReport"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "recorded": {
       "description": "Recorded impure outputs, one per actor/resource invocation.",
@@ -45,6 +78,15 @@
     },
     "status": {
       "$ref": "#/definitions/RunStatus"
+    },
+    "stop_reason": {
+      "description": "Machine-readable terminal reason; consumers should not parse `WorkflowFailed.payload.error`.",
+      "default": "completed",
+      "allOf": [
+        {
+          "$ref": "#/definitions/RunStopReason"
+        }
+      ]
     },
     "trace": {
       "description": "The process tree for optimizer consumption.",
@@ -126,6 +168,420 @@
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
+        }
+      }
+    },
+    "BudgetCap": {
+      "description": "One declared cap on a run.",
+      "type": "object",
+      "required": [
+        "kind",
+        "max"
+      ],
+      "properties": {
+        "hard": {
+          "description": "When true, exceeding the cap fails the run if [`BudgetPlan::fail_on_hard_exhaust`].",
+          "default": false,
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/definitions/BudgetKind"
+        },
+        "label": {
+          "description": "Optional display name (panel + snapshot). Defaults to [`BudgetKind::as_str`].",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "max": {
+          "description": "Hard ceiling; must be > 0.",
+          "type": "number",
+          "format": "double"
+        },
+        "show_eta": {
+          "description": "Include this cap on the ETA viz line when a forecast exists (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Include this cap on the progress viz line (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "warning_percent": {
+          "description": "Per-cap warning threshold override (percent of cap). Falls back to plan default.",
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        }
+      }
+    },
+    "BudgetEtaConfig": {
+      "description": "ETA / burn-rate forecast knobs (host metering + engine).",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch for ETA forecasting (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "min_wall_secs": {
+          "description": "Minimum wall seconds before burn-rate ETA is trusted (default 1.0).",
+          "default": 1.0,
+          "type": "number",
+          "format": "double"
+        },
+        "mode": {
+          "description": "Which ETAs to surface on the panel.",
+          "default": "all",
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetEtaMode"
+            }
+          ]
+        },
+        "sample_interval_secs": {
+          "description": "Host sampling cadence hint for live follow (default 0.45s).",
+          "default": 0.45,
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetEtaMode": {
+      "description": "How ETA lines are composed on the terminal panel.",
+      "oneOf": [
+        {
+          "description": "Do not show or compute ETA forecasts.",
+          "type": "string",
+          "enum": [
+            "off"
+          ]
+        },
+        {
+          "description": "Show only the soonest-to-exhaust cap.",
+          "type": "string",
+          "enum": [
+            "nearest_only"
+          ]
+        },
+        {
+          "description": "Show every cap that has a finite forecast (default).",
+          "type": "string",
+          "enum": [
+            "all"
+          ]
+        }
+      ]
+    },
+    "BudgetForecast": {
+      "description": "ETA to exhaust one budget from observed burn rate.\n\n**Not** “time until the workflow finishes” — see module docs.",
+      "type": "object",
+      "required": [
+        "confidence",
+        "model",
+        "sample_count"
+      ],
+      "properties": {
+        "confidence": {
+          "$ref": "#/definitions/ForecastConfidence"
+        },
+        "model": {
+          "type": "string"
+        },
+        "rate_per_second": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "sample_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "seconds_to_limit": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "seconds_to_limit_high": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        },
+        "seconds_to_limit_low": {
+          "default": null,
+          "type": [
+            "number",
+            "null"
+          ],
+          "format": "double"
+        }
+      }
+    },
+    "BudgetKind": {
+      "description": "What resource is being capped.",
+      "oneOf": [
+        {
+          "description": "Impure actor invocations (model turns, env-coupled hero acts, …).",
+          "type": "string",
+          "enum": [
+            "actor_calls"
+          ]
+        },
+        {
+          "description": "Total tokens (in+out) observed on the live bus / recorded usage.",
+          "type": "string",
+          "enum": [
+            "tokens"
+          ]
+        },
+        {
+          "description": "Wall-clock seconds since the host started the run.",
+          "type": "string",
+          "enum": [
+            "wall_seconds"
+          ]
+        }
+      ]
+    },
+    "BudgetPlan": {
+      "description": "Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.",
+      "type": "object",
+      "properties": {
+        "caps": {
+          "description": "Caps by dimension. Empty plan ⇒ no metering / no panel lines.",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BudgetCap"
+          }
+        },
+        "eta": {
+          "description": "ETA forecast configuration.",
+          "default": {
+            "enabled": true,
+            "min_wall_secs": 1.0,
+            "mode": "all",
+            "sample_interval_secs": 0.45
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetEtaConfig"
+            }
+          ]
+        },
+        "fail_on_hard_exhaust": {
+          "description": "Fail the run when a `hard` cap is exhausted (default true).",
+          "default": true,
+          "type": "boolean"
+        },
+        "viz": {
+          "description": "Terminal panel configuration.",
+          "default": {
+            "enabled": true,
+            "short_labels": true,
+            "show_eta": true,
+            "show_nearest_tag": true,
+            "show_progress": true
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetVizConfig"
+            }
+          ]
+        },
+        "warning_percent": {
+          "description": "Default warning threshold as percent of cap (0–100). Default 80.",
+          "default": 80.0,
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetSnapshot": {
+      "description": "Full budget projection for a run (live follow + final manifest).",
+      "type": "object",
+      "required": [
+        "items",
+        "plan",
+        "run_id",
+        "schema_version",
+        "state",
+        "wall_secs"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BudgetStatus"
+          }
+        },
+        "nearest": {
+          "description": "Soonest ETA among items that have a finite forecast (when ETA enabled).",
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BudgetStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "plan": {
+          "description": "Plan knobs used for this projection (echoed for consumers / viz).",
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetPlan"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "state": {
+          "description": "Aggregate run state: exhausted if any hard item is exhausted, else warning, else ok.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/BudgetState"
+            }
+          ]
+        },
+        "wall_secs": {
+          "description": "Wall seconds used for this snapshot.",
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetState": {
+      "description": "How close a budget is to its cap.",
+      "type": "string",
+      "enum": [
+        "ok",
+        "warning",
+        "exhausted",
+        "unlimited",
+        "unknown"
+      ]
+    },
+    "BudgetStatus": {
+      "description": "Progress + forecast for one declared cap.",
+      "type": "object",
+      "required": [
+        "forecast",
+        "hard",
+        "kind",
+        "label",
+        "max",
+        "remaining",
+        "show_eta",
+        "show_progress",
+        "spent",
+        "state",
+        "unit",
+        "used_percent",
+        "utilization"
+      ],
+      "properties": {
+        "forecast": {
+          "$ref": "#/definitions/BudgetForecast"
+        },
+        "hard": {
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/definitions/BudgetKind"
+        },
+        "label": {
+          "description": "Effective display label (from cap or kind).",
+          "type": "string"
+        },
+        "max": {
+          "type": "number",
+          "format": "double"
+        },
+        "remaining": {
+          "type": "number",
+          "format": "double"
+        },
+        "reserved": {
+          "default": 0.0,
+          "type": "number",
+          "format": "double"
+        },
+        "show_eta": {
+          "type": "boolean"
+        },
+        "show_progress": {
+          "type": "boolean"
+        },
+        "spent": {
+          "type": "number",
+          "format": "double"
+        },
+        "state": {
+          "$ref": "#/definitions/BudgetState"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "used_percent": {
+          "description": "Percent of cap used.",
+          "type": "number",
+          "format": "double"
+        },
+        "utilization": {
+          "description": "`spent / max` in \\[0, ∞); values ≥ 1 mean exhausted.",
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "BudgetVizConfig": {
+      "description": "Terminal / panel rendering knobs for budgets.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch (default true). When false, no budget lines are drawn.",
+          "default": true,
+          "type": "boolean"
+        },
+        "short_labels": {
+          "description": "Use short labels (`calls`/`tok`/`wall`) instead of full kind names.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_eta": {
+          "description": "Show the ETA line (`ETA calls 3m24s · …`).",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_nearest_tag": {
+          "description": "Append `nearest <kind>` on the ETA line.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Show the progress line (`calls 4/64 (6%) · …`).",
+          "default": true,
+          "type": "boolean"
         }
       }
     },
@@ -504,6 +960,335 @@
         }
       ]
     },
+    "ForecastConfidence": {
+      "description": "Forecast confidence (interval width).",
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "GoalPlan": {
+      "description": "Full goal configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.goals`.",
+      "type": "object",
+      "properties": {
+        "cancel_in_flight": {
+          "description": "Future control-plane knob: when true, hosts/runners may cancel queued in-flight map work after success wrap-up. Default false preserves v1 entrypoint-skip semantics.",
+          "default": false,
+          "type": "boolean"
+        },
+        "fail_on_unmet": {
+          "description": "Fail the run when a `required` goal is still unmet at run end. Default true.",
+          "default": true,
+          "type": "boolean"
+        },
+        "finalize": {
+          "description": "Optional finalize node id to run on success wrap-up. Recorded in v1; runner wiring is a follow-up (see `docs/GOALS.md`).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "goals": {
+          "description": "Declared goals. Empty plan ⇒ no evaluation / no panel line.",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoalSpec"
+          }
+        },
+        "terminate_on_met": {
+          "description": "When every required goal is met, allow the runner to skip remaining entrypoints (early success wrap-up). Default true.",
+          "default": true,
+          "type": "boolean"
+        },
+        "viz": {
+          "description": "Terminal panel configuration.",
+          "default": {
+            "enabled": true,
+            "short_labels": true,
+            "show_progress": true
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/GoalVizConfig"
+            }
+          ]
+        }
+      }
+    },
+    "GoalSnapshot": {
+      "description": "Full goal projection for a run (live follow + final manifest).",
+      "type": "object",
+      "required": [
+        "items",
+        "plan",
+        "required_met",
+        "required_total",
+        "run_id",
+        "schema_version",
+        "state"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GoalStatus"
+          }
+        },
+        "plan": {
+          "description": "Plan knobs used for this projection (echoed for consumers / viz).",
+          "allOf": [
+            {
+              "$ref": "#/definitions/GoalPlan"
+            }
+          ]
+        },
+        "required_met": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "required_total": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "state": {
+          "description": "`met` iff every required goal is met; else `unmet`.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/GoalState"
+            }
+          ]
+        },
+        "terminated_early": {
+          "description": "Set by the host/runner when it stopped remaining work because the goals were met. The pure engine always emits `false`.",
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "GoalSpec": {
+      "description": "One declared goal on a run.",
+      "type": "object",
+      "oneOf": [
+        {
+          "description": "Met when the ledger value at `path` deep-equals `equals`.",
+          "type": "object",
+          "required": [
+            "equals",
+            "kind",
+            "path"
+          ],
+          "properties": {
+            "equals": true,
+            "kind": {
+              "type": "string",
+              "enum": [
+                "ledger_pred"
+              ]
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "description": "Met when the numeric ledger value at `path` is `>= min`. Progress = `value/min`.",
+          "type": "object",
+          "required": [
+            "kind",
+            "min",
+            "path"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "metric_threshold"
+              ]
+            },
+            "min": {
+              "type": "number",
+              "format": "double"
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "Stable identifier (unique within a plan).",
+          "type": "string"
+        },
+        "label": {
+          "description": "Optional display name (panel + snapshot). Defaults to [`Self::id`].",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "required": {
+          "description": "Required goals gate the run state and `fail_on_unmet` (default true). Non-required goals record progress only and never block.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Include this goal on the progress viz line (default true).",
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "GoalState": {
+      "description": "Whether a goal (or the whole run) is satisfied.",
+      "oneOf": [
+        {
+          "description": "Predicate satisfied.",
+          "type": "string",
+          "enum": [
+            "met"
+          ]
+        },
+        {
+          "description": "Predicate evaluated but not satisfied.",
+          "type": "string",
+          "enum": [
+            "unmet"
+          ]
+        },
+        {
+          "description": "Path missing or wrong type — cannot evaluate.",
+          "type": "string",
+          "enum": [
+            "unknown"
+          ]
+        }
+      ]
+    },
+    "GoalStatus": {
+      "description": "Result of evaluating one goal against the ledger.",
+      "type": "object",
+      "required": [
+        "detail",
+        "id",
+        "kind",
+        "label",
+        "progress",
+        "required",
+        "show_progress",
+        "state"
+      ],
+      "properties": {
+        "detail": {
+          "description": "Human-readable evaluation (`summary.score 0.72 < min 0.80`).",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "description": "`ledger_pred` / `metric_threshold`.",
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "observed": {
+          "description": "The observed ledger value at the goal's path (echoed for consumers)."
+        },
+        "progress": {
+          "description": "Partial credit in `[0, 1]`: `1.0` when met, `value/min` for a threshold, `0.0` for an unmet predicate, `0.0` when unknown.",
+          "type": "number",
+          "format": "double"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "show_progress": {
+          "type": "boolean"
+        },
+        "state": {
+          "$ref": "#/definitions/GoalState"
+        }
+      }
+    },
+    "GoalVizConfig": {
+      "description": "Terminal / panel rendering knobs for goals.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Master switch (default true). When false, no goal line is drawn.",
+          "default": true,
+          "type": "boolean"
+        },
+        "short_labels": {
+          "description": "Use short labels (goal id) instead of the full label.",
+          "default": true,
+          "type": "boolean"
+        },
+        "show_progress": {
+          "description": "Show the per-goal progress line (`goals 1/2 met · quality 0.72/0.80`).",
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "InvariantCheck": {
+      "description": "One structural invariant checked over a finished [`RunManifest`].",
+      "type": "object",
+      "required": [
+        "detail",
+        "name",
+        "ok"
+      ],
+      "properties": {
+        "detail": {
+          "description": "Human-readable evidence (counts, the offending addr, …).",
+          "type": "string"
+        },
+        "name": {
+          "description": "Stable check id (e.g. `unique_event_addrs`, `map:scan_jobs.over_matches_total`).",
+          "type": "string"
+        },
+        "ok": {
+          "type": "boolean"
+        }
+      }
+    },
+    "InvariantReport": {
+      "description": "The manifest self-check report. `all_ok` is the AND of every check.",
+      "type": "object",
+      "required": [
+        "all_ok",
+        "checks"
+      ],
+      "properties": {
+        "all_ok": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InvariantCheck"
+          }
+        }
+      }
+    },
     "NodePath": {
       "description": "Fully-qualified position of a node in a run's dynamic execution tree. Ordering is lexicographic over segments (derived), which is exactly the structural order we want.",
       "type": "array",
@@ -631,6 +1416,15 @@
       "enum": [
         "completed",
         "failed"
+      ]
+    },
+    "RunStopReason": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "node_failed",
+        "goal_unmet",
+        "budget_exhausted"
       ]
     }
   }
