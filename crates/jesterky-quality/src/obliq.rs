@@ -154,7 +154,8 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
         .iter()
         .map(|q| (q.id.clone(), q.text.clone()))
         .collect();
-    let all_ids: Vec<String> = corpus.keys().cloned().collect();
+    let mut all_ids: Vec<String> = corpus.keys().cloned().collect();
+    all_ids.sort();
 
     // Optionally restrict to hard queries (zero lexical first-stage recall).
     let candidate_qids: Vec<String> = {
