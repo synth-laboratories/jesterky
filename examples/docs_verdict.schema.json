@@ -9,6 +9,10 @@
     "finding",
     "fix",
     "violations",
+    "sdk_api_discrepancies",
+    "modal_bar_gaps",
+    "objective_standard_findings",
+    "product_spec_gaps",
     "algorithm_verdict",
     "page_type",
     "surface",
@@ -28,21 +32,108 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
-        "required": ["code", "severity", "note"],
+        "additionalProperties": true,
         "properties": {
-          "code": { "type": "string", "description": "D1-D12 docs audit code" },
+          "code": { "type": "string", "description": "D1-D16 docs audit code" },
           "severity": {
             "type": "string",
             "enum": ["none", "low", "medium", "high", "critical"]
           },
-          "note": { "type": "string" }
+          "note": {
+            "type": "string",
+            "description": "Concrete finding with absolute file:line evidence when available"
+          }
+        }
+      }
+    },
+    "sdk_api_discrepancies": {
+      "type": "array",
+      "description": "Concrete two-sided docs-vs-SDK/API/generated-reference mismatches only",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Discrepancy class, preferably one of import|symbol|method|cli_flag|env_var|config_key|enum_value|request_field|response_field|default|requiredness|error|generated_reference|other"
+          },
+          "docs_evidence": {
+            "type": "string",
+            "description": "MDX absolute path:line and the documented construct"
+          },
+          "source_evidence": {
+            "type": "string",
+            "description": "SDK/API/generated-reference file:line proving the mismatch"
+          },
+          "fix": { "type": "string" }
+        }
+      }
+    },
+    "modal_bar_gaps": {
+      "type": "array",
+      "description": "Gaps against the top-doc bar exemplified by Modal guide/examples/reference",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "area": {
+            "type": "string",
+            "description": "Modal-grade gap area, preferably one of front_door|quickstart_runnability|expected_output|example_to_reference_bridge|reference_contract|ia_lane|next_action|local_remote_semantics|copy_paste_polish|other"
+          },
+          "evidence": { "type": "string" },
+          "fix": { "type": "string" }
+        }
+      }
+    },
+    "objective_standard_findings": {
+      "type": "array",
+      "description": "Objective docs-quality standard violations with both MDX and standard-file evidence",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "standard": {
+            "type": "string",
+            "description": "Standard family, preferably one of docs_standards|sdk_api_design|customer_facing_surface|cookbook_submission|portal_billing|quality_constitution|other"
+          },
+          "docs_evidence": {
+            "type": "string",
+            "description": "MDX absolute path:line and the violating construct"
+          },
+          "standard_evidence": {
+            "type": "string",
+            "description": "Standard file:line containing the objective rule"
+          },
+          "fix": { "type": "string" }
+        }
+      }
+    },
+    "product_spec_gaps": {
+      "type": "array",
+      "description": "Core-product omissions or misstatements against core_product.md and supporting product specs",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "Product family, preferably one of optimizers|managed_research|tag|factory|stack|public_evidence|billing|other"
+          },
+          "docs_evidence": {
+            "type": "string",
+            "description": "MDX absolute path:line showing omission or misstatement"
+          },
+          "spec_evidence": {
+            "type": "string",
+            "description": "core_product.md or supporting product spec file:line"
+          },
+          "fix": { "type": "string" }
         }
       }
     },
     "algorithm_verdict": {
       "type": "string",
-      "enum": ["SOUND", "FRAGILE", "bogus-headline", "BOGUS"]
+      "description": "Prefer SOUND|FRAGILE|bogus-headline|BOGUS; use another short value only when the evidence is inconclusive"
     },
     "page_type": { "type": "string" },
     "surface": { "type": "string" },

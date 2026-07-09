@@ -1,5 +1,5 @@
 //! Synth **Mintlify docs** quality scan — one map item per MDX page under the
-//! docs tree, scored against family-2 docs standards + D1–D12 audit protocol.
+//! docs tree, scored against family-2 docs standards + D1–D16 audit protocol.
 //! Produces a per-page matrix at reduce time.
 
 use jesterky_core::ledger::Ledger;
@@ -11,6 +11,11 @@ use std::sync::Arc;
 
 pub const DOCS_AUDITOR: &str = "docs_auditor";
 pub const DOCS_MATRIX_RECORDER: &str = "docs_matrix_recorder";
+const PAGE_CONTEXT_BYTES: usize = 10_000;
+const CONTEXT_FILE_BYTES: usize = 1_500;
+const STANDARDS_CONTEXT_BYTES: usize = 5_000;
+const PRODUCT_CONTEXT_BYTES: usize = 4_000;
+const REFERENCE_CONTEXT_BYTES: usize = 3_000;
 
 pub fn register(programs: &mut ProgramRegistry) {
     programs.register("docs.expand", Arc::new(expand));
@@ -67,29 +72,33 @@ pub fn host_config() -> jesterky_contract::HostConfig {
 }
 
 const DOCS_AUDITOR_PROMPT: &str = "\
-You are a Synth Mintlify docs auditor. You receive one `job` with `slug`, `path` \
-(absolute MDX), `docs_dir`, optional `nav_group`, and `in_nav` (bool). Read ONLY \
-that MDX file plus the rubric below. Return ONE JSON object with: `item` (slug), \
-`score` (1–10), `severity` (none|low|medium|high|critical), `blocker` (bool), \
-`finding` (<=22 words), `fix` (<=15 words), `violations` ([{code, severity, note}]), \
-`algorithm_verdict` (SOUND|FRAGILE|bogus-headline|BOGUS), `page_type` \
-(quickstart|reference|concept|guide|cookbook|changelog|error|overview|other), \
-`surface` (docs), `claim_tier` (measured|dev_evidence|smoke|roadmap|unknown). \
+You are a Synth Mintlify docs auditor. You receive one `job` with page MDX plus \
+bounded reference, standards, and product-spec context. Return EXACTLY ONE JSON \
+object matching the schema. Keep arrays short: at most 3 items per array, only \
+the highest-value findings. Required fields: `item`, `score`, `severity`, \
+`blocker`, `finding`, `fix`, `violations`, `sdk_api_discrepancies`, \
+`modal_bar_gaps`, `objective_standard_findings`, `product_spec_gaps`, \
+`algorithm_verdict`, `page_type`, `surface`, `claim_tier`. Prefer \
+`algorithm_verdict` values SOUND, FRAGILE, bogus-headline, or BOGUS; use \
+inconclusive only when the supplied evidence cannot support a stronger verdict. \
 \
-**Family-2 docs criteria (Synth docs standards):** docs are runnable product, \
-not prose. Check quickstart executability (install→auth→first run \
-copy-pasteable, prerequisites explicit, expected output), public-code alignment \
-(imports, symbols, CLI flags, config names, enum values, generated reference, \
-source links), reference-as-contract (type/required/default/constraints/Raises \
-per field), error documentation (cause + action, per-method Raises), evidence \
-discipline (claim tier, output, run/source artifact), freshness signals \
-(stackVersion|last_verified|updated on page), machine-readability (canonical \
-commands/config/schema/next action), information architecture (front door, nav \
-placement, next step), cross-surface consistency (same noun/claim/CTA means the \
-same thing everywhere), safety/privacy (no raw secrets, unsafe destructive \
-commands, private/internal prerequisites as public path), and \
-instrument-vs-document (the page should help a user succeed, not merely describe \
-the product). \
+**Runtime rule:** default `audit_mode` is `fast`. If `allow_source_tools=false`, do \
+NOT run shell commands or inspect paths. Use only the supplied `page_mdx`, \
+`reference_context`, `standards_context`, and `product_context`. If context is \
+insufficient for a concrete SDK/API discrepancy, emit D8/D9 and name the needed \
+deterministic check. Only use filesystem tools when `allow_source_tools=true`. \
+\
+**Audit criteria:** docs are runnable product. Check copy-paste quickstart, public \
+SDK/API/reference alignment, reference-as-contract, errors with cause+action, evidence \
+tier/output/artifact, freshness, machine-readable commands/config/schema, IA, consistent \
+nouns/CTAs, safety/privacy, and whether the page helps the user succeed. For objective \
+standards, cite both MDX `path:line` and standard `file:line`. For product coverage, \
+check Optimizers, Managed Research/Tag/Factory, Stack cockpit, and Public Evidence \
+against `product_context`. For SDK/API drift, require two-sided evidence; if unavailable, \
+emit D8/D9 with the deterministic check needed rather than inventing D7/D13. For the \
+Modal-grade bar, use normalized areas when possible: front_door, quickstart_runnability, \
+expected_output, example_to_reference_bridge, reference_contract, ia_lane, next_action, \
+local_remote_semantics, copy_paste_polish, other. \
 \
 **Axes (inform score):** A task success, B reference integrity, C information \
 architecture. **Violation codes (emit one per fired rule with file:line evidence):** \
@@ -105,13 +114,22 @@ D10 page contradicts another public surface or reuses a noun/CTA inconsistently,
 D11 secret/privacy/destructive-command risk (raw key, token leak, unsafe rm/reset, \
 private path, or credential-bearing payload), D12 rendered/frontmatter/MDX quality risk \
 (bad slug, broken JSX, malformed table, missing title/description/sidebarTitle, or \
-likely mobile/render overflow). D1/D2/D7/D11 → blocker=true when the evidence is concrete. \
+likely mobile/render overflow), D13 concrete SDK/API mismatch with two-sided evidence \
+(blocker), D14 top-doc quality gap versus the Modal-grade bar on front-door/reference/ \
+cookbook pages, D15 violates an objective quality standard with cited standard evidence, \
+D16 omits or misstates a core product relative to product specs. \
+D1/D2/D7/D11/D13/D15 → blocker=true when the evidence is concrete and user-facing. \
 If a public-code drift is only suspected because this one-page audit lacks repo context, \
 emit D8 or D9 instead of D7 and say what deterministic check should verify it. \
 \
 **Mintlify context:** pages live as `.mdx` under `docs_dir`; routing from \
 `docs.json` navigation. Navbar front-door quickstart is `/prompt-optimization-gepa`. \
-Cite absolute `path:line` in violation notes. Stop after the JSON object.";
+Default public source roots are supplied when present: `synth-ai/synth_ai` for SDK, \
+selected `backend/app` API roots, and `docs/reference/sdk` generated references. \
+Private standards or product specs are optional run-time inputs via \
+`quality_standard_roots` / `product_spec_roots`; do not assume they exist. \
+Each supplied context block starts with `FILE /absolute/path` and then `L<n>:` lines; \
+cite evidence as `/absolute/path:L<n>`. Stop after the JSON object.";
 
 const DOCS_MATRIX_RECORDER_PROMPT: &str = "\
 You receive `summary` with `matrix_report` (per-page scores/violations table), \
@@ -138,21 +156,246 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
         .or_else(|| ledger.get("docs_json").and_then(Value::as_str))
         .map(PathBuf::from)
         .unwrap_or_else(|| Path::new(docs_dir).join("docs.json"));
+    let docs_path = Path::new(docs_dir);
+    let sdk_roots = path_list_arg(inputs, ledger, "sdk_roots")
+        .unwrap_or_else(|| default_sdk_roots(docs_path));
+    let api_roots = path_list_arg(inputs, ledger, "api_roots")
+        .unwrap_or_else(|| default_api_roots(docs_path));
+    let reference_roots = path_list_arg(inputs, ledger, "reference_roots")
+        .unwrap_or_else(|| default_reference_roots(docs_path));
+    let quality_standard_roots = path_list_arg(inputs, ledger, "quality_standard_roots")
+        .unwrap_or_else(|| default_quality_standard_roots(docs_path));
+    let product_spec_roots = path_list_arg(inputs, ledger, "product_spec_roots")
+        .unwrap_or_else(|| default_product_spec_roots(docs_path));
+    let audit_mode = string_arg(inputs, ledger, "audit_mode").unwrap_or_else(|| "fast".to_string());
+    let allow_source_tools = bool_arg(inputs, ledger, "allow_source_tools")
+        .unwrap_or_else(|| audit_mode == "full");
+    let limit = usize_arg(inputs, ledger, "limit").or_else(|| usize_arg(inputs, ledger, "max_pages"));
+    let standards_context =
+        context_from_files(&quality_standard_roots, CONTEXT_FILE_BYTES, STANDARDS_CONTEXT_BYTES);
+    let product_context =
+        context_from_files(&product_spec_roots, CONTEXT_FILE_BYTES, PRODUCT_CONTEXT_BYTES);
     let pages = discover_pages(Path::new(docs_dir), Some(&docs_json))?;
     let jobs: Vec<Value> = pages
         .into_iter()
+        .take(limit.unwrap_or(usize::MAX))
         .map(|page| {
+            let page_mdx = line_numbered_file(Path::new(&page.path), PAGE_CONTEXT_BYTES)
+                .unwrap_or_else(|| format!("unable to read {}", page.path));
+            let reference_context = reference_context_for_page(
+                &reference_roots,
+                &page.slug,
+                CONTEXT_FILE_BYTES,
+                REFERENCE_CONTEXT_BYTES,
+            );
             json!({
                 "slug": page.slug,
                 "path": page.path,
                 "docs_dir": docs_dir,
                 "nav_group": page.nav_group,
                 "in_nav": page.in_nav,
+                "audit_mode": audit_mode,
+                "allow_source_tools": allow_source_tools,
+                "page_mdx": page_mdx,
+                "reference_context": reference_context,
+                "standards_context": standards_context,
+                "product_context": product_context,
+                "sdk_roots": if allow_source_tools { json!(sdk_roots) } else { json!([]) },
+                "api_roots": if allow_source_tools { json!(api_roots) } else { json!([]) },
+                "reference_roots": if allow_source_tools { json!(reference_roots) } else { json!([]) },
+                "quality_standard_roots": if allow_source_tools { json!(quality_standard_roots) } else { json!([]) },
+                "product_spec_roots": if allow_source_tools { json!(product_spec_roots) } else { json!([]) },
                 "dimension": page.slug,
             })
         })
         .collect();
     Ok(json!({ "jobs": jobs }))
+}
+
+fn path_list_arg(inputs: &Value, ledger: &Ledger, key: &str) -> Option<Vec<String>> {
+    let value = inputs.get(key).or_else(|| ledger.get(key))?;
+    if let Some(text) = value.as_str() {
+        let trimmed = text.trim();
+        if trimmed.is_empty() {
+            return Some(Vec::new());
+        }
+        return Some(vec![trimmed.to_string()]);
+    }
+    let items = value.as_array()?;
+    Some(
+        items
+            .iter()
+            .filter_map(Value::as_str)
+            .map(str::trim)
+            .filter(|text| !text.is_empty())
+            .map(ToOwned::to_owned)
+            .collect(),
+    )
+}
+
+fn string_arg(inputs: &Value, ledger: &Ledger, key: &str) -> Option<String> {
+    inputs
+        .get(key)
+        .or_else(|| ledger.get(key))
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map(ToOwned::to_owned)
+}
+
+fn bool_arg(inputs: &Value, ledger: &Ledger, key: &str) -> Option<bool> {
+    inputs
+        .get(key)
+        .or_else(|| ledger.get(key))
+        .and_then(Value::as_bool)
+}
+
+fn usize_arg(inputs: &Value, ledger: &Ledger, key: &str) -> Option<usize> {
+    let value = inputs.get(key).or_else(|| ledger.get(key))?;
+    value
+        .as_u64()
+        .and_then(|number| usize::try_from(number).ok())
+        .or_else(|| value.as_str()?.trim().parse::<usize>().ok())
+}
+
+fn existing_paths(paths: impl IntoIterator<Item = PathBuf>) -> Vec<String> {
+    paths
+        .into_iter()
+        .filter(|path| path.exists())
+        .map(|path| path.display().to_string())
+        .collect()
+}
+
+fn infer_workspace_root(docs_dir: &Path) -> Option<PathBuf> {
+    for ancestor in docs_dir.ancestors() {
+        if ancestor.join("synth-ai").exists() || ancestor.join("backend").exists() {
+            return Some(ancestor.to_path_buf());
+        }
+    }
+    None
+}
+
+fn default_sdk_roots(docs_dir: &Path) -> Vec<String> {
+    let Some(root) = infer_workspace_root(docs_dir) else {
+        return Vec::new();
+    };
+    existing_paths([root.join("synth-ai").join("synth_ai")])
+}
+
+fn default_api_roots(docs_dir: &Path) -> Vec<String> {
+    let Some(root) = infer_workspace_root(docs_dir) else {
+        return Vec::new();
+    };
+    existing_paths([
+        root.join("backend").join("app").join("api"),
+        root.join("backend").join("app").join("smr"),
+        root.join("backend").join("app").join("compute_pools"),
+    ])
+}
+
+fn default_reference_roots(docs_dir: &Path) -> Vec<String> {
+    existing_paths([docs_dir.join("reference").join("sdk")])
+}
+
+fn default_quality_standard_roots(docs_dir: &Path) -> Vec<String> {
+    existing_paths([docs_dir.join("quality").join("standards.md")])
+}
+
+fn default_product_spec_roots(docs_dir: &Path) -> Vec<String> {
+    existing_paths([
+        docs_dir.join("product.md"),
+        docs_dir.join("product").join("index.md"),
+        docs_dir.join("product").join("specs"),
+    ])
+}
+
+fn line_numbered_file(path: &Path, max_bytes: usize) -> Option<String> {
+    let text = std::fs::read_to_string(path).ok()?;
+    let mut out = format!("FILE {}\n", path.display());
+    for (idx, line) in text.lines().enumerate() {
+        let row = format!("L{}: {}\n", idx + 1, line);
+        if out.len() + row.len() > max_bytes {
+            out.push_str("L…: [truncated]\n");
+            break;
+        }
+        out.push_str(&row);
+    }
+    Some(out)
+}
+
+fn context_from_files(paths: &[String], max_each: usize, max_total: usize) -> String {
+    let mut out = String::new();
+    for path in paths {
+        if out.len() >= max_total {
+            break;
+        }
+        let path = Path::new(path);
+        if path.is_dir() {
+            continue;
+        }
+        let Some(mut text) = line_numbered_file(path, max_each) else {
+            continue;
+        };
+        if out.len() + text.len() > max_total {
+            text.truncate(max_total.saturating_sub(out.len()));
+            text.push_str("\n[context truncated]\n");
+        }
+        out.push_str(&text);
+        out.push('\n');
+    }
+    out
+}
+
+fn reference_context_for_page(
+    roots: &[String],
+    slug: &str,
+    max_each: usize,
+    max_total: usize,
+) -> String {
+    let mut candidates = Vec::new();
+    let slug_tail = slug.rsplit('/').next().unwrap_or(slug);
+    let slug_norm = slug_tail.replace('-', "_");
+    for root in roots {
+        collect_reference_candidates(Path::new(root), slug_tail, &slug_norm, &mut candidates);
+    }
+    candidates.sort();
+    candidates.dedup();
+    let selected = candidates
+        .into_iter()
+        .take(4)
+        .map(|path| path.display().to_string())
+        .collect::<Vec<_>>();
+    context_from_files(&selected, max_each, max_total)
+}
+
+fn collect_reference_candidates(
+    root: &Path,
+    slug_tail: &str,
+    slug_norm: &str,
+    out: &mut Vec<PathBuf>,
+) {
+    let Ok(entries) = std::fs::read_dir(root) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            collect_reference_candidates(&path, slug_tail, slug_norm, out);
+            continue;
+        }
+        let Some(name) = path.file_stem().and_then(|s| s.to_str()) else {
+            continue;
+        };
+        let name_norm = name.replace('-', "_");
+        if name == "index"
+            || name.contains(slug_tail)
+            || slug_tail.contains(name)
+            || name_norm.contains(slug_norm)
+            || slug_norm.contains(&name_norm)
+        {
+            out.push(path);
+        }
+    }
 }
 
 fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
@@ -240,16 +483,24 @@ fn normalize_page_verdict(scan: &Value) -> Option<Value> {
         "page_type": scan.get("page_type").cloned().unwrap_or(Value::Null),
         "surface": scan.get("surface").cloned().unwrap_or(Value::Null),
         "claim_tier": scan.get("claim_tier").cloned().unwrap_or(Value::Null),
+        "sdk_api_discrepancies": scan.get("sdk_api_discrepancies").cloned().unwrap_or_else(|| json!([])),
+        "modal_bar_gaps": scan.get("modal_bar_gaps").cloned().unwrap_or_else(|| json!([])),
+        "objective_standard_findings": scan.get("objective_standard_findings").cloned().unwrap_or_else(|| json!([])),
+        "product_spec_gaps": scan.get("product_spec_gaps").cloned().unwrap_or_else(|| json!([])),
+        "sdk_api_discrepancy_count": scan.get("sdk_api_discrepancies").and_then(Value::as_array).map(Vec::len).unwrap_or(0),
+        "modal_bar_gap_count": scan.get("modal_bar_gaps").and_then(Value::as_array).map(Vec::len).unwrap_or(0),
+        "objective_standard_finding_count": scan.get("objective_standard_findings").and_then(Value::as_array).map(Vec::len).unwrap_or(0),
+        "product_spec_gap_count": scan.get("product_spec_gaps").and_then(Value::as_array).map(Vec::len).unwrap_or(0),
     }))
 }
 
 fn render_matrix(rows: &[Value]) -> String {
     let mut out = String::from("docs matrix — scores & violations per page\n");
     out.push_str(&format!(
-        "{:<36} {:>5} {:>8} {:>14} {}\n",
-        "page", "score", "severity", "algorithm", "violations"
+        "{:<36} {:>5} {:>8} {:>14} {:>4} {:>4} {:>4} {:>4} {}\n",
+        "page", "score", "severity", "algorithm", "sdk", "bar", "std", "prod", "violations"
     ));
-    out.push_str(&format!("{}\n", "─".repeat(84)));
+    out.push_str(&format!("{}\n", "─".repeat(107)));
     for row in rows {
         let item = row.get("item").and_then(Value::as_str).unwrap_or("?");
         let score = row.get("score").and_then(Value::as_f64).unwrap_or(0.0);
@@ -258,16 +509,36 @@ fn render_matrix(rows: &[Value]) -> String {
             .get("algorithm_verdict")
             .and_then(Value::as_str)
             .unwrap_or("?");
+        let sdk_count = row
+            .get("sdk_api_discrepancy_count")
+            .and_then(Value::as_u64)
+            .unwrap_or(0);
+        let bar_count = row
+            .get("modal_bar_gap_count")
+            .and_then(Value::as_u64)
+            .unwrap_or(0);
+        let standard_count = row
+            .get("objective_standard_finding_count")
+            .and_then(Value::as_u64)
+            .unwrap_or(0);
+        let product_count = row
+            .get("product_spec_gap_count")
+            .and_then(Value::as_u64)
+            .unwrap_or(0);
         let codes = row
             .get("violation_codes")
             .and_then(Value::as_str)
             .unwrap_or("");
         out.push_str(&format!(
-            "{:<36} {:>5.1} {:>8} {:>14} {}\n",
+            "{:<36} {:>5.1} {:>8} {:>14} {:>4} {:>4} {:>4} {:>4} {}\n",
             truncate_slug(item, 36),
             score,
             severity,
             algorithm,
+            sdk_count,
+            bar_count,
+            standard_count,
+            product_count,
             codes
         ));
     }

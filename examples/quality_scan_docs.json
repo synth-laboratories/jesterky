@@ -21,7 +21,7 @@
       "kind": "map",
       "over": "ledger.jobs",
       "item_as": "item",
-      "concurrency": 20,
+      "concurrency": 8,
       "min_success": 0.9,
       "body": {
         "kind": "actor",
@@ -55,6 +55,6 @@
     }
   },
   "runplan": {
-    "map_concurrency": 20
+    "map_concurrency": 8
   }
 }
