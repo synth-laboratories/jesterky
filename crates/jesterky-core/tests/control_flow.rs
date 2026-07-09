@@ -189,6 +189,7 @@ fn control_flow_spec() -> WorkflowSpec {
         ],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 

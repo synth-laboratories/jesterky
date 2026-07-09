@@ -11,13 +11,11 @@
 
 pub mod ledger;
 pub mod limits;
-pub mod mailbox;
 pub mod runner;
 pub mod session;
 pub mod traits;
 
 pub use limits::{LimitError, LimitGuard, LimitSet};
-pub use mailbox::Mailbox;
 pub use runner::{CoreError, ProgramFn, ProgramRegistry, Runner};
 pub use session::Session;
 pub use traits::{

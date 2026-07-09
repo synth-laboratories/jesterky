@@ -133,6 +133,7 @@ fn quality_scan_spec() -> WorkflowSpec {
         ],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 

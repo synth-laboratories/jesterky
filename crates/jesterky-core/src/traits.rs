@@ -66,6 +66,7 @@ pub trait Resource: Send + Sync {
 /// the host's problem to buffer.
 pub trait EventSink: Send + Sync {
     fn emit(&self, event: Event);
+    fn snapshot(&self) -> Vec<Event>;
 }
 
 /// Wall-clock, injected so the core never calls the OS clock directly — a
@@ -87,7 +88,8 @@ pub trait ArtifactStore: Send + Sync {
 /// and `resume_session` reads it back.
 #[async_trait]
 pub trait CheckpointStore: Send + Sync {
-    async fn save(&self, session: &str, state: serde_json::Value) -> Result<ArtifactRef, HostError>;
+    async fn save(&self, session: &str, state: serde_json::Value)
+        -> Result<ArtifactRef, HostError>;
     async fn load(&self, session: &str) -> Result<Option<serde_json::Value>, HostError>;
 }
 

@@ -26,8 +26,19 @@ pub struct Session {
 }
 
 impl Session {
-    pub fn new(id: impl Into<String>, actor: impl Into<String>, item: serde_json::Value, path: NodePath) -> Self {
-        Self { id: id.into(), actor: actor.into(), item, path, turn: 0 }
+    pub fn new(
+        id: impl Into<String>,
+        actor: impl Into<String>,
+        item: serde_json::Value,
+        path: NodePath,
+    ) -> Self {
+        Self {
+            id: id.into(),
+            actor: actor.into(),
+            item,
+            path,
+            turn: 0,
+        }
     }
 
     /// Advance to the next turn (increments the iteration used for event Addrs).

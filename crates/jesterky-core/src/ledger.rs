@@ -41,11 +41,7 @@ impl Ledger {
         l
     }
 
-    pub(crate) fn bind_item(
-        &mut self,
-        name: &str,
-        item: serde_json::Value,
-    ) -> ItemBindingRestore {
+    pub(crate) fn bind_item(&mut self, name: &str, item: serde_json::Value) -> ItemBindingRestore {
         let mut names = vec![name.to_string()];
         if name != "item" {
             names.push("item".to_string());
@@ -77,6 +73,19 @@ impl Ledger {
 
     pub fn get(&self, key: &str) -> Option<&serde_json::Value> {
         self.slots.get(key)
+    }
+
+    /// Snapshot the top-level ledger slots (seeded args + node outputs written
+    /// back) as a JSON object. This is the surface goals evaluate against —
+    /// a `GoalKind` path like `summary.score` reads slot `summary` then `.score`.
+    /// The per-item `item` bindings are transient and deliberately excluded.
+    pub fn snapshot_json(&self) -> serde_json::Value {
+        serde_json::Value::Object(
+            self.slots
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect(),
+        )
     }
 
     /// Resolve a single [`Ref`] against ledger state / the current item.

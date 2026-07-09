@@ -59,9 +59,15 @@ async fn session_group_serializes_turns_under_permit_one() {
         .filter(|r| matches!(&r.call, CallKind::Actor { actor } if actor == "hero"))
         .collect();
     assert_eq!(hero_calls.len(), 3, "one hero call per session");
-    let distinct_paths: std::collections::HashSet<_> =
-        hero_calls.iter().map(|r| r.addr.node_path.clone()).collect();
-    assert_eq!(distinct_paths.len(), 3, "each session records under its own path");
+    let distinct_paths: std::collections::HashSet<_> = hero_calls
+        .iter()
+        .map(|r| r.addr.node_path.clone())
+        .collect();
+    assert_eq!(
+        distinct_paths.len(),
+        3,
+        "each session records under its own path"
+    );
 
     // The trace tree exists and carries one `actor:hero` leaf per session.
     let trace = manifest.trace.expect("trace tree built");
@@ -174,6 +180,7 @@ fn session_group_spec() -> WorkflowSpec {
             limits: BTreeMap::from([("turn".to_string(), 1)]),
             ..RunPlan::default()
         },
+        host: None,
     }
 }
 
@@ -204,6 +211,7 @@ fn resume_spec() -> WorkflowSpec {
         entrypoint: vec!["resume".to_string()],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 

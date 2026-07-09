@@ -30,6 +30,7 @@ async fn run_args_are_addressable_as_ledger_keys() {
         entrypoint: vec!["probe".to_string()],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     };
 
     let runner = Runner {
@@ -43,7 +44,11 @@ async fn run_args_are_addressable_as_ledger_keys() {
     };
 
     let manifest = runner
-        .run(&spec, "args-run".to_string(), json!({ "target": "crates/foo" }))
+        .run(
+            &spec,
+            "args-run".to_string(),
+            json!({ "target": "crates/foo" }),
+        )
         .await
         .expect("run completes");
 

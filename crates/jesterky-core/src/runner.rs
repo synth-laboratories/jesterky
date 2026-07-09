@@ -10,20 +10,23 @@
 
 use crate::ledger::Ledger;
 use crate::limits::LimitSet;
-use crate::mailbox::Mailbox;
 use crate::traits::{
     Actor, ActorRequest, ArtifactStore, CheckpointStore, Clock, EventSink, Resource,
 };
 use async_recursion::async_recursion;
 use jesterky_contract::{
-    Addr, Bindings, CallKind, Checkpoint, Event, EventKind, Node, NodeKind, NodePath, PathSeg,
-    ProcessNode, RecordedOutput, RunManifest, RunStatus, WorkflowSpec,
+    Addr, Bindings, CallKind, Checkpoint, Event, EventKind, GoalEngine, GoalPlan, GoalSnapshot,
+    GoalState, Node, NodeKind, NodePath, PathSeg, ProcessNode, RecordedOutput, RunManifest,
+    RunStatus, RunStopReason, WorkflowSpec,
 };
 use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
 use std::pin::Pin;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::Poll;
+
+const EVENT_INPUT_INLINE_LIMIT_BYTES: usize = 64 * 1024;
 
 /// A pure, deterministic program op (ADR #7): `(ledger, inputs) -> outputs`, no
 /// IO, re-run verbatim on replay. Registered by the author/host.
@@ -71,19 +74,25 @@ struct RunCtx {
     ledger: Mutex<Ledger>,
     /// The logical clock: next `local_seq` per `(node_path, iteration)`.
     addr_seqs: Mutex<HashMap<(NodePath, u32), u32>>,
-    events: Mutex<Vec<Event>>,
     recorded: Mutex<Vec<RecordedOutput>>,
+    node_io: Mutex<HashMap<(NodePath, u32), NodeIo>>,
     checkpoints: Mutex<Vec<Checkpoint>>,
     /// Named concurrency budgets / the central-serialization semaphores. `Arc`
     /// so a `LimitGuard` can outlive the acquiring call and release on drop.
     limits: Arc<LimitSet>,
     map_concurrency: Option<u32>,
-    /// Inter-session message-passing. Built and ready; no node kind publishes to
-    /// it yet (a `session_group` body coordinates via the env resource + limit
-    /// today). Wired here so the coordination seam is one field, not a refactor,
-    /// when message-passing lands.
-    #[allow(dead_code)]
-    mailbox: Mailbox,
+    /// Set when a met goal with `cancel_in_flight` asks the runner to stop fanning
+    /// out pending `map`/`for_each` items. Interior mutability so the between-node
+    /// goal check (holding `&RunCtx`) can trip it; the map dispatch loops read it.
+    cancel: AtomicBool,
+}
+
+#[derive(Clone, Debug)]
+struct NodeIo {
+    inputs: serde_json::Value,
+    outputs: serde_json::Value,
+    score: Option<f64>,
+    signal: Option<serde_json::Value>,
 }
 
 #[derive(Clone, Copy)]
@@ -111,13 +120,43 @@ impl RunCtx {
             nodes: spec.nodes.clone(),
             ledger: Mutex::new(ledger),
             addr_seqs: Mutex::new(HashMap::new()),
-            events: Mutex::new(Vec::new()),
             recorded: Mutex::new(Vec::new()),
+            node_io: Mutex::new(HashMap::new()),
             checkpoints: Mutex::new(Vec::new()),
             limits: Arc::new(LimitSet::from_permits(&spec.runplan.limits)),
             map_concurrency: spec.runplan.map_concurrency,
-            mailbox: Mailbox::new(),
+            cancel: AtomicBool::new(false),
         }
+    }
+
+    fn record_node_io(
+        &self,
+        path: NodePath,
+        iteration: u32,
+        inputs: serde_json::Value,
+        outputs: serde_json::Value,
+        score: Option<f64>,
+        signal: Option<serde_json::Value>,
+    ) {
+        self.node_io.lock().unwrap().insert(
+            (path, iteration),
+            NodeIo {
+                inputs,
+                outputs,
+                score,
+                signal,
+            },
+        );
+    }
+}
+
+/// Resolve the effective goal plan: the spec's `runplan.goals` deep-merged with
+/// a run-time `args.goals` overlay (partial overrides allowed — see
+/// [`GoalPlan::overlay_json`]). Absent/`null` overlay leaves the plan unchanged.
+fn resolve_goal_plan(base: &GoalPlan, args: &serde_json::Value) -> GoalPlan {
+    match args.get("goals") {
+        Some(overlay) if !overlay.is_null() => base.overlay_json(overlay),
+        _ => base.clone(),
     }
 }
 
@@ -135,23 +174,130 @@ impl Runner {
         let ctx = RunCtx::new(run_id, args.clone(), spec);
         self.emit(&ctx, &NodePath::root(), 0, EventKind::WorkflowStarted, args);
 
+        // A node failure (a min_success gate, an unresolved binding, an actor that
+        // ran out of retries) STOPS the pipeline — but the run still produced
+        // events + recorded outputs, so we finalize a `Failed` manifest instead of
+        // discarding the work. The failure reason rides a `WorkflowFailed` event so
+        // the host can surface it; `run()` returns `Err` only for a malformed spec
+        // (before anything ran). Replay/callers key resilience off `manifest.status`.
+        // Goals (semantic termination targets) are the dual of budgets, but —
+        // unlike budgets, which need host metering of tokens/wall — they are pure
+        // predicates over the ledger the core already owns, so the runner
+        // evaluates them. `--args.goals` deep-merges onto the declared plan.
+        let goal_plan = resolve_goal_plan(&spec.runplan.goals, &ctx.args);
+
+        let mut failure: Option<String> = None;
+        let mut goal_terminated = false;
         for id in &spec.entrypoint {
-            let node = spec
-                .nodes
-                .get(id)
-                .ok_or_else(|| CoreError::UnknownNode(id.clone()))?;
-            self.execute_node(&ctx, NodePath::root().child(id.clone()), node)
-                .await?;
+            let node = match spec.nodes.get(id) {
+                Some(node) => node,
+                None => {
+                    failure = Some(format!("unknown node: {id}"));
+                    break;
+                }
+            };
+            if let Err(err) = self
+                .execute_node(&ctx, NodePath::root().child(id.clone()), node)
+                .await
+            {
+                failure = Some(err.to_string());
+                break;
+            }
+            // Success wrap-up, evaluated once every required goal is met:
+            //  * `terminate_on_met` skips the remaining entrypoints entirely;
+            //  * otherwise `cancel_in_flight` keeps running the graph but trips the
+            //    cancel flag so later `map`/`for_each` nodes stop fanning out
+            //    pending items (finish the run cheaply). See `docs/GOALS.md`.
+            if !goal_plan.is_empty() {
+                let ledger = ctx.ledger.lock().unwrap().snapshot_json();
+                let snapshot = GoalEngine::snapshot(&ctx.run_id, &goal_plan, &ledger);
+                if snapshot.all_required_met() {
+                    if goal_plan.terminate_on_met {
+                        goal_terminated = true;
+                        break;
+                    } else if goal_plan.cancel_in_flight {
+                        ctx.cancel.store(true, Ordering::Relaxed);
+                    }
+                }
+            }
         }
 
-        self.emit(
-            &ctx,
-            &NodePath::root(),
-            0,
-            EventKind::WorkflowCompleted,
-            serde_json::Value::Null,
-        );
-        Ok(self.build_manifest(&ctx, spec, spec_hash))
+        if failure.is_none() && goal_terminated {
+            if let Some(finalize) = &goal_plan.finalize {
+                match spec.nodes.get(finalize) {
+                    Some(node) => {
+                        if let Err(err) = self
+                            .execute_node(&ctx, NodePath::root().child(finalize.clone()), node)
+                            .await
+                        {
+                            failure = Some(err.to_string());
+                        }
+                    }
+                    None => {
+                        failure = Some(format!("unknown finalize node: {finalize}"));
+                    }
+                }
+            }
+        }
+
+        // Final goal projection from the settled ledger (attached to the manifest).
+        let goal_snapshot: Option<GoalSnapshot> = if goal_plan.is_empty() {
+            None
+        } else {
+            let ledger = ctx.ledger.lock().unwrap().snapshot_json();
+            let mut snap = GoalEngine::snapshot(&ctx.run_id, &goal_plan, &ledger);
+            snap.terminated_early = goal_terminated;
+            Some(snap)
+        };
+        // A required goal still unmet at run end fails the run (dual of budget
+        // hard-exhaust). Node failures take precedence over goal failures.
+        let goal_failure = if failure.is_none() {
+            goal_snapshot.as_ref().filter(|s| s.should_fail()).map(|s| {
+                let unmet: Vec<&str> = s
+                    .items
+                    .iter()
+                    .filter(|i| i.required && i.state != GoalState::Met)
+                    .map(|i| i.id.as_str())
+                    .collect();
+                format!("goal_unmet: {}", unmet.join(","))
+            })
+        } else {
+            None
+        };
+
+        let (status, stop_reason) = if let Some(reason) = failure.as_ref().or(goal_failure.as_ref())
+        {
+            self.emit(
+                &ctx,
+                &NodePath::root(),
+                0,
+                EventKind::WorkflowFailed,
+                serde_json::json!({ "error": reason }),
+            );
+            let stop_reason = if goal_failure.is_some() && failure.is_none() {
+                RunStopReason::GoalUnmet
+            } else {
+                RunStopReason::NodeFailed
+            };
+            (RunStatus::Failed, stop_reason)
+        } else {
+            self.emit(
+                &ctx,
+                &NodePath::root(),
+                0,
+                EventKind::WorkflowCompleted,
+                serde_json::Value::Null,
+            );
+            (RunStatus::Completed, RunStopReason::Completed)
+        };
+        let mut manifest = self.build_manifest(&ctx, spec, spec_hash, status, stop_reason);
+        manifest.goals = goal_snapshot;
+        // Structural self-check of the manifest we just produced (event-addr
+        // identity, no orphaned records, per-map fan/gate consistency). Pure
+        // function of the manifest; a failing check is a runner bug, not a
+        // workload failure — so it does not change `status`.
+        manifest.invariants = Some(jesterky_contract::InvariantReport::compute(&manifest));
+        Ok(manifest)
     }
 
     /// Allocate an [`Addr`] and emit an event. THIS is the logical-clock joint
@@ -187,7 +333,6 @@ impl Runner {
             wall_ms: self.clock.now_ms(),
         };
         self.sink.emit(event.clone());
-        ctx.events.lock().unwrap().push(event);
         addr
     }
 
@@ -242,7 +387,11 @@ impl Runner {
             NodeKind::Program { op } | NodeKind::Reduce { op } => {
                 let inputs = match input_override {
                     Some(inputs) => inputs,
-                    None => ledger.lock().unwrap().resolve_bindings(&node.inputs)?,
+                    None => ledger
+                        .lock()
+                        .unwrap()
+                        .resolve_bindings(&node.inputs)
+                        .map_err(|e| at_node(e, &path))?,
                 };
                 let program = self
                     .programs
@@ -257,14 +406,31 @@ impl Runner {
                     .lock()
                     .unwrap()
                     .store_outputs(&node.outputs, &result)?;
+                let (score, signal) = match &node.kind {
+                    NodeKind::Reduce { .. } => reduce_outcome(&result),
+                    _ => (None, None),
+                };
+                ctx.record_node_io(
+                    path.clone(),
+                    iteration,
+                    inputs,
+                    result.clone(),
+                    score,
+                    signal,
+                );
                 result
             }
             NodeKind::Actor { actor } => {
                 let inputs = match input_override {
                     Some(inputs) => inputs,
-                    None => ledger.lock().unwrap().resolve_bindings(&node.inputs)?,
+                    None => ledger
+                        .lock()
+                        .unwrap()
+                        .resolve_bindings(&node.inputs)
+                        .map_err(|e| at_node(e, &path))?,
                 };
                 let addr = self.peek_next_addr(ctx, &path, iteration);
+                let event_inputs = self.event_inputs_payload(inputs.clone()).await?;
                 let actor_result = self
                     .actor
                     .drive(ActorRequest {
@@ -287,12 +453,20 @@ impl Runner {
                     .lock()
                     .unwrap()
                     .store_outputs(&node.outputs, &actor_result.outputs)?;
+                ctx.record_node_io(
+                    path.clone(),
+                    iteration,
+                    event_inputs.clone(),
+                    actor_result.outputs.clone(),
+                    actor_result.score,
+                    actor_result.signal.clone(),
+                );
                 let emitted_addr = self.emit(
                     ctx,
                     &path,
                     iteration,
                     EventKind::ActorInvoked,
-                    serde_json::json!({ "actor": actor }),
+                    serde_json::json!({ "actor": actor, "inputs": event_inputs }),
                 );
                 debug_assert_eq!(emitted_addr, addr);
                 actor_result.outputs
@@ -431,7 +605,11 @@ impl Runner {
                             result
                         })
                             as Pin<
-                                Box<dyn Future<Output = Result<serde_json::Value, CoreError>> + Send + '_>,
+                                Box<
+                                    dyn Future<Output = Result<serde_json::Value, CoreError>>
+                                        + Send
+                                        + '_,
+                                >,
                             >
                     })
                     .collect::<Vec<_>>();
@@ -452,7 +630,10 @@ impl Runner {
                 // exist). Recorded actor/env outputs make the resumed run
                 // replayable without re-executing prior turns.
                 let state = match &self.checkpoints {
-                    Some(store) => store.load(&session_id).await?.unwrap_or(serde_json::Value::Null),
+                    Some(store) => store
+                        .load(&session_id)
+                        .await?
+                        .unwrap_or(serde_json::Value::Null),
                     None => serde_json::Value::Null,
                 };
                 self.emit(
@@ -465,8 +646,9 @@ impl Runner {
                 // Bind the rehydrated state as the `session` item source so the
                 // body reads it as `session.<field>` — same binding shape as
                 // `session_group`'s `item`.
-                let body_ledger =
-                    Arc::new(Mutex::new(ledger.lock().unwrap().with_item_as("session", state)));
+                let body_ledger = Arc::new(Mutex::new(
+                    ledger.lock().unwrap().with_item_as("session", state),
+                ));
                 self.execute_node_with_ledger(
                     ctx,
                     path.child("body"),
@@ -543,13 +725,17 @@ impl Runner {
             .await
         }?;
 
+        let cancelled = ctx.cancel.load(Ordering::Relaxed);
         let successes = results.iter().filter(|r| r.is_ok()).count();
+        let attempted = results.len();
         let success_ratio = if total == 0 {
             1.0
         } else {
             successes as f64 / total as f64
         };
-        if success_ratio + f64::EPSILON < *min_success {
+        // A cancelled map is intentionally partial — do NOT hold it to min_success
+        // (that gate guards against flaky failures, not deliberate early stop).
+        if !cancelled && success_ratio + f64::EPSILON < *min_success {
             return Err(CoreError::MapMinSuccess {
                 required: *min_success,
                 successes,
@@ -562,6 +748,24 @@ impl Runner {
             .lock()
             .unwrap()
             .store_outputs(&node.outputs, &map_result)?;
+        ctx.record_node_io(
+            path.clone(),
+            iteration,
+            serde_json::json!({
+                "over": items,
+                "item_as": item_as,
+                "concurrency": width,
+                "min_success": min_success,
+            }),
+            map_result.clone(),
+            None,
+            Some(serde_json::json!({
+                "successes": successes,
+                "total": total,
+                "attempted": attempted,
+                "cancelled": cancelled,
+            })),
+        );
         self.emit(
             ctx,
             &path,
@@ -589,6 +793,11 @@ impl Runner {
         let mut results = Vec::with_capacity(items.len());
 
         for (i, item) in items.iter().cloned().enumerate() {
+            // Cancelled mid-map (a met goal with `cancel_in_flight`): stop starting
+            // new items. Those already done stay in `results`; the gate is skipped.
+            if ctx.cancel.load(Ordering::Relaxed) {
+                break;
+            }
             let item_path = path.index(i as u32);
             self.emit(
                 ctx,
@@ -656,6 +865,11 @@ impl Runner {
 
         let mut results = (0..items.len()).map(|_| None).collect::<Vec<_>>();
         for chunk in prepared.chunks(dispatch.width) {
+            // Cancelled (a met goal with `cancel_in_flight`): stop dispatching new
+            // chunks. Undispatched slots stay `None` and are dropped below.
+            if ctx.cancel.load(Ordering::Relaxed) {
+                break;
+            }
             let futures = chunk
                 .iter()
                 .map(|(i, item_ledger, inputs)| {
@@ -719,10 +933,9 @@ impl Runner {
             }
         }
 
-        Ok(results
-            .into_iter()
-            .map(|result| result.expect("map result slot filled"))
-            .collect())
+        // Drop undispatched slots (only present when cancelled mid-map). When not
+        // cancelled every slot is filled, so this is an order-preserving identity.
+        Ok(results.into_iter().flatten().collect())
     }
 
     async fn execute_for_each(
@@ -751,7 +964,9 @@ impl Runner {
         };
 
         let mut last = serde_json::Value::Null;
+        let mut input_items = Vec::with_capacity(items.len());
         for (i, item) in items.into_iter().enumerate() {
+            input_items.push(item.clone());
             let restore = ledger.lock().unwrap().bind_item(item_as, item);
             let result = self
                 .execute_node_with_ledger(ctx, path.index(i as u32), body, ledger, None, iteration)
@@ -759,28 +974,55 @@ impl Runner {
             ledger.lock().unwrap().restore_item(restore);
             last = result?;
         }
+        ctx.record_node_io(
+            path,
+            iteration,
+            serde_json::json!({
+                "over": input_items,
+                "item_as": item_as,
+            }),
+            last.clone(),
+            None,
+            None,
+        );
 
         Ok(last)
     }
 
+    // (goal plan resolution is a free function below `Runner`)
+
     /// Assemble the run record. `trace` (the ProcessNode tree) is built from the
     /// recorded outputs + node structure.
-    fn build_manifest(&self, ctx: &RunCtx, spec: &WorkflowSpec, spec_hash: String) -> RunManifest {
+    fn build_manifest(
+        &self,
+        ctx: &RunCtx,
+        spec: &WorkflowSpec,
+        spec_hash: String,
+        status: RunStatus,
+        stop_reason: RunStopReason,
+    ) -> RunManifest {
         // Build the trace BEFORE the struct literal: temporaries in a struct
         // initializer live until the whole literal completes, so a
         // `ctx.recorded.lock()` in a field would still be held when `build_trace`
         // re-locks `recorded` — a self-deadlock on the non-reentrant Mutex.
-        let trace = self.build_trace(ctx, spec);
+        let events = self.sink.snapshot();
+        let trace = self.build_trace(ctx, spec, &events);
         RunManifest {
             run_id: ctx.run_id.clone(),
             workflow_name: spec.name.clone(),
             spec_hash,
             args: ctx.args.clone(),
-            events: ctx.events.lock().unwrap().clone(),
+            events,
             recorded: ctx.recorded.lock().unwrap().clone(),
             checkpoints: ctx.checkpoints.lock().unwrap().clone(),
             trace,
-            status: RunStatus::Completed,
+            status,
+            stop_reason,
+            // Host meters resource budgets (tokens/wall/actor calls) and may
+            // attach a [`BudgetSnapshot`] after the run; core leaves it empty.
+            budgets: None,
+            goals: None,
+            invariants: None,
         }
     }
 
@@ -790,11 +1032,18 @@ impl Runner {
     /// carrying the outputs/score/signal/artifacts the optimizer grades. Built
     /// from `recorded` sorted by [`Addr`] so the tree is deterministic and
     /// replay-stable — same run, same tree.
-    fn build_trace(&self, ctx: &RunCtx, spec: &WorkflowSpec) -> Option<ProcessNode> {
+    fn build_trace(
+        &self,
+        ctx: &RunCtx,
+        spec: &WorkflowSpec,
+        events: &[Event],
+    ) -> Option<ProcessNode> {
         let recorded = ctx.recorded.lock().unwrap();
-        if recorded.is_empty() {
+        let node_io = ctx.node_io.lock().unwrap().clone();
+        if recorded.is_empty() && node_io.is_empty() {
             return None;
         }
+        let event_inputs = event_inputs_by_addr(events);
         let mut root = ProcessNode {
             addr: Addr {
                 run_id: ctx.run_id.clone(),
@@ -804,7 +1053,7 @@ impl Runner {
             },
             label: format!("workflow:{}", spec.name),
             inputs: ctx.args.clone(),
-            outputs: serde_json::Value::Null,
+            outputs: ctx.ledger.lock().unwrap().snapshot_json(),
             score: None,
             signal: None,
             artifacts: Vec::new(),
@@ -813,9 +1062,36 @@ impl Runner {
         let mut items: Vec<&RecordedOutput> = recorded.iter().collect();
         items.sort_by(|a, b| a.addr.cmp(&b.addr));
         for rec in items {
-            insert_recorded(&mut root, &ctx.run_id, NodePath::root(), &rec.addr.node_path.0, rec);
+            insert_recorded(
+                &mut root,
+                &ctx.run_id,
+                NodePath::root(),
+                &rec.addr.node_path.0,
+                rec,
+                &node_io,
+                &event_inputs,
+            );
         }
+        let mut node_items: Vec<(&(NodePath, u32), &NodeIo)> = node_io.iter().collect();
+        node_items.sort_by(|a, b| a.0.cmp(b.0));
+        for ((path, iteration), io) in node_items {
+            insert_node_io(&mut root, &ctx.run_id, path, *iteration, io);
+        }
+        sort_trace(&mut root);
         Some(root)
+    }
+
+    async fn event_inputs_payload(
+        &self,
+        inputs: serde_json::Value,
+    ) -> Result<serde_json::Value, CoreError> {
+        let bytes = serde_json::to_vec(&inputs).map_err(|err| CoreError::Json(err.to_string()))?;
+        if bytes.len() <= EVENT_INPUT_INLINE_LIMIT_BYTES {
+            return Ok(inputs);
+        }
+
+        let reference = self.store.put(bytes, "application/json").await?;
+        Ok(serde_json::json!({ "artifact_ref": reference }))
     }
 }
 
@@ -830,9 +1106,11 @@ fn insert_recorded(
     prefix: NodePath,
     segs: &[PathSeg],
     rec: &RecordedOutput,
+    node_io: &HashMap<(NodePath, u32), NodeIo>,
+    event_inputs: &HashMap<Addr, serde_json::Value>,
 ) {
     let Some((head, tail)) = segs.split_first() else {
-        node.children.push(leaf_from(rec));
+        node.children.push(leaf_from(rec, event_inputs));
         return;
     };
     let mut child_prefix = prefix;
@@ -845,40 +1123,190 @@ fn insert_recorded(
     let idx = match pos {
         Some(idx) => idx,
         None => {
+            let io = node_io.get(&(child_prefix.clone(), rec.addr.iteration));
             node.children.push(ProcessNode {
                 addr: Addr {
                     run_id: run_id.to_string(),
                     node_path: child_prefix.clone(),
-                    iteration: 0,
+                    iteration: rec.addr.iteration,
                     local_seq: 0,
                 },
                 label,
-                inputs: serde_json::Value::Null,
-                outputs: serde_json::Value::Null,
-                score: None,
-                signal: None,
+                inputs: io
+                    .map(|io| io.inputs.clone())
+                    .unwrap_or(serde_json::Value::Null),
+                outputs: io
+                    .map(|io| io.outputs.clone())
+                    .unwrap_or(serde_json::Value::Null),
+                score: io.and_then(|io| io.score),
+                signal: io.and_then(|io| io.signal.clone()),
                 artifacts: Vec::new(),
                 children: Vec::new(),
             });
             node.children.len() - 1
         }
     };
-    insert_recorded(&mut node.children[idx], run_id, child_prefix, tail, rec);
+    insert_recorded(
+        &mut node.children[idx],
+        run_id,
+        child_prefix,
+        tail,
+        rec,
+        node_io,
+        event_inputs,
+    );
 }
 
-/// A leaf ProcessNode for a recorded call. Inputs live in the event stream, not
-/// in `RecordedOutput`, so the leaf's `inputs` stay null here — the label + addr
-/// join it back to the `ActorInvoked`/`ResourceInvoked` event that carries them.
-fn leaf_from(rec: &RecordedOutput) -> ProcessNode {
+fn insert_node_io(
+    node: &mut ProcessNode,
+    run_id: &str,
+    path: &NodePath,
+    iteration: u32,
+    io: &NodeIo,
+) {
+    let mut prefix = NodePath::root();
+    let mut current = node;
+    for seg in &path.0 {
+        prefix.0.push(seg.clone());
+        let label = seg_label(seg);
+        let pos = current
+            .children
+            .iter()
+            .position(|c| c.addr.node_path == prefix && c.label == label);
+        let idx = match pos {
+            Some(idx) => idx,
+            None => {
+                current.children.push(ProcessNode {
+                    addr: Addr {
+                        run_id: run_id.to_string(),
+                        node_path: prefix.clone(),
+                        iteration,
+                        local_seq: 0,
+                    },
+                    label,
+                    inputs: serde_json::Value::Null,
+                    outputs: serde_json::Value::Null,
+                    score: None,
+                    signal: None,
+                    artifacts: Vec::new(),
+                    children: Vec::new(),
+                });
+                current.children.len() - 1
+            }
+        };
+        current = &mut current.children[idx];
+    }
+    current.inputs = io.inputs.clone();
+    current.outputs = io.outputs.clone();
+    current.score = io.score;
+    current.signal = io.signal.clone();
+}
+
+/// A leaf ProcessNode for a recorded call. Inputs are emitted with the impure
+/// invocation event and joined back by structural `Addr`; `RecordedOutput` stays
+/// focused on replay outputs.
+fn leaf_from(rec: &RecordedOutput, event_inputs: &HashMap<Addr, serde_json::Value>) -> ProcessNode {
     ProcessNode {
         addr: rec.addr.clone(),
         label: call_label(&rec.call),
-        inputs: serde_json::Value::Null,
+        inputs: event_inputs
+            .get(&rec.addr)
+            .cloned()
+            .unwrap_or(serde_json::Value::Null),
         outputs: rec.outputs.clone(),
         score: rec.score,
         signal: rec.signal.clone(),
         artifacts: rec.artifacts.clone(),
         children: Vec::new(),
+    }
+}
+
+fn event_inputs_by_addr(events: &[Event]) -> HashMap<Addr, serde_json::Value> {
+    events
+        .iter()
+        .filter(|event| {
+            matches!(
+                event.kind,
+                EventKind::ActorInvoked | EventKind::ResourceInvoked
+            )
+        })
+        .filter_map(|event| {
+            event
+                .payload
+                .get("inputs")
+                .cloned()
+                .map(|inputs| (event.addr.clone(), inputs))
+        })
+        .collect()
+}
+
+fn reduce_outcome(outputs: &serde_json::Value) -> (Option<f64>, Option<serde_json::Value>) {
+    let summary = outputs.get("summary").unwrap_or(outputs);
+    let score = explicit_score(summary)
+        .or_else(|| ratio_score(summary, "passed", "total"))
+        .or_else(|| inverse_count_score(summary, "blockers", "total"))
+        .or_else(|| verdict_score(summary));
+    let signal = reduce_signal(summary);
+    (score, signal)
+}
+
+fn explicit_score(value: &serde_json::Value) -> Option<f64> {
+    value.get("score").and_then(serde_json::Value::as_f64)
+}
+
+fn ratio_score(value: &serde_json::Value, numerator: &str, denominator: &str) -> Option<f64> {
+    let numerator = value.get(numerator)?.as_f64()?;
+    let denominator = value.get(denominator)?.as_f64()?;
+    if denominator > 0.0 {
+        Some((numerator / denominator).clamp(0.0, 1.0))
+    } else {
+        None
+    }
+}
+
+fn inverse_count_score(value: &serde_json::Value, count: &str, total: &str) -> Option<f64> {
+    let count = value.get(count)?.as_f64()?;
+    let total = value.get(total)?.as_f64()?;
+    if total > 0.0 {
+        Some(((total - count) / total).clamp(0.0, 1.0))
+    } else {
+        None
+    }
+}
+
+fn verdict_score(value: &serde_json::Value) -> Option<f64> {
+    match value.get("verdict").and_then(serde_json::Value::as_str) {
+        Some(verdict) if verdict.eq_ignore_ascii_case("pass") => Some(1.0),
+        Some(verdict) if verdict.eq_ignore_ascii_case("fail") => Some(0.0),
+        _ => None,
+    }
+}
+
+fn reduce_signal(summary: &serde_json::Value) -> Option<serde_json::Value> {
+    let mut signal = serde_json::Map::new();
+    for key in [
+        "verdict",
+        "passed",
+        "failed",
+        "total",
+        "blockers",
+        "annotated",
+    ] {
+        if let Some(value) = summary.get(key) {
+            signal.insert(key.to_string(), value.clone());
+        }
+    }
+    if signal.is_empty() {
+        None
+    } else {
+        Some(serde_json::Value::Object(signal))
+    }
+}
+
+fn sort_trace(node: &mut ProcessNode) {
+    node.children.sort_by(|a, b| a.addr.cmp(&b.addr));
+    for child in &mut node.children {
+        sort_trace(child);
     }
 }
 
@@ -975,6 +1403,29 @@ async fn join_all_ordered<T>(
     .await
 }
 
+/// Attach the failing node's name to a binding-resolution error, so
+/// `unresolved reference: ledger.docs_json` becomes
+/// `... (resolving inputs of node `expand_pages`)` — the caller learns *which*
+/// node's inputs couldn't resolve, not just which reference. Same error variant
+/// (louder string only), so exact-variant matchers keep working.
+fn at_node(err: crate::ledger::LedgerError, path: &NodePath) -> crate::ledger::LedgerError {
+    use crate::ledger::LedgerError;
+    let node = path
+        .0
+        .iter()
+        .rev()
+        .find_map(|seg| match seg {
+            PathSeg::Node(name) => Some(name.clone()),
+            PathSeg::Index(_) => None,
+        })
+        .unwrap_or_else(|| "root".to_string());
+    let ctx = format!(" (resolving inputs of node `{node}`)");
+    match err {
+        LedgerError::Unresolved(r) => LedgerError::Unresolved(format!("{r}{ctx}")),
+        LedgerError::TypeMismatch(r) => LedgerError::TypeMismatch(format!("{r}{ctx}")),
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum CoreError {
     #[error("unknown node: {0}")]
@@ -987,6 +1438,10 @@ pub enum CoreError {
     Host(#[from] crate::traits::HostError),
     #[error(transparent)]
     Limit(#[from] crate::limits::LimitError),
+    #[error("json serialization failed: {0}")]
+    Json(String),
+    #[error("configuration error: {0}")]
+    Config(String),
     #[error("program not registered: {0}")]
     UnknownProgram(String),
     #[error("map min_success gate failed: required {required}, got {successes}/{total}")]

@@ -36,11 +36,17 @@ impl LimitSet {
             .map(|(name, &permits)| {
                 (
                     name.clone(),
-                    LimitState { permits: permits.max(1), active: 0, waiters: Vec::new() },
+                    LimitState {
+                        permits: permits.max(1),
+                        active: 0,
+                        waiters: Vec::new(),
+                    },
                 )
             })
             .collect();
-        Self { states: Mutex::new(states) }
+        Self {
+            states: Mutex::new(states),
+        }
     }
 
     /// Acquire a permit on `name`, waiting (cooperatively) if the limit is
@@ -65,7 +71,10 @@ impl LimitSet {
             }
         })
         .await;
-        Ok(LimitGuard { set: Arc::clone(self), name: name.to_string() })
+        Ok(LimitGuard {
+            set: Arc::clone(self),
+            name: name.to_string(),
+        })
     }
 
     fn release(&self, name: &str) {

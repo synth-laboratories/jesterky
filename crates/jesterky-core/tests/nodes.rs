@@ -34,25 +34,28 @@ async fn map_min_success_gate_allows_partial_success_above_threshold() {
 
 #[tokio::test]
 async fn map_min_success_gate_fails_below_threshold() {
-    let err = runner(Arc::new(FakeActor))
+    // A tripped gate STOPS the pipeline but still finalizes a `Failed` manifest
+    // (the run's events + recorded outputs survive to inspect) — `run()` returns
+    // `Ok` with `status: Failed`, and the reason rides a `WorkflowFailed` event.
+    let manifest = runner(Arc::new(FakeActor))
         .run(
             &map_min_success_spec(0.75),
             "map-min-success-fail".to_string(),
             json!({}),
         )
         .await
-        .expect_err("map trips min_success");
+        .expect("run finalizes a failed manifest, not a bare error");
 
+    assert_eq!(manifest.status, RunStatus::Failed);
+    let reason = manifest
+        .events
+        .iter()
+        .find(|e| matches!(e.kind, EventKind::WorkflowFailed))
+        .and_then(|e| e.payload.get("error").and_then(|v| v.as_str()))
+        .expect("WorkflowFailed event carries the reason");
     assert!(
-        matches!(
-            err,
-            CoreError::MapMinSuccess {
-                required,
-                successes: 2,
-                total: 3
-            } if (required - 0.75).abs() < f64::EPSILON
-        ),
-        "unexpected error: {err:?}"
+        reason.contains("min_success gate failed") && reason.contains("2/3"),
+        "unexpected reason: {reason}"
     );
 }
 
@@ -269,6 +272,7 @@ fn map_min_success_spec(min_success: f64) -> WorkflowSpec {
         entrypoint: vec!["seed".to_string(), "scan".to_string(), "record".to_string()],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 
@@ -316,6 +320,7 @@ fn for_each_spec() -> WorkflowSpec {
         ],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 
@@ -375,6 +380,7 @@ fn nested_map_spec() -> WorkflowSpec {
         ],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 
@@ -432,6 +438,7 @@ fn reduce_spec() -> WorkflowSpec {
         ],
         nodes,
         runplan: RunPlan::default(),
+        host: None,
     }
 }
 
