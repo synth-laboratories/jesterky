@@ -246,6 +246,7 @@ fn run_manifest(spec: &WorkflowSpec) -> RunManifest {
             score: Some(0.75),
             signal: Some(json!({ "verifier": "pass" })),
             artifacts: vec![artifact.clone()],
+            grounding: jesterky_contract::Grounding::Ungraded,
         }],
         checkpoints: vec![Checkpoint {
             session: "alpha".to_string(),
@@ -267,6 +268,7 @@ fn run_manifest(spec: &WorkflowSpec) -> RunManifest {
         budgets: None,
         goals: None,
         invariants: None,
+        grounding: None,
     }
 }
 

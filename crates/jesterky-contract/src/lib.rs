@@ -17,12 +17,13 @@ pub mod artifact;
 pub mod budget;
 pub mod event;
 pub mod goal;
+pub mod grounding;
 pub mod live;
 pub mod sandbox;
 pub mod topology;
 
 /// The contract version. A major bump is a stack-wide event (ADR #4).
-pub const CONTRACT_VERSION: &str = "0.1.1";
+pub const CONTRACT_VERSION: &str = "0.1.2";
 
 pub use artifact::{
     Artifact, ArtifactRef, CallKind, Checkpoint, InvariantCheck, InvariantReport, Message,
@@ -37,6 +38,11 @@ pub use event::{Addr, Event, EventKind, NodePath, PathSeg};
 pub use goal::{
     GoalEngine, GoalKind, GoalPlan, GoalSnapshot, GoalSpec, GoalState, GoalStatus, GoalVizConfig,
     GOAL_ENGINE_VERSION,
+};
+pub use grounding::{
+    CitedSpan, Grounding, GroundingPlan, GroundingReport, GroundingSourceRef, GroundingStatus,
+    GroundingTally, GroundingVerdict, GroundingVerdictRecord, ReviewState,
+    GROUNDING_SCHEMA_VERSION,
 };
 pub use live::{LiveBus, LiveEvent, LiveStream, ShardProgress};
 pub use sandbox::{

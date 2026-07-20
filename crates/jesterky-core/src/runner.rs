@@ -296,6 +296,14 @@ impl Runner {
         // function of the manifest; a failing check is a runner bug, not a
         // workload failure — so it does not change `status`.
         manifest.invariants = Some(jesterky_contract::InvariantReport::compute(&manifest));
+        // Annotation-grounding projection (evidence quality), SEPARATE from the
+        // terminal status set above: a completed run whose trace-required rows
+        // were never read reports `required_trace_unread` here without touching
+        // `status`. Pure function of the recorded rows + the declared plan.
+        manifest.grounding = Some(jesterky_contract::GroundingReport::compute(
+            &manifest,
+            &spec.runplan.grounding,
+        ));
         Ok(manifest)
     }
 
@@ -447,6 +455,10 @@ impl Runner {
                     score: actor_result.score,
                     signal: actor_result.signal.clone(),
                     artifacts: actor_result.artifacts.clone(),
+                    // Grounding is graded by the host/annotator AFTER the call;
+                    // the core records the explicit ungraded state, never
+                    // "grounded by default".
+                    grounding: jesterky_contract::Grounding::Ungraded,
                 });
                 ledger
                     .lock()
@@ -1022,6 +1034,7 @@ impl Runner {
             budgets: None,
             goals: None,
             invariants: None,
+            grounding: None,
         }
     }
 
