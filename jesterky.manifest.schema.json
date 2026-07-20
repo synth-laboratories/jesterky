@@ -13,9 +13,7 @@
     "workflow_name"
   ],
   "properties": {
-    "args": {
-      "$ref": "#/definitions/JsonValue"
-    },
+    "args": true,
     "budgets": {
       "description": "Formal resource-budget projection (progress + ETA) when the run declared [`crate::topology::RunPlan::budgets`]. Host-metered; optional for back-compat.",
       "anyOf": [
@@ -47,6 +45,17 @@
       "anyOf": [
         {
           "$ref": "#/definitions/GoalSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "grounding": {
+      "description": "Annotation-grounding projection when the run declared [`crate::topology::RunPlan::grounding`]. SEPARATE from [`Self::status`]: a `completed` run may still report `required_trace_unread` here.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/GroundingReport"
         },
         {
           "type": "null"
@@ -144,9 +153,7 @@
     "Artifact": {
       "description": "Either an inline small value or a reference to an offloaded one. The runner applies the inline/offload split at a size cap.",
       "anyOf": [
-        {
-          "$ref": "#/definitions/JsonValue"
-        },
+        true,
         {
           "$ref": "#/definitions/ArtifactRef"
         }
@@ -256,13 +263,30 @@
       }
     },
     "BudgetEtaMode": {
-      "type": "string",
-      "enum": [
-        "off",
-        "nearest_only",
-        "all"
-      ],
-      "description": "How ETA lines are composed on the terminal panel."
+      "description": "How ETA lines are composed on the terminal panel.",
+      "oneOf": [
+        {
+          "description": "Do not show or compute ETA forecasts.",
+          "type": "string",
+          "enum": [
+            "off"
+          ]
+        },
+        {
+          "description": "Show only the soonest-to-exhaust cap.",
+          "type": "string",
+          "enum": [
+            "nearest_only"
+          ]
+        },
+        {
+          "description": "Show every cap that has a finite forecast (default).",
+          "type": "string",
+          "enum": [
+            "all"
+          ]
+        }
+      ]
     },
     "BudgetForecast": {
       "description": "ETA to exhaust one budget from observed burn rate.\n\n**Not** “time until the workflow finishes” — see module docs.",
@@ -319,13 +343,30 @@
       }
     },
     "BudgetKind": {
-      "type": "string",
-      "enum": [
-        "actor_calls",
-        "tokens",
-        "wall_seconds"
-      ],
-      "description": "What resource is being capped."
+      "description": "What resource is being capped.",
+      "oneOf": [
+        {
+          "description": "Impure actor invocations (model turns, env-coupled hero acts, …).",
+          "type": "string",
+          "enum": [
+            "actor_calls"
+          ]
+        },
+        {
+          "description": "Total tokens (in+out) observed on the live bus / recorded usage.",
+          "type": "string",
+          "enum": [
+            "tokens"
+          ]
+        },
+        {
+          "description": "Wall-clock seconds since the host started the run.",
+          "type": "string",
+          "enum": [
+            "wall_seconds"
+          ]
+        }
+      ]
     },
     "BudgetPlan": {
       "description": "Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.",
@@ -634,6 +675,31 @@
         }
       }
     },
+    "CitedSpan": {
+      "description": "A cited half-open byte range `[start, end)` inside a named source body.",
+      "type": "object",
+      "required": [
+        "end",
+        "source",
+        "start"
+      ],
+      "properties": {
+        "end": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "source": {
+          "description": "Which source body the span indexes (an [`ArtifactRef::key`], event stream name, or foreign trace id).",
+          "type": "string"
+        },
+        "start": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
     "Event": {
       "description": "One event in the stream. `wall_ms` is metadata ONLY — never part of ordering or identity (that is [`Addr`]'s job).",
       "type": "object",
@@ -650,9 +716,7 @@
         "kind": {
           "$ref": "#/definitions/EventKind"
         },
-        "payload": {
-          "$ref": "#/definitions/JsonValue"
-        },
+        "payload": true,
         "wall_ms": {
           "type": "integer",
           "format": "uint64",
@@ -661,37 +725,276 @@
       }
     },
     "EventKind": {
-      "type": "object",
-      "required": [
-        "kind"
-      ],
-      "properties": {
-        "kind": {
-          "type": "string",
-          "enum": [
-            "workflow_started",
-            "node_started",
-            "node_completed",
-            "map_item_started",
-            "map_item_completed",
-            "map_item_failed",
-            "map_completed",
-            "actor_invoked",
-            "resource_invoked",
-            "session_started",
-            "session_resumed",
-            "checkpoint_created",
-            "semaphore_acquired",
-            "semaphore_released",
-            "message_published",
-            "message_available",
-            "artifact_emitted",
-            "workflow_completed",
-            "workflow_failed"
-          ]
+      "description": "The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "node_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "node_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_item_failed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "map_completed"
+              ]
+            }
+          }
+        },
+        {
+          "description": "An actor/resource call was recorded (see replay manifest).",
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "actor_invoked"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "resource_invoked"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "session_started"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "session_resumed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "checkpoint_created"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "semaphore_acquired"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "semaphore_released"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "message_published"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "message_available"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "artifact_emitted"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "workflow_failed"
+              ]
+            }
+          }
         }
-      },
-      "description": "The closed set of event families. Payload detail rides in [`Event::payload`] as a typed value; this enum is the stable vocabulary consumers switch on. (Taxonomy adapted from `rlm/rlm_event_streaming_plan.md`, retyped — §11.)"
+      ]
     },
     "ForecastConfidence": {
       "description": "Forecast confidence (interval width).",
@@ -823,9 +1126,7 @@
             "path"
           ],
           "properties": {
-            "equals": {
-              "$ref": "#/definitions/JsonValue"
-            },
+            "equals": true,
             "kind": {
               "type": "string",
               "enum": [
@@ -890,13 +1191,30 @@
       }
     },
     "GoalState": {
-      "type": "string",
-      "enum": [
-        "met",
-        "unmet",
-        "unknown"
-      ],
-      "description": "Whether a goal (or the whole run) is satisfied."
+      "description": "Whether a goal (or the whole run) is satisfied.",
+      "oneOf": [
+        {
+          "description": "Predicate satisfied.",
+          "type": "string",
+          "enum": [
+            "met"
+          ]
+        },
+        {
+          "description": "Predicate evaluated but not satisfied.",
+          "type": "string",
+          "enum": [
+            "unmet"
+          ]
+        },
+        {
+          "description": "Path missing or wrong type — cannot evaluate.",
+          "type": "string",
+          "enum": [
+            "unknown"
+          ]
+        }
+      ]
     },
     "GoalStatus": {
       "description": "Result of evaluating one goal against the ledger.",
@@ -927,7 +1245,6 @@
           "type": "string"
         },
         "observed": {
-          "$ref": "#/definitions/JsonValue",
           "description": "The observed ledger value at the goal's path (echoed for consumers)."
         },
         "progress": {
@@ -966,6 +1283,307 @@
           "type": "boolean"
         }
       }
+    },
+    "Grounding": {
+      "description": "Per-output grounding state. Internally tagged (`\"state\": \"...\"`).\n\nThe `Default` — and therefore the serde default for legacy rows that predate this field — is `Ungraded`: absent grounding data NEVER reads as grounded.",
+      "oneOf": [
+        {
+          "description": "No grounding audit graded this output (the explicit legacy reading).",
+          "type": "object",
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "ungraded"
+              ]
+            }
+          }
+        },
+        {
+          "description": "A grounding audit graded this output; the record carries the evidence.",
+          "type": "object",
+          "required": [
+            "annotator",
+            "confidence",
+            "schema_version",
+            "state",
+            "trace_body_read",
+            "verdict"
+          ],
+          "properties": {
+            "annotator": {
+              "description": "Annotator identity — a model route (e.g. `openai/gpt-5.5`) or a human handle.",
+              "type": "string"
+            },
+            "cited_event_ids": {
+              "description": "Event ids in the source material the annotation cites.",
+              "default": [],
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cited_spans": {
+              "description": "Byte spans in the source material the annotation cites.",
+              "default": [],
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CitedSpan"
+              }
+            },
+            "confidence": {
+              "description": "Annotator confidence in `[0, 1]`.",
+              "type": "number",
+              "format": "double"
+            },
+            "review_state": {
+              "default": "unreviewed",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/ReviewState"
+                }
+              ]
+            },
+            "schema_version": {
+              "description": "[`GROUNDING_SCHEMA_VERSION`] at grading time.",
+              "type": "string"
+            },
+            "sources": {
+              "description": "Immutable source refs (run/artifact identity). Empty when the corpus carried no identity — which itself is evidence the row cannot be re-verified.",
+              "default": [],
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GroundingSourceRef"
+              }
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "graded"
+              ]
+            },
+            "trace_body_read": {
+              "description": "TRUE only when the annotator read the trace BODY. A `grounded` verdict with `trace_body_read: false` is contradictory and is counted as unread by [`GroundingReport::compute`].",
+              "type": "boolean"
+            },
+            "verdict": {
+              "$ref": "#/definitions/GroundingVerdict"
+            }
+          }
+        }
+      ]
+    },
+    "GroundingReport": {
+      "description": "The run-level grounding projection, attached to [`crate::artifact::RunManifest::grounding`]. A PURE function of the recorded rows + the declared plan; computing it never changes the run's terminal status.",
+      "type": "object",
+      "required": [
+        "schema_version",
+        "status",
+        "tally",
+        "trace_required"
+      ],
+      "properties": {
+        "schema_version": {
+          "description": "[`GROUNDING_SCHEMA_VERSION`] at compute time.",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/GroundingStatus"
+        },
+        "tally": {
+          "$ref": "#/definitions/GroundingTally"
+        },
+        "trace_required": {
+          "description": "Echo of [`GroundingPlan::trace_required`] the report was computed under.",
+          "type": "boolean"
+        }
+      }
+    },
+    "GroundingSourceRef": {
+      "description": "Immutable identity of source material a verdict was graded against. Internally tagged (`\"source\": \"...\"`) so refs stay flat JSON objects.",
+      "oneOf": [
+        {
+          "description": "A jesterky/SMR run identity.",
+          "type": "object",
+          "required": [
+            "run_id",
+            "source"
+          ],
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "run"
+              ]
+            }
+          }
+        },
+        {
+          "description": "An immutable artifact in the host store.",
+          "type": "object",
+          "required": [
+            "artifact",
+            "source"
+          ],
+          "properties": {
+            "artifact": {
+              "$ref": "#/definitions/ArtifactRef"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "artifact"
+              ]
+            }
+          }
+        },
+        {
+          "description": "A foreign system's record (e.g. a GameBench capture): system + stable id.",
+          "type": "object",
+          "required": [
+            "id",
+            "source",
+            "system"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "external"
+              ]
+            },
+            "system": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "GroundingStatus": {
+      "description": "Run-level grounding status. SEPARATE from — and never derived from — [`crate::artifact::RunStatus`]: a `Completed` run may carry any of these.",
+      "oneOf": [
+        {
+          "description": "Every recorded output is graded `grounded` from a read trace body.",
+          "type": "string",
+          "enum": [
+            "grounded"
+          ]
+        },
+        {
+          "description": "At least one graded output carries a non-grounded verdict (or a row is still ungraded) in a workflow that does not require traces.",
+          "type": "string",
+          "enum": [
+            "degraded"
+          ]
+        },
+        {
+          "description": "The typed failure for trace-REQUIRED workflows: at least one output's trace body was never read (ungraded, summary-only, unread, unreadable, or access-failed).",
+          "type": "string",
+          "enum": [
+            "required_trace_unread"
+          ]
+        },
+        {
+          "description": "No outputs are graded (legacy manifests, or grading has not run).",
+          "type": "string",
+          "enum": [
+            "ungraded"
+          ]
+        }
+      ]
+    },
+    "GroundingTally": {
+      "description": "Per-verdict row counts over a manifest's recorded outputs.",
+      "type": "object",
+      "required": [
+        "grounded",
+        "source_unread",
+        "source_unreadable",
+        "summary_only",
+        "trace_access_failed",
+        "ungraded"
+      ],
+      "properties": {
+        "grounded": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "source_unread": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "source_unreadable": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "summary_only": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "trace_access_failed": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "ungraded": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "GroundingVerdict": {
+      "description": "Evidence quality of one graded output. Closed set; adding a member is a contract change (mirrors the [`crate::budget::BudgetKind`] discipline).\n\nNote there is deliberately no `Ungraded` member here: \"nobody graded this row\" is the [`Grounding::Ungraded`] state, not a verdict an annotator may assert.",
+      "oneOf": [
+        {
+          "description": "The annotation was produced from the READ trace body and cites it.",
+          "type": "string",
+          "enum": [
+            "grounded"
+          ]
+        },
+        {
+          "description": "The annotation was produced from a summary/count projection only.",
+          "type": "string",
+          "enum": [
+            "summary_only"
+          ]
+        },
+        {
+          "description": "A source exists and is readable, but the annotator never opened it.",
+          "type": "string",
+          "enum": [
+            "source_unread"
+          ]
+        },
+        {
+          "description": "The source body exists but could not be parsed/decoded.",
+          "type": "string",
+          "enum": [
+            "source_unreadable"
+          ]
+        },
+        {
+          "description": "Fetching the trace failed (GC'd snapshot, auth, transport).",
+          "type": "string",
+          "enum": [
+            "trace_access_failed"
+          ]
+        }
+      ]
     },
     "InvariantCheck": {
       "description": "One structural invariant checked over a finished [`RunManifest`].",
@@ -1075,7 +1693,6 @@
           }
         },
         "inputs": {
-          "$ref": "#/definitions/JsonValue",
           "description": "Typed inputs the node received (post-binding-resolution)."
         },
         "label": {
@@ -1083,7 +1700,6 @@
           "type": "string"
         },
         "outputs": {
-          "$ref": "#/definitions/JsonValue",
           "description": "Typed outputs the node produced."
         },
         "score": {
@@ -1095,7 +1711,6 @@
           "format": "double"
         },
         "signal": {
-          "$ref": "#/definitions/JsonValue",
           "description": "Optimizer slot: a wall-safe verifier signal, if any."
         }
       }
@@ -1122,9 +1737,18 @@
         "call": {
           "$ref": "#/definitions/CallKind"
         },
-        "outputs": {
-          "$ref": "#/definitions/JsonValue"
+        "grounding": {
+          "description": "Evidence-quality verdict for this output, SEPARATE from run lifecycle (see [`crate::grounding`]). Missing on legacy rows deserializes to [`crate::grounding::Grounding::Ungraded`] — never to grounded.",
+          "default": {
+            "state": "ungraded"
+          },
+          "allOf": [
+            {
+              "$ref": "#/definitions/Grounding"
+            }
+          ]
         },
+        "outputs": true,
         "score": {
           "type": [
             "number",
@@ -1132,10 +1756,17 @@
           ],
           "format": "double"
         },
-        "signal": {
-          "$ref": "#/definitions/JsonValue"
-        }
+        "signal": true
       }
+    },
+    "ReviewState": {
+      "description": "Reviewer state of a graded verdict (human/second-pass audit trail).",
+      "type": "string",
+      "enum": [
+        "unreviewed",
+        "reviewed",
+        "disputed"
+      ]
     },
     "RunStatus": {
       "type": "string",
@@ -1151,37 +1782,6 @@
         "node_failed",
         "goal_unmet",
         "budget_exhausted"
-      ]
-    },
-    "JsonValue": {
-      "anyOf": [
-        {
-          "type": "null"
-        },
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "integer"
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/JsonValue"
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/JsonValue"
-          }
-        }
       ]
     }
   }

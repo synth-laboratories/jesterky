@@ -74,6 +74,11 @@ pub struct RecordedOutput {
     pub score: Option<f64>,
     pub signal: Option<serde_json::Value>,
     pub artifacts: Vec<ArtifactRef>,
+    /// Evidence-quality verdict for this output, SEPARATE from run lifecycle
+    /// (see [`crate::grounding`]). Missing on legacy rows deserializes to
+    /// [`crate::grounding::Grounding::Ungraded`] — never to grounded.
+    #[serde(default)]
+    pub grounding: crate::grounding::Grounding,
 }
 
 /// A per-session state snapshot (DungeonGrid takes one per turn). `state` may be
@@ -136,6 +141,11 @@ pub struct RunManifest {
     /// A failing check indicates a runner/manifest bug, not a workload failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub invariants: Option<InvariantReport>,
+    /// Annotation-grounding projection when the run declared
+    /// [`crate::topology::RunPlan::grounding`]. SEPARATE from [`Self::status`]:
+    /// a `completed` run may still report `required_trace_unread` here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grounding: Option<crate::grounding::GroundingReport>,
 }
 
 /// One structural invariant checked over a finished [`RunManifest`].

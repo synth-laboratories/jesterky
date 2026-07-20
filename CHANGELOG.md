@@ -4,6 +4,32 @@ All notable changes to jesterky are recorded here. Versions follow the three
 independent trains (contract / runtime / CLI); this release pins them together at
 `0.1.0`.
 
+## 0.1.2 — 2026-07-20
+
+Annotation grounding: evidence quality becomes a typed, per-output verdict,
+separate from workflow lifecycle. A run may be `completed` while its outputs
+carry non-grounded verdicts; "completed" never again doubles as "grounded".
+
+### Added
+- **`grounding` contract module** (`grounding.v1`) — per-output
+  `Grounding` state (`ungraded` | graded `GroundingVerdictRecord`) on
+  `RecordedOutput`, carrying verdict (`grounded` / `summary_only` /
+  `source_unread` / `source_unreadable` / `trace_access_failed`),
+  `trace_body_read`, cited event ids and byte spans, annotator identity,
+  schema version, confidence, review state, and immutable source refs
+  (run / artifact / external-system identity).
+- **`GroundingReport`** on `RunManifest.grounding` — a pure projection of the
+  recorded rows with per-verdict tallies and a run-level `GroundingStatus`.
+  With `runplan.grounding.trace_required`, any ungraded or unread row yields
+  the typed `required_trace_unread` status — independently of the run's
+  terminal `status`.
+
+### Breaking changes
+- None. All fields are additive with explicit serde defaults: legacy rows
+  without grounding data deserialize as `ungraded` (never as grounded), and an
+  undeclared `runplan.grounding` is skipped from serialization so existing
+  specs keep their `spec_hash` / replay identity.
+
 ## 0.1.1 — 2026-07-09
 
 The launch release: agentic actors get real environments, and chat-only models

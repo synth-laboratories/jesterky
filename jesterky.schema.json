@@ -161,22 +161,56 @@
       }
     },
     "BudgetEtaMode": {
-      "type": "string",
-      "enum": [
-        "off",
-        "nearest_only",
-        "all"
-      ],
-      "description": "How ETA lines are composed on the terminal panel."
+      "description": "How ETA lines are composed on the terminal panel.",
+      "oneOf": [
+        {
+          "description": "Do not show or compute ETA forecasts.",
+          "type": "string",
+          "enum": [
+            "off"
+          ]
+        },
+        {
+          "description": "Show only the soonest-to-exhaust cap.",
+          "type": "string",
+          "enum": [
+            "nearest_only"
+          ]
+        },
+        {
+          "description": "Show every cap that has a finite forecast (default).",
+          "type": "string",
+          "enum": [
+            "all"
+          ]
+        }
+      ]
     },
     "BudgetKind": {
-      "type": "string",
-      "enum": [
-        "actor_calls",
-        "tokens",
-        "wall_seconds"
-      ],
-      "description": "What resource is being capped."
+      "description": "What resource is being capped.",
+      "oneOf": [
+        {
+          "description": "Impure actor invocations (model turns, env-coupled hero acts, …).",
+          "type": "string",
+          "enum": [
+            "actor_calls"
+          ]
+        },
+        {
+          "description": "Total tokens (in+out) observed on the live bus / recorded usage.",
+          "type": "string",
+          "enum": [
+            "tokens"
+          ]
+        },
+        {
+          "description": "Wall-clock seconds since the host started the run.",
+          "type": "string",
+          "enum": [
+            "wall_seconds"
+          ]
+        }
+      ]
     },
     "BudgetPlan": {
       "description": "Full budget configuration for a workflow run (part of [`crate::topology::RunPlan`]).\n\nThis is the **typed JSON interface**: serialize/deserialize as `runplan.budgets`.",
@@ -325,9 +359,7 @@
             "path"
           ],
           "properties": {
-            "equals": {
-              "$ref": "#/definitions/JsonValue"
-            },
+            "equals": true,
             "kind": {
               "type": "string",
               "enum": [
@@ -408,6 +440,17 @@
         "show_progress": {
           "description": "Show the per-goal progress line (`goals 1/2 met · quality 0.72/0.80`).",
           "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "GroundingPlan": {
+      "description": "Declared grounding requirements for a run (`runplan.grounding`).",
+      "type": "object",
+      "properties": {
+        "trace_required": {
+          "description": "When TRUE, every recorded output must be graded from a READ trace body; any ungraded or unread row degrades the run's [`GroundingReport`] to [`GroundingStatus::RequiredTraceUnread`] — independently of [`crate::artifact::RunStatus`].",
+          "default": false,
           "type": "boolean"
         }
       }
@@ -857,6 +900,14 @@
             }
           ]
         },
+        "grounding": {
+          "description": "Declared **annotation grounding** requirements (evidence quality), separate from lifecycle. See [`crate::grounding`]. Skipped when empty so pre-existing specs keep their `spec_hash` (replay identity).",
+          "allOf": [
+            {
+              "$ref": "#/definitions/GroundingPlan"
+            }
+          ]
+        },
         "limits": {
           "description": "Named **concurrency** limits → permits (semaphores). A `map` / `session_group` `limit` names one of these. Distinct from [`Self::budgets`].",
           "default": {},
@@ -1028,12 +1079,23 @@
       }
     },
     "SandboxMode": {
-      "type": "string",
-      "enum": [
-        "read-only",
-        "workspace-write"
-      ],
-      "description": "The permission level the actor should self-apply (maps to codex `--sandbox`)."
+      "description": "The permission level the actor should self-apply (maps to codex `--sandbox`).",
+      "oneOf": [
+        {
+          "description": "Read the workspace, run nothing that writes it. Default — least privilege.",
+          "type": "string",
+          "enum": [
+            "read-only"
+          ]
+        },
+        {
+          "description": "Create/modify files and run builds/tools in the workspace.",
+          "type": "string",
+          "enum": [
+            "workspace-write"
+          ]
+        }
+      ]
     },
     "SandboxSeed": {
       "description": "How the workspace is populated before the actor runs. All three compose, in order: write `files_input`, copy `copy_from`, run `setup`.",
@@ -1072,37 +1134,6 @@
         "minimal",
         "standard",
         "verbose"
-      ]
-    },
-    "JsonValue": {
-      "anyOf": [
-        {
-          "type": "null"
-        },
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "integer"
-        },
-        {
-          "type": "number"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/JsonValue"
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/JsonValue"
-          }
-        }
       ]
     }
   }
