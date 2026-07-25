@@ -199,7 +199,6 @@ impl CodexModel {
             args.push("--cd".into());
             args.push(cwd.to_string_lossy().into_owned());
         }
-        args.push(prompt.to_string());
 
         // Env: codex uses its own auth (ChatGPT bundle / proxy config under
         // CODEX_HOME) — intentionally NOT OPENAI_API_KEY.
@@ -207,10 +206,10 @@ impl CodexModel {
         // A sandbox command does not necessarily inherit the host environment.
         // Carry the central trace context explicitly and unchanged, then add
         // Jesterky's structural child identity as join metadata. The Containers
-        // importer remains the schema/registration authority. Codex providers
-        // cannot map environment values into arbitrary request headers, so the
-        // finalizer attributes captured calls through the exact prompt_cache_key ↔
-        // native codex.thread alias instead of pretending these env values are sent.
+        // importer remains the schema/registration authority. Once registration
+        // returns the scoped child capability, the supported static provider-header
+        // config binds this subprocess's calls directly to that child. Native
+        // prompt_cache_key ↔ codex.thread aliases remain an independent cross-check.
         const TRACE_ENV: &[&str] = &[
             "SYNTH_TRACE_ID",
             "SYNTH_CAPTURE_ID",
@@ -248,7 +247,14 @@ impl CodexModel {
                 env.retain(|(existing, _)| existing != &key);
                 env.push((key, value));
             }
+            let trace_base_url = std::env::var("OPENAI_BASE_URL").map_err(|_| {
+                ModelError::Config(
+                    "OPENAI_BASE_URL is required for traced Codex provider capture".to_string(),
+                )
+            })?;
+            args.extend(synth_trace_provider_args(&trace_base_url, &env)?);
         }
+        args.push(prompt.to_string());
         env.push(("SYNTH_JESTERKY_ATTEMPT".into(), attempt.to_string()));
         env.push(("SYNTH_JESTERKY_NATIVE_ADDR".into(), workflow_address));
         if let Some(codex_home) = &self.codex_home {
@@ -457,6 +463,59 @@ impl CodexModel {
             Err(classify_codex_failure(&combined))
         }
     }
+}
+
+fn synth_trace_provider_args(
+    base_url: &str,
+    child_env: &[(String, String)],
+) -> Result<Vec<String>, ModelError> {
+    let value = |name: &str| {
+        child_env
+            .iter()
+            .find_map(|(key, value)| (key == name).then_some(value.as_str()))
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| {
+                ModelError::Config(format!(
+                    "{name} is required for traced Codex provider capture"
+                ))
+            })
+    };
+    let headers = [
+        ("x-synth-trace-id", value("SYNTH_TRACE_ID")?),
+        ("x-synth-capture-id", value("SYNTH_CAPTURE_ID")?),
+        ("x-synth-actor-id", value("SYNTH_ACTOR_ID")?),
+        ("x-synth-session-id", value("SYNTH_ACTOR_SESSION_ID")?),
+        (
+            "x-synth-context-token",
+            value("SYNTH_TRACE_COLLECTOR_TOKEN")?,
+        ),
+    ];
+    let header_table = format!(
+        "{{{}}}",
+        headers
+            .iter()
+            .map(|(name, value)| format!(
+                "{}={}",
+                serde_json::to_string(name).expect("header name is JSON serializable"),
+                serde_json::to_string(value).expect("header value is JSON serializable"),
+            ))
+            .collect::<Vec<_>>()
+            .join(",")
+    );
+    Ok([
+        "model_provider=\"synth_trace\"".to_string(),
+        "model_providers.synth_trace.name=\"Synth Trace Proxy\"".to_string(),
+        format!(
+            "model_providers.synth_trace.base_url={}",
+            serde_json::to_string(base_url).expect("base URL is JSON serializable")
+        ),
+        "model_providers.synth_trace.wire_api=\"responses\"".to_string(),
+        "model_providers.synth_trace.requires_openai_auth=true".to_string(),
+        format!("model_providers.synth_trace.http_headers={header_table}"),
+    ]
+    .into_iter()
+    .flat_map(|value| ["-c".to_string(), value])
+    .collect())
 }
 
 async fn register_trace_child(
@@ -682,6 +741,33 @@ mod tests {
             stream.ingest(&event, &mut reply);
         }
         assert_eq!(reply, r#"{"verdict":"pass"}"#);
+    }
+
+    #[test]
+    fn traced_codex_provider_uses_supported_child_headers() {
+        let child_env = [
+            ("SYNTH_TRACE_ID".to_string(), "trace_1".to_string()),
+            ("SYNTH_CAPTURE_ID".to_string(), "cap_1".to_string()),
+            ("SYNTH_ACTOR_ID".to_string(), "actor_1".to_string()),
+            (
+                "SYNTH_ACTOR_SESSION_ID".to_string(),
+                "session_1".to_string(),
+            ),
+            (
+                "SYNTH_TRACE_COLLECTOR_TOKEN".to_string(),
+                "ephemeral_child_capability".to_string(),
+            ),
+        ];
+        let args = synth_trace_provider_args("http://127.0.0.1:4321/v1", &child_env).unwrap();
+        let rendered = args.join(" ");
+        assert!(rendered.contains("model_provider=\"synth_trace\""));
+        assert!(rendered.contains("requires_openai_auth=true"));
+        assert!(rendered.contains("http_headers="));
+        assert!(!rendered.contains("env_http_headers"));
+        assert!(rendered.contains("x-synth-capture-id"));
+        assert!(rendered.contains("cap_1"));
+        assert!(rendered.contains("x-synth-context-token"));
+        assert!(rendered.contains("ephemeral_child_capability"));
     }
 }
 
