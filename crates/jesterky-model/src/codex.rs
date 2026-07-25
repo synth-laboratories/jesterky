@@ -156,14 +156,6 @@ impl CodexModel {
 
         let tracing_active = std::env::var("SYNTH_TRACE_ID").is_ok();
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
-        if tracing_active {
-            let trace_base_url = std::env::var("OPENAI_BASE_URL").map_err(|_| {
-                ModelError::Config(
-                    "OPENAI_BASE_URL is required for traced Codex provider capture".to_string(),
-                )
-            })?;
-            args.extend(synth_trace_provider_args(&trace_base_url));
-        }
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
             args.push("-c".into());
@@ -215,7 +207,10 @@ impl CodexModel {
         // A sandbox command does not necessarily inherit the host environment.
         // Carry the central trace context explicitly and unchanged, then add
         // Jesterky's structural child identity as join metadata. The Containers
-        // importer remains the schema/registration authority.
+        // importer remains the schema/registration authority. Codex providers
+        // cannot map environment values into arbitrary request headers, so the
+        // finalizer attributes captured calls through the exact prompt_cache_key ↔
+        // native codex.thread alias instead of pretending these env values are sent.
         const TRACE_ENV: &[&str] = &[
             "SYNTH_TRACE_ID",
             "SYNTH_CAPTURE_ID",
@@ -464,30 +459,6 @@ impl CodexModel {
     }
 }
 
-fn synth_trace_provider_args(base_url: &str) -> Vec<String> {
-    let header_environment = concat!(
-        "{\"x-synth-trace-id\"=\"SYNTH_TRACE_ID\",",
-        "\"x-synth-capture-id\"=\"SYNTH_CAPTURE_ID\",",
-        "\"x-synth-actor-id\"=\"SYNTH_ACTOR_ID\",",
-        "\"x-synth-session-id\"=\"SYNTH_ACTOR_SESSION_ID\",",
-        "\"x-synth-context-token\"=\"SYNTH_TRACE_COLLECTOR_TOKEN\"}"
-    );
-    [
-        "model_provider=\"synth_trace\"".to_string(),
-        "model_providers.synth_trace.name=\"Synth Trace Proxy\"".to_string(),
-        format!(
-            "model_providers.synth_trace.base_url={}",
-            serde_json::to_string(base_url).expect("base URL is JSON serializable")
-        ),
-        "model_providers.synth_trace.wire_api=\"responses\"".to_string(),
-        "model_providers.synth_trace.requires_openai_auth=true".to_string(),
-        format!("model_providers.synth_trace.env_http_headers={header_environment}"),
-    ]
-    .into_iter()
-    .flat_map(|value| ["-c".to_string(), value])
-    .collect()
-}
-
 async fn register_trace_child(
     req: &ModelRequest,
     attempt: u32,
@@ -711,18 +682,6 @@ mod tests {
             stream.ingest(&event, &mut reply);
         }
         assert_eq!(reply, r#"{"verdict":"pass"}"#);
-    }
-
-    #[test]
-    fn traced_codex_provider_binds_child_context_headers() {
-        let args = synth_trace_provider_args("http://127.0.0.1:4321");
-        let rendered = args.join(" ");
-        assert!(rendered.contains("model_provider=\"synth_trace\""));
-        assert!(rendered.contains("requires_openai_auth=true"));
-        assert!(rendered.contains("x-synth-capture-id"));
-        assert!(rendered.contains("SYNTH_CAPTURE_ID"));
-        assert!(rendered.contains("x-synth-context-token"));
-        assert!(rendered.contains("SYNTH_TRACE_COLLECTOR_TOKEN"));
     }
 }
 
