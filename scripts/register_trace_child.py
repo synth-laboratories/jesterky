@@ -21,10 +21,10 @@ from synth_containers.tracing import (
 from synth_containers.tracing.capture.emitter import TraceEmitter
 from synth_containers.tracing.models.actors import SessionCoverageV5
 
-EXPECTED_CONTAINERS_VERSION = "0.3.0.20260725"
-EXPECTED_CONTAINERS_SOURCE_COMMIT = "7a327c471c8850a1e8ea62fcea6813539c2a652e"
+EXPECTED_CONTAINERS_VERSION = "0.4.0.20260725"
+EXPECTED_CONTAINERS_SOURCE_COMMIT = "0456dc5ea4900e54714acc26867345d84a07b9ff"
 EXPECTED_CONTAINERS_WHEEL_SHA256 = (
-    "1eafbca64b40c84c8c9d2554e68c8115605eea971444a378ca1d738fc39f61ee"
+    "9d40f21be7ea21a72aec8e316b4de4524e20cee54cc641bfdb2439413daa22b0"
 )
 
 
