@@ -221,6 +221,14 @@ pub struct RunPlan {
     /// dual of [`Self::budgets`]. See [`crate::goal`].
     #[serde(default)]
     pub goals: crate::goal::GoalPlan,
+    /// Declared **annotation grounding** requirements (evidence quality),
+    /// separate from lifecycle. See [`crate::grounding`]. Skipped when empty so
+    /// pre-existing specs keep their `spec_hash` (replay identity).
+    #[serde(
+        default,
+        skip_serializing_if = "crate::grounding::GroundingPlan::is_empty"
+    )]
+    pub grounding: crate::grounding::GroundingPlan,
     #[serde(default)]
     pub verbosity: Verbosity,
 }
@@ -232,6 +240,7 @@ impl Default for RunPlan {
             map_concurrency: None,
             budgets: crate::budget::BudgetPlan::default(),
             goals: crate::goal::GoalPlan::default(),
+            grounding: crate::grounding::GroundingPlan::default(),
             verbosity: Verbosity::Standard,
         }
     }

@@ -1301,6 +1301,7 @@ fn partial_manifest(spec: &WorkflowSpec, run_id: &str, events: Vec<Event>) -> Ru
         budgets: None,
         goals: None,
         invariants: None,
+        grounding: None,
     }
 }
 
