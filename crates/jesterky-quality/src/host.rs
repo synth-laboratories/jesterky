@@ -1,6 +1,6 @@
 //! Default host wiring for reference quality workloads (prompts, schemas, viz).
 
-use crate::{SCANNER_ACTOR, SUMMARY_ACTOR, blog, docs, dungeongrid, obliq, oss_code, roles, trace};
+use crate::{blog, docs, dungeongrid, obliq, oss_code, roles, trace, SCANNER_ACTOR, SUMMARY_ACTOR};
 use jesterky_contract::{HostConfig, HostRole, HostVizConfig};
 use std::collections::BTreeMap;
 
@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 /// does not embed its own `host` block.
 pub fn host_config(name: &str) -> Option<HostConfig> {
     match name {
-        "quality_scan" => Some(code_scan_host()),
+        "quality_scan" | "trace_v5_acceptance" => Some(code_scan_host()),
         "quality_scan_blogs" => Some(blog::host_config()),
         "quality_scan_docs" => Some(docs::host_config()),
         "quality_scan_oss_code" => Some(oss_code::host_config()),

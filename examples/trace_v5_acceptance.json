@@ -1,0 +1,45 @@
+{
+  "name": "trace_v5_acceptance",
+  "entrypoint": ["scan_jobs", "aggregate", "record_summary"],
+  "nodes": {
+    "scan_jobs": {
+      "kind": "map",
+      "over": "ledger.jobs",
+      "item_as": "item",
+      "concurrency": 2,
+      "min_success": 1.0,
+      "body": {
+        "kind": "actor",
+        "actor": "quality_scanner",
+        "inputs": {
+          "job": "item"
+        },
+        "outputs": {}
+      },
+      "outputs": {
+        "job": "ledger.scans"
+      }
+    },
+    "aggregate": {
+      "kind": "reduce",
+      "op": "quality.aggregate",
+      "inputs": {
+        "scans": "ledger.scans"
+      },
+      "outputs": {
+        "summary": "ledger.summary"
+      }
+    },
+    "record_summary": {
+      "kind": "actor",
+      "actor": "summary_recorder",
+      "inputs": {
+        "summary": "ledger.summary"
+      },
+      "outputs": {}
+    }
+  },
+  "runplan": {
+    "map_concurrency": 2
+  }
+}

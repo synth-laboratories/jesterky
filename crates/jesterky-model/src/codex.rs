@@ -6,12 +6,13 @@
 //! without touching [`ModelActor`](crate::ModelActor).
 
 use crate::limiter::AdaptiveLimiter;
-use crate::{Model, ModelError, ModelRequest, build_prompt};
+use crate::{build_prompt, Model, ModelError, ModelRequest};
 use async_trait::async_trait;
+use std::io::Write as _;
 use std::path::PathBuf;
 use std::process::Stdio;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::process::Command;
@@ -96,7 +97,7 @@ impl Model for CodexModel {
                 Some(limiter) => Some(limiter.acquire().await),
                 None => None,
             };
-            match self.exec_once(req, &prompt).await {
+            match self.exec_once(req, &prompt, attempt).await {
                 Ok(reply) => {
                     if let Some(limiter) = &self.limiter {
                         limiter.on_success();
@@ -127,7 +128,12 @@ impl CodexModel {
     /// One codex subprocess: build the command, stream its JSONL, assemble the
     /// reply, classify a non-zero exit. Retry / limiter concerns stay in
     /// [`Model::complete`] so this is a single clean attempt.
-    async fn exec_once(&self, req: &ModelRequest, prompt: &str) -> Result<String, ModelError> {
+    async fn exec_once(
+        &self,
+        req: &ModelRequest,
+        prompt: &str,
+        attempt: u32,
+    ) -> Result<String, ModelError> {
         // The workspace + permission come from the per-call sandbox if the actor
         // declared one; else the model runs read-only in `self.cwd` (as before).
         // The workdir is set both as codex's `--cd` and the process cwd so a
@@ -197,6 +203,50 @@ impl CodexModel {
         // Env: codex uses its own auth (ChatGPT bundle / proxy config under
         // CODEX_HOME) — intentionally NOT OPENAI_API_KEY.
         let mut env: Vec<(String, String)> = Vec::new();
+        // A sandbox command does not necessarily inherit the host environment.
+        // Carry the central trace context explicitly and unchanged, then add
+        // Jesterky's structural child identity as join metadata. The Containers
+        // importer remains the schema/registration authority.
+        const TRACE_ENV: &[&str] = &[
+            "SYNTH_TRACE_ID",
+            "SYNTH_CAPTURE_ID",
+            "SYNTH_ACTOR_ID",
+            "SYNTH_ACTOR_SESSION_ID",
+            "SYNTH_PARENT_ACTOR_ID",
+            "SYNTH_PARENT_ACTOR_SESSION_ID",
+            "SYNTH_PARENT_SPAN_ID",
+            "SYNTH_DELEGATION_ID",
+            "SYNTH_WORKFLOW_ADDRESS",
+            "SYNTH_TRACE_BINDING_PATH",
+            "SYNTH_TRACE_COLLECTOR_URL",
+            "SYNTH_TRACE_COLLECTOR_TOKEN",
+            "SYNTH_TRACE_OUTPUT_DIR",
+            "TRACEPARENT",
+        ];
+        for key in TRACE_ENV {
+            if let Ok(value) = std::env::var(key) {
+                env.push(((*key).to_string(), value));
+            }
+        }
+        let workflow_address = req
+            .node_path
+            .as_ref()
+            .and_then(|path| serde_json::to_string(path).ok())
+            .unwrap_or_else(|| "[]".to_string());
+        let mut child_capture_id: Option<String> = None;
+        if std::env::var("SYNTH_TRACE_ID").is_ok() {
+            let child_env = register_trace_child(req, attempt, &workflow_address).await?;
+            child_capture_id = child_env
+                .iter()
+                .find(|(key, _)| key == "SYNTH_CAPTURE_ID")
+                .map(|(_, value)| value.clone());
+            for (key, value) in child_env {
+                env.retain(|(existing, _)| existing != &key);
+                env.push((key, value));
+            }
+        }
+        env.push(("SYNTH_JESTERKY_ATTEMPT".into(), attempt.to_string()));
+        env.push(("SYNTH_JESTERKY_NATIVE_ADDR".into(), workflow_address));
         if let Some(codex_home) = &self.codex_home {
             env.push((
                 "CODEX_HOME".into(),
@@ -206,10 +256,37 @@ impl CodexModel {
         // Sandbox-provided env wins (e.g. an in-container CODEX_HOME pointing at
         // mounted auth): drop any key the sandbox overrides, then append its env.
         if let Some(sb) = sandbox {
-            let over: std::collections::HashSet<&str> =
-                sb.env().iter().map(|(k, _)| k.as_str()).collect();
+            let over: std::collections::HashSet<&str> = sb
+                .env()
+                .iter()
+                .filter(|(key, _)| {
+                    !key.starts_with("SYNTH_TRACE")
+                        && !key.starts_with("SYNTH_ACTOR")
+                        && key.as_str() != "SYNTH_PARENT_ACTOR_ID"
+                        && key.as_str() != "SYNTH_PARENT_ACTOR_SESSION_ID"
+                        && key.as_str() != "SYNTH_PARENT_SPAN_ID"
+                        && key.as_str() != "SYNTH_DELEGATION_ID"
+                        && key.as_str() != "SYNTH_WORKFLOW_ADDRESS"
+                        && key.as_str() != "TRACEPARENT"
+                })
+                .map(|(k, _)| k.as_str())
+                .collect();
             env.retain(|(k, _)| !over.contains(k.as_str()));
-            env.extend(sb.env().iter().cloned());
+            env.extend(
+                sb.env()
+                    .iter()
+                    .filter(|(key, _)| {
+                        !key.starts_with("SYNTH_TRACE")
+                            && !key.starts_with("SYNTH_ACTOR")
+                            && key.as_str() != "SYNTH_PARENT_ACTOR_ID"
+                            && key.as_str() != "SYNTH_PARENT_ACTOR_SESSION_ID"
+                            && key.as_str() != "SYNTH_PARENT_SPAN_ID"
+                            && key.as_str() != "SYNTH_DELEGATION_ID"
+                            && key.as_str() != "SYNTH_WORKFLOW_ADDRESS"
+                            && key.as_str() != "TRACEPARENT"
+                    })
+                    .cloned(),
+            );
         }
 
         // Build the command IN the sandbox (docker: `docker exec`; local: host
@@ -233,6 +310,56 @@ impl CodexModel {
         // (e.g. SYNTH_API_KEY for the proxy) is inherited from the parent.
 
         cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
+
+        let mut native_trace_sink = match (
+            child_capture_id.as_deref(),
+            std::env::var("SYNTH_JESTERKY_CODEX_JSONL_DIR").ok(),
+        ) {
+            (Some(capture_id), Some(directory)) => {
+                std::fs::create_dir_all(&directory).map_err(|err| {
+                    ModelError::Config(format!(
+                        "failed to create Jesterky Codex JSONL directory: {err}"
+                    ))
+                })?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt as _;
+                    std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o700))
+                        .map_err(|err| {
+                            ModelError::Config(format!(
+                                "failed to protect Jesterky Codex JSONL directory: {err}"
+                            ))
+                        })?;
+                }
+                let path = PathBuf::from(directory).join(format!("{capture_id}.jsonl"));
+                let mut options = std::fs::OpenOptions::new();
+                options.create(true).write(true).truncate(true);
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::OpenOptionsExt as _;
+                    options.mode(0o600);
+                }
+                let sink = options.open(&path).map_err(|err| {
+                    ModelError::Config(format!(
+                        "failed to open Codex native trace `{}`: {err}",
+                        path.display()
+                    ))
+                })?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt as _;
+                    sink.set_permissions(std::fs::Permissions::from_mode(0o600))
+                        .map_err(|err| {
+                            ModelError::Config(format!(
+                                "failed to protect Codex native trace `{}`: {err}",
+                                path.display()
+                            ))
+                        })?;
+                }
+                Some(sink)
+            }
+            _ => None,
+        };
 
         let mut child = cmd.spawn().map_err(|err| match err.kind() {
             std::io::ErrorKind::NotFound => {
@@ -261,6 +388,11 @@ impl CodexModel {
             if line.trim().is_empty() {
                 continue;
             }
+            if let Some(sink) = native_trace_sink.as_mut() {
+                writeln!(sink, "{line}").map_err(|err| {
+                    ModelError::Transient(format!("writing Jesterky Codex native trace: {err}"))
+                })?;
+            }
             // Keep a bounded tail of the raw JSONL so a non-zero exit can surface
             // codex's own error events (which ride stdout, not stderr).
             tail.push_back(line.clone());
@@ -285,6 +417,14 @@ impl CodexModel {
             .wait()
             .await
             .map_err(|err| ModelError::Transient(format!("waiting on codex: {err}")))?;
+        if child_capture_id.is_some() {
+            let terminal_status = if status.success() && !reply.trim().is_empty() {
+                "completed"
+            } else {
+                "failed"
+            };
+            finish_trace_child(&env, terminal_status).await?;
+        }
 
         if status.success() {
             if reply.trim().is_empty() {
@@ -313,6 +453,93 @@ impl CodexModel {
             Err(classify_codex_failure(&combined))
         }
     }
+}
+
+async fn register_trace_child(
+    req: &ModelRequest,
+    attempt: u32,
+    workflow_address: &str,
+) -> Result<Vec<(String, String)>, ModelError> {
+    let registrar = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR").map_err(|_| {
+        ModelError::Config(
+            "SYNTH_TRACE_CHILD_REGISTRAR is required when Synth tracing is active".to_string(),
+        )
+    })?;
+    let python = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR_PYTHON")
+        .unwrap_or_else(|_| "python3".to_string());
+    let output = Command::new(&python)
+        .arg(&registrar)
+        .arg("--actor")
+        .arg(&req.actor)
+        .arg("--workflow-address")
+        .arg(workflow_address)
+        .arg("--attempt")
+        .arg(attempt.to_string())
+        .output()
+        .await
+        .map_err(|err| {
+            ModelError::Config(format!(
+                "failed to launch trace child registrar `{registrar}`: {err}"
+            ))
+        })?;
+    if !output.status.success() {
+        return Err(ModelError::Config(format!(
+            "trace child registration failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let values: std::collections::BTreeMap<String, String> = serde_json::from_slice(&output.stdout)
+        .map_err(|err| {
+            ModelError::Config(format!(
+                "trace child registrar returned invalid environment JSON: {err}"
+            ))
+        })?;
+    for required in [
+        "SYNTH_TRACE_ID",
+        "SYNTH_CAPTURE_ID",
+        "SYNTH_ACTOR_ID",
+        "SYNTH_ACTOR_SESSION_ID",
+        "SYNTH_PARENT_ACTOR_ID",
+        "SYNTH_DELEGATION_ID",
+        "SYNTH_TRACE_COLLECTOR_TOKEN",
+    ] {
+        if !values.contains_key(required) {
+            return Err(ModelError::Config(format!(
+                "trace child registrar omitted {required}"
+            )));
+        }
+    }
+    Ok(values.into_iter().collect())
+}
+
+async fn finish_trace_child(
+    child_env: &[(String, String)],
+    status: &str,
+) -> Result<(), ModelError> {
+    let registrar = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR").map_err(|_| {
+        ModelError::Config(
+            "SYNTH_TRACE_CHILD_REGISTRAR is required when Synth tracing is active".to_string(),
+        )
+    })?;
+    let python = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR_PYTHON")
+        .unwrap_or_else(|_| "python3".to_string());
+    let mut command = Command::new(&python);
+    command.arg(&registrar).arg("--finish-status").arg(status);
+    for (key, value) in child_env {
+        command.env(key, value);
+    }
+    let output = command.output().await.map_err(|err| {
+        ModelError::Config(format!(
+            "failed to launch trace child finisher `{registrar}`: {err}"
+        ))
+    })?;
+    if !output.status.success() {
+        return Err(ModelError::Config(format!(
+            "trace child finish failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    Ok(())
 }
 
 /// Running totals folded from the codex JSONL event stream for one shard.
