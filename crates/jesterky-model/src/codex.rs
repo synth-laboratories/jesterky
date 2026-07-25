@@ -352,6 +352,7 @@ impl CodexModel {
 
         cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
 
+        let mut native_trace_path: Option<PathBuf> = None;
         let mut native_trace_sink = match (
             child_capture_id.as_deref(),
             std::env::var("SYNTH_JESTERKY_CODEX_JSONL_DIR").ok(),
@@ -373,6 +374,7 @@ impl CodexModel {
                         })?;
                 }
                 let path = PathBuf::from(directory).join(format!("{capture_id}.jsonl"));
+                native_trace_path = Some(path.clone());
                 let mut options = std::fs::OpenOptions::new();
                 options.create(true).write(true).truncate(true);
                 #[cfg(unix)]
@@ -459,6 +461,16 @@ impl CodexModel {
             .await
             .map_err(|err| ModelError::Transient(format!("waiting on codex: {err}")))?;
         if child_capture_id.is_some() {
+            if let Some(mut sink) = native_trace_sink.take() {
+                sink.flush().map_err(|err| {
+                    ModelError::Transient(format!(
+                        "flushing Jesterky Codex native trace: {err}"
+                    ))
+                })?;
+            }
+            if let Some(path) = native_trace_path.as_deref() {
+                import_trace_child(&env, path).await?;
+            }
             let terminal_status = if status.success() && !reply.trim().is_empty() {
                 "completed"
             } else {
@@ -766,6 +778,39 @@ async fn finish_trace_child(
     if !output.status.success() {
         return Err(ModelError::Config(format!(
             "trace child finish failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    Ok(())
+}
+
+async fn import_trace_child(
+    child_env: &[(String, String)],
+    native_jsonl: &std::path::Path,
+) -> Result<(), ModelError> {
+    let registrar = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR").map_err(|_| {
+        ModelError::Config(
+            "SYNTH_TRACE_CHILD_REGISTRAR is required when Synth tracing is active".to_string(),
+        )
+    })?;
+    let python = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR_PYTHON")
+        .unwrap_or_else(|_| "python3".to_string());
+    let mut command = Command::new(&python);
+    command
+        .arg(&registrar)
+        .arg("--native-jsonl")
+        .arg(native_jsonl);
+    for (key, value) in child_env {
+        command.env(key, value);
+    }
+    let output = command.output().await.map_err(|err| {
+        ModelError::Config(format!(
+            "failed to launch trace child native importer `{registrar}`: {err}"
+        ))
+    })?;
+    if !output.status.success() {
+        return Err(ModelError::Config(format!(
+            "trace child native import failed: {}",
             String::from_utf8_lossy(&output.stderr).trim()
         )));
     }

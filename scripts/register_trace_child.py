@@ -18,6 +18,7 @@ from synth_containers.tracing import (
     record_id,
     utc_now,
 )
+from synth_containers.tracing.adapters import import_codex_jsonl
 from synth_containers.tracing.capture.emitter import TraceEmitter
 from synth_containers.tracing.models.actors import SessionCoverageV5
 
@@ -73,12 +74,42 @@ def main() -> int:
     parser.add_argument("--workflow-address")
     parser.add_argument("--attempt", type=int)
     parser.add_argument("--finish-status", choices=("completed", "failed", "interrupted"))
+    parser.add_argument("--native-jsonl", type=Path)
     args = parser.parse_args()
 
     _verify_containers_runtime()
     parent = TraceContextV1.from_environment()
     if parent is None or not parent.collector_url:
         raise RuntimeError("complete parent Synth trace context is required")
+    if args.native_jsonl is not None:
+        imported = import_codex_jsonl(
+            args.native_jsonl.resolve(),
+            target_id=parent.actor_session_id,
+        )
+        with TraceEmitter.from_environment() as emitter:
+            envelope_ids = [
+                emitter.event(
+                    event_type=str(event["event_type"]),
+                    payload={
+                        "native": event.get("body"),
+                        "codex_id": event.get("codex_id"),
+                        "authority": "codex_stdout_jsonl",
+                    },
+                )
+                for event in imported.events
+            ]
+        print(
+            json.dumps(
+                {
+                    "capture_id": parent.capture_id,
+                    "session_id": parent.actor_session_id,
+                    "event_count": len(envelope_ids),
+                    "usage_snapshot_count": len(imported.usage_snapshots),
+                },
+                sort_keys=True,
+            )
+        )
+        return 0
     if args.finish_status:
         with TraceEmitter.from_environment() as emitter:
             envelope_id = emitter.finish(status=args.finish_status)

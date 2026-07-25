@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from synth_containers.tracing import (
+    AliasV1,
     ApplicationTraceAssembler,
     CaptureMode,
     CaptureSupervisor,
@@ -277,21 +278,30 @@ def _ingest_native(
         capture_id = str(context["capture_id"])
         raw_jsonl = codex_jsonl_dir / f"{capture_id}.jsonl"
         imported = import_codex_jsonl(raw_jsonl, target_id=str(session["session_id"]))
-        event_ids: list[str] = []
-        for event in imported.events:
-            event_ids.append(
-                supervisor.collector.event(
-                    event_type=str(event["event_type"]),
-                    payload={
-                        "native": event.get("body"),
-                        "codex_id": event.get("codex_id"),
-                        "authority": "codex_stdout_jsonl",
-                    },
-                    actor_id=str(actor["actor_id"]),
-                    session_id=str(session["session_id"]),
+        thread_id = next(
+            (
+                alias.value
+                for alias in imported.aliases
+                if str(alias.namespace) == "codex.thread"
+            ),
+            capture_id,
+        )
+        scoped_aliases = [
+            (
+                AliasV1(
+                    namespace=alias.namespace,
+                    value=f"{thread_id}/{alias.value}",
+                    target_id=alias.target_id,
+                    target_kind=alias.target_kind,
+                    provenance=alias.provenance,
+                    confidence=alias.confidence,
                 )
+                if str(alias.namespace) in {"codex.turn", "codex.item"}
+                else alias
             )
-        for alias in imported.aliases:
+            for alias in imported.aliases
+        ]
+        for alias in scoped_aliases:
             supervisor.declare_alias(alias)
         children.append(
             {
@@ -310,9 +320,9 @@ def _ingest_native(
                 "native_jsonl": str(raw_jsonl),
                 "native_jsonl_digest": _digest(raw_jsonl),
                 "native_line_count": imported.line_count,
-                "native_event_count": len(event_ids),
+                "native_event_count": len(imported.events),
                 "usage_snapshot_count": len(imported.usage_snapshots),
-                "aliases": [alias.to_dict() for alias in imported.aliases],
+                "aliases": [alias.to_dict() for alias in scoped_aliases],
             }
         )
     return {
