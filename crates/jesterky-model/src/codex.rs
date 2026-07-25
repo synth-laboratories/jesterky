@@ -155,9 +155,17 @@ impl CodexModel {
             .or_else(|| self.cwd.clone());
 
         let tracing_active = std::env::var("SYNTH_TRACE_ID").is_ok();
-        let trace_base_url = tracing_active
-            .then(|| trace_proxy_base_url(self.codex_home.as_deref()))
-            .transpose()?;
+        let trace_base_url = if tracing_active {
+            Some(
+                trace_proxy_base_url(
+                    self.codex_home.as_deref(),
+                    sandbox.map(|sandbox| sandbox.as_ref()),
+                )
+                .await?,
+            )
+        } else {
+            None
+        };
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
@@ -468,22 +476,65 @@ impl CodexModel {
     }
 }
 
-fn trace_proxy_base_url(codex_home: Option<&std::path::Path>) -> Result<String, ModelError> {
-    if let Ok(value) = std::env::var("OPENAI_BASE_URL") {
+async fn trace_proxy_base_url(
+    codex_home: Option<&std::path::Path>,
+    sandbox: Option<&dyn jesterky_sandbox::Sandbox>,
+) -> Result<String, ModelError> {
+    let sandbox_env = sandbox.map(|sandbox| sandbox.env());
+    let sandbox_base_url = sandbox_env.and_then(|env| effective_env_value(env, "OPENAI_BASE_URL"));
+    if let Some(value) = sandbox_base_url {
+        if !value.trim().is_empty() {
+            return Ok(value.to_string());
+        }
+    } else if let Ok(value) = std::env::var("OPENAI_BASE_URL") {
         if !value.trim().is_empty() {
             return Ok(value);
         }
     }
-    let home = codex_home
-        .map(std::path::Path::to_path_buf)
-        .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
-        .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex")));
+    let sandbox_codex_home = sandbox_env.and_then(|env| effective_env_value(env, "CODEX_HOME"));
+    let home = match sandbox_codex_home {
+        Some(value) if !value.trim().is_empty() => Some(PathBuf::from(value)),
+        Some(_) => None,
+        None => codex_home
+            .map(std::path::Path::to_path_buf)
+            .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
+            .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex"))),
+    };
     let config_path = home.as_ref().map(|home| home.join("config.toml"));
     if let Some(path) = &config_path {
-        if let Ok(config) = std::fs::read_to_string(path) {
-            if let Some(value) = openai_base_url_from_config(&config) {
-                return Ok(value);
+        let config = match std::fs::read_to_string(path) {
+            Ok(config) => Some(config),
+            Err(_) if sandbox_codex_home.is_some() => {
+                let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
+                let args = vec![path.to_string_lossy().into_owned()];
+                let output = sandbox
+                    .command("cat", &args, &[])
+                    .output()
+                    .await
+                    .map_err(|err| {
+                        ModelError::Config(format!(
+                            "failed to read effective sandbox Codex config `{}`: {err}",
+                            path.display()
+                        ))
+                    })?;
+                if !output.status.success() {
+                    return Err(ModelError::Config(format!(
+                        "failed to read effective sandbox Codex config `{}`: {}",
+                        path.display(),
+                        String::from_utf8_lossy(&output.stderr).trim()
+                    )));
+                }
+                Some(String::from_utf8(output.stdout).map_err(|err| {
+                    ModelError::Config(format!(
+                        "effective sandbox Codex config `{}` is not UTF-8: {err}",
+                        path.display()
+                    ))
+                })?)
             }
+            Err(_) => None,
+        };
+        if let Some(value) = config.as_deref().and_then(openai_base_url_from_config) {
+            return Ok(value);
         }
     }
     Err(ModelError::Config(
@@ -493,6 +544,12 @@ fn trace_proxy_base_url(codex_home: Option<&std::path::Path>) -> Result<String, 
                 .map(|path| path.display().to_string())
                 .unwrap_or_else(|| "CODEX_HOME/config.toml".to_string()),
     ))
+}
+
+fn effective_env_value<'a>(env: &'a [(String, String)], name: &str) -> Option<&'a str> {
+    env.iter()
+        .rev()
+        .find_map(|(key, value)| (key == name).then_some(value.as_str()))
 }
 
 fn openai_base_url_from_config(config: &str) -> Option<String> {
@@ -507,10 +564,46 @@ fn openai_base_url_from_config(config: &str) -> Option<String> {
         if name.trim() != "openai_base_url" {
             continue;
         }
-        let value = serde_json::from_str::<String>(raw_value.trim()).ok()?;
+        let value = parse_toml_string(raw_value)?;
         return (!value.trim().is_empty()).then_some(value);
     }
     None
+}
+
+fn parse_toml_string(raw: &str) -> Option<String> {
+    let raw = raw.trim_start();
+    let quote = raw.chars().next()?;
+    if quote == '\'' {
+        let body = &raw[quote.len_utf8()..];
+        let end = body.find(quote)?;
+        valid_toml_value_suffix(&body[end + quote.len_utf8()..])?;
+        return Some(body[..end].to_string());
+    }
+    if quote != '"' {
+        return None;
+    }
+    let mut escaped = false;
+    for (index, character) in raw[quote.len_utf8()..].char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if character == '\\' {
+            escaped = true;
+            continue;
+        }
+        if character == quote {
+            let end = quote.len_utf8() + index + character.len_utf8();
+            valid_toml_value_suffix(&raw[end..])?;
+            return serde_json::from_str(&raw[..end]).ok();
+        }
+    }
+    None
+}
+
+fn valid_toml_value_suffix(suffix: &str) -> Option<()> {
+    let suffix = suffix.trim_start();
+    (suffix.is_empty() || suffix.starts_with('#')).then_some(())
 }
 
 fn synth_trace_provider_args(
@@ -822,7 +915,7 @@ mod tests {
     fn traced_codex_provider_reads_top_level_configured_route() {
         let config = concat!(
             "approval_policy = \"never\"\n",
-            "openai_base_url = \"http://127.0.0.1:4321/v1\"\n",
+            "openai_base_url = 'http://127.0.0.1:4321/v1' # capture route\n",
             "[model_providers.other]\n",
             "base_url = \"https://must-not-win.example/v1\"\n",
         );
@@ -836,6 +929,20 @@ mod tests {
             ),
             None
         );
+    }
+
+    #[test]
+    fn traced_codex_route_uses_the_last_sandbox_environment_override() {
+        let env = [
+            ("CODEX_HOME".to_string(), "/host-home".to_string()),
+            ("OPENAI_BASE_URL".to_string(), String::new()),
+            ("CODEX_HOME".to_string(), "/container-home".to_string()),
+        ];
+        assert_eq!(
+            effective_env_value(&env, "CODEX_HOME"),
+            Some("/container-home")
+        );
+        assert_eq!(effective_env_value(&env, "OPENAI_BASE_URL"), Some(""));
     }
 }
 
