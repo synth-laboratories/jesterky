@@ -477,6 +477,12 @@ def main() -> int:
         for session in sealed.document.sessions
         if session.session_id in registered_session_ids
     ]
+    child_actor_ids = {actor.actor_id for actor in child_actors}
+    provider_spans = [
+        span
+        for span in sealed.document.spans
+        if str(span.span_kind) == "model_call"
+    ]
     native_aliases = [
         alias.to_dict()
         for alias in sealed.document.aliases
@@ -535,7 +541,15 @@ def main() -> int:
             child["native_event_count"] > 0 for child in native["children"]
         ),
         "codex_native_aliases_present": bool(native_aliases),
-        "provider_spans_present": len(sealed.document.spans) >= 2,
+        "provider_spans_present": len(provider_spans) >= 2,
+        "provider_spans_bound_to_children": (
+            len(provider_spans) >= 2
+            and all(
+                span.actor_id in child_actor_ids
+                and span.session_id in registered_session_ids
+                for span in provider_spans
+            )
+        ),
         "observed_provider_tokens_present": (
             int(sealed.document.usage.requests or 0) >= 2
             and int(sealed.document.usage.total_tokens or 0) > 0
