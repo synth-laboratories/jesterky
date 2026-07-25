@@ -155,6 +155,9 @@ impl CodexModel {
             .or_else(|| self.cwd.clone());
 
         let tracing_active = std::env::var("SYNTH_TRACE_ID").is_ok();
+        let trace_base_url = tracing_active
+            .then(|| trace_proxy_base_url(self.codex_home.as_deref()))
+            .transpose()?;
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
@@ -247,12 +250,12 @@ impl CodexModel {
                 env.retain(|(existing, _)| existing != &key);
                 env.push((key, value));
             }
-            let trace_base_url = std::env::var("OPENAI_BASE_URL").map_err(|_| {
-                ModelError::Config(
-                    "OPENAI_BASE_URL is required for traced Codex provider capture".to_string(),
-                )
-            })?;
-            args.extend(synth_trace_provider_args(&trace_base_url, &env)?);
+            args.extend(synth_trace_provider_args(
+                trace_base_url
+                    .as_deref()
+                    .expect("active tracing resolved its proxy URL"),
+                &env,
+            )?);
         }
         args.push(prompt.to_string());
         env.push(("SYNTH_JESTERKY_ATTEMPT".into(), attempt.to_string()));
@@ -463,6 +466,51 @@ impl CodexModel {
             Err(classify_codex_failure(&combined))
         }
     }
+}
+
+fn trace_proxy_base_url(codex_home: Option<&std::path::Path>) -> Result<String, ModelError> {
+    if let Ok(value) = std::env::var("OPENAI_BASE_URL") {
+        if !value.trim().is_empty() {
+            return Ok(value);
+        }
+    }
+    let home = codex_home
+        .map(std::path::Path::to_path_buf)
+        .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
+        .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex")));
+    let config_path = home.as_ref().map(|home| home.join("config.toml"));
+    if let Some(path) = &config_path {
+        if let Ok(config) = std::fs::read_to_string(path) {
+            if let Some(value) = openai_base_url_from_config(&config) {
+                return Ok(value);
+            }
+        }
+    }
+    Err(ModelError::Config(
+        "traced Codex provider capture requires OPENAI_BASE_URL or a top-level ".to_string()
+            + "openai_base_url in "
+            + &config_path
+                .map(|path| path.display().to_string())
+                .unwrap_or_else(|| "CODEX_HOME/config.toml".to_string()),
+    ))
+}
+
+fn openai_base_url_from_config(config: &str) -> Option<String> {
+    for line in config.lines() {
+        let trimmed = line.trim();
+        if trimmed.starts_with('[') {
+            break;
+        }
+        let Some((name, raw_value)) = trimmed.split_once('=') else {
+            continue;
+        };
+        if name.trim() != "openai_base_url" {
+            continue;
+        }
+        let value = serde_json::from_str::<String>(raw_value.trim()).ok()?;
+        return (!value.trim().is_empty()).then_some(value);
+    }
+    None
 }
 
 fn synth_trace_provider_args(
@@ -768,6 +816,26 @@ mod tests {
         assert!(rendered.contains("cap_1"));
         assert!(rendered.contains("x-synth-context-token"));
         assert!(rendered.contains("ephemeral_child_capability"));
+    }
+
+    #[test]
+    fn traced_codex_provider_reads_top_level_configured_route() {
+        let config = concat!(
+            "approval_policy = \"never\"\n",
+            "openai_base_url = \"http://127.0.0.1:4321/v1\"\n",
+            "[model_providers.other]\n",
+            "base_url = \"https://must-not-win.example/v1\"\n",
+        );
+        assert_eq!(
+            openai_base_url_from_config(config).as_deref(),
+            Some("http://127.0.0.1:4321/v1")
+        );
+        assert_eq!(
+            openai_base_url_from_config(
+                "[model_providers.other]\nopenai_base_url = \"https://wrong.example\"\n"
+            ),
+            None
+        );
     }
 }
 
