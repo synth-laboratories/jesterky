@@ -15,6 +15,7 @@ categories = ["asynchronous", "development-tools"]
 jesterky-contract = { workspace = true }
 jesterky-core = { workspace = true }
 jesterky-sandbox = { workspace = true }
+jesterky-proxy = { workspace = true }
 async-trait = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }

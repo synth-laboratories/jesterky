@@ -22,8 +22,8 @@ use tokio::process::Command;
 const MAX_ATTEMPTS: u32 = 4;
 
 /// Ambient values that are part of the Codex process runtime rather than model
-/// authority. Provider credentials are intentionally absent: a non-native route
-/// must name its one required credential in the selected CODEX_HOME config.
+/// authority. Upstream provider credentials are intentionally absent: non-native
+/// routes must terminate at a trusted host-side proxy.
 const CODEX_RUNTIME_ENVIRONMENT: &[&str] = &[
     "PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE",
 ];
@@ -38,8 +38,9 @@ pub struct CodexModel {
     /// Working root for the agent (`--cd`). `None` = codex's default. Set this to
     /// the repo under audit so the read-only sandbox can read its files.
     pub cwd: Option<PathBuf>,
-    /// `CODEX_HOME` for the subprocess — a sandboxed config dir holding the
-    /// proxy `config.toml` / auth. `None` = inherit the caller's `~/.codex`.
+    /// `CODEX_HOME` for the subprocess. For native GPT routes this supplies the
+    /// ChatGPT auth bundle. A non-native config in this directory is never
+    /// trusted to select host credentials or provider routing.
     pub codex_home: Option<PathBuf>,
     /// The codex binary (overridable so tests can point at a fake).
     pub binary: String,
@@ -47,6 +48,10 @@ pub struct CodexModel {
     /// map's own width is the only bound); set it so 429s throttle in-flight calls
     /// and clean calls climb the ceiling back up.
     pub limiter: Option<Arc<AdaptiveLimiter>>,
+    /// Host-owned binding for Jesterky's managed loopback ChatProxy. Provider
+    /// selection and base URL are repeated as command-line overrides so an
+    /// agent-writable CODEX_HOME cannot redirect the child or select a host key.
+    trusted_chat_proxy: Option<jesterky_proxy::ChatProxyBinding>,
 }
 
 impl CodexModel {
@@ -58,6 +63,7 @@ impl CodexModel {
             codex_home: None,
             binary: "codex".to_string(),
             limiter: None,
+            trusted_chat_proxy: None,
         }
     }
 
@@ -78,9 +84,27 @@ impl CodexModel {
         self
     }
 
-    /// Point the subprocess at a sandboxed `CODEX_HOME` (proxy config + auth).
+    /// Point the subprocess at a `CODEX_HOME` used for native ChatGPT auth.
+    /// Codex runs with `--ignore-user-config`, so only auth/state—not provider
+    /// routing—from this directory is honored. Direct non-native routes are
+    /// rejected unless tracing or a trusted Jesterky ChatProxy supplies the
+    /// provider boundary.
     pub fn with_codex_home(mut self, codex_home: impl Into<PathBuf>) -> Self {
         self.codex_home = Some(codex_home.into());
+        self
+    }
+
+    /// Bind this model to a host-owned Jesterky ChatProxy.
+    ///
+    /// The child receives only a proxy-client value. The proxy retains the real
+    /// upstream provider key, and the loopback route is pinned independently of
+    /// the child-readable CODEX_HOME.
+    pub fn with_trusted_chat_proxy(
+        mut self,
+        binding: jesterky_proxy::ChatProxyBinding,
+    ) -> Self {
+        self.codex_home = Some(binding.codex_home().to_path_buf());
+        self.trusted_chat_proxy = Some(binding);
         self
     }
 
@@ -163,17 +187,23 @@ impl CodexModel {
 
         let tracing_active = std::env::var("SYNTH_TRACE_ID").is_ok();
         let trace_base_url = if tracing_active {
-            Some(
-                trace_proxy_base_url(
-                    self.codex_home.as_deref(),
-                    sandbox.map(|sandbox| sandbox.as_ref()),
-                )
-                .await?,
-            )
+            Some(trace_proxy_base_url()?)
         } else {
             None
         };
+        let trusted_chat_proxy = self.provider_proxy_for_child(tracing_active)?;
+        if trusted_chat_proxy.is_some() && in_container {
+            return Err(ModelError::Config(
+                "Jesterky's loopback ChatProxy cannot be used by a Docker actor; \
+                 use native ChatGPT auth or traced provider capture"
+                    .to_string(),
+            ));
+        }
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
+        args.extend(codex_config_isolation_args());
+        if !tracing_active && trusted_chat_proxy.is_none() {
+            args.extend(native_openai_provider_args());
+        }
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
             args.push("-c".into());
@@ -203,12 +233,8 @@ impl CodexModel {
         // The host-side `ModelActor` validates the reply against the same schema on
         // every backend, so in a container we rely on that + the prompt's shape spec
         // and skip the flag (dropping only codex's in-process steer, not the gate).
-        let proxy_codex_home = self
-            .codex_home
-            .as_deref()
-            .is_some_and(codex_home_uses_proxy_provider);
         if let Some(schema) = &req.output_schema {
-            if !in_container && !proxy_codex_home {
+            if !in_container && !tracing_active && trusted_chat_proxy.is_none() {
                 args.push("--output-schema".into());
                 args.push(schema.to_string_lossy().into_owned());
             }
@@ -218,8 +244,8 @@ impl CodexModel {
             args.push(cwd.to_string_lossy().into_owned());
         }
 
-        // Env: codex uses its own auth (ChatGPT bundle / proxy config under
-        // CODEX_HOME) — intentionally NOT OPENAI_API_KEY.
+        // Env: native Codex uses ChatGPT auth from CODEX_HOME; provider config
+        // from that directory is ignored. No OpenAI/upstream API key is passed.
         let mut env: Vec<(String, String)> = Vec::new();
         // A sandbox command does not necessarily inherit the host environment.
         // Carry the central trace context explicitly and unchanged, then add
@@ -249,16 +275,9 @@ impl CodexModel {
                 env.push(((*key).to_string(), value));
             }
         }
-        if !tracing_active {
-            if let Some(credential) = configured_provider_credential(
-                &self.model,
-                self.codex_home.as_deref(),
-                sandbox.map(|sandbox| sandbox.as_ref()),
-            )
-            .await?
-            {
-                env.push(credential);
-            }
+        if let Some(proxy) = trusted_chat_proxy {
+            args.extend(trusted_chat_proxy_provider_args(proxy));
+            env.push(trusted_chat_proxy_child_credential(proxy));
         }
         let workflow_address = req
             .node_path
@@ -293,15 +312,18 @@ impl CodexModel {
             ));
         }
         // Sandbox-provided runtime values win (especially an in-container
-        // CODEX_HOME pointing at mounted auth). Arbitrary sandbox env does not
-        // become Codex authority: provider credentials take the config-declared
-        // path above, and trace identity remains centrally issued.
+        // CODEX_HOME pointing at mounted native ChatGPT auth). User config is
+        // ignored for every route. A managed ChatProxy additionally keeps its
+        // host-issued home and cannot be replaced by sandbox input.
         if let Some(sb) = sandbox {
             for (key, value) in sb
                 .env()
                 .iter()
                 .filter(|(key, _)| sandbox_runtime_environment_key(key))
             {
+                if trusted_chat_proxy.is_some() && key == "CODEX_HOME" {
+                    continue;
+                }
                 env.retain(|(existing, _)| existing != key);
                 env.push((key.clone(), value.clone()));
             }
@@ -323,10 +345,10 @@ impl CodexModel {
         cmd.stdin(Stdio::null());
         // No orphaned codex if this future is dropped mid-flight (M2 DoD).
         cmd.kill_on_drop(true);
-        // Intentionally do NOT set OPENAI_API_KEY — codex uses its own auth
-        // (ChatGPT bundle, or the proxy config under CODEX_HOME). The child
-        // receives only runtime values, explicit trace/sandbox values, and the
-        // one credential named by its selected provider config.
+        // Intentionally do NOT set OPENAI_API_KEY or any upstream provider key.
+        // Native GPT routes use ChatGPT auth; non-native routes receive only a
+        // child-scoped proxy-client value while trusted host proxies retain
+        // provider authority.
 
         cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
 
@@ -472,19 +494,34 @@ impl CodexModel {
             Err(classify_codex_failure(&combined))
         }
     }
+
+    fn provider_proxy_for_child(
+        &self,
+        tracing_active: bool,
+    ) -> Result<Option<&jesterky_proxy::ChatProxyBinding>, ModelError> {
+        if tracing_active {
+            return Ok(None);
+        }
+        if jesterky_proxy::is_native_chatgpt_model(&self.model) {
+            if self.trusted_chat_proxy.is_some() {
+                return Err(ModelError::Config(
+                    "native GPT routes must use ChatGPT auth, not Jesterky ChatProxy".to_string(),
+                ));
+            }
+            return Ok(None);
+        }
+        self.trusted_chat_proxy.as_ref().map(Some).ok_or_else(|| {
+            ModelError::Config(format!(
+                "direct non-native Codex route `{}` is unsupported; use Jesterky's \
+                 trusted ChatProxy or traced provider capture",
+                self.model
+            ))
+        })
+    }
 }
 
 fn sandbox_runtime_environment_key(name: &str) -> bool {
     name == "CODEX_HOME" || CODEX_RUNTIME_ENVIRONMENT.contains(&name)
-}
-
-fn sandbox_runtime_environment(sandbox: &dyn jesterky_sandbox::Sandbox) -> Vec<(String, String)> {
-    sandbox
-        .env()
-        .iter()
-        .filter(|(name, _)| sandbox_runtime_environment_key(name))
-        .cloned()
-        .collect()
 }
 
 fn configure_codex_child_environment(command: &mut Command, explicit: &[(String, String)]) {
@@ -502,328 +539,97 @@ fn configure_codex_child_environment(command: &mut Command, explicit: &[(String,
     }
 }
 
-async fn configured_provider_credential(
-    model: &str,
-    codex_home: Option<&std::path::Path>,
-    sandbox: Option<&dyn jesterky_sandbox::Sandbox>,
-) -> Result<Option<(String, String)>, ModelError> {
-    let sandbox_env = sandbox.map(|sandbox| sandbox.env());
-    let sandbox_codex_home = sandbox_env.and_then(|env| effective_env_value(env, "CODEX_HOME"));
-    let home = match sandbox_codex_home {
-        Some(value) if !value.trim().is_empty() => Some(PathBuf::from(value)),
-        Some(_) => None,
-        None => codex_home
-            .map(std::path::Path::to_path_buf)
-            .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
-            .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex"))),
-    };
-    let Some(home) = home else {
-        if model.starts_with("gpt-") {
-            return Ok(None);
-        }
-        return Err(ModelError::Config(format!(
-            "non-native Codex route `{model}` requires CODEX_HOME with a selected \
-             provider and explicit env_key"
-        )));
-    };
-    let config_path = home.join("config.toml");
-    let config = if sandbox_codex_home.is_some() {
-        let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
-        let args = vec![config_path.to_string_lossy().into_owned()];
-        let runtime_environment = sandbox_runtime_environment(sandbox);
-        let output = sandbox
-            .command("cat", &args, &runtime_environment)
-            .output()
-            .await
-            .map_err(|err| {
-                ModelError::Config(format!(
-                    "failed to read effective sandbox Codex config `{}`: {err}",
-                    config_path.display()
-                ))
-            })?;
-        if !output.status.success() {
-            return Err(ModelError::Config(format!(
-                "failed to read effective sandbox Codex config `{}`: {}",
-                config_path.display(),
-                String::from_utf8_lossy(&output.stderr).trim()
-            )));
-        }
-        String::from_utf8(output.stdout).map_err(|err| {
-            ModelError::Config(format!(
-                "effective sandbox Codex config `{}` is not UTF-8: {err}",
-                config_path.display()
-            ))
-        })?
-    } else {
-        match std::fs::read_to_string(&config_path) {
-            Ok(config) => config,
-            Err(err) if err.kind() == std::io::ErrorKind::NotFound && model.starts_with("gpt-") => {
-                return Ok(None);
-            }
-            Err(err) => {
-                return Err(ModelError::Config(format!(
-                    "failed to read effective Codex config `{}`: {err}",
-                    config_path.display()
-                )));
-            }
-        }
-    };
-    let Some(name) = configured_provider_env_key(model, &config)? else {
-        return Ok(None);
-    };
-    let sandbox_value = sandbox_env.and_then(|env| effective_env_value(env, &name));
-    let value = match sandbox_value {
-        Some(value) if !value.trim().is_empty() => value.to_string(),
-        Some(_) => {
-            return Err(ModelError::Config(format!(
-                "selected Codex provider credential `{name}` is empty in the sandbox environment"
-            )));
-        }
-        None => std::env::var(&name)
-            .ok()
-            .filter(|value| !value.trim().is_empty())
-            .ok_or_else(|| {
-                ModelError::Config(format!(
-                    "selected Codex provider requires explicit credential `{name}`, \
-                     but it is unset or empty"
-                ))
-            })?,
-    };
-    Ok(Some((name, value)))
+trait ChatProxyBindingView {
+    fn port(&self) -> u16;
+    fn client_env_name(&self) -> &str;
+    fn client_credential(&self) -> &str;
 }
 
-fn configured_provider_env_key(model: &str, config: &str) -> Result<Option<String>, ModelError> {
-    let selected = top_level_toml_string(config, "model_provider");
-    let Some(selected) = selected else {
-        if model.starts_with("gpt-") {
-            return Ok(None);
-        }
-        return Err(ModelError::Config(format!(
-            "non-native Codex route `{model}` requires an explicit model_provider \
-             with env_key in CODEX_HOME/config.toml"
-        )));
-    };
-    let bare_header = format!("[model_providers.{selected}]");
-    let quoted_header = format!(
-        "[model_providers.{}]",
-        serde_json::to_string(&selected).expect("provider name is JSON serializable")
-    );
-    let single_quoted_header = format!("[model_providers.'{selected}']");
-    let mut in_selected_provider = false;
-    let mut found_selected_provider = false;
-    for line in config.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with('[') {
-            in_selected_provider = trimmed == bare_header
-                || trimmed == quoted_header
-                || trimmed == single_quoted_header;
-            found_selected_provider |= in_selected_provider;
-            continue;
-        }
-        if !in_selected_provider {
-            continue;
-        }
-        let Some((name, raw_value)) = trimmed.split_once('=') else {
-            continue;
-        };
-        if name.trim() != "env_key" {
-            continue;
-        }
-        let value = parse_toml_string(raw_value).ok_or_else(|| {
-            ModelError::Config(format!(
-                "selected Codex provider `{selected}` has an invalid env_key"
-            ))
-        })?;
-        if value == "OPENAI_API_KEY" {
-            return Err(ModelError::Config(
-                "Jesterky does not pass OPENAI_API_KEY to Codex; use ChatGPT auth ".to_string()
-                    + "or a trusted proxy with its own declared credential",
-            ));
-        }
-        if !valid_environment_name(&value) {
-            return Err(ModelError::Config(format!(
-                "selected Codex provider `{selected}` has an invalid env_key name"
-            )));
-        }
-        if reserved_codex_environment_name(&value) {
-            return Err(ModelError::Config(format!(
-                "selected Codex provider `{selected}` uses reserved env_key `{value}`"
-            )));
-        }
-        return Ok(Some(value));
+impl ChatProxyBindingView for jesterky_proxy::ChatProxyBinding {
+    fn port(&self) -> u16 {
+        jesterky_proxy::ChatProxyBinding::port(self)
     }
-    if !found_selected_provider {
+
+    fn client_env_name(&self) -> &str {
+        jesterky_proxy::ChatProxyBinding::client_env_name(self)
+    }
+
+    fn client_credential(&self) -> &str {
+        jesterky_proxy::ChatProxyBinding::client_credential(self)
+    }
+}
+
+fn trusted_chat_proxy_child_credential(proxy: &impl ChatProxyBindingView) -> (String, String) {
+    (
+        proxy.client_env_name().to_string(),
+        proxy.client_credential().to_string(),
+    )
+}
+
+fn codex_config_isolation_args() -> Vec<String> {
+    vec!["--ignore-user-config".to_string()]
+}
+
+fn trace_proxy_base_url() -> Result<String, ModelError> {
+    let value = std::env::var("OPENAI_BASE_URL").map_err(|_| {
+        ModelError::Config(
+            "traced Codex provider capture requires supervisor-issued OPENAI_BASE_URL".to_string(),
+        )
+    })?;
+    validated_loopback_v1_base_url(&value, "trace capture proxy")
+}
+
+fn validated_loopback_v1_base_url(value: &str, owner: &str) -> Result<String, ModelError> {
+    let value = value.trim();
+    let remainder = value.strip_prefix("http://").ok_or_else(|| {
+        ModelError::Config(format!(
+            "{owner} base URL must use loopback HTTP with an explicit port"
+        ))
+    })?;
+    let (authority, path) = remainder.split_once('/').ok_or_else(|| {
+        ModelError::Config(format!("{owner} base URL must end in /v1"))
+    })?;
+    if !matches!(path, "v1" | "v1/") || authority.contains('@') {
         return Err(ModelError::Config(format!(
-            "Codex config selects missing provider table `model_providers.{selected}`"
+            "{owner} base URL must be exactly http://<loopback>:<port>/v1"
         )));
     }
-    Err(ModelError::Config(format!(
-        "selected Codex provider `{selected}` for model `{model}` must declare its credential env_key"
-    )))
-}
-
-fn top_level_toml_string(config: &str, target: &str) -> Option<String> {
-    for line in config.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with('[') {
-            break;
-        }
-        let Some((name, raw_value)) = trimmed.split_once('=') else {
-            continue;
-        };
-        if name.trim() == target {
-            return parse_toml_string(raw_value);
-        }
+    let socket = authority.parse::<std::net::SocketAddr>().map_err(|_| {
+        ModelError::Config(format!(
+            "{owner} base URL must contain a valid loopback socket address"
+        ))
+    })?;
+    if !socket.ip().is_loopback() || socket.port() == 0 {
+        return Err(ModelError::Config(format!(
+            "{owner} base URL must target a non-zero loopback port"
+        )));
     }
-    None
+    Ok(format!("http://{socket}/v1"))
 }
 
-fn valid_environment_name(name: &str) -> bool {
-    let mut characters = name.chars();
-    matches!(characters.next(), Some('_' | 'A'..='Z' | 'a'..='z'))
-        && characters.all(|character| matches!(character, '_' | 'A'..='Z' | 'a'..='z' | '0'..='9'))
+fn native_openai_provider_args() -> Vec<String> {
+    vec!["-c".to_string(), "model_provider=\"openai\"".to_string()]
 }
 
-fn reserved_codex_environment_name(name: &str) -> bool {
-    sandbox_runtime_environment_key(name)
-        || name == "TRACEPARENT"
-        || name == "OPENAI_BASE_URL"
-        || name.starts_with("SYNTH_TRACE")
-        || name.starts_with("SYNTH_ACTOR")
-        || name.starts_with("SYNTH_PARENT")
-        || name.starts_with("SYNTH_JESTERKY")
-        || name == "SYNTH_CAPTURE_ID"
-        || name == "SYNTH_DELEGATION_ID"
-        || name == "SYNTH_WORKFLOW_ADDRESS"
-}
-
-async fn trace_proxy_base_url(
-    codex_home: Option<&std::path::Path>,
-    sandbox: Option<&dyn jesterky_sandbox::Sandbox>,
-) -> Result<String, ModelError> {
-    let sandbox_env = sandbox.map(|sandbox| sandbox.env());
-    let sandbox_base_url = sandbox_env.and_then(|env| effective_env_value(env, "OPENAI_BASE_URL"));
-    if let Some(value) = sandbox_base_url {
-        if !value.trim().is_empty() {
-            return Ok(value.to_string());
-        }
-    } else if let Ok(value) = std::env::var("OPENAI_BASE_URL") {
-        if !value.trim().is_empty() {
-            return Ok(value);
-        }
-    }
-    let sandbox_codex_home = sandbox_env.and_then(|env| effective_env_value(env, "CODEX_HOME"));
-    let home = match sandbox_codex_home {
-        Some(value) if !value.trim().is_empty() => Some(PathBuf::from(value)),
-        Some(_) => None,
-        None => codex_home
-            .map(std::path::Path::to_path_buf)
-            .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
-            .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex"))),
-    };
-    let config_path = home.as_ref().map(|home| home.join("config.toml"));
-    if let Some(path) = &config_path {
-        let config = if sandbox_codex_home.is_some() {
-            let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
-            let args = vec![path.to_string_lossy().into_owned()];
-            let runtime_environment = sandbox_runtime_environment(sandbox);
-            let output = sandbox
-                .command("cat", &args, &runtime_environment)
-                .output()
-                .await
-                .map_err(|err| {
-                    ModelError::Config(format!(
-                        "failed to read effective sandbox Codex config `{}`: {err}",
-                        path.display()
-                    ))
-                })?;
-            if !output.status.success() {
-                return Err(ModelError::Config(format!(
-                    "failed to read effective sandbox Codex config `{}`: {}",
-                    path.display(),
-                    String::from_utf8_lossy(&output.stderr).trim()
-                )));
-            }
-            Some(String::from_utf8(output.stdout).map_err(|err| {
-                ModelError::Config(format!(
-                    "effective sandbox Codex config `{}` is not UTF-8: {err}",
-                    path.display()
-                ))
-            })?)
-        } else {
-            std::fs::read_to_string(path).ok()
-        };
-        if let Some(value) = config.as_deref().and_then(openai_base_url_from_config) {
-            return Ok(value);
-        }
-    }
-    Err(ModelError::Config(
-        "traced Codex provider capture requires OPENAI_BASE_URL or a top-level ".to_string()
-            + "openai_base_url in "
-            + &config_path
-                .map(|path| path.display().to_string())
-                .unwrap_or_else(|| "CODEX_HOME/config.toml".to_string()),
-    ))
-}
-
-fn effective_env_value<'a>(env: &'a [(String, String)], name: &str) -> Option<&'a str> {
-    env.iter()
-        .rev()
-        .find_map(|(key, value)| (key == name).then_some(value.as_str()))
-}
-
-fn openai_base_url_from_config(config: &str) -> Option<String> {
-    for line in config.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with('[') {
-            break;
-        }
-        let Some((name, raw_value)) = trimmed.split_once('=') else {
-            continue;
-        };
-        if name.trim() != "openai_base_url" {
-            continue;
-        }
-        let value = parse_toml_string(raw_value)?;
-        return (!value.trim().is_empty()).then_some(value);
-    }
-    None
-}
-
-fn parse_toml_string(raw: &str) -> Option<String> {
-    let raw = raw.trim_start();
-    let quote = raw.chars().next()?;
-    if quote == '\'' {
-        let body = &raw[quote.len_utf8()..];
-        let end = body.find(quote)?;
-        valid_toml_value_suffix(&body[end + quote.len_utf8()..])?;
-        return Some(body[..end].to_string());
-    }
-    if quote != '"' {
-        return None;
-    }
-    let mut escaped = false;
-    for (index, character) in raw[quote.len_utf8()..].char_indices() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if character == '\\' {
-            escaped = true;
-            continue;
-        }
-        if character == quote {
-            let end = quote.len_utf8() + index + character.len_utf8();
-            valid_toml_value_suffix(&raw[end..])?;
-            return serde_json::from_str(&raw[..end]).ok();
-        }
-    }
-    None
-}
-
-fn valid_toml_value_suffix(suffix: &str) -> Option<()> {
-    let suffix = suffix.trim_start();
-    (suffix.is_empty() || suffix.starts_with('#')).then_some(())
+fn trusted_chat_proxy_provider_args(proxy: &impl ChatProxyBindingView) -> Vec<String> {
+    let base_url = format!("http://127.0.0.1:{}/v1", proxy.port());
+    [
+        "model_provider=\"jesterky_local_proxy\"".to_string(),
+        "model_providers.jesterky_local_proxy.name=\"Jesterky Local Proxy\"".to_string(),
+        format!(
+            "model_providers.jesterky_local_proxy.base_url={}",
+            serde_json::to_string(&base_url).expect("base URL is JSON serializable")
+        ),
+        format!(
+            "model_providers.jesterky_local_proxy.env_key={}",
+            serde_json::to_string(proxy.client_env_name())
+                .expect("client env name is JSON serializable")
+        ),
+        "model_providers.jesterky_local_proxy.wire_api=\"responses\"".to_string(),
+    ]
+    .into_iter()
+    .flat_map(|value| ["-c".to_string(), value])
+    .collect()
 }
 
 fn synth_trace_provider_args(
@@ -1052,16 +858,28 @@ fn truncate_action(text: &str) -> String {
     }
 }
 
-fn codex_home_uses_proxy_provider(codex_home: &std::path::Path) -> bool {
-    let Ok(config) = std::fs::read_to_string(codex_home.join("config.toml")) else {
-        return false;
-    };
-    config.contains("[model_providers.") || config.contains("base_url =")
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    struct TestChatProxyBinding {
+        port: u16,
+        credential: String,
+    }
+
+    impl ChatProxyBindingView for TestChatProxyBinding {
+        fn port(&self) -> u16 {
+            self.port
+        }
+
+        fn client_env_name(&self) -> &str {
+            jesterky_proxy::CHAT_PROXY_CLIENT_ENV
+        }
+
+        fn client_credential(&self) -> &str {
+            &self.credential
+        }
+    }
 
     /// The exact `codex exec --json` event stream shapes (captured from
     /// codex-cli 0.142.5) must fold to the right tokens / steps / reply.
@@ -1132,52 +950,49 @@ mod tests {
     }
 
     #[test]
-    fn traced_codex_provider_reads_top_level_configured_route() {
-        let config = concat!(
-            "approval_policy = \"never\"\n",
-            "openai_base_url = 'http://127.0.0.1:4321/v1' # capture route\n",
-            "[model_providers.other]\n",
-            "base_url = \"https://must-not-win.example/v1\"\n",
-        );
+    fn traced_codex_route_requires_a_valid_supervisor_loopback_url() {
         assert_eq!(
-            openai_base_url_from_config(config).as_deref(),
-            Some("http://127.0.0.1:4321/v1")
+            validated_loopback_v1_base_url(
+                "http://127.0.0.1:4321/v1",
+                "trace capture proxy"
+            )
+            .expect("supervisor loopback route is valid"),
+            "http://127.0.0.1:4321/v1"
         );
-        assert_eq!(
-            openai_base_url_from_config(
-                "[model_providers.other]\nopenai_base_url = \"https://wrong.example\"\n"
-            ),
-            None
-        );
+        for untrusted in [
+            "https://127.0.0.1:4321/v1",
+            "http://example.com:4321/v1",
+            "http://127.0.0.1:4321@evil.example/v1",
+            "http://127.0.0.1:4321/v1?redirect=evil",
+        ] {
+            assert!(
+                validated_loopback_v1_base_url(untrusted, "trace capture proxy").is_err(),
+                "{untrusted} must not become trace authority"
+            );
+        }
     }
 
     #[test]
-    fn traced_codex_route_uses_the_last_sandbox_environment_override() {
-        let env = [
-            ("CODEX_HOME".to_string(), "/host-home".to_string()),
-            ("OPENAI_BASE_URL".to_string(), String::new()),
-            ("CODEX_HOME".to_string(), "/container-home".to_string()),
-        ];
-        assert_eq!(
-            effective_env_value(&env, "CODEX_HOME"),
-            Some("/container-home")
-        );
-        assert_eq!(effective_env_value(&env, "OPENAI_BASE_URL"), Some(""));
-    }
+    fn trusted_chat_proxy_pins_route_and_uses_only_a_client_credential() {
+        let proxy = TestChatProxyBinding {
+            port: 4321,
+            credential: "child-only-proxy-client".to_string(),
+        };
+        let args = trusted_chat_proxy_provider_args(&proxy);
+        let credential = trusted_chat_proxy_child_credential(&proxy);
+        let rendered = args.join(" ");
 
-    #[test]
-    fn non_native_provider_selects_only_its_declared_credential() {
-        let config = concat!(
-            "model_provider = \"selected_proxy\"\n",
-            "[model_providers.unrelated]\n",
-            "env_key = \"UNRELATED_SECRET\"\n",
-            "[model_providers.selected_proxy]\n",
-            "env_key = \"DEEPSEEK_API_KEY\"\n",
-        );
+        assert!(rendered.contains("model_provider=\"jesterky_local_proxy\""));
+        assert!(rendered.contains("http://127.0.0.1:4321/v1"));
+        assert!(rendered.contains("env_key=\"JESTERKY_PROXY_CLIENT_KEY\""));
+        assert!(!rendered.contains("DEEPSEEK_API_KEY"));
+        assert!(!rendered.contains("GEMINI_API_KEY"));
         assert_eq!(
-            configured_provider_env_key("deepseek/deepseek-v4-pro-direct", config)
-                .expect("selected provider config is valid"),
-            Some("DEEPSEEK_API_KEY".to_string())
+            credential,
+            (
+                "JESTERKY_PROXY_CLIENT_KEY".to_string(),
+                "child-only-proxy-client".to_string()
+            )
         );
     }
 
@@ -1192,36 +1007,52 @@ mod tests {
     }
 
     #[test]
-    fn non_native_provider_fails_without_a_declared_credential() {
-        let missing = concat!(
-            "model_provider = \"selected_proxy\"\n",
-            "[model_providers.selected_proxy]\n",
-            "base_url = \"http://127.0.0.1:8000/v1\"\n",
-        );
-        let error = configured_provider_env_key("custom/model", missing)
-            .expect_err("non-native provider must declare env_key");
-        assert!(error.to_string().contains("must declare"));
-        let error = configured_provider_env_key("gpt-5.5", missing)
-            .expect_err("selected GPT proxy must also declare env_key");
-        assert!(error.to_string().contains("must declare"));
+    fn agent_writable_codex_home_cannot_select_a_host_secret() {
+        let home = std::env::temp_dir().join(format!(
+            "jesterky_untrusted_codex_home_{}",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&home);
+        std::fs::create_dir_all(&home).expect("temporary CODEX_HOME exists");
+        std::fs::write(
+            home.join("config.toml"),
+            concat!(
+                "model_provider = \"agent_selected\"\n",
+                "[model_providers.agent_selected]\n",
+                "base_url = \"https://api.deepseek.com/v1\"\n",
+                "env_key = \"DEEPSEEK_API_KEY\"\n",
+            ),
+        )
+        .expect("malicious config is written");
 
-        let forbidden = concat!(
-            "model_provider = \"selected_proxy\"\n",
-            "[model_providers.selected_proxy]\n",
-            "env_key = \"OPENAI_API_KEY\"\n",
-        );
-        let error = configured_provider_env_key("custom/model", forbidden)
-            .expect_err("OpenAI API-key auth is forbidden");
-        assert!(error.to_string().contains("does not pass OPENAI_API_KEY"));
+        let direct = CodexModel::new("deepseek/deepseek-v4-pro-direct", "").with_codex_home(&home);
+        let error = direct
+            .provider_proxy_for_child(false)
+            .expect_err("direct non-native child route must fail closed");
+        assert!(error.to_string().contains("direct non-native"));
 
-        let reserved = concat!(
-            "model_provider = \"selected_proxy\"\n",
-            "[model_providers.selected_proxy]\n",
-            "env_key = \"SYNTH_TRACE_ID\"\n",
-        );
-        let error = configured_provider_env_key("custom/model", reserved)
-            .expect_err("trace identity cannot become provider authority");
-        assert!(error.to_string().contains("reserved env_key"));
+        let native = CodexModel::gpt55().with_codex_home(&home);
+        assert!(native
+            .provider_proxy_for_child(false)
+            .expect("native ChatGPT auth remains supported")
+            .is_none());
+        let mut native_args = codex_config_isolation_args();
+        native_args.extend(native_openai_provider_args());
+        let rendered = native_args.join(" ");
+        assert!(rendered.contains("--ignore-user-config"));
+        assert!(rendered.contains("model_provider=\"openai\""));
+        assert!(!rendered.contains("agent_selected"));
+        assert!(!rendered.contains("api.deepseek.com"));
+        assert!(!rendered.contains("DEEPSEEK_API_KEY"));
+
+        let gpt_prefixed_non_native =
+            CodexModel::new("gpt-oss-120b", "").with_codex_home(&home);
+        assert!(gpt_prefixed_non_native
+            .provider_proxy_for_child(false)
+            .expect_err("gpt-oss must not bypass the native allowlist")
+            .to_string()
+            .contains("direct non-native"));
+        let _ = std::fs::remove_dir_all(home);
     }
 
     #[cfg(unix)]
@@ -1230,14 +1061,18 @@ mod tests {
         let mut command = Command::new("/bin/sh");
         command.arg("-c").arg(
             "test -z \"${JESTERKY_AMBIENT_SENTINEL+x}\" \
-             && test \"$JESTERKY_EXPLICIT_SENTINEL\" = selected",
+             && test -z \"${DEEPSEEK_API_KEY+x}\" \
+             && test -z \"${GEMINI_API_KEY+x}\" \
+             && test \"$JESTERKY_PROXY_CLIENT_KEY\" = child-only-proxy-client",
         );
         command.env("JESTERKY_AMBIENT_SENTINEL", "must-not-survive");
+        command.env("DEEPSEEK_API_KEY", "upstream-deepseek-secret");
+        command.env("GEMINI_API_KEY", "upstream-gemini-secret");
         configure_codex_child_environment(
             &mut command,
             &[(
-                "JESTERKY_EXPLICIT_SENTINEL".to_string(),
-                "selected".to_string(),
+                jesterky_proxy::CHAT_PROXY_CLIENT_ENV.to_string(),
+                "child-only-proxy-client".to_string(),
             )],
         );
         let status = command

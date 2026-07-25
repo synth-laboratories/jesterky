@@ -71,7 +71,8 @@ enum Command {
         /// Reasoning effort for native GPT routes. Defaults depend on the workload.
         #[arg(long, value_enum)]
         effort: Option<ReasoningEffort>,
-        /// Sandboxed `CODEX_HOME` for `--actor codex` (proxy `config.toml` + auth).
+        /// `CODEX_HOME` for native ChatGPT auth. Direct non-native provider
+        /// configs are rejected; Jesterky owns those routes through ChatProxy.
         #[arg(long)]
         codex_home: Option<PathBuf>,
         /// Working dir the codex sandbox may read (the repo under audit).
@@ -242,8 +243,8 @@ fn failure_hint(err: &(dyn Error + 'static)) -> Option<String> {
     }
     if lower.contains("auth") || lower.contains("unauthorized") || lower.contains("401") {
         return Some(
-            "model auth failed. codex uses the ChatGPT bundle (`~/.codex/auth.json`) or the \
-             proxy config under `--codex-home` — check that, and any `SYNTH_API_KEY` the route needs."
+            "model auth failed. Native Codex uses the ChatGPT bundle under `CODEX_HOME`; \
+             non-native routes use Jesterky's trusted ChatProxy, which retains the upstream key."
                 .to_string(),
         );
     }
@@ -412,8 +413,7 @@ async fn run_spec(
         return Err(
             "dungeongrid is an LLM workflow — use `--actor codex` (no scripted/fake policy). \
              Example: jesterky run examples/dungeongrid_4p.json --actor codex \
-             --model deepseek/deepseek-v4-pro-direct --codex-home /tmp/jesterky_codex_home \
-             --args '{\"max_turns\":12}' --follow"
+             --model deepseek/deepseek-v4-pro-direct --args '{\"max_turns\":12}' --follow"
                 .into(),
         );
     }
@@ -438,10 +438,18 @@ async fn run_spec(
         ActorKind::Codex => {
             let model = model.unwrap_or("gpt-5.5");
             assert_model_allowed(model)?;
-            preflight_codex_home_route(model, codex_home).await?;
+            let tracing_active = env::var_os("SYNTH_TRACE_ID").is_some();
+            let native_chatgpt = jesterky_proxy::is_native_chatgpt_model(model);
+            if !tracing_active && !native_chatgpt && codex_home.is_some() {
+                return Err(format!(
+                    "direct non-native Codex route `{model}` through --codex-home is unsupported; \
+                     omit --codex-home so Jesterky can retain the upstream credential in ChatProxy"
+                )
+                .into());
+            }
             // ChatGPT models take a reasoning effort; proxy routes generally don't.
             // DungeonGrid turns are short JSON — keep effort low for gpt routes.
-            let effort = match (effort, model.starts_with("gpt")) {
+            let effort = match (effort, native_chatgpt) {
                 (Some(value), true) => value.as_str(),
                 (Some(_), false) => {
                     return Err("--effort is only supported for native GPT routes".into());
@@ -457,18 +465,31 @@ async fn run_spec(
             let limiter = AdaptiveLimiter::new(ceiling, 1, ceiling);
             let mut codex = CodexModel::new(model, effort).with_limiter(limiter);
             if let Some(home) = codex_home {
-                // An explicit --codex-home always wins (power users / custom proxies).
+                // Explicit homes carry native ChatGPT auth. During tracing, the
+                // trusted capture provider is selected by immutable command-line
+                // overrides, never by this child-readable config.
                 codex = codex.with_codex_home(home);
-            } else if let Some(proxy) = jesterky_proxy::ChatProxy::spawn(model).await? {
-                // A chat-only route: jesterky spawns its own Responses↔chat proxy
-                // (localhost) pointed at the provider's real endpoint, and points
-                // codex at it. gpt-* routes resolve to None here (native codex).
-                eprintln!(
-                    "codex: `{model}` → jesterky Responses↔chat proxy on 127.0.0.1:{} → provider",
-                    proxy.port()
-                );
-                codex = codex.with_codex_home(proxy.codex_home().to_path_buf());
-                _proxy_guard = Some(proxy);
+            } else if !tracing_active {
+                match jesterky_proxy::ChatProxy::spawn(model).await? {
+                    Some(proxy) => {
+                        // A chat-only route: Jesterky's trusted process holds the
+                        // upstream key; Codex receives only a local client value
+                        // and immutable provider overrides.
+                        eprintln!(
+                            "codex: `{model}` → jesterky Responses↔chat proxy on 127.0.0.1:{} → provider",
+                            proxy.port()
+                        );
+                        codex = codex.with_trusted_chat_proxy(proxy.binding());
+                        _proxy_guard = Some(proxy);
+                    }
+                    None if !native_chatgpt => {
+                        return Err(format!(
+                            "non-native model route `{model}` has no supported Jesterky ChatProxy mapping"
+                        )
+                        .into());
+                    }
+                    None => {}
+                }
             }
             if let Some(cd) = cd {
                 codex = codex.with_cwd(cd);
@@ -903,112 +924,6 @@ fn assert_model_allowed(model: &str) -> Result<(), Box<dyn Error>> {
         .into());
     }
     Ok(())
-}
-
-async fn preflight_codex_home_route(
-    model: &str,
-    codex_home: Option<&Path>,
-) -> Result<(), Box<dyn Error>> {
-    let Some(codex_home) = codex_home else {
-        return Ok(());
-    };
-    let config_path = codex_home.join("config.toml");
-    let Ok(config) = std::fs::read_to_string(&config_path) else {
-        return Ok(());
-    };
-    let Some(base_url) = config_string_value(&config, "base_url") else {
-        return Ok(());
-    };
-    let env_key =
-        config_string_value(&config, "env_key").unwrap_or_else(|| "SYNTH_API_KEY".to_string());
-    let api_key = env::var(&env_key).map_err(|_| {
-        format!(
-            "codex route preflight failed before fan-out: `{}` points at `{}`, \
-             but required env var `{}` is not set. Export it before running the scan.",
-            config_path.display(),
-            base_url,
-            env_key
-        )
-    })?;
-    let url = format!("{}/responses", base_url.trim_end_matches('/'));
-    let response = reqwest::Client::new()
-        .post(&url)
-        .bearer_auth(api_key)
-        .json(&serde_json::json!({
-            "model": model,
-            "input": [{
-                "role": "user",
-                "content": [{
-                    "type": "input_text",
-                    "text": "Return exactly this JSON object and nothing else: {\"ok\":true}",
-                }],
-            }],
-            "max_output_tokens": 32,
-        }))
-        .send()
-        .await
-        .map_err(|err| {
-            format!("codex route preflight failed before fan-out: could not reach `{url}`: {err}")
-        })?;
-    let status = response.status();
-    let body = response.text().await.unwrap_or_default();
-    if !status.is_success() || route_body_is_error(&body) {
-        return Err(format!(
-            "codex route preflight failed before fan-out for model `{model}` via `{url}`: \
-             HTTP {status}: {}. Fix the provider route/balance or use a working model, \
-             for example `--model gpt-5.4-mini`.",
-            compact_error_body(&body)
-        )
-        .into());
-    }
-    Ok(())
-}
-
-fn config_string_value(config: &str, key: &str) -> Option<String> {
-    for line in config.lines() {
-        let line = line.trim();
-        if line.starts_with('#') || !line.starts_with(key) {
-            continue;
-        }
-        let Some((left, right)) = line.split_once('=') else {
-            continue;
-        };
-        if left.trim() != key {
-            continue;
-        }
-        let value = right.trim().trim_matches('"').trim();
-        if !value.is_empty() {
-            return Some(value.to_string());
-        }
-    }
-    None
-}
-
-fn route_body_is_error(body: &str) -> bool {
-    let Ok(value) = serde_json::from_str::<serde_json::Value>(body) else {
-        return false;
-    };
-    value.get("error").is_some_and(|error| !error.is_null())
-        || value
-            .get("detail")
-            .and_then(|detail| detail.get("error"))
-            .is_some_and(|error| !error.is_null())
-        || value
-            .get("resource_exhaustion")
-            .is_some_and(|error| !error.is_null())
-        || value
-            .get("detail")
-            .and_then(|detail| detail.get("resource_exhaustion"))
-            .is_some_and(|error| !error.is_null())
-}
-
-fn compact_error_body(body: &str) -> String {
-    let one_line = body.split_whitespace().collect::<Vec<_>>().join(" ");
-    if one_line.chars().count() > 500 {
-        one_line.chars().take(500).collect::<String>() + "…"
-    } else {
-        one_line
-    }
 }
 
 fn parse_args(args_json: Option<&str>) -> Result<serde_json::Value, serde_json::Error> {

@@ -16,6 +16,9 @@ use tokio::net::{TcpListener, TcpStream};
 pub(crate) struct ServerState {
     pub route: ProviderRoute,
     pub api_key: String,
+    /// Per-proxy bearer capability accepted from Codex. This is never sent
+    /// upstream; `api_key` remains the only upstream authority.
+    pub client_credential: String,
     pub port: u16,
     pub counter: AtomicU64,
     pub client: reqwest::Client,
@@ -50,6 +53,7 @@ pub(crate) async fn serve(listener: TcpListener, state: Arc<ServerState>) {
 struct Request {
     method: HttpMethod,
     path: String,
+    authorization: Option<String>,
     body: Vec<u8>,
 }
 
@@ -84,6 +88,7 @@ enum ProxyEndpoint {
 #[serde(rename_all = "snake_case")]
 enum ProxyErrorCode {
     MalformedRequest,
+    Unauthorized,
     NotFound,
     InvalidJson,
     InvalidResponsesRequest,
@@ -180,7 +185,22 @@ async fn handle_connection(mut stream: TcpStream, state: Arc<ServerState>) -> st
         .unwrap_or(request.path.as_str())
         .to_string();
 
-    match classify_endpoint(request.method, &path) {
+    let endpoint = classify_endpoint(request.method, &path);
+    if matches!(endpoint, ProxyEndpoint::Models | ProxyEndpoint::Responses)
+        && !request_is_authorized(request.authorization.as_deref(), &state.client_credential)
+    {
+        return write_error(
+            &mut stream,
+            401,
+            ProxyErrorBody::new(
+                ProxyErrorCode::Unauthorized,
+                "missing or invalid Jesterky proxy-client capability",
+            ),
+        )
+        .await;
+    }
+
+    match endpoint {
         ProxyEndpoint::Health => write_json(&mut stream, 200, &json!({"status": "ok"})).await,
         // codex refreshes its model catalog before an agentic session and decodes the
         // response into its OWN rich catalog schema — a 404 or a lean OpenAI-style
@@ -199,6 +219,29 @@ async fn handle_connection(mut stream: TcpStream, state: Arc<ServerState>) -> st
             .await
         }
     }
+}
+
+fn request_is_authorized(authorization: Option<&str>, expected: &str) -> bool {
+    let Some(raw) = authorization else {
+        return false;
+    };
+    let Some((scheme, credential)) = raw.split_once(' ') else {
+        return false;
+    };
+    scheme.eq_ignore_ascii_case("bearer")
+        && !credential.is_empty()
+        && constant_time_eq(credential.as_bytes(), expected.as_bytes())
+}
+
+fn constant_time_eq(candidate: &[u8], expected: &[u8]) -> bool {
+    let width = candidate.len().max(expected.len());
+    let mut difference = candidate.len() ^ expected.len();
+    for index in 0..width {
+        let candidate_byte = candidate.get(index).copied().unwrap_or(0);
+        let expected_byte = expected.get(index).copied().unwrap_or(0);
+        difference |= usize::from(candidate_byte ^ expected_byte);
+    }
+    difference == 0
 }
 
 async fn handle_responses(
@@ -555,6 +598,7 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
         .to_string();
 
     let mut content_length: usize = 0;
+    let mut authorization: Option<String> = None;
     for line in lines {
         if let Some((name, value)) = line.split_once(':') {
             if name.trim().eq_ignore_ascii_case("content-length") {
@@ -564,6 +608,14 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
                         format!("invalid Content-Length `{}`: {err}", value.trim()),
                     )
                 })?;
+            } else if name.trim().eq_ignore_ascii_case("authorization") {
+                if authorization.is_some() {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        "duplicate Authorization header",
+                    ));
+                }
+                authorization = Some(value.trim().to_string());
             }
         }
     }
@@ -587,7 +639,12 @@ async fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>
         body.truncate(content_length);
     }
 
-    Ok(Some(Request { method, path, body }))
+    Ok(Some(Request {
+        method,
+        path,
+        authorization,
+        body,
+    }))
 }
 
 async fn write_json(stream: &mut TcpStream, code: u16, value: &Value) -> std::io::Result<()> {
@@ -641,10 +698,38 @@ fn reason_phrase(code: u16) -> &'static str {
     match code {
         200 => "OK",
         400 => "Bad Request",
+        401 => "Unauthorized",
         404 => "Not Found",
         500 => "Internal Server Error",
         502 => "Bad Gateway",
         _ => "Error",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn proxy_client_capability_is_exact_and_not_upstream_authority() {
+        let scoped = "0123456789abcdef";
+        assert!(request_is_authorized(
+            Some("Bearer 0123456789abcdef"),
+            scoped
+        ));
+        assert!(request_is_authorized(
+            Some("bearer 0123456789abcdef"),
+            scoped
+        ));
+        assert!(!request_is_authorized(None, scoped));
+        assert!(!request_is_authorized(
+            Some("Bearer upstream-provider-key"),
+            scoped
+        ));
+        assert!(!request_is_authorized(
+            Some("Bearer 0123456789abcdee"),
+            scoped
+        ));
     }
 }
 
