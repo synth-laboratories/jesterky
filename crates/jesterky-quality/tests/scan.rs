@@ -7,7 +7,7 @@ use jesterky_contract::{CallKind, ProcessNode, RunStopReason, WorkflowSpec};
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{Actor, Runner};
 use jesterky_model::{CodexModel, ModelActor, ModelError, ModelRequest, StubModel};
-use jesterky_quality::{programs, roles, DIMENSIONS, SCANNER_ACTOR, SUMMARY_ACTOR};
+use jesterky_quality::{host_config, programs, roles, DIMENSIONS, SCANNER_ACTOR, SUMMARY_ACTOR};
 use serde_json::json;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -32,6 +32,22 @@ fn runner(actor: Arc<dyn Actor>) -> Runner {
         store: Arc::new(MemArtifactStore::new()),
         checkpoints: Some(Arc::new(MemCheckpointStore::new())),
     }
+}
+
+#[test]
+fn trace_v5_acceptance_uses_quality_roles_and_output_schemas() {
+    let host = host_config("trace_v5_acceptance").expect("acceptance host config");
+
+    assert!(host.roles.contains_key(SCANNER_ACTOR));
+    assert!(host.roles.contains_key(SUMMARY_ACTOR));
+    assert_eq!(
+        host.output_schemas.get(SCANNER_ACTOR).map(String::as_str),
+        Some("quality_verdict.schema.json")
+    );
+    assert_eq!(
+        host.output_schemas.get(SUMMARY_ACTOR).map(String::as_str),
+        Some("quality_summary.schema.json")
+    );
 }
 
 /// Apply the scan's roles to a ModelActor.

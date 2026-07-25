@@ -1,0 +1,8 @@
+{
+  "schema_version": "jesterky.run-manifest.v1",
+  "run_id": "trace-v5-fixture",
+  "status": "completed",
+  "events": [],
+  "recorded": [],
+  "checkpoints": []
+}

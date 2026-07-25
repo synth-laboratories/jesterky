@@ -1,32 +1,32 @@
 use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use jesterky_actor::{
+    viz::{
+        adapt_manifest, redraw_lines, render_run_view, render_run_view_lines, render_tree,
+        RenderOpts,
+    },
     FakeActor, MemArtifactStore, MemEventSink, NdjsonEventSink, ReplayActor, ReplayClock,
     ReplayResource, SharedEventSink, SystemClock, TeeEventSink,
-    viz::{
-        RenderOpts, adapt_manifest, redraw_lines, render_run_view, render_run_view_lines,
-        render_tree,
-    },
 };
 use jesterky_contract::{
-    Artifact, BudgetEngine, BudgetKind, BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind,
-    ContractError, Event, EventKind, GoalSnapshot, GoalState, HostConfig, HostRole, LiveBus,
-    LiveStream, NodePath, RunManifest, RunStatus, RunStopReason, Severity, ShardProgress,
-    WorkflowSpec, manifest_schema_json, workflow_schema_json,
+    manifest_schema_json, workflow_schema_json, Artifact, BudgetEngine, BudgetKind,
+    BudgetObservation, BudgetPlan, BudgetSnapshot, CallKind, ContractError, Event, EventKind,
+    GoalSnapshot, GoalState, HostConfig, HostRole, LiveBus, LiveStream, NodePath, RunManifest,
+    RunStatus, RunStopReason, Severity, ShardProgress, WorkflowSpec,
 };
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CheckpointStore, Clock, ProgramRegistry, Runner};
 use jesterky_model::{AdaptiveLimiter, CodexModel, ModelActor};
 use jesterky_quality::{
-    DungeonGridActor, DungeonGridState, host_config as workload_host_config, programs,
-    programs_with_dungeon,
+    host_config as workload_host_config, programs, programs_with_dungeon, DungeonGridActor,
+    DungeonGridState,
 };
 use std::collections::HashMap;
 use std::env;
 use std::error::Error;
 use std::io::{self, IsTerminal, Write};
 use std::path::{Path, PathBuf};
-use std::process::ExitCode;
+use std::process::{Command as ProcessCommand, ExitCode};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -55,6 +55,9 @@ enum Command {
         /// Write canonical run events as NDJSON. Use `-` for stdout.
         #[arg(long)]
         events_out: Option<PathBuf>,
+        /// Export the finished native manifest/events to a Containers Trace V5 bundle.
+        #[arg(long, requires = "out")]
+        trace_out: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
         /// Which host actor drives `actor` nodes. `fake` echoes inputs (default,
@@ -113,6 +116,14 @@ enum Command {
     },
     Schema {
         artifact: SchemaArtifact,
+    },
+    /// Export an existing native manifest through the generic synth-trace importer.
+    TraceExport {
+        manifest: PathBuf,
+        #[arg(long)]
+        bundle: PathBuf,
+        #[arg(long)]
+        atif: bool,
     },
 }
 
@@ -253,6 +264,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             args_file,
             out,
             events_out,
+            trace_out,
             run_id,
             actor,
             model,
@@ -279,6 +291,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
                 args.as_deref(),
                 out.as_deref(),
                 events_out.as_deref(),
+                trace_out.as_deref(),
                 run_id.as_deref(),
                 actor,
                 model.as_deref(),
@@ -305,6 +318,11 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             print_schema(artifact);
             Ok(ExitCode::SUCCESS)
         }
+        Command::TraceExport {
+            manifest,
+            bundle,
+            atif,
+        } => export_trace_v5(&manifest, &bundle, atif),
     }
 }
 
@@ -372,6 +390,7 @@ async fn run_spec(
     args_json: Option<&str>,
     out: Option<&Path>,
     events_out: Option<&Path>,
+    trace_out: Option<&Path>,
     run_id: Option<&str>,
     actor: ActorKind,
     model: Option<&str>,
@@ -641,6 +660,9 @@ async fn run_spec(
     if let Some(out) = out {
         write_json(out, &manifest)?;
         write_json(&spec_sidecar_path(out), &spec)?;
+        if let Some(bundle) = trace_out {
+            export_trace_v5(out, bundle, true)?;
+        }
     }
 
     if manifest.status == RunStatus::Failed {
@@ -651,6 +673,75 @@ async fn run_spec(
         return Ok(ExitCode::FAILURE);
     }
     Ok(ExitCode::SUCCESS)
+}
+
+fn export_trace_v5(
+    manifest_path: &Path,
+    bundle: &Path,
+    atif: bool,
+) -> Result<ExitCode, Box<dyn Error>> {
+    let import = synth_trace_command()?
+        .args(["import", "--format", "jesterky", "--input"])
+        .arg(manifest_path)
+        .arg("--bundle")
+        .arg(bundle)
+        .status()?;
+    if !import.success() {
+        return Err(format!(
+            "synth-trace jesterky import failed with status {import}; native manifest remains at {}",
+            manifest_path.display()
+        )
+        .into());
+    }
+    let validation = synth_trace_command()?
+        .arg("validate")
+        .arg(bundle)
+        .status()?;
+    if !validation.success() {
+        return Err(format!("synth-trace validation failed with status {validation}").into());
+    }
+    if atif {
+        let projection = synth_trace_command()?
+            .arg("project")
+            .arg(bundle)
+            .args(["--format", "atif"])
+            .status()?;
+        if !projection.success() {
+            return Err(
+                format!("synth-trace ATIF projection failed with status {projection}").into(),
+            );
+        }
+    }
+    Ok(ExitCode::SUCCESS)
+}
+
+fn synth_trace_command() -> Result<ProcessCommand, Box<dyn Error>> {
+    const VERSION: &str = "0.3.0.20260725";
+    const WHEEL_SHA256: &str = "1eafbca64b40c84c8c9d2554e68c8115605eea971444a378ca1d738fc39f61ee";
+    let python = std::env::var("SYNTH_TRACE_PYTHON").unwrap_or_else(|_| "python3".to_string());
+    let wheel = std::env::var("SYNTH_TRACE_CONTAINERS_WHEEL_PATH")
+        .or_else(|_| std::env::var("SYNTH_CONTAINERS_WHEEL"))
+        .map_err(|_| "SYNTH_TRACE_CONTAINERS_WHEEL_PATH or SYNTH_CONTAINERS_WHEEL is required")?;
+    let preflight = ProcessCommand::new(&python)
+        .arg("-c")
+        .arg(
+            "import hashlib,importlib.metadata,pathlib,sys; \
+             assert importlib.metadata.version('synth-containers') == sys.argv[2]; \
+             assert hashlib.sha256(pathlib.Path(sys.argv[1]).read_bytes()).hexdigest() == sys.argv[3]",
+        )
+        .arg(&wheel)
+        .arg(VERSION)
+        .arg(WHEEL_SHA256)
+        .status()?;
+    if !preflight.success() {
+        return Err(
+            "synth-containers provenance preflight failed for the selected trace interpreter"
+                .into(),
+        );
+    }
+    let mut command = ProcessCommand::new(python);
+    command.args(["-m", "synth_containers.tracing.cli"]);
+    Ok(command)
 }
 
 /// The reason a run finished `Failed`, pulled from its `WorkflowFailed` event.

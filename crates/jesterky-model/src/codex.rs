@@ -6,12 +6,13 @@
 //! without touching [`ModelActor`](crate::ModelActor).
 
 use crate::limiter::AdaptiveLimiter;
-use crate::{Model, ModelError, ModelRequest, build_prompt};
+use crate::{build_prompt, Model, ModelError, ModelRequest};
 use async_trait::async_trait;
+use std::io::Write as _;
 use std::path::PathBuf;
 use std::process::Stdio;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::process::Command;
@@ -96,7 +97,7 @@ impl Model for CodexModel {
                 Some(limiter) => Some(limiter.acquire().await),
                 None => None,
             };
-            match self.exec_once(req, &prompt).await {
+            match self.exec_once(req, &prompt, attempt).await {
                 Ok(reply) => {
                     if let Some(limiter) = &self.limiter {
                         limiter.on_success();
@@ -127,7 +128,12 @@ impl CodexModel {
     /// One codex subprocess: build the command, stream its JSONL, assemble the
     /// reply, classify a non-zero exit. Retry / limiter concerns stay in
     /// [`Model::complete`] so this is a single clean attempt.
-    async fn exec_once(&self, req: &ModelRequest, prompt: &str) -> Result<String, ModelError> {
+    async fn exec_once(
+        &self,
+        req: &ModelRequest,
+        prompt: &str,
+        attempt: u32,
+    ) -> Result<String, ModelError> {
         // The workspace + permission come from the per-call sandbox if the actor
         // declared one; else the model runs read-only in `self.cwd` (as before).
         // The workdir is set both as codex's `--cd` and the process cwd so a
@@ -148,6 +154,18 @@ impl CodexModel {
             .map(|s| s.workdir().to_path_buf())
             .or_else(|| self.cwd.clone());
 
+        let tracing_active = std::env::var("SYNTH_TRACE_ID").is_ok();
+        let trace_base_url = if tracing_active {
+            Some(
+                trace_proxy_base_url(
+                    self.codex_home.as_deref(),
+                    sandbox.map(|sandbox| sandbox.as_ref()),
+                )
+                .await?,
+            )
+        } else {
+            None
+        };
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
         // Omit the effort flag for routes that don't accept it (empty effort).
         if !self.effort.is_empty() {
@@ -192,11 +210,64 @@ impl CodexModel {
             args.push("--cd".into());
             args.push(cwd.to_string_lossy().into_owned());
         }
-        args.push(prompt.to_string());
 
         // Env: codex uses its own auth (ChatGPT bundle / proxy config under
         // CODEX_HOME) — intentionally NOT OPENAI_API_KEY.
         let mut env: Vec<(String, String)> = Vec::new();
+        // A sandbox command does not necessarily inherit the host environment.
+        // Carry the central trace context explicitly and unchanged, then add
+        // Jesterky's structural child identity as join metadata. The Containers
+        // importer remains the schema/registration authority. Once registration
+        // returns the scoped child capability, the supported static provider-header
+        // config binds this subprocess's calls directly to that child. Native
+        // prompt_cache_key ↔ codex.thread aliases remain an independent cross-check.
+        const TRACE_ENV: &[&str] = &[
+            "SYNTH_TRACE_ID",
+            "SYNTH_CAPTURE_ID",
+            "SYNTH_ACTOR_ID",
+            "SYNTH_ACTOR_SESSION_ID",
+            "SYNTH_PARENT_ACTOR_ID",
+            "SYNTH_PARENT_ACTOR_SESSION_ID",
+            "SYNTH_PARENT_SPAN_ID",
+            "SYNTH_DELEGATION_ID",
+            "SYNTH_WORKFLOW_ADDRESS",
+            "SYNTH_TRACE_BINDING_PATH",
+            "SYNTH_TRACE_COLLECTOR_URL",
+            "SYNTH_TRACE_COLLECTOR_TOKEN",
+            "SYNTH_TRACE_OUTPUT_DIR",
+            "TRACEPARENT",
+        ];
+        for key in TRACE_ENV {
+            if let Ok(value) = std::env::var(key) {
+                env.push(((*key).to_string(), value));
+            }
+        }
+        let workflow_address = req
+            .node_path
+            .as_ref()
+            .and_then(|path| serde_json::to_string(path).ok())
+            .unwrap_or_else(|| "[]".to_string());
+        let mut child_capture_id: Option<String> = None;
+        if tracing_active {
+            let child_env = register_trace_child(req, attempt, &workflow_address).await?;
+            child_capture_id = child_env
+                .iter()
+                .find(|(key, _)| key == "SYNTH_CAPTURE_ID")
+                .map(|(_, value)| value.clone());
+            for (key, value) in child_env {
+                env.retain(|(existing, _)| existing != &key);
+                env.push((key, value));
+            }
+            args.extend(synth_trace_provider_args(
+                trace_base_url
+                    .as_deref()
+                    .expect("active tracing resolved its proxy URL"),
+                &env,
+            )?);
+        }
+        args.push(prompt.to_string());
+        env.push(("SYNTH_JESTERKY_ATTEMPT".into(), attempt.to_string()));
+        env.push(("SYNTH_JESTERKY_NATIVE_ADDR".into(), workflow_address));
         if let Some(codex_home) = &self.codex_home {
             env.push((
                 "CODEX_HOME".into(),
@@ -206,10 +277,37 @@ impl CodexModel {
         // Sandbox-provided env wins (e.g. an in-container CODEX_HOME pointing at
         // mounted auth): drop any key the sandbox overrides, then append its env.
         if let Some(sb) = sandbox {
-            let over: std::collections::HashSet<&str> =
-                sb.env().iter().map(|(k, _)| k.as_str()).collect();
+            let over: std::collections::HashSet<&str> = sb
+                .env()
+                .iter()
+                .filter(|(key, _)| {
+                    !key.starts_with("SYNTH_TRACE")
+                        && !key.starts_with("SYNTH_ACTOR")
+                        && key.as_str() != "SYNTH_PARENT_ACTOR_ID"
+                        && key.as_str() != "SYNTH_PARENT_ACTOR_SESSION_ID"
+                        && key.as_str() != "SYNTH_PARENT_SPAN_ID"
+                        && key.as_str() != "SYNTH_DELEGATION_ID"
+                        && key.as_str() != "SYNTH_WORKFLOW_ADDRESS"
+                        && key.as_str() != "TRACEPARENT"
+                })
+                .map(|(k, _)| k.as_str())
+                .collect();
             env.retain(|(k, _)| !over.contains(k.as_str()));
-            env.extend(sb.env().iter().cloned());
+            env.extend(
+                sb.env()
+                    .iter()
+                    .filter(|(key, _)| {
+                        !key.starts_with("SYNTH_TRACE")
+                            && !key.starts_with("SYNTH_ACTOR")
+                            && key.as_str() != "SYNTH_PARENT_ACTOR_ID"
+                            && key.as_str() != "SYNTH_PARENT_ACTOR_SESSION_ID"
+                            && key.as_str() != "SYNTH_PARENT_SPAN_ID"
+                            && key.as_str() != "SYNTH_DELEGATION_ID"
+                            && key.as_str() != "SYNTH_WORKFLOW_ADDRESS"
+                            && key.as_str() != "TRACEPARENT"
+                    })
+                    .cloned(),
+            );
         }
 
         // Build the command IN the sandbox (docker: `docker exec`; local: host
@@ -233,6 +331,56 @@ impl CodexModel {
         // (e.g. SYNTH_API_KEY for the proxy) is inherited from the parent.
 
         cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
+
+        let mut native_trace_sink = match (
+            child_capture_id.as_deref(),
+            std::env::var("SYNTH_JESTERKY_CODEX_JSONL_DIR").ok(),
+        ) {
+            (Some(capture_id), Some(directory)) => {
+                std::fs::create_dir_all(&directory).map_err(|err| {
+                    ModelError::Config(format!(
+                        "failed to create Jesterky Codex JSONL directory: {err}"
+                    ))
+                })?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt as _;
+                    std::fs::set_permissions(&directory, std::fs::Permissions::from_mode(0o700))
+                        .map_err(|err| {
+                            ModelError::Config(format!(
+                                "failed to protect Jesterky Codex JSONL directory: {err}"
+                            ))
+                        })?;
+                }
+                let path = PathBuf::from(directory).join(format!("{capture_id}.jsonl"));
+                let mut options = std::fs::OpenOptions::new();
+                options.create(true).write(true).truncate(true);
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::OpenOptionsExt as _;
+                    options.mode(0o600);
+                }
+                let sink = options.open(&path).map_err(|err| {
+                    ModelError::Config(format!(
+                        "failed to open Codex native trace `{}`: {err}",
+                        path.display()
+                    ))
+                })?;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt as _;
+                    sink.set_permissions(std::fs::Permissions::from_mode(0o600))
+                        .map_err(|err| {
+                            ModelError::Config(format!(
+                                "failed to protect Codex native trace `{}`: {err}",
+                                path.display()
+                            ))
+                        })?;
+                }
+                Some(sink)
+            }
+            _ => None,
+        };
 
         let mut child = cmd.spawn().map_err(|err| match err.kind() {
             std::io::ErrorKind::NotFound => {
@@ -261,6 +409,11 @@ impl CodexModel {
             if line.trim().is_empty() {
                 continue;
             }
+            if let Some(sink) = native_trace_sink.as_mut() {
+                writeln!(sink, "{line}").map_err(|err| {
+                    ModelError::Transient(format!("writing Jesterky Codex native trace: {err}"))
+                })?;
+            }
             // Keep a bounded tail of the raw JSONL so a non-zero exit can surface
             // codex's own error events (which ride stdout, not stderr).
             tail.push_back(line.clone());
@@ -285,6 +438,14 @@ impl CodexModel {
             .wait()
             .await
             .map_err(|err| ModelError::Transient(format!("waiting on codex: {err}")))?;
+        if child_capture_id.is_some() {
+            let terminal_status = if status.success() && !reply.trim().is_empty() {
+                "completed"
+            } else {
+                "failed"
+            };
+            finish_trace_child(&env, terminal_status).await?;
+        }
 
         if status.success() {
             if reply.trim().is_empty() {
@@ -313,6 +474,274 @@ impl CodexModel {
             Err(classify_codex_failure(&combined))
         }
     }
+}
+
+async fn trace_proxy_base_url(
+    codex_home: Option<&std::path::Path>,
+    sandbox: Option<&dyn jesterky_sandbox::Sandbox>,
+) -> Result<String, ModelError> {
+    let sandbox_env = sandbox.map(|sandbox| sandbox.env());
+    let sandbox_base_url = sandbox_env.and_then(|env| effective_env_value(env, "OPENAI_BASE_URL"));
+    if let Some(value) = sandbox_base_url {
+        if !value.trim().is_empty() {
+            return Ok(value.to_string());
+        }
+    } else if let Ok(value) = std::env::var("OPENAI_BASE_URL") {
+        if !value.trim().is_empty() {
+            return Ok(value);
+        }
+    }
+    let sandbox_codex_home = sandbox_env.and_then(|env| effective_env_value(env, "CODEX_HOME"));
+    let home = match sandbox_codex_home {
+        Some(value) if !value.trim().is_empty() => Some(PathBuf::from(value)),
+        Some(_) => None,
+        None => codex_home
+            .map(std::path::Path::to_path_buf)
+            .or_else(|| std::env::var_os("CODEX_HOME").map(PathBuf::from))
+            .or_else(|| std::env::var_os("HOME").map(|value| PathBuf::from(value).join(".codex"))),
+    };
+    let config_path = home.as_ref().map(|home| home.join("config.toml"));
+    if let Some(path) = &config_path {
+        let config = if sandbox_codex_home.is_some() {
+            let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
+            let args = vec![path.to_string_lossy().into_owned()];
+            let output = sandbox
+                .command("cat", &args, &[])
+                .output()
+                .await
+                .map_err(|err| {
+                    ModelError::Config(format!(
+                        "failed to read effective sandbox Codex config `{}`: {err}",
+                        path.display()
+                    ))
+                })?;
+            if !output.status.success() {
+                return Err(ModelError::Config(format!(
+                    "failed to read effective sandbox Codex config `{}`: {}",
+                    path.display(),
+                    String::from_utf8_lossy(&output.stderr).trim()
+                )));
+            }
+            Some(String::from_utf8(output.stdout).map_err(|err| {
+                ModelError::Config(format!(
+                    "effective sandbox Codex config `{}` is not UTF-8: {err}",
+                    path.display()
+                ))
+            })?)
+        } else {
+            std::fs::read_to_string(path).ok()
+        };
+        if let Some(value) = config.as_deref().and_then(openai_base_url_from_config) {
+            return Ok(value);
+        }
+    }
+    Err(ModelError::Config(
+        "traced Codex provider capture requires OPENAI_BASE_URL or a top-level ".to_string()
+            + "openai_base_url in "
+            + &config_path
+                .map(|path| path.display().to_string())
+                .unwrap_or_else(|| "CODEX_HOME/config.toml".to_string()),
+    ))
+}
+
+fn effective_env_value<'a>(env: &'a [(String, String)], name: &str) -> Option<&'a str> {
+    env.iter()
+        .rev()
+        .find_map(|(key, value)| (key == name).then_some(value.as_str()))
+}
+
+fn openai_base_url_from_config(config: &str) -> Option<String> {
+    for line in config.lines() {
+        let trimmed = line.trim();
+        if trimmed.starts_with('[') {
+            break;
+        }
+        let Some((name, raw_value)) = trimmed.split_once('=') else {
+            continue;
+        };
+        if name.trim() != "openai_base_url" {
+            continue;
+        }
+        let value = parse_toml_string(raw_value)?;
+        return (!value.trim().is_empty()).then_some(value);
+    }
+    None
+}
+
+fn parse_toml_string(raw: &str) -> Option<String> {
+    let raw = raw.trim_start();
+    let quote = raw.chars().next()?;
+    if quote == '\'' {
+        let body = &raw[quote.len_utf8()..];
+        let end = body.find(quote)?;
+        valid_toml_value_suffix(&body[end + quote.len_utf8()..])?;
+        return Some(body[..end].to_string());
+    }
+    if quote != '"' {
+        return None;
+    }
+    let mut escaped = false;
+    for (index, character) in raw[quote.len_utf8()..].char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if character == '\\' {
+            escaped = true;
+            continue;
+        }
+        if character == quote {
+            let end = quote.len_utf8() + index + character.len_utf8();
+            valid_toml_value_suffix(&raw[end..])?;
+            return serde_json::from_str(&raw[..end]).ok();
+        }
+    }
+    None
+}
+
+fn valid_toml_value_suffix(suffix: &str) -> Option<()> {
+    let suffix = suffix.trim_start();
+    (suffix.is_empty() || suffix.starts_with('#')).then_some(())
+}
+
+fn synth_trace_provider_args(
+    base_url: &str,
+    child_env: &[(String, String)],
+) -> Result<Vec<String>, ModelError> {
+    let value = |name: &str| {
+        child_env
+            .iter()
+            .find_map(|(key, value)| (key == name).then_some(value.as_str()))
+            .filter(|value| !value.is_empty())
+            .ok_or_else(|| {
+                ModelError::Config(format!(
+                    "{name} is required for traced Codex provider capture"
+                ))
+            })
+    };
+    let headers = [
+        ("x-synth-trace-id", value("SYNTH_TRACE_ID")?),
+        ("x-synth-capture-id", value("SYNTH_CAPTURE_ID")?),
+        ("x-synth-actor-id", value("SYNTH_ACTOR_ID")?),
+        ("x-synth-session-id", value("SYNTH_ACTOR_SESSION_ID")?),
+        (
+            "x-synth-context-token",
+            value("SYNTH_TRACE_COLLECTOR_TOKEN")?,
+        ),
+    ];
+    let header_table = format!(
+        "{{{}}}",
+        headers
+            .iter()
+            .map(|(name, value)| format!(
+                "{}={}",
+                serde_json::to_string(name).expect("header name is JSON serializable"),
+                serde_json::to_string(value).expect("header value is JSON serializable"),
+            ))
+            .collect::<Vec<_>>()
+            .join(",")
+    );
+    Ok([
+        "model_provider=\"synth_trace\"".to_string(),
+        "model_providers.synth_trace.name=\"Synth Trace Proxy\"".to_string(),
+        format!(
+            "model_providers.synth_trace.base_url={}",
+            serde_json::to_string(base_url).expect("base URL is JSON serializable")
+        ),
+        "model_providers.synth_trace.wire_api=\"responses\"".to_string(),
+        "model_providers.synth_trace.requires_openai_auth=true".to_string(),
+        format!("model_providers.synth_trace.http_headers={header_table}"),
+    ]
+    .into_iter()
+    .flat_map(|value| ["-c".to_string(), value])
+    .collect())
+}
+
+async fn register_trace_child(
+    req: &ModelRequest,
+    attempt: u32,
+    workflow_address: &str,
+) -> Result<Vec<(String, String)>, ModelError> {
+    let registrar = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR").map_err(|_| {
+        ModelError::Config(
+            "SYNTH_TRACE_CHILD_REGISTRAR is required when Synth tracing is active".to_string(),
+        )
+    })?;
+    let python = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR_PYTHON")
+        .unwrap_or_else(|_| "python3".to_string());
+    let output = Command::new(&python)
+        .arg(&registrar)
+        .arg("--actor")
+        .arg(&req.actor)
+        .arg("--workflow-address")
+        .arg(workflow_address)
+        .arg("--attempt")
+        .arg(attempt.to_string())
+        .output()
+        .await
+        .map_err(|err| {
+            ModelError::Config(format!(
+                "failed to launch trace child registrar `{registrar}`: {err}"
+            ))
+        })?;
+    if !output.status.success() {
+        return Err(ModelError::Config(format!(
+            "trace child registration failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let values: std::collections::BTreeMap<String, String> = serde_json::from_slice(&output.stdout)
+        .map_err(|err| {
+            ModelError::Config(format!(
+                "trace child registrar returned invalid environment JSON: {err}"
+            ))
+        })?;
+    for required in [
+        "SYNTH_TRACE_ID",
+        "SYNTH_CAPTURE_ID",
+        "SYNTH_ACTOR_ID",
+        "SYNTH_ACTOR_SESSION_ID",
+        "SYNTH_PARENT_ACTOR_ID",
+        "SYNTH_DELEGATION_ID",
+        "SYNTH_TRACE_COLLECTOR_TOKEN",
+    ] {
+        if !values.contains_key(required) {
+            return Err(ModelError::Config(format!(
+                "trace child registrar omitted {required}"
+            )));
+        }
+    }
+    Ok(values.into_iter().collect())
+}
+
+async fn finish_trace_child(
+    child_env: &[(String, String)],
+    status: &str,
+) -> Result<(), ModelError> {
+    let registrar = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR").map_err(|_| {
+        ModelError::Config(
+            "SYNTH_TRACE_CHILD_REGISTRAR is required when Synth tracing is active".to_string(),
+        )
+    })?;
+    let python = std::env::var("SYNTH_TRACE_CHILD_REGISTRAR_PYTHON")
+        .unwrap_or_else(|_| "python3".to_string());
+    let mut command = Command::new(&python);
+    command.arg(&registrar).arg("--finish-status").arg(status);
+    for (key, value) in child_env {
+        command.env(key, value);
+    }
+    let output = command.output().await.map_err(|err| {
+        ModelError::Config(format!(
+            "failed to launch trace child finisher `{registrar}`: {err}"
+        ))
+    })?;
+    if !output.status.success() {
+        return Err(ModelError::Config(format!(
+            "trace child finish failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    Ok(())
 }
 
 /// Running totals folded from the codex JSONL event stream for one shard.
@@ -451,6 +880,67 @@ mod tests {
             stream.ingest(&event, &mut reply);
         }
         assert_eq!(reply, r#"{"verdict":"pass"}"#);
+    }
+
+    #[test]
+    fn traced_codex_provider_uses_supported_child_headers() {
+        let child_env = [
+            ("SYNTH_TRACE_ID".to_string(), "trace_1".to_string()),
+            ("SYNTH_CAPTURE_ID".to_string(), "cap_1".to_string()),
+            ("SYNTH_ACTOR_ID".to_string(), "actor_1".to_string()),
+            (
+                "SYNTH_ACTOR_SESSION_ID".to_string(),
+                "session_1".to_string(),
+            ),
+            (
+                "SYNTH_TRACE_COLLECTOR_TOKEN".to_string(),
+                "ephemeral_child_capability".to_string(),
+            ),
+        ];
+        let args = synth_trace_provider_args("http://127.0.0.1:4321/v1", &child_env).unwrap();
+        let rendered = args.join(" ");
+        assert!(rendered.contains("model_provider=\"synth_trace\""));
+        assert!(rendered.contains("requires_openai_auth=true"));
+        assert!(rendered.contains("http_headers="));
+        assert!(!rendered.contains("env_http_headers"));
+        assert!(rendered.contains("x-synth-capture-id"));
+        assert!(rendered.contains("cap_1"));
+        assert!(rendered.contains("x-synth-context-token"));
+        assert!(rendered.contains("ephemeral_child_capability"));
+    }
+
+    #[test]
+    fn traced_codex_provider_reads_top_level_configured_route() {
+        let config = concat!(
+            "approval_policy = \"never\"\n",
+            "openai_base_url = 'http://127.0.0.1:4321/v1' # capture route\n",
+            "[model_providers.other]\n",
+            "base_url = \"https://must-not-win.example/v1\"\n",
+        );
+        assert_eq!(
+            openai_base_url_from_config(config).as_deref(),
+            Some("http://127.0.0.1:4321/v1")
+        );
+        assert_eq!(
+            openai_base_url_from_config(
+                "[model_providers.other]\nopenai_base_url = \"https://wrong.example\"\n"
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn traced_codex_route_uses_the_last_sandbox_environment_override() {
+        let env = [
+            ("CODEX_HOME".to_string(), "/host-home".to_string()),
+            ("OPENAI_BASE_URL".to_string(), String::new()),
+            ("CODEX_HOME".to_string(), "/container-home".to_string()),
+        ];
+        assert_eq!(
+            effective_env_value(&env, "CODEX_HOME"),
+            Some("/container-home")
+        );
+        assert_eq!(effective_env_value(&env, "OPENAI_BASE_URL"), Some(""));
     }
 }
 

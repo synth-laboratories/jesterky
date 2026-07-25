@@ -14,6 +14,7 @@ const RUNNABLE_EXAMPLES: &[&str] = &[
     "quality_scan_blogs.json",
     "quality_scan_docs.json",
     "smr_reportbench_trace_evaluate.json",
+    "trace_v5_acceptance.json",
 ];
 
 const INVALID_EXAMPLES: &[(&str, &str)] =
@@ -276,6 +277,15 @@ fn args_for_example(example: &str, fixtures: &ExampleFixtures) -> Option<String>
         "smr_reportbench_trace_evaluate.json" => Some(
             json!({
                 "trace_dir": "proof/reportbench_traces",
+            })
+            .to_string(),
+        ),
+        "trace_v5_acceptance.json" => Some(
+            json!({
+                "jobs": [
+                    {"dimension": "correctness", "target": "trace-v5-bounded"},
+                    {"dimension": "robustness", "target": "trace-v5-bounded"},
+                ],
             })
             .to_string(),
         ),
