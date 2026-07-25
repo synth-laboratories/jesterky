@@ -61,7 +61,7 @@ enum ModelRouteId<'a> {
 
 impl<'a> ModelRouteId<'a> {
     fn parse(model: &'a str) -> Self {
-        if model.starts_with("gpt-") {
+        if is_native_chatgpt_model(model) {
             return Self::Native;
         }
         if model == "deepseek" {
@@ -80,6 +80,24 @@ impl<'a> ModelRouteId<'a> {
         }
         Self::Unknown
     }
+}
+
+/// Whether `model` is an OpenAI GPT-5 family id that Codex may run with its
+/// built-in `openai` provider and ChatGPT authentication.
+///
+/// This deliberately excludes broad `gpt-*` matching: `gpt-oss-*` and arbitrary
+/// provider-like names must not bypass the managed-proxy fail-closed path.
+pub fn is_native_chatgpt_model(model: &str) -> bool {
+    let Some(suffix) = model.strip_prefix("gpt-5") else {
+        return false;
+    };
+    if suffix.is_empty() {
+        return true;
+    }
+    matches!(suffix.as_bytes().first(), Some(b'.' | b'-'))
+        && suffix[1..]
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '.' | '-'))
 }
 
 /// Resolve a codex route id to a provider chat endpoint. Built-in defaults:
@@ -190,7 +208,13 @@ mod tests {
     }
 
     #[test]
-    fn gpt_route_is_native_none() {
+    fn only_gpt5_family_routes_are_native_chatgpt() {
+        assert!(is_native_chatgpt_model("gpt-5"));
+        assert!(is_native_chatgpt_model("gpt-5.4-mini"));
+        assert!(is_native_chatgpt_model("gpt-5.5"));
+        assert!(!is_native_chatgpt_model("gpt-oss-120b"));
+        assert!(!is_native_chatgpt_model("gpt-custom-provider"));
+        assert!(!is_native_chatgpt_model("gpt-5/custom"));
         assert!(resolve_route("gpt-5.5").is_none());
     }
 

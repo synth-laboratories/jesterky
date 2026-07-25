@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -34,10 +35,55 @@ EXPECTED_CONTAINERS_SOURCE_COMMIT = "7a327c471c8850a1e8ea62fcea6813539c2a652e"
 EXPECTED_CONTAINERS_WHEEL_SHA256 = (
     "1eafbca64b40c84c8c9d2554e68c8115605eea971444a378ca1d738fc39f61ee"
 )
+ACCEPTANCE_RUNTIME_ENVIRONMENT = (
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "TMP",
+    "TEMP",
+    "LANG",
+    "LC_ALL",
+    "LC_CTYPE",
+    "CARGO_HOME",
+    "RUSTUP_HOME",
+)
+CONTAINERS_PROVENANCE_ENVIRONMENT = (
+    "SYNTH_TRACE_CONTAINERS_VERSION",
+    "SYNTH_TRACE_CONTAINERS_SOURCE_COMMIT",
+    "SYNTH_TRACE_CONTAINERS_WHEEL_SHA256",
+    "SYNTH_TRACE_CONTAINERS_WHEEL_PATH",
+)
 
 
 def _digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _runtime_environment(source: Mapping[str, str]) -> dict[str, str]:
+    return {
+        name: source[name]
+        for name in ACCEPTANCE_RUNTIME_ENVIRONMENT
+        if name in source
+    }
+
+
+def _acceptance_child_environment(
+    *,
+    source: Mapping[str, str],
+    capture: Mapping[str, str],
+    explicit: Mapping[str, str],
+) -> dict[str, str]:
+    selected = _runtime_environment(source)
+    selected.update(explicit)
+    for name in CONTAINERS_PROVENANCE_ENVIRONMENT:
+        value = str(source.get(name) or "").strip()
+        if not value:
+            raise RuntimeError(
+                f"Jesterky acceptance child requires explicit environment {name}"
+            )
+        selected[name] = value
+    selected.update(capture)
+    return selected
 
 
 def _run(command: list[str], *, cwd: Path, env: dict[str, str]) -> dict[str, Any]:
@@ -113,6 +159,7 @@ def _trace_cli(*args: str) -> dict[str, Any]:
         check=False,
         capture_output=True,
         text=True,
+        env=_runtime_environment(os.environ),
     )
     parsed: Any = completed.stdout.strip()
     if parsed:
@@ -333,10 +380,10 @@ def main() -> int:
                 temporary_codex_home,
                 supervisor.openai_base_url,
             )
-            env = os.environ.copy()
-            env.update(supervisor.environment())
-            env.update(
-                {
+            env = _acceptance_child_environment(
+                source=os.environ,
+                capture=supervisor.environment(),
+                explicit={
                     "SYNTH_TRACE_CHILD_REGISTRAR": str(
                         ROOT / "scripts" / "register_trace_child.py"
                     ),
@@ -344,7 +391,7 @@ def main() -> int:
                     "SYNTH_JESTERKY_TRACE_REGISTRY_DIR": str(registry_dir),
                     "SYNTH_JESTERKY_CODEX_JSONL_DIR": str(codex_jsonl_dir),
                     "SYNTH_JESTERKY_RUN_ID": run_id,
-                }
+                },
             )
             command = [
                 args.cargo,

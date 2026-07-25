@@ -17,3 +17,4 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 tokio = { version = "1", features = ["net", "io-util", "rt", "rt-multi-thread", "macros", "sync", "time"] }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+getrandom = "0.3"

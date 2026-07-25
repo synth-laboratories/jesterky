@@ -58,9 +58,10 @@ pub trait Sandbox: Send + Sync + std::fmt::Debug {
     fn actor_self_sandbox(&self) -> bool {
         true
     }
-    /// Build a command that runs INSIDE the sandbox. `env` pairs are injected
-    /// (e.g. `CODEX_HOME`). Local: on the host with cwd = workdir. Docker:
-    /// `docker exec` into the container.
+    /// Build a command that runs INSIDE the sandbox. `env` pairs are the exact
+    /// actor environment (e.g. `CODEX_HOME`). Local: on the host with cwd =
+    /// workdir. Docker: `docker exec ... env -i` inside the container while the
+    /// trusted host Docker launcher retains its own environment.
     fn command(&self, program: &str, args: &[String], env: &[(String, String)]) -> Command;
     /// Read matching files back out of the workspace (capture).
     async fn collect(&self, globs: &[String]) -> Result<Vec<FileBlob>, SandboxError>;

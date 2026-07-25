@@ -25,6 +25,9 @@ use crate::{
 
 /// The fixed in-container workspace path (codex `--cd`, `docker exec -w`).
 const CONTAINER_WORKDIR: &str = "/workspace";
+const ACTOR_RUNTIME_ENVIRONMENT: &[&str] = &[
+    "PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL", "LC_CTYPE",
+];
 
 pub struct DockerSandboxProvider;
 
@@ -84,13 +87,18 @@ impl SandboxProvider for DockerSandboxProvider {
         }
         let container = String::from_utf8_lossy(&out.stdout).trim().to_string();
 
-        let sandbox = DockerSandbox {
+        let mut sandbox = DockerSandbox {
             container,
             host_root,
             mode: cfg.mode,
             network: cfg.network,
-            env,
+            env: Vec::new(),
         };
+        sandbox.env = container_runtime_environment(&sandbox.container).await?;
+        for (name, value) in env {
+            sandbox.env.retain(|(existing, _)| existing != &name);
+            sandbox.env.push((name, value));
+        }
 
         // Setup runs inside the container (image toolchain), rooted at the mount:
         // image-level first, then workspace-level.
@@ -144,20 +152,92 @@ impl Sandbox for DockerSandbox {
     }
 
     fn command(&self, program: &str, args: &[String], env: &[(String, String)]) -> Command {
-        // `docker exec [-e K=V …] -w /workspace <cid> <program> <args…>`.
-        let mut c = Command::new("docker");
-        c.arg("exec").arg("-w").arg(CONTAINER_WORKDIR);
-        for (k, v) in env {
-            c.arg("-e").arg(format!("{k}={v}"));
-        }
-        c.arg(&self.container).arg(program).args(args);
-        c
+        // Keep the trusted host-side Docker launcher environment intact, but make
+        // the in-container actor environment exact: no image/container variables
+        // survive `env -i` unless the caller selected them.
+        docker_exec_command(&self.container, program, args, env)
     }
 
     async fn collect(&self, globs: &[String]) -> Result<Vec<FileBlob>, SandboxError> {
         // The mount is shared, so container writes are visible on the host side.
         collect_globs(&self.host_root, globs).await
     }
+}
+
+fn docker_exec_command(
+    container: &str,
+    program: &str,
+    args: &[String],
+    env: &[(String, String)],
+) -> Command {
+    let mut command = Command::new("docker");
+    command
+        .arg("exec")
+        .arg("-w")
+        .arg(CONTAINER_WORKDIR)
+        .arg(container)
+        .arg("env")
+        .arg("-i");
+    for (name, value) in env {
+        command.arg(format!("{name}={value}"));
+    }
+    command.arg(program).args(args);
+    command
+}
+
+async fn container_runtime_environment(
+    container: &str,
+) -> Result<Vec<(String, String)>, SandboxError> {
+    let query = ACTOR_RUNTIME_ENVIRONMENT
+        .iter()
+        .map(|name| format!("printf '%s=%s\\n' '{name}' \"${{{name}-}}\""))
+        .collect::<Vec<_>>()
+        .join("; ");
+    let output = Command::new("docker")
+        .arg("exec")
+        .arg(container)
+        .arg("sh")
+        .arg("-c")
+        .arg(query)
+        .output()
+        .await
+        .map_err(|error| {
+            SandboxError::Backend(format!("reading container runtime environment: {error}"))
+        })?;
+    if !output.status.success() {
+        return Err(SandboxError::Backend(format!(
+            "reading container runtime environment failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )));
+    }
+    let body = String::from_utf8(output.stdout).map_err(|error| {
+        SandboxError::Backend(format!(
+            "container runtime environment is not UTF-8: {error}"
+        ))
+    })?;
+    let rows = body.lines().collect::<Vec<_>>();
+    if rows.len() != ACTOR_RUNTIME_ENVIRONMENT.len() {
+        return Err(SandboxError::Backend(
+            "container runtime environment returned an invalid row count".to_string(),
+        ));
+    }
+    let mut selected = Vec::new();
+    for (expected, row) in ACTOR_RUNTIME_ENVIRONMENT.iter().zip(rows) {
+        let (name, value) = row.split_once('=').ok_or_else(|| {
+            SandboxError::Backend(
+                "container runtime environment returned an invalid row".to_string(),
+            )
+        })?;
+        if name != *expected {
+            return Err(SandboxError::Backend(format!(
+                "container runtime environment returned {name} where {expected} was required"
+            )));
+        }
+        if !value.is_empty() {
+            selected.push((name.to_string(), value.to_string()));
+        }
+    }
+    Ok(selected)
 }
 
 impl Drop for DockerSandbox {
@@ -215,4 +295,50 @@ fn unique_mount_dir() -> PathBuf {
     let n = SEQ.fetch_add(1, Ordering::Relaxed);
     let pid = std::process::id();
     std::env::temp_dir().join(format!("jesterky-dsbx-{pid}-{n}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn docker_actor_command_clears_only_the_in_container_environment() {
+        let command = docker_exec_command(
+            "container-id",
+            "codex",
+            &["exec".to_string(), "--json".to_string()],
+            &[
+                ("PATH".to_string(), "/usr/local/bin:/usr/bin".to_string()),
+                ("CODEX_HOME".to_string(), "/codex-home".to_string()),
+            ],
+        );
+        let program = command.as_std().get_program().to_string_lossy();
+        let args = command
+            .as_std()
+            .get_args()
+            .map(|value| value.to_string_lossy().into_owned())
+            .collect::<Vec<_>>();
+
+        assert_eq!(program, "docker");
+        assert_eq!(
+            args,
+            [
+                "exec",
+                "-w",
+                "/workspace",
+                "container-id",
+                "env",
+                "-i",
+                "PATH=/usr/local/bin:/usr/bin",
+                "CODEX_HOME=/codex-home",
+                "codex",
+                "exec",
+                "--json",
+            ]
+        );
+        assert!(
+            command.as_std().get_envs().next().is_none(),
+            "the trusted host Docker launcher must retain its environment"
+        );
+    }
 }

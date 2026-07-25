@@ -11,6 +11,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .ok_or("the requested model does not require a chat proxy")?;
 
     println!("CODEX_HOME={}", proxy.codex_home().display());
+    println!(
+        "{}={}",
+        proxy.client_env_name(),
+        proxy.client_credential()
+    );
     io::stdout().flush()?;
 
     // The caller owns the process lifetime and terminates this sidecar after codex exits.
