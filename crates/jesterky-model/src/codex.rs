@@ -502,36 +502,34 @@ async fn trace_proxy_base_url(
     };
     let config_path = home.as_ref().map(|home| home.join("config.toml"));
     if let Some(path) = &config_path {
-        let config = match std::fs::read_to_string(path) {
-            Ok(config) => Some(config),
-            Err(_) if sandbox_codex_home.is_some() => {
-                let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
-                let args = vec![path.to_string_lossy().into_owned()];
-                let output = sandbox
-                    .command("cat", &args, &[])
-                    .output()
-                    .await
-                    .map_err(|err| {
-                        ModelError::Config(format!(
-                            "failed to read effective sandbox Codex config `{}`: {err}",
-                            path.display()
-                        ))
-                    })?;
-                if !output.status.success() {
-                    return Err(ModelError::Config(format!(
-                        "failed to read effective sandbox Codex config `{}`: {}",
-                        path.display(),
-                        String::from_utf8_lossy(&output.stderr).trim()
-                    )));
-                }
-                Some(String::from_utf8(output.stdout).map_err(|err| {
+        let config = if sandbox_codex_home.is_some() {
+            let sandbox = sandbox.expect("sandbox CODEX_HOME came from a sandbox");
+            let args = vec![path.to_string_lossy().into_owned()];
+            let output = sandbox
+                .command("cat", &args, &[])
+                .output()
+                .await
+                .map_err(|err| {
                     ModelError::Config(format!(
-                        "effective sandbox Codex config `{}` is not UTF-8: {err}",
+                        "failed to read effective sandbox Codex config `{}`: {err}",
                         path.display()
                     ))
-                })?)
+                })?;
+            if !output.status.success() {
+                return Err(ModelError::Config(format!(
+                    "failed to read effective sandbox Codex config `{}`: {}",
+                    path.display(),
+                    String::from_utf8_lossy(&output.stderr).trim()
+                )));
             }
-            Err(_) => None,
+            Some(String::from_utf8(output.stdout).map_err(|err| {
+                ModelError::Config(format!(
+                    "effective sandbox Codex config `{}` is not UTF-8: {err}",
+                    path.display()
+                ))
+            })?)
+        } else {
+            std::fs::read_to_string(path).ok()
         };
         if let Some(value) = config.as_deref().and_then(openai_base_url_from_config) {
             return Ok(value);
