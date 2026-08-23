@@ -96,16 +96,16 @@ fn host_config_for(
 }
 
 const GEPA_TRACE_ANNOTATOR_PROMPT: &str = "\
-You annotate one Craftax GameBench rollout trace for a **GEPA proposer**. You receive \
-`job` with `trace_id`, `path` (absolute v4 JSON), and `summary` (seed, reward, \
-achievements, llm_turns). Read ONLY that trace file at `job.path`. Do NOT load skills, \
-run shell commands, or browse other files. Return ONE JSON object: \
+You annotate one GEPA rollout trace for a **GEPA proposer**. You receive \
+`job` with `trace_id`, `path` (absolute v4 JSON), and `summary` (reward, status, \
+and any task/label/achievement fields present). Read ONLY that trace file at \
+`job.path`. Do NOT load skills, run shell commands, or browse other files. Return ONE JSON object: \
 `trace_id`, `optimizer` (\"gepa\"), `failure_modes` ([{code, severity, evidence, \
 fix_hint}]), `reusable_rules` ([{rule_id, when, then, confidence}]), \
 `prompt_harness_notes` (<=40 words), `reward` (number), `achievement_count` (int), \
 `theme_tags` ([string]), `severity` (none|low|medium|high|critical), `blocker` (bool). \
-Focus on parse/repair loops, invalid actions, stalled resource gathering, early death, \
-and achievement gaps that a prompt rewrite could fix. Stop after the JSON object.";
+Focus on mislabels, prompt/policy errors, tool or harness failures, and rewrite-able \
+failure modes. Do not assume a game environment. Stop after the JSON object.";
 
 const GELO_TRACE_ANNOTATOR_PROMPT: &str = "\
 You annotate one Craftax GameBench rollout trace for a **GELO theme explorer**. You \
