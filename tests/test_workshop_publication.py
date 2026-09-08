@@ -57,6 +57,9 @@ class PublicationTests(unittest.TestCase):
             calls.append(args)
             if args[0] == 'git': return 'abc\n'
             if args[2] == 'view': return '{"assets": []}'
+            if args[2] == 'download':
+                (Path(args[-1]) / args[5]).write_bytes((self.root / args[5]).read_bytes())
+                return ''
             self.assertEqual(args[2], 'upload')
             self.assertNotIn('--clobber', args)
             return ''

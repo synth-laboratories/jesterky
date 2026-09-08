@@ -56,6 +56,11 @@ def publish(root, tag):
         # Validate every existing asset before any mutation. No --clobber.
         for path in pending:
             run('gh', 'release', 'upload', tag, str(path))
+            verification = Path(directory) / 'uploaded'
+            verification.mkdir(exist_ok=True)
+            run('gh', 'release', 'download', tag, '--pattern', path.name, '--dir', str(verification))
+            if (verification / path.name).read_bytes() != path.read_bytes():
+                raise ValueError(f'uploaded bytes failed readback: {path.name}')
     print(json.dumps({'tag': tag, 'sourceRevision': revision, 'verifiedAssets': len(files), 'uploadedAssets': len(pending)}))
 
 
