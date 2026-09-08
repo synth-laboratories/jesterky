@@ -28,8 +28,7 @@ Native analysis defaults remain Luna with low effort. OpenRouter is selected
 explicitly as `openrouter/openai/gpt-5.6-luna`; it is not an implicit fallback.
 
 `.github/workflows/workshop-release.yml` tests and packages macOS arm64 and
-Linux amd64/arm64. A version tag publishes the verified Linux binaries and receipts after every
-platform test passes. macOS builds remain CI artifacts pending Developer ID
+Linux amd64/arm64. A version tag builds verification artifacts. To publish Linux binaries, dispatch the workflow with an existing release tag after authorization. Every platform builds that exact tagged source. The publisher verifies both Linux receipts and preserves existing assets: identical bytes are skipped and mismatched bytes fail before any upload. macOS builds remain CI artifacts pending Developer ID
 signing/notarization. Add only verified serving release URLs to Workshop's
 catalog. The locally generated receipt names
 the intended release URL; generating that receipt does not publish its bytes.
