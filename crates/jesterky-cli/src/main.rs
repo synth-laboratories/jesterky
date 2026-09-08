@@ -32,7 +32,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 #[derive(Parser)]
-#[command(name = "jesterky")]
+#[command(name = "jesterky", version)]
 #[command(about = "Run and replay jesterky workflow specs")]
 struct Cli {
     #[command(subcommand)]
@@ -422,8 +422,8 @@ async fn run_spec(
     let program_registry = programs_with_dungeon(dungeon_state.clone());
     // Host-side live-progress stream: the codex model *publishes* per-shard
     // tokens / steps / latest action, the follow thread owns the consumer end and
-    // folds it each frame. When not following we drop the consumer, so publishes
-    // become no-ops (nothing buffers). Harmless for the fake actor (nothing sends).
+    // folds it each frame. Headless runs retain a telemetry-only consumer.
+    // Harmless for the fake actor, which does not publish model usage.
     let (live, live_stream) = LiveBus::channel();
     // A chat-proxy route (deepseek/*, gemini/*, …) spawns the native jesterky
     // Responses↔chat shim; the guard must outlive the whole run (it aborts the
@@ -449,10 +449,11 @@ async fn run_spec(
             }
             // ChatGPT models take a reasoning effort; proxy routes generally don't.
             // DungeonGrid turns are short JSON — keep effort low for gpt routes.
-            let effort = match (effort, native_chatgpt) {
+            let reasoning_supported = native_chatgpt || model.starts_with("openrouter/openai/gpt-") || model.starts_with("custom/");
+            let effort = match (effort, reasoning_supported) {
                 (Some(value), true) => value.as_str(),
                 (Some(_), false) => {
-                    return Err("--effort is only supported for native GPT routes".into());
+                    return Err("--effort requires a GPT or explicit custom route".into());
                 }
                 (None, true) if is_dungeongrid => "low",
                 (None, true) => "high",
@@ -535,7 +536,7 @@ async fn run_spec(
     let follow_stop = Arc::new(AtomicBool::new(false));
     // The follow thread OWNS the stream consumer and folds it each frame; on join
     // it returns its final folded per-shard state for the settled frame below.
-    // Not following: drop the consumer so the model's publishes no-op.
+    // Headless runs still collect usage; only terminal rendering is optional.
     let budget_plan = resolve_budget_plan(&spec, &args)?;
     let follow_thread: Option<std::thread::JoinHandle<HashMap<NodePath, ShardProgress>>> = if follow
     {
@@ -563,8 +564,10 @@ async fn run_spec(
             )
         }))
     } else {
-        drop(live_stream);
-        None
+        // Drain telemetry even when terminal rendering is disabled. Keeping the
+        // consumer alive also prevents a long headless run accumulating events.
+        let stop = follow_stop.clone();
+        Some(std::thread::spawn(move || collect_headless_usage(live_stream, stop)))
     };
 
     // Wall-clock start so the settled frame can report final throughput (tps/tpm).
@@ -680,6 +683,7 @@ async fn run_spec(
     // recorded verdicts on disk to inspect instead of throwing the work away.
     if let Some(out) = out {
         write_json(out, &manifest)?;
+        write_json(&out.with_extension("usage.json"), &usage_receipt(&run_id, model, &final_progress, wall_secs))?;
         write_json(&spec_sidecar_path(out), &spec)?;
         if let Some(bundle) = trace_out {
             export_trace_v5(out, bundle, true)?;
@@ -1220,6 +1224,26 @@ fn partial_manifest(spec: &WorkflowSpec, run_id: &str, events: Vec<Event>) -> Ru
     }
 }
 
+fn collect_headless_usage(mut stream: LiveStream, stop: Arc<AtomicBool>) -> HashMap<NodePath, ShardProgress> {
+    while !stop.load(Ordering::Relaxed) {
+        stream.fold();
+        std::thread::sleep(Duration::from_millis(50));
+    }
+    stream.fold()
+}
+
+fn usage_receipt(run_id: &str, model: Option<&str>, progress: &HashMap<NodePath, ShardProgress>, wall: f64) -> serde_json::Value {
+    let (input, output) = progress.values().fold((0u64, 0u64), |(i,o), p| (i.saturating_add(p.tokens_in),o.saturating_add(p.tokens_out)));
+    // No token telemetry is not a measured zero. Token counts alone do not
+    // establish billed cost or cached-token pricing.
+    let reported = input > 0 || output > 0;
+    serde_json::json!({"schemaVersion":"jesterky.usage.v1","runId":run_id,"model":model,
+        "inputTokens":if reported{Some(input)}else{None},"outputTokens":if reported{Some(output)}else{None},
+        "totalTokens":if reported{Some(input.saturating_add(output))}else{None},
+        "usageStatus":if reported{"reported"}else{"unavailable"},"costUsd":null,"costStatus":"unavailable",
+        "wallTimeSeconds":wall,"reportedShards":progress.len()})
+}
+
 #[allow(clippy::too_many_arguments)]
 fn follow_viz_loop(
     sink: Arc<SharedEventSink>,
@@ -1554,5 +1578,26 @@ impl CheckpointStore for ManifestCheckpointStore {
         session: &str,
     ) -> Result<Option<serde_json::Value>, jesterky_core::HostError> {
         Ok(self.latest.lock().unwrap().get(session).cloned())
+    }
+}
+
+#[cfg(test)]
+mod headless_usage_tests {
+    use super::*;
+    #[test]
+    fn telemetry_is_collected_without_terminal_follow() {
+        let (bus, stream)=LiveBus::channel();
+        let path=NodePath::default();
+        bus.publish(&path,30,12,2,"done");
+        let progress=collect_headless_usage(stream,Arc::new(AtomicBool::new(true)));
+        let receipt=usage_receipt("run",Some("gpt-5.6-luna"),&progress,1.0);
+        assert_eq!(receipt["totalTokens"],42);
+        assert!(receipt["costUsd"].is_null());
+    }
+    #[test]
+    fn absent_usage_is_never_reported_as_measured_zero(){
+        let receipt=usage_receipt("run",None,&HashMap::new(),0.0);
+        assert!(receipt["totalTokens"].is_null());
+        assert_eq!(receipt["usageStatus"],"unavailable");
     }
 }

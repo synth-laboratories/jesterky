@@ -201,6 +201,16 @@ impl CodexModel {
         }
         let mut args: Vec<String> = vec!["exec".into(), "-m".into(), self.model.clone()];
         args.extend(codex_config_isolation_args());
+        if let Ok(url) = std::env::var("JESTERKY_TRACE_TOOLS_URL") {
+            // Only the host's loopback, per-job trace-inspection server is allowed.
+            let suffix = url.strip_prefix("http://127.0.0.1:").ok_or_else(|| ModelError::Config("trace tools must use loopback HTTP".into()))?;
+            let (port, token) = suffix.split_once("/mcp/").ok_or_else(|| ModelError::Config("invalid trace tools route".into()))?;
+            if port.parse::<u16>().ok().filter(|p| *p > 0).is_none() || token.len() < 32 || !token.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+                return Err(ModelError::Config("invalid trace tools capability".into()));
+            }
+            args.extend(["-c".into(), format!("mcp_servers.trace_annotation.url={}", serde_json::to_string(&url).unwrap())]);
+        }
+
         if !tracing_active && trusted_chat_proxy.is_none() {
             args.extend(native_openai_provider_args());
         }

@@ -229,7 +229,8 @@ pub(crate) fn build_events_validated(
     }
 
     for (i, call) in tool_calls.iter().enumerate() {
-        let name = call.function.name.as_str();
+        let full_name = call.function.name.as_str();
+        let (namespace, name) = full_name.split_once("__jns__").map(|(ns,n)|(Some(ns),n)).unwrap_or((None,full_name));
         let arguments = call.function.arguments.as_str();
         // call_id ties the function_call to the function_call_output codex sends
         // back; item id just keys this item's own added/delta/done stream.
@@ -237,13 +238,13 @@ pub(crate) fn build_events_validated(
         let fc_id = format!("{msg_id}_fc{i}");
         let item_done = json!({
             "id": fc_id, "type": "function_call", "status": "completed",
-            "call_id": call_id, "name": name, "arguments": arguments,
+            "call_id": call_id, "name": name, "namespace": namespace, "arguments": arguments,
         });
         push(
             "response.output_item.added",
             json!({"sequence_number": nxt(), "output_index": output_index,
                 "item": {"id": fc_id, "type": "function_call", "status": "in_progress",
-                    "call_id": call_id, "name": name, "arguments": ""}}),
+                    "call_id": call_id, "name": name, "namespace": namespace, "arguments": ""}}),
         );
         push(
             "response.function_call_arguments.delta",
@@ -410,4 +411,13 @@ mod tests {
         assert_eq!(out["name"], json!("exec_command"));
         assert_eq!(out["arguments"], json!("{\"cmd\":\"ls\"}"));
     }
+    #[test]
+    fn namespaced_function_call_is_restored_for_codex() {
+        let reply=json!({"choices":[{"message":{"content":null,"tool_calls":[{"id":"call_1","function":{"name":"trace_annotation__jns__trace_get_event","arguments":"{}"}}]}}],"usage":{"prompt_tokens":1,"completion_tokens":2,"total_tokens":3}});
+        let events=build_events(&reply,"m","resp","msg").unwrap();
+        let out=&events.last().unwrap().data["response"]["output"][0];
+        assert_eq!(out["namespace"],"trace_annotation");
+        assert_eq!(out["name"],"trace_get_event");
+    }
+
 }

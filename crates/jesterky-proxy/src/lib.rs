@@ -23,6 +23,7 @@
 //! # Ok(()) }
 //! ```
 
+mod budget;
 mod convert;
 mod route;
 mod server;
@@ -59,6 +60,8 @@ pub enum ProxyError {
     /// A stable per-user cache cannot be selected without a home directory.
     #[error("unable to materialize proxy CODEX_HOME: user home directory is unavailable")]
     MissingHome,
+    #[error("invalid spending limit: {0}")]
+    Budget(String),
     /// Secure random proxy-client capability generation failed.
     #[error("unable to generate proxy-client capability: {0}")]
     Entropy(String),
@@ -130,7 +133,9 @@ impl ChatProxy {
         let client_credential = proxy_client_credential()?;
         let codex_home = materialize_codex_home(model, port)?;
 
+        let budget = budget::Budget::from_env().map_err(ProxyError::Budget)?;
         let state = Arc::new(ServerState {
+            budget,
             route,
             api_key,
             client_credential: client_credential.clone(),
@@ -198,8 +203,10 @@ fn materialize_codex_home(model: &str, port: u16) -> Result<PathBuf, ProxyError>
     // NOT under $TMPDIR: codex refuses to create its PATH-alias helper binaries
     // inside a temp dir (and then the model exec silently degrades). Use a stable
     // per-user cache dir instead.
-    let user_home = home_dir().ok_or(ProxyError::MissingHome)?;
-    let base = user_home.join(".cache").join("jesterky");
+    let base = match std::env::var_os("JESTERKY_STATE_ROOT") {
+        Some(path) => PathBuf::from(path),
+        None => home_dir().ok_or(ProxyError::MissingHome)?.join(".cache").join("jesterky"),
+    };
     let home = base.join(format!("proxy_{port}"));
     if home.exists() {
         std::fs::remove_dir_all(&home)?;

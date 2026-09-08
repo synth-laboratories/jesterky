@@ -136,7 +136,7 @@ fn passing_scan_manifest() -> impl std::future::Future<Output = jesterky_contrac
                     .and_then(|v| v.as_str())
                     .unwrap_or("");
                 Ok(
-                    json!({ "dimension": dimension, "verdict": "pass", "severity": "none" })
+                    json!({ "dimension": dimension, "verdict": "pass", "severity": "none", "rationale":"stub evidence" })
                         .to_string(),
                 )
             }
@@ -276,10 +276,10 @@ fn aggregate_counts_and_verdicts() {
     let reg = programs();
     let aggregate = reg.get("quality.aggregate").expect("aggregate registered");
     let scans = json!([
-        { "dimension": "correctness", "verdict": "pass" },
-        { "dimension": "security", "verdict": "fail" },
-        { "dimension": "tests", "verdict": "fail" },
-        { "dimension": "docs", "verdict": "pass" },
+        { "dimension": "correctness", "verdict": "pass", "severity":"none", "rationale":"recorded evidence passed" },
+        { "dimension": "security", "verdict": "fail", "severity":"high", "rationale":"recorded evidence failed" },
+        { "dimension": "tests", "verdict": "fail", "severity":"high", "rationale":"recorded evidence failed" },
+        { "dimension": "docs", "verdict": "pass", "severity":"none", "rationale":"recorded evidence passed" },
     ]);
     let out = aggregate(&Ledger::new(), &json!({ "scans": scans })).expect("aggregate ok");
     let summary = &out["summary"];
@@ -307,4 +307,14 @@ async fn codex_live_scan() {
         .filter(|r| matches!(&r.call, CallKind::Actor { actor } if actor == SCANNER_ACTOR))
         .count();
     assert_eq!(verdicts, DIMENSIONS.len(), "one real verdict per dimension");
+}
+
+#[test]
+fn trace_echo_is_supported_but_not_a_partial_judge_verdict() {
+    let reg = programs();
+    let aggregate = reg.get("quality.aggregate").unwrap();
+    let echo = json!({"dimension":"trace1","trace_id":"trace1","path":"trace.json","trace_dir":"traces","summary":{}});
+    assert!(aggregate(&Ledger::new(), &json!({"scans":[echo.clone()]})).is_ok());
+    let mut malformed = echo; malformed["verdict"] = json!("pass");
+    assert!(aggregate(&Ledger::new(), &json!({"scans":[malformed]})).is_err());
 }

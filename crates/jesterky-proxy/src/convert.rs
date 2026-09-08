@@ -43,6 +43,9 @@ impl<'de> Deserialize<'de> for NonEmptyString {
     }
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Reasoning { effort: Option<String> }
+
 #[derive(Debug, Clone)]
 pub(crate) struct ResponsesRequest {
     model: String,
@@ -51,6 +54,7 @@ pub(crate) struct ResponsesRequest {
     max_output_tokens: Option<i64>,
     max_tokens: Option<i64>,
     temperature: Option<f64>,
+    reasoning: Option<Reasoning>,
     stream: Option<bool>,
     tools: Vec<ResponsesTool>,
     tool_choice: Option<ToolChoice>,
@@ -96,6 +100,7 @@ impl From<RawResponsesRequest> for ResponsesRequest {
             max_output_tokens: raw.max_output_tokens,
             max_tokens: raw.max_tokens,
             temperature: raw.temperature,
+            reasoning: raw.reasoning,
             stream: raw.stream,
             tools,
             tool_choice: raw.tool_choice,
@@ -113,6 +118,7 @@ struct RawResponsesRequest {
     max_output_tokens: Option<i64>,
     max_tokens: Option<i64>,
     temperature: Option<f64>,
+    reasoning: Option<Reasoning>,
     stream: Option<bool>,
     tools: Option<Vec<RawResponsesTool>>,
     tool_choice: Option<ToolChoice>,
@@ -188,6 +194,7 @@ enum TypedResponsesInputItem {
         #[serde(alias = "id")]
         call_id: NonEmptyString,
         name: NonEmptyString,
+        namespace: Option<String>,
         arguments: NonEmptyString,
     },
     FunctionCallOutput {
@@ -240,10 +247,11 @@ impl ResponsesInputItem {
             RawResponsesInputItem::Typed(TypedResponsesInputItem::FunctionCall {
                 call_id,
                 name,
+                namespace,
                 arguments,
             }) => Self::FunctionCall {
                 call_id: call_id.into_inner(),
-                name: name.into_inner(),
+                name: namespace.map(|ns|format!("{ns}__jns__{}", name.0)).unwrap_or(name.0),
                 arguments: arguments.into_inner(),
             },
             RawResponsesInputItem::Typed(TypedResponsesInputItem::FunctionCallOutput {
@@ -322,7 +330,7 @@ enum RawResponsesTool {
         #[serde(rename = "description")]
         _description: Option<Value>,
         #[serde(rename = "tools")]
-        _tools: Option<Vec<RawResponsesTool>>,
+        tools: Option<Vec<RawResponsesTool>>,
     },
     WebSearch,
     FileSearch,
@@ -349,6 +357,7 @@ enum ResponsesTool {
     },
     Namespace {
         name: String,
+        tools: Vec<ResponsesTool>,
     },
     Builtin {
         kind: ResponsesBuiltinToolKind,
@@ -406,9 +415,10 @@ impl ResponsesTool {
             RawResponsesTool::Namespace {
                 name,
                 _description: _,
-                _tools: _,
+                tools,
             } => Self::Namespace {
                 name: name.into_inner(),
+                tools: tools.unwrap_or_default().into_iter().map(Self::from_raw).collect(),
             },
             RawResponsesTool::WebSearch => Self::builtin(ResponsesBuiltinToolKind::WebSearch),
             RawResponsesTool::FileSearch => Self::builtin(ResponsesBuiltinToolKind::FileSearch),
@@ -460,6 +470,7 @@ struct ChatPayload {
     max_tokens: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     temperature: Option<f64>,
+    reasoning: Option<Reasoning>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tools: Option<Vec<ChatTool>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -478,6 +489,7 @@ impl ChatPayload {
             stream: false,
             max_tokens: None,
             temperature: None,
+            reasoning: None,
             tools: None,
             tool_choice: None,
             parallel_tool_calls: None,
@@ -668,6 +680,7 @@ pub(crate) fn responses_request_to_chat_payload(
     }
 
     // max_output_tokens (or max_tokens) -> chat max_tokens, if a positive int.
+    chat.reasoning = request.reasoning.clone();
     let max_out = request.max_output_tokens.or(request.max_tokens);
     if let Some(n) = max_out {
         if n > 0 {
@@ -786,8 +799,13 @@ fn chat_tools(tools: &[ResponsesTool], supports_json_schema: bool) -> ToolTransl
                 },
             }),
             ResponsesTool::Custom { name } => omitted_custom_names.push(name.clone()),
-            ResponsesTool::Namespace { name } => {
-                omitted_custom_names.push(format!("namespace:{name}"));
+            ResponsesTool::Namespace { name, tools } => {
+                let nested = chat_tools(tools, supports_json_schema);
+                for mut tool in nested.tools {
+                    tool.function.name = format!("{name}__jns__{}", tool.function.name);
+                    out.push(tool);
+                }
+                omitted_custom_names.extend(nested.omitted_custom_names);
             }
             ResponsesTool::Builtin { kind } => {
                 omitted_custom_names.push(kind.as_str().to_string());
@@ -849,6 +867,7 @@ mod tests {
     #[test]
     fn developer_role_becomes_system_and_string_item_is_user() {
         let body = json!({
+            "model": "test-model",
             "input": [
                 "plain string item",
                 {"role": "developer", "content": [{"type": "input_text", "text": "sys"}]}
@@ -867,6 +886,7 @@ mod tests {
     fn agentic_round_trip_translates_tools_and_tool_messages() {
         // A codex agentic turn: function tools + a prior tool call and its result.
         let body = json!({
+            "model": "test-model",
             "instructions": "be an agent",
             "tools": [{"type": "function", "name": "exec_command",
                 "description": "run a command", "parameters": {"type": "object"}, "strict": true}],
@@ -907,6 +927,7 @@ mod tests {
     #[test]
     fn json_schema_downgrades_to_json_object_and_injects_schema() {
         let body = json!({
+            "model": "test-model",
             "input": [{"role": "user", "content": "grade it"}],
             "text": {"format": {"type": "json_schema", "name": "v",
                 "schema": {"type": "object", "required": ["ok"]}, "strict": true}}
@@ -924,4 +945,15 @@ mod tests {
                 .contains("\"required\"")
         );
     }
+    #[test]
+    fn namespaced_tools_and_reasoning_survive_round_trip() {
+        let body = json!({"model":"openrouter/openai/gpt-5.6-luna", "reasoning":{"effort":"low"},
+            "tools":[{"type":"namespace","name":"trace_annotation","tools":[{"type":"function","name":"trace_get_event","parameters":{"type":"object"}}]}],
+            "input":[{"type":"function_call","call_id":"call_1","namespace":"trace_annotation","name":"trace_get_event","arguments":"{}"}]});
+        let chat=responses_request_to_chat(&body,"openai/gpt-5.6-luna",true).unwrap();
+        assert_eq!(chat["reasoning"]["effort"],"low");
+        assert_eq!(chat["tools"][0]["function"]["name"],"trace_annotation__jns__trace_get_event");
+        assert_eq!(chat["messages"][0]["tool_calls"][0]["function"]["name"],"trace_annotation__jns__trace_get_event");
+    }
+
 }

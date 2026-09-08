@@ -1,5 +1,4 @@
 /target
-Cargo.lock
 
 # Large local benchmark data (download via docs/OBLIQ.md)
 /data/

@@ -209,6 +209,12 @@ impl<M: Model> Actor for ModelActor<M> {
             }
             None => None,
         };
+        // Every backend must receive the declared shape, including proxies and
+        // container workers where Codex cannot use a host --output-schema file.
+        let base_system = schema.as_ref().map(|schema| format!(
+            "{}\nReturn exactly one JSON object conforming to this JSON Schema. Include all required fields, using empty arrays when there are no entries:\n{}",
+            base_system.as_deref().unwrap_or(""), schema
+        )).or(base_system);
         // Seed a fresh execution workspace if the actor declared a sandbox. One
         // sandbox per invocation (per map shard); it spans the parse-retry loop so
         // the agent's incremental work persists, and is dropped (cleaned up) when

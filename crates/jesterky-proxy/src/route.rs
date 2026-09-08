@@ -56,6 +56,7 @@ enum ModelRouteId<'a> {
     DeepSeek,
     Gemini(&'a str),
     Custom,
+    OpenRouter(&'a str),
     Unknown,
 }
 
@@ -72,6 +73,7 @@ impl<'a> ModelRouteId<'a> {
                 ("deepseek", false) => Self::DeepSeek,
                 ("gemini", false) => Self::Gemini(upstream),
                 ("custom" | "proxy", false) => Self::Custom,
+                ("openrouter", false) => Self::OpenRouter(upstream),
                 _ => Self::Unknown,
             };
         }
@@ -131,6 +133,12 @@ pub fn resolve_route_checked(model: &str) -> Result<Option<ProviderRoute>, Route
             api_key_env: "GEMINI_API_KEY".to_string(),
             upstream_model: upstream_model.to_string(),
             supports_json_schema: true,
+        })),
+        ModelRouteId::OpenRouter(upstream_model) => Ok(Some(ProviderRoute {
+            provider: ProviderKind::Custom,
+            chat_url: "https://openrouter.ai/api/v1/chat/completions".into(),
+            api_key_env: "OPENROUTER_API_KEY".into(),
+            upstream_model: upstream_model.into(), supports_json_schema: true,
         })),
         ModelRouteId::Custom => custom_env_route().map(Some),
     }

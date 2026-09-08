@@ -119,6 +119,22 @@ struct RawScanRecord {
     target: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct TraceScanEcho {
+    dimension: String,
+    trace_id: String,
+    path: String,
+    trace_dir: String,
+    summary: Value,
+}
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+enum ScanInputRecord {
+    Quality(RawScanRecord),
+    TraceEcho(TraceScanEcho),
+}
+
 #[derive(Debug)]
 enum ScanRecord {
     Verdict {
@@ -131,7 +147,7 @@ enum ScanRecord {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct QualityAggregateInput {
-    scans: Vec<RawScanRecord>,
+    scans: Vec<ScanInputRecord>,
 }
 
 #[derive(Debug, Serialize)]
@@ -222,6 +238,19 @@ fn aggregate(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
             verdict,
         },
     })
+}
+
+impl TryFrom<ScanInputRecord> for ScanRecord {
+    type Error = CoreError;
+    fn try_from(raw: ScanInputRecord) -> Result<Self, Self::Error> {
+        match raw {
+            ScanInputRecord::Quality(raw) => Self::try_from(raw),
+            ScanInputRecord::TraceEcho(raw) if !raw.dimension.trim().is_empty()
+                && raw.dimension == raw.trace_id && !raw.path.trim().is_empty()
+                && !raw.trace_dir.trim().is_empty() && raw.summary.is_object() => Ok(Self::FakeEcho),
+            _ => Err(CoreError::Config("invalid typed trace fake-actor echo".into())),
+        }
+    }
 }
 
 impl TryFrom<RawScanRecord> for ScanRecord {

@@ -14,6 +14,7 @@ use tokio::net::{TcpListener, TcpStream};
 /// Shared server state: the resolved provider route, the bearer key (read once at
 /// spawn), the bound port, and a per-request id counter.
 pub(crate) struct ServerState {
+    pub budget: Option<crate::budget::Budget>,
     pub route: ProviderRoute,
     pub api_key: String,
     /// Per-proxy bearer capability accepted from Codex. This is never sent
@@ -94,6 +95,7 @@ enum ProxyErrorCode {
     InvalidResponsesRequest,
     ConversionFailed,
     UpstreamTransport,
+    SpendingLimit,
     UpstreamStatus,
     UpstreamJson,
     UpstreamSchema,
@@ -301,6 +303,11 @@ async fn handle_responses(
     // sending back — Gemini rejects a multi-turn tool sequence without it.
     reattach_signatures(&mut chat_payload, &state.signatures);
 
+    if let Some(budget) = &state.budget {
+        if let Err(error) = budget.reserve(&mut chat_payload) {
+            return write_error(stream, 402, ProxyErrorBody::new(ProxyErrorCode::SpendingLimit,error)).await;
+        }
+    }
     // Call the provider FIRST (buffered) so an upstream failure returns a real
     // HTTP error status instead of a half-open SSE stream — loud, not silent.
     let upstream = state

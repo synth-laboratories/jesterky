@@ -477,7 +477,7 @@ impl Runner {
                     &path,
                     iteration,
                     EventKind::ActorInvoked,
-                    serde_json::json!({ "actor": actor, "inputs": event_inputs }),
+                    serde_json::json!({ "actor": actor, "inputs": event_inputs, "outputs": actor_result.outputs }),
                 );
                 debug_assert_eq!(emitted_addr, addr);
                 actor_result.outputs

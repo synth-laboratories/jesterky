@@ -238,3 +238,14 @@ async fn codex_live_round_trip() {
         .expect("codex drive ok");
     assert!(out.outputs.is_object(), "codex returned a JSON object");
 }
+
+#[tokio::test]
+async fn schema_is_in_prompt_even_when_backend_cannot_read_schema_file() {
+    let actor = ModelActor::new(StubModel::new(|request: &ModelRequest| {
+        let system = request.system.as_deref().unwrap();
+        assert!(system.contains("JSON Schema"));
+        assert!(system.contains("rationale"));
+        Ok(r#"{"dimension":"test","verdict":"pass","severity":"none","rationale":"recorded evidence"}"#.into())
+    })).with_output_schema("quality_scanner", committed_schema_path());
+    actor.drive(request("quality_scanner", json!({}))).await.unwrap();
+}
