@@ -7,6 +7,7 @@ on:
         required: true
         default: v0.1.4
   push:
+    branches: ['codex/v010-shell-only']
     tags: ['v*']
 permissions:
   contents: read
@@ -22,6 +23,7 @@ jobs:
         with:
           ref: ${{ inputs.release_tag || github.ref_name }}
       - uses: dtolnay/rust-toolchain@stable
+      - run: python3 -B -m unittest discover -s tests -p test_workshop_publication.py -v
       - run: cargo test --locked -p jesterky-core -p jesterky-model -p jesterky-proxy -p jesterky-quality -p jesterky-cli
       - run: python3 scripts/package_workshop.py --output dist/workshop
       - run: python3 scripts/verify_workshop_package.py dist/workshop
