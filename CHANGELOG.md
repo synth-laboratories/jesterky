@@ -4,6 +4,25 @@ All notable changes to jesterky are recorded here. Versions follow the three
 independent trains (contract / runtime / CLI); this release pins them together at
 `0.1.0`.
 
+## 0.1.4 — 2026-09-09
+
+Release hygiene and three conditions that decided nothing.
+
+`package_workshop.py` now records the commit it built from. The publisher
+requires `sourceRevision` on every receipt and refused anything the packager
+produced without it, so publication had only ever worked inside CI, where a
+workflow step patched the field in afterwards. The packager also refuses to name
+a revision for a dirty tree. `publish_workshop.py` gains `--dry-run`, which runs
+the whole validation contract against local bytes and contacts nothing.
+
+`BudgetSnapshot` branched on hard exhaustion and then returned the same
+`Exhausted` state either way; the distinction is still enforced, by the CLI
+reading `items`. The actor visualisation assigned its label in both arms of the
+guard that was supposed to choose between them. `collect_posts` carried a `root`
+parameter through its recursion and never read it.
+
+clippy is clean; 136 tests pass, 2 ignored.
+
 ## 0.1.2 — 2026-07-20
 
 Annotation grounding: evidence quality becomes a typed, per-output verdict,
