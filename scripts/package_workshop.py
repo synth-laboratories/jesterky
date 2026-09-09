@@ -33,7 +33,10 @@ target=f'{system}-{arch}'
 a.output.mkdir(parents=True,exist_ok=True)
 name=f'jesterky-{version}-{target}'
 binary=a.output/name
-shutil.copy2(root/'target/release/jesterky',binary)
+target_dir=pathlib.Path(os.environ.get('CARGO_TARGET_DIR','target'))
+if not target_dir.is_absolute():
+ target_dir=root/target_dir
+shutil.copy2(target_dir/'release/jesterky',binary)
 if system == 'macos':
  # Ad-hoc signing requires neither Keychain credentials nor Apple enrollment.
  subprocess.run(['codesign','--force','--sign','-',str(binary.resolve())],check=True)
