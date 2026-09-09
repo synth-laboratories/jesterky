@@ -23,3 +23,6 @@ jesterky-contract = { workspace = true }
 jesterky-actor = { workspace = true }
 jesterky-model = { workspace = true }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[lints]
+workspace = true

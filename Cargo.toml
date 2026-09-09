@@ -37,3 +37,8 @@ jesterky-model = { path = "crates/jesterky-model", version = "0.1.2" }
 jesterky-quality = { path = "crates/jesterky-quality", version = "0.1.2" }
 jesterky-proxy = { path = "crates/jesterky-proxy", version = "0.1.2" }
 jesterky-sandbox = { path = "crates/jesterky-sandbox", version = "0.1.2" }
+
+# Two runner entry points take eight distinct domain values; a parameter struct
+# would only move the arity into a literal at every call site.
+[workspace.lints.clippy]
+too_many_arguments = "allow"

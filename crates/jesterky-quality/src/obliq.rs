@@ -751,8 +751,6 @@ fn load_qrels(dir: &Path) -> Result<HashMap<String, Vec<String>>, CoreError> {
         // TREC: qid [iter] docid score  OR  qid docid score
         let (qid, docid) = if parts.len() >= 4 {
             (parts[0], parts[2])
-        } else if parts.len() == 3 {
-            (parts[0], parts[1])
         } else {
             (parts[0], parts[1])
         };

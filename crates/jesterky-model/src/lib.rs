@@ -496,15 +496,14 @@ fn balanced_object_spans(s: &str) -> Vec<&str> {
                 }
                 depth += 1;
             }
-            b'}' => {
-                if depth > 0 {
+            b'}'
+                if depth > 0 => {
                     depth -= 1;
                     if depth == 0 {
                         // `{` and `}` are ASCII, so these are char boundaries.
                         spans.push(&s[start..=i]);
                     }
                 }
-            }
             _ => {}
         }
     }

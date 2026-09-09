@@ -371,17 +371,13 @@ fn discover_published_posts(blog_dir: &Path) -> Result<Vec<(String, String)>, Co
         ));
     }
     let mut posts = Vec::new();
-    collect_posts(blog_dir, blog_dir, &mut posts)?;
+    collect_posts(blog_dir, &mut posts)?;
     posts.sort_by(|a, b| a.0.cmp(&b.0));
     posts.dedup_by(|a, b| a.0 == b.0 || a.1 == b.1);
     Ok(posts)
 }
 
-fn collect_posts(
-    root: &Path,
-    dir: &Path,
-    out: &mut Vec<(String, String)>,
-) -> Result<(), CoreError> {
+fn collect_posts(dir: &Path, out: &mut Vec<(String, String)>) -> Result<(), CoreError> {
     let entries = std::fs::read_dir(dir).map_err(|err| {
         CoreError::from(jesterky_core::ledger::LedgerError::TypeMismatch(format!(
             "read_dir `{}`: {err}",
@@ -402,7 +398,7 @@ fn collect_posts(
                     out.push((slug.to_string(), index.display().to_string()));
                 }
             }
-            collect_posts(root, &path, out)?;
+            collect_posts(&path, out)?;
         } else if path.extension().is_some_and(|ext| ext == "mdx") {
             // `subdir/index.mdx` is indexed by the parent directory above — skip
             // the bare `index` stem so we never emit a duplicate `index` job.

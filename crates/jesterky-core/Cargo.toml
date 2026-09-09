@@ -25,3 +25,6 @@ async-recursion = { workspace = true }
 [dev-dependencies]
 jesterky-actor = { path = "../jesterky-actor" }
 tokio = { version = "1", features = ["rt", "macros"] }
+
+[lints]
+workspace = true

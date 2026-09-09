@@ -408,14 +408,11 @@ fn adapt_dungeongrid_party(
             turns_done[hero_idx] = turns_done[hero_idx].saturating_add(1);
         }
         if let Some((label, tone)) = item_detail(manifest, &turn_path) {
-            // Latest completed/recorded turn wins the right-hand label.
-            if event.kind == EventKind::MapItemCompleted || !labels[hero_idx].is_empty() {
-                labels[hero_idx] = label;
-                tones[hero_idx] = tone;
-            } else if labels[hero_idx].is_empty() {
-                labels[hero_idx] = label;
-                tones[hero_idx] = tone;
-            }
+            // Latest recorded turn wins the right-hand label. The completed/
+            // non-empty split that used to guard this assigned in both arms,
+            // so it never decided anything.
+            labels[hero_idx] = label;
+            tones[hero_idx] = tone;
         }
         if let Some(progress) = progress {
             let path = NodePath(turn_path);
@@ -588,7 +585,7 @@ fn party_hero_ids(manifest: &RunManifest, item_labels: Option<&[String]>) -> Vec
         }
         let mut from_turn = Vec::new();
         for lab in labels {
-            if let Some(h) = lab.split(':').last() {
+            if let Some(h) = lab.split(':').next_back() {
                 if h.starts_with("hero_") && !from_turn.iter().any(|x: &String| x == h) {
                     from_turn.push(h.to_string());
                 }

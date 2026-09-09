@@ -1007,9 +1007,9 @@ fn calibrated_severity(score: f64, hold: bool, raw: Option<&str>) -> String {
         return "medium".to_string();
     }
     let raw = raw.map(calibrate_severity_label).unwrap_or_default();
-    if raw == "critical" || raw == "high" {
-        "low".to_string()
-    } else if raw.is_empty() || raw == "none" {
+    // A high score contradicts a critical/high raw label, and an absent label
+    // has nothing to say; both land on "low".
+    if raw == "critical" || raw == "high" || raw.is_empty() || raw == "none" {
         "low".to_string()
     } else {
         raw

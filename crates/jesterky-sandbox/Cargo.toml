@@ -17,3 +17,6 @@ tokio = { version = "1", features = ["process", "rt", "fs", "io-util", "macros"]
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[lints]
+workspace = true

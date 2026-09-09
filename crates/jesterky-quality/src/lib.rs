@@ -188,7 +188,7 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
     let jobs = DIMENSIONS
         .iter()
         .map(|dimension| QualityJob {
-            dimension: *dimension,
+            dimension,
             target: target.clone(),
         })
         .collect();

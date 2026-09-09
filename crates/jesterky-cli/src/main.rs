@@ -40,6 +40,9 @@ struct Cli {
 }
 
 #[derive(Subcommand)]
+// A clap subcommand parsed once at startup; 261 bytes against 57 costs nothing
+// here, and boxing the large variant would fight the derive for no gain.
+#[allow(clippy::large_enum_variant)]
 enum Command {
     Run {
         spec: PathBuf,
@@ -1091,7 +1094,7 @@ fn matrix_report_from_manifest(manifest: &RunManifest, field: &str) -> Option<St
     if let Some(text) = manifest.recorded.iter().find_map(|r| {
         r.outputs
             .get(field)
-            .and_then(|v| value_as_report(v))
+            .and_then(value_as_report)
             .or_else(|| {
                 r.outputs
                     .get("summary")

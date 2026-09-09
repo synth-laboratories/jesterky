@@ -711,8 +711,8 @@ pub(crate) fn responses_request_to_chat_payload(
         if let Some(tool_choice) = &request.tool_choice {
             chat.tool_choice = Some(tool_choice.clone());
         }
-        if let Some(parallel_tool_calls) = &request.parallel_tool_calls {
-            chat.parallel_tool_calls = Some(parallel_tool_calls.clone());
+        if let Some(parallel_tool_calls) = request.parallel_tool_calls {
+            chat.parallel_tool_calls = Some(parallel_tool_calls);
         }
     }
 

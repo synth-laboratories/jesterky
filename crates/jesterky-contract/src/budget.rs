@@ -571,12 +571,10 @@ impl BudgetEngine {
             None
         };
 
-        let state = if items
-            .iter()
-            .any(|i| i.state == BudgetState::Exhausted && i.hard)
-        {
-            BudgetState::Exhausted
-        } else if items.iter().any(|i| i.state == BudgetState::Exhausted) {
+        // Hard and soft exhaustion report the same snapshot state; the caller
+        // separates them by re-reading `items` (see jesterky-cli), so a
+        // dedicated hard branch here decided nothing.
+        let state = if items.iter().any(|i| i.state == BudgetState::Exhausted) {
             BudgetState::Exhausted
         } else if items.iter().any(|i| i.state == BudgetState::Warning) {
             BudgetState::Warning

@@ -16,3 +16,6 @@ jesterky-contract = { workspace = true }
 jesterky-core = { workspace = true }
 async-trait = { workspace = true }
 serde_json = { workspace = true }
+
+[lints]
+workspace = true
