@@ -15,7 +15,7 @@ def source_revision(root):
  """
  revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
  if subprocess.check_output(['git','status','--porcelain'],cwd=root,text=True).strip():
-  raise SystemExit('refusing to record a source revision for a dirty tree; commit or stash first')
+  raise SystemExit('refusing to record a source revision for a dirty tree; use a clean committed checkout')
  return revision
 p=argparse.ArgumentParser()
 p.add_argument('--output',type=pathlib.Path,required=True)
@@ -23,7 +23,10 @@ p.add_argument('--register-dev',action='store_true')
 a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[1]
 version=tomllib.loads((root/'Cargo.toml').read_text())['workspace']['package']['version']
+revision=source_revision(root)
 subprocess.run(['cargo','build','--locked','--release','-p','jesterky-cli'],cwd=root,check=True)
+if source_revision(root) != revision:
+ raise SystemExit('source revision changed during build')
 system={'Darwin':'macos','Linux':'linux','Windows':'windows'}[platform.system()]
 arch={'arm64':'aarch64','AMD64':'x86_64'}.get(platform.machine(),platform.machine())
 target=f'{system}-{arch}'
@@ -31,8 +34,12 @@ a.output.mkdir(parents=True,exist_ok=True)
 name=f'jesterky-{version}-{target}'
 binary=a.output/name
 shutil.copy2(root/'target/release/jesterky',binary)
+if system == 'macos':
+ # Ad-hoc signing requires neither Keychain credentials nor Apple enrollment.
+ subprocess.run(['codesign','--force','--sign','-',str(binary.resolve())],check=True)
+ subprocess.run(['codesign','--verify','--strict',str(binary.resolve())],check=True)
 subprocess.run([str(binary.resolve()),'--version'],check=True)
-receipt={'version':version,'target':target,'sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'size':binary.stat().st_size,'sourceRevision':source_revision(root),'url':f'https://github.com/synth-laboratories/jesterky/releases/download/v{version}/{name}'}
+receipt={'version':version,'target':target,'sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'size':binary.stat().st_size,'sourceRevision':revision,'url':f'https://github.com/synth-laboratories/jesterky/releases/download/v{version}/{name}'}
 (a.output/f'{name}.json').write_text(json.dumps(receipt,indent=2)+'\n')
 if a.register_dev:
  parent=pathlib.Path.home()/f'.synth-desktop/dev-builds/jesterky/{version}'

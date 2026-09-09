@@ -16,7 +16,7 @@ class PublicationTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        for target in ('linux-aarch64', 'linux-x86_64'):
+        for target in ('linux-aarch64', 'linux-x86_64', 'macos-aarch64'):
             binary = self.root / f'jesterky-0.1.3-{target}'
             binary.write_bytes(target.encode())
             data = {'target': target, 'version': '0.1.3', 'sourceRevision': 'abc', 'size': binary.stat().st_size, 'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(), 'url': 'https://github.com/synth-laboratories/jesterky/releases/download/v0.1.3/' + binary.name}
@@ -64,7 +64,17 @@ class PublicationTests(unittest.TestCase):
             self.assertNotIn('--clobber', args)
             return ''
         with patch.object(publisher, 'run', side_effect=fake): publisher.publish(self.root, 'v0.1.3')
-        self.assertEqual(sum(c[2] == 'upload' for c in calls if c[0] == 'gh'), 4)
+        self.assertEqual(sum(c[2] == 'upload' for c in calls if c[0] == 'gh'), 6)
+
+    def test_missing_macos_fails_before_publication(self):
+        (self.root / 'jesterky-0.1.3-macos-aarch64.json').unlink()
+        with self.assertRaisesRegex(ValueError, 'macOS aarch64'):
+            publisher.validate(self.root, 'v0.1.3', 'abc')
+
+    def test_corrupt_macos_is_not_silently_ignored(self):
+        (self.root / 'jesterky-0.1.3-macos-aarch64').write_bytes(b'wrong')
+        with self.assertRaisesRegex(ValueError, 'digest mismatch'):
+            publisher.validate(self.root, 'v0.1.3', 'abc')
 
 if __name__ == '__main__': unittest.main()
 
@@ -99,7 +109,7 @@ class PackagerPublisherContractTests(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         root = Path(tmp.name)
         revision = '9cab88460243f31c18829422d89df6d81539f500'
-        for target in ('linux-x86_64', 'linux-aarch64'):
+        for target in ('linux-x86_64', 'linux-aarch64', 'macos-aarch64'):
             name = f'jesterky-0.1.3-{target}'
             binary = root / name
             binary.write_bytes(target.encode())
@@ -113,14 +123,14 @@ class PackagerPublisherContractTests(unittest.TestCase):
                 'url': f'https://github.com/synth-laboratories/jesterky/releases/download/v0.1.3/{name}',
             }
             Path(str(binary) + '.json').write_text(json.dumps(receipt, indent=2) + '\n')
-        self.assertEqual(len(publisher.validate(root, 'v0.1.3', revision)), 4)
+        self.assertEqual(len(publisher.validate(root, 'v0.1.3', revision)), 6)
 
     def test_a_dry_run_validates_without_touching_the_release(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         root = Path(tmp.name)
         revision = 'abc'
-        for target in ('linux-x86_64', 'linux-aarch64'):
+        for target in ('linux-x86_64', 'linux-aarch64', 'macos-aarch64'):
             name = f'jesterky-0.1.3-{target}'
             binary = root / name
             binary.write_bytes(target.encode())

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish verified Linux assets without replacing already-published bytes."""
+"""Publish verified native assets without replacing already-published bytes."""
 import argparse
 import hashlib
 import json
@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
+REQUIRED_TARGETS = {'linux-x86_64', 'linux-aarch64', 'macos-aarch64'}
 
 def run(*args):
     return subprocess.check_output(args, text=True)
@@ -15,10 +16,10 @@ def run(*args):
 def validate(root, tag, revision):
     files = []
     targets = set()
-    for receipt in sorted(root.glob('jesterky-*-linux-*.json')):
+    for receipt in sorted(root.glob('jesterky-*.json')):
         data = json.loads(receipt.read_text())
         target = data['target']
-        if target not in {'linux-x86_64', 'linux-aarch64'} or target in targets:
+        if target not in REQUIRED_TARGETS or target in targets:
             raise ValueError('unexpected or duplicate target')
         targets.add(target)
         expected = f'jesterky-{tag.removeprefix("v")}-{target}'
@@ -33,8 +34,8 @@ def validate(root, tag, revision):
         if len(content) != data['size'] or hashlib.sha256(content).hexdigest() != data['sha256']:
             raise ValueError('artifact digest mismatch')
         files.extend([binary, receipt])
-    if targets != {'linux-x86_64', 'linux-aarch64'}:
-        raise ValueError('both Linux targets are required')
+    if targets != REQUIRED_TARGETS:
+        raise ValueError('both Linux targets and macOS aarch64 are required')
     return files
 
 
