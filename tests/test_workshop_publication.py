@@ -67,3 +67,74 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(sum(c[2] == 'upload' for c in calls if c[0] == 'gh'), 4)
 
 if __name__ == '__main__': unittest.main()
+
+
+class PackagerPublisherContractTests(unittest.TestCase):
+    """The publisher must accept what the packager actually writes.
+
+    Every existing case in this file hand-writes a receipt that already carries
+    `sourceRevision`, so none of them notices that `package_workshop.py` never
+    wrote one. The publisher refuses such a receipt with "release source
+    mismatch", which meant no packaged artifact could reach a release at all.
+    """
+
+    packager = (Path(__file__).parents[1] / 'scripts/package_workshop.py').read_text()
+
+    def test_the_packager_writes_every_field_the_publisher_reads(self):
+        publisher_source = (Path(__file__).parents[1] / 'scripts/publish_workshop.py').read_text()
+        required = {'version', 'target', 'sha256', 'size', 'url', 'sourceRevision'}
+        for field in required:
+            self.assertIn(
+                f"'{field}'", publisher_source,
+                f'{field} should be part of the publish contract')
+            self.assertIn(
+                f"'{field}'", self.packager,
+                f'package_workshop.py must record {field}; the publisher refuses a receipt without it')
+
+    def test_the_packager_refuses_to_name_a_revision_for_a_dirty_tree(self):
+        self.assertIn('refusing to record a source revision for a dirty tree', self.packager)
+
+    def test_a_packager_shaped_receipt_passes_validation(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        revision = '9cab88460243f31c18829422d89df6d81539f500'
+        for target in ('linux-x86_64', 'linux-aarch64'):
+            name = f'jesterky-0.1.3-{target}'
+            binary = root / name
+            binary.write_bytes(target.encode())
+            # Exactly the keys, and the key order, package_workshop.py writes.
+            receipt = {
+                'version': '0.1.3',
+                'target': target,
+                'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+                'size': binary.stat().st_size,
+                'sourceRevision': revision,
+                'url': f'https://github.com/synth-laboratories/jesterky/releases/download/v0.1.3/{name}',
+            }
+            Path(str(binary) + '.json').write_text(json.dumps(receipt, indent=2) + '\n')
+        self.assertEqual(len(publisher.validate(root, 'v0.1.3', revision)), 4)
+
+    def test_a_dry_run_validates_without_touching_the_release(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        revision = 'abc'
+        for target in ('linux-x86_64', 'linux-aarch64'):
+            name = f'jesterky-0.1.3-{target}'
+            binary = root / name
+            binary.write_bytes(target.encode())
+            Path(str(binary) + '.json').write_text(json.dumps({
+                'version': '0.1.3', 'target': target,
+                'sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
+                'size': binary.stat().st_size, 'sourceRevision': revision,
+                'url': f'https://github.com/synth-laboratories/jesterky/releases/download/v0.1.3/{name}',
+            }))
+
+        def fake(*args):
+            if args[0] == 'git':
+                return revision + '\n'
+            self.fail('a dry run must not contact GitHub: ' + repr(args))
+
+        with patch.object(publisher, 'run', side_effect=fake):
+            publisher.publish(root, 'v0.1.3', dry_run=True)

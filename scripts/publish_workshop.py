@@ -38,9 +38,17 @@ def validate(root, tag, revision):
     return files
 
 
-def publish(root, tag):
+def publish(root, tag, *, dry_run=False):
     revision = run('git', 'rev-parse', f'{tag}^{{commit}}').strip()
     files = validate(root, tag, revision)
+    # Validation is the whole contract between packaging and release, and it is
+    # the part that can be exercised while publication is held: it reads local
+    # bytes only and touches neither the network nor the release.
+    if dry_run:
+        print(json.dumps({'tag': tag, 'sourceRevision': revision,
+                          'validatedAssets': len(files), 'published': False,
+                          'dryRun': True}))
+        return
     # Missing release is an explicit prerequisite failure, never an implicit create.
     release = json.loads(run('gh', 'release', 'view', tag, '--json', 'assets'))
     existing = {asset['name'] for asset in release['assets']}
@@ -68,5 +76,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
     parser.add_argument('--tag', required=True)
+    parser.add_argument('--dry-run', action='store_true',
+                        help='validate local receipts and bytes without contacting GitHub')
     args = parser.parse_args()
-    publish(args.root, args.tag)
+    publish(args.root, args.tag, dry_run=args.dry_run)
