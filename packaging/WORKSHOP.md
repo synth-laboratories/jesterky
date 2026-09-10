@@ -5,8 +5,9 @@ The receipt pins version, platform, size and SHA-256. Development builds can als
 use `--register-dev`; in Workshop select Jesterky's development channel and install.
 No shell path or download URL is accepted from an MCP caller.
 
-For an official release, sign/notarize the macOS binary before generating the
-final digest, upload native binaries to the corresponding GitHub release, then
+For the v0.10 release train, distribute macOS as explicitly non-notarized
+(ad-hoc signing only); Developer ID signing is not configured. Generate the
+final digest after packaging, upload native binaries to the GitHub release, then
 copy their JSON entries into Workshop's
 `apps/synth_desktop/src-tauri/resources/jesterky-release.json` artifacts array.
 Do not populate that catalog until the URLs serve those exact bytes. A Workshop
@@ -28,8 +29,12 @@ Native analysis defaults remain Luna with low effort. OpenRouter is selected
 explicitly as `openrouter/openai/gpt-5.6-luna`; it is not an implicit fallback.
 
 `.github/workflows/workshop-release.yml` tests and packages macOS arm64 and
-Linux amd64/arm64. A version tag builds verification artifacts. To publish Linux binaries, dispatch the workflow with an existing release tag after authorization. Every platform builds that exact tagged source. The publisher verifies both Linux receipts and preserves existing assets: identical bytes are skipped and mismatched bytes fail before any upload. macOS builds remain CI artifacts pending Developer ID
-signing/notarization. Add only verified serving release URLs to Workshop's
+Linux amd64/arm64. A version tag builds verification artifacts. To publish all
+three native targets, dispatch the workflow with an existing release tag after
+authorization. Every platform builds that exact tagged source. The publisher
+verifies all three receipts and preserves existing assets: identical bytes are
+skipped and mismatched bytes fail before any upload. macOS is non-notarized;
+users may instead build locally with the script above. Add only verified serving release URLs to Workshop's
 catalog. The locally generated receipt names
 the intended release URL; generating that receipt does not publish its bytes.
 
