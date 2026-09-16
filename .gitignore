@@ -14,5 +14,6 @@ proof/**/proposer_workspaces/
 
 # Python package build artifacts
 python/dist/
-python/**/__pycache__/
+__pycache__/
+*.py[cod]
 python/*.egg-info/
