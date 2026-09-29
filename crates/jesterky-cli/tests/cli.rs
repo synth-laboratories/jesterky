@@ -316,3 +316,42 @@ fn events_out_ndjson_matches_manifest_events() {
         event_count
     );
 }
+
+#[test]
+fn event_stream_reserves_stdout_for_canonical_ndjson() {
+    let bin = env!("CARGO_BIN_EXE_jesterky");
+    let temp = tempfile::tempdir().expect("tempdir");
+    let manifest = temp.path().join("stream.manifest.json");
+    let run = Command::new(bin)
+        .arg("run")
+        .arg(example_path("quality_min.json"))
+        .arg("--actor")
+        .arg("fake")
+        .arg("--out")
+        .arg(&manifest)
+        .arg("--event-stream")
+        .output()
+        .expect("streaming run executes");
+    assert!(
+        run.status.success(),
+        "run failed\nstderr:\n{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let lines: Vec<&str> = std::str::from_utf8(&run.stdout)
+        .expect("stdout utf8")
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .collect();
+    assert!(!lines.is_empty(), "event stream should not be empty");
+    for line in &lines {
+        let value: serde_json::Value = serde_json::from_str(line)
+            .unwrap_or_else(|error| panic!("stdout contains non-event output `{line}`: {error}"));
+        assert!(value.get("addr").is_some() && value.get("kind").is_some());
+    }
+    let manifest_json: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(manifest).unwrap()).unwrap();
+    assert_eq!(
+        lines.len(),
+        manifest_json["events"].as_array().unwrap().len()
+    );
+}

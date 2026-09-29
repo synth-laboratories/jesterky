@@ -40,6 +40,22 @@ cargo run -p jesterky-cli -- validate examples/quality_scan.json
 cargo run -p jesterky-cli -- schema workflow
 ```
 
+For a live host integration, `--event-stream` reserves stdout for one flushed
+canonical event per NDJSON line and suppresses human-oriented stdout. Pipe it
+directly into the host's SSE broker; do not tail `--events-out` on a timer:
+
+```bash
+cargo run -p jesterky-cli -- run examples/quality_scan.json \
+  --out /tmp/quality_scan.manifest.json --event-stream \
+  | node /path/to/workshop/scripts/jesterky-live-visual.mjs \
+      --spec examples/quality_scan.json --events - \
+      --manifest /tmp/quality_scan.manifest.json \
+      --visual-id quality-scan --connection-file /path/to/connection.json
+```
+
+The manifest remains the retained replay authority. The pipe is live delivery,
+not a second event schema.
+
 Real model scan via codex (`--actor codex`), parameterized by target:
 ```bash
 # ChatGPT-bundle route (gpt-5.5):

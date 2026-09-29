@@ -5,7 +5,7 @@
 
 use jesterky_core::ledger::Ledger;
 use jesterky_core::{CoreError, ProgramRegistry};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use std::fs;
 use std::path::Path;
 use std::sync::Arc;
@@ -16,6 +16,8 @@ pub const GEPA_TRACE_RECORDER: &str = "gepa_trace_recorder";
 pub const GELO_TRACE_RECORDER: &str = "gelo_trace_recorder";
 
 const DEFAULT_TRACE_DIR: &str = "proof/craftax_v4_traces";
+const MAX_EVIDENCE_EVENTS: usize = 64;
+const MAX_ACTIONS_PER_BATCH: usize = 32;
 
 pub fn register(programs: &mut ProgramRegistry) {
     programs.register("trace.expand", Arc::new(expand));
@@ -97,9 +99,11 @@ fn host_config_for(
 
 const GEPA_TRACE_ANNOTATOR_PROMPT: &str = "\
 You annotate one GEPA rollout trace for a **GEPA proposer**. You receive \
-`job` with `trace_id`, `path` (absolute v4 JSON), and `summary` (reward, status, \
-and any task/label/achievement fields present). Read ONLY that trace file at \
-`job.path`. Do NOT load skills, run shell commands, or browse other files. Return ONE JSON object: \
+`job` with `trace_id`, `path` (absolute v4 JSON), and a bounded `summary` containing \
+reward, status, achievements, executed actions, proposed action batches, and reward \
+progression. Use ONLY the supplied summary evidence. Do NOT load skills, run tools, \
+or browse files. If action evidence is absent, mark the annotation as a blocker \
+instead of inventing behavior. Return ONE JSON object: \
 `trace_id`, `optimizer` (\"gepa\"), `failure_modes` ([{code, severity, evidence, \
 fix_hint}]), `reusable_rules` ([{rule_id, when, then, confidence}]), \
 `prompt_harness_notes` (<=40 words), `reward` (number), `achievement_count` (int), \
@@ -109,8 +113,11 @@ failure modes. Do not assume a game environment. Stop after the JSON object.";
 
 const GELO_TRACE_ANNOTATOR_PROMPT: &str = "\
 You annotate one Craftax GameBench rollout trace for a **GELO theme explorer**. You \
-receive `job` with `trace_id`, `path`, and `summary`. Read ONLY that trace file at \
-`job.path`. Do NOT load skills, run shell commands, or browse other files. \
+receive `job` with `trace_id`, `path`, and a bounded `summary` containing executed \
+actions, proposed action batches, reward progression, achievements, and status. Use \
+ONLY the supplied summary evidence. Do NOT load skills, run tools, or browse files. \
+If action evidence is absent, set `blocker=true` and explain the missing evidence \
+instead of inventing exploration behavior. \
 Return ONE JSON object: `trace_id`, `optimizer` (\"gelo\"), `exploration_themes` \
 ([{theme, saturation, evidence}]), `underexplored_actions` ([string]), \
 `behavioral_diversity_score` (0-1), `reward` (number), `achievement_count` (int), \
@@ -218,16 +225,70 @@ fn trace_summary(path: &Path) -> Result<Value, CoreError> {
         .and_then(Value::as_array)
         .map(|a| a.len())
         .unwrap_or(0);
+    let achievement_names = summary
+        .get("achievements")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default();
+    let events = doc
+        .get("events")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let executed_actions = events
+        .iter()
+        .take(MAX_EVIDENCE_EVENTS)
+        .filter_map(|event| {
+            event
+                .pointer("/metadata/env_action")
+                .and_then(Value::as_str)
+        })
+        .map(str::to_string)
+        .collect::<Vec<_>>();
+    let action_batches = events
+        .iter()
+        .take(MAX_EVIDENCE_EVENTS)
+        .filter_map(|event| {
+            let content = event.pointer("/llm_response/message/content")?.as_str()?;
+            let response: Value = serde_json::from_str(content).ok()?;
+            let actions = response.get("actions")?.as_array()?;
+            Some(
+                actions
+                    .iter()
+                    .take(MAX_ACTIONS_PER_BATCH)
+                    .filter_map(Value::as_str)
+                    .map(str::to_string)
+                    .collect::<Vec<_>>(),
+            )
+        })
+        .filter(|actions| !actions.is_empty())
+        .collect::<Vec<_>>();
+    let reward_progression = doc
+        .get("spans")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+        .unwrap_or_default()
+        .iter()
+        .take(MAX_EVIDENCE_EVENTS)
+        .filter_map(|span| span.pointer("/metrics/reward_total").cloned())
+        .collect::<Vec<_>>();
     let llm_turns = doc
         .get("span_count")
         .or_else(|| summary.get("llm_turns"))
         .cloned()
         .unwrap_or(Value::Null);
     Ok(json!({
+        "evidence_schema": "jesterky.craftax-trace-evidence.v1",
         "seed": seed,
         "reward": reward,
         "achievement_count": achievements,
+        "achievements": achievement_names,
         "llm_turns": llm_turns,
+        "invalid_parse_turns": summary.get("invalid_parse_turns").cloned().unwrap_or(json!(0)),
+        "max_steps": summary.get("max_steps").cloned().unwrap_or(Value::Null),
+        "executed_actions": executed_actions,
+        "action_batches": action_batches,
+        "reward_progression": reward_progression,
         "status": doc.get("status").cloned().unwrap_or(Value::Null),
     }))
 }
@@ -265,7 +326,10 @@ fn aggregate_trace_scans(inputs: &Value, optimizer: &str) -> Result<Value, CoreE
             .flatten()
             .filter_map(Value::as_str)
         {
-            *theme_counts.entry(tag.to_string()).or_default() += 1;
+            let tag = normalize_theme_tag(tag);
+            if !tag.is_empty() {
+                *theme_counts.entry(tag).or_default() += 1;
+            }
         }
         rows.push(json!({
             "trace_id": trace_id,
@@ -297,6 +361,24 @@ fn aggregate_trace_scans(inputs: &Value, optimizer: &str) -> Result<Value, CoreE
             },
         }
     }))
+}
+
+fn normalize_theme_tag(tag: &str) -> String {
+    let mut normalized = String::with_capacity(tag.len());
+    let mut separator = false;
+    for character in tag.trim().chars().flat_map(char::to_lowercase) {
+        if character.is_ascii_alphanumeric() {
+            normalized.push(character);
+            separator = false;
+        } else if !normalized.is_empty() && !separator {
+            normalized.push('_');
+            separator = true;
+        }
+    }
+    while normalized.ends_with('_') {
+        normalized.pop();
+    }
+    normalized
 }
 
 fn aggregate_gepa(_ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
@@ -417,4 +499,42 @@ fn write_optimizer_sidecar_artifacts(
     fs::write(&context_path, context)
         .map_err(|err| CoreError::Config(format!("write {}: {err}", context_path.display())))?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn craftax_summary_contains_bounded_action_evidence() {
+        let trace = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../proof/craftax_v4_traces/seed-1.v4.json");
+        let summary = trace_summary(&trace).expect("committed Craftax trace should parse");
+
+        assert_eq!(
+            summary["evidence_schema"],
+            "jesterky.craftax-trace-evidence.v1"
+        );
+        assert_eq!(summary["executed_actions"], json!(["do", "down", "down"]));
+        assert_eq!(summary["action_batches"][0][0], "do");
+        assert_eq!(summary["action_batches"][0][9], "make_wood_pickaxe");
+        assert_eq!(summary["reward_progression"], json!([1.0, 2.0, 1.8]));
+        assert_eq!(
+            summary["achievements"],
+            json!(["collect_sapling", "collect_wood", "defeat_zombie"])
+        );
+    }
+
+    #[test]
+    fn theme_tags_have_one_canonical_spelling() {
+        assert_eq!(
+            normalize_theme_tag(" limited-map coverage "),
+            "limited_map_coverage"
+        );
+        assert_eq!(normalize_theme_tag("repeated__do"), "repeated_do");
+        assert_eq!(
+            normalize_theme_tag("RESOURCE collection"),
+            "resource_collection"
+        );
+    }
 }

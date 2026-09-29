@@ -58,6 +58,11 @@ enum Command {
         /// Write canonical run events as NDJSON. Use `-` for stdout.
         #[arg(long)]
         events_out: Option<PathBuf>,
+        /// Reserve stdout for flushed canonical NDJSON events. Human progress
+        /// and summaries are suppressed so a host can pipe the stream directly
+        /// into an SSE broker without parsing terminal output.
+        #[arg(long, conflicts_with_all = ["events_out", "follow"])]
+        event_stream: bool,
         /// Export the finished native manifest/events to a Containers Trace V5 bundle.
         #[arg(long, requires = "out")]
         trace_out: Option<PathBuf>,
@@ -268,6 +273,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
             args_file,
             out,
             events_out,
+            event_stream,
             trace_out,
             run_id,
             actor,
@@ -290,11 +296,16 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
                 })?),
                 None => args,
             };
+            let stdout_stream = PathBuf::from("-");
             run_spec(
                 &spec,
                 args.as_deref(),
                 out.as_deref(),
-                events_out.as_deref(),
+                if event_stream {
+                    Some(stdout_stream.as_path())
+                } else {
+                    events_out.as_deref()
+                },
                 trace_out.as_deref(),
                 run_id.as_deref(),
                 actor,
@@ -307,6 +318,7 @@ async fn run_cli() -> Result<ExitCode, Box<dyn Error>> {
                 viz_interval,
                 no_color,
                 width,
+                event_stream,
             )
             .await
         }
@@ -406,8 +418,9 @@ async fn run_spec(
     viz_interval: f64,
     no_color: bool,
     width: usize,
+    event_stream: bool,
 ) -> Result<ExitCode, Box<dyn Error>> {
-    let follow = should_follow(no_follow, follow_flag);
+    let follow = !event_stream && should_follow(no_follow, follow_flag);
     let spec: WorkflowSpec = read_json(spec_path)?;
     let args = parse_args(args_json)?;
     let is_dungeongrid = spec.name.starts_with("dungeongrid");
@@ -611,7 +624,11 @@ async fn run_spec(
         manifest.budgets = Some(snap);
     }
 
-    if follow {
+    if event_stream {
+        // stdout belongs exclusively to NdjsonEventSink in this mode. The
+        // manifest and usage receipts are still written to their requested
+        // paths, and diagnostics remain on stderr.
+    } else if follow {
         let mut view = adapt_manifest(&manifest, Some(&spec), None, Some(&final_progress));
         if let Some(model) = model {
             view.model = Some(model.to_string());
