@@ -19,7 +19,7 @@
     "claim_tier"
   ],
   "properties": {
-    "item": { "type": "string", "description": "Mintlify page slug (path without .mdx)" },
+    "item": { "type": "string", "description": "Blume page slug (path without .mdx)" },
     "score": {
       "oneOf": [{ "type": "number" }, { "type": "string" }],
       "description": "1-10 family-2 docs quality score"

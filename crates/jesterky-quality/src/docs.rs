@@ -1,4 +1,4 @@
-//! Synth **Mintlify docs** quality scan — one map item per MDX page under the
+//! Synth **Blume docs** quality scan — one map item per MDX page under the
 //! docs tree, scored against family-2 docs standards + D1–D16 audit protocol.
 //! Produces a per-page matrix at reduce time.
 
@@ -72,7 +72,7 @@ pub fn host_config() -> jesterky_contract::HostConfig {
 }
 
 const DOCS_AUDITOR_PROMPT: &str = "\
-You are a Synth Mintlify docs auditor. You receive one `job` with page MDX plus \
+You are a Synth Blume docs auditor. You receive one `job` with page MDX plus \
 bounded reference, standards, and product-spec context. Return EXACTLY ONE JSON \
 object matching the schema. Keep arrays short: at most 3 items per array, only \
 the highest-value findings. Required fields: `item`, `score`, `severity`, \
@@ -122,7 +122,7 @@ D1/D2/D7/D11/D13/D15 → blocker=true when the evidence is concrete and user-fac
 If a public-code drift is only suspected because this one-page audit lacks repo context, \
 emit D8 or D9 instead of D7 and say what deterministic check should verify it. \
 \
-**Mintlify context:** pages live as `.mdx` under `docs_dir`; routing from \
+**Blume context:** pages live as `.mdx` under `docs_dir`; routing from \
 `docs.json` navigation. Navbar front-door quickstart is `/prompt-optimization-gepa`. \
 Default public source roots are supplied when present: `synth-ai/synth_ai` for SDK, \
 selected `backend/app` API roots, and `docs/reference/sdk` generated references. \
@@ -136,7 +136,7 @@ You receive `summary` with `matrix_report` (per-page scores/violations table), \
 `blockers`, `total`, `passed`, `failed`, and `violation_stats`. Echo `verdict` \
 (pass if blockers==0 else fail), counts, `violation_stats`, and `matrix_report` \
 unchanged in `matrix_report`. Add a one-sentence \
-`headline` on overall Mintlify docs corpus quality. No tools.";
+`headline` on overall Blume docs corpus quality. No tools.";
 
 fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
     let docs_dir = inputs
@@ -148,7 +148,7 @@ fn expand(ledger: &Ledger, inputs: &Value) -> Result<Value, CoreError> {
                 "docs.expand requires `docs_dir` in node inputs or run args".to_string(),
             )
         })?;
-    // `docs_json` (the Mintlify nav) is optional: when not given, derive it as
+    // `docs_json` (the Blume nav) is optional: when not given, derive it as
     // `<docs_dir>/docs.json` so any docs location works from `docs_dir` alone —
     // no hard binding, no machine-specific absolute default.
     let docs_json = inputs
