@@ -191,7 +191,8 @@ enum TypedResponsesInputItem {
         content: ResponsesContent,
     },
     FunctionCall {
-        #[serde(alias = "id")]
+        // Responses item `id` and tool `call_id` are separate identities.
+        // Codex echoes both on the next turn; aliasing them rejects valid input.
         call_id: NonEmptyString,
         name: NonEmptyString,
         namespace: Option<String>,
@@ -955,5 +956,21 @@ mod tests {
         assert_eq!(chat["tools"][0]["function"]["name"],"trace_annotation__jns__trace_get_event");
         assert_eq!(chat["messages"][0]["tool_calls"][0]["function"]["name"],"trace_annotation__jns__trace_get_event");
     }
+
+    #[test]
+    fn codex_tool_roundtrip_keeps_call_id_distinct_from_item_id() {
+        let raw = serde_json::json!({
+            "model": "openai/gpt-6-luna",
+            "input": [
+                {"type": "function_call", "id": "fc_item_123", "call_id": "call_tool_456",
+                 "name": "exec_command", "arguments": "{\"cmd\":\"cat manifest.json\"}", "status": "completed"},
+                {"type": "function_call_output", "call_id": "call_tool_456", "output": "evidence"}
+            ]
+        });
+        let value = responses_request_to_chat(&raw, "openai/gpt-6-luna", false).unwrap();
+        assert_eq!(value["messages"][0]["tool_calls"][0]["id"], "call_tool_456");
+        assert_eq!(value["messages"][1]["tool_call_id"], "call_tool_456");
+    }
+
 
 }
