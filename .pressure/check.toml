@@ -1,0 +1,11 @@
+scope = "repo"
+
+[[checks]]
+id = "codex_responses_tool_id_roundtrip"
+description = "Codex tool turns accept separate Responses item IDs and tool-call IDs"
+severity = "error"
+file_contains = [
+  { path = "crates/jesterky-proxy/src/convert.rs", pattern = "fn codex_tool_roundtrip_keeps_call_id_distinct_from_item_id" },
+  { path = "crates/jesterky-proxy/src/convert.rs", pattern = '"id": "fc_item_123", "call_id": "call_tool_456"' },
+]
+remedy = "Keep call_id as the tool roundtrip identity and do not alias item id to it. Run the jesterky-proxy regressions and a real multi-turn Codex review."
